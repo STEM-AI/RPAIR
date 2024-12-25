@@ -85,7 +85,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 
-#   " TOKEN_OBTAIN_SERIALIZER": "db_api.serializers.MyTokenObtainPairSerializer",
+  " TOKEN_OBTAIN_SERIALIZER": "rapair_db.serializers.MyTokenObtainPairSerializer",
 
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",

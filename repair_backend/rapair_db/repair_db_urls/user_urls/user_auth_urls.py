@@ -1,11 +1,17 @@
 from django.urls import path
 
-from ...views.user_views.user_auth_views import (
-    JudgeRegisterView,
+from ...views.user_views.auth_views.user_auth_views import (
     UserResgisterView,
-    AdminLoginView,
-    JudgeLogin
 )
+from ...views.user_views.auth_views.admin_auth_views import (
+    AdminLoginView,
+)
+from ...views.user_views.auth_views.judge_auth_views import (
+    JudgeRegisterView,
+    JudgeLogin,
+)
+
+
 
 
 urlpatterns = [
