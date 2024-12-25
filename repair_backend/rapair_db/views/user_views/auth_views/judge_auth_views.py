@@ -12,7 +12,6 @@ from ....serializers.tokens_serializers import MyTokenObtainPairSerializer
 class JudgeRegisterView(APIView):
     permission_classes = [IsSuperUser]
     def post(self, request):
-        print("user" , request.user)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
