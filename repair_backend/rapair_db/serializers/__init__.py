@@ -1,0 +1,1 @@
+from .tokens_serializers import MyTokenObtainPairSerializer
