@@ -16,7 +16,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
         
 class UserResgisterView(APIView):
 
-    permission_classes = [IsJudgeUser , IsSuperUser]
+    permission_classes = [IsJudgeUser]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
