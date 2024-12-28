@@ -1,16 +1,17 @@
 from rest_framework import serializers
 from ..models import Team
+from .organization_serializers import OrganizationSerializer
 
 
 class TeamSerializer(serializers.ModelSerializer):
     organization_info = serializers.JSONField(write_only=True)
-
+    organization = OrganizationSerializer()
     class Meta:
         model = Team
         fields = [
             'id','name','robot_name','user_id','type','organization_info',
             'competition_date','team_leader_name','team_leader_email',
-            'team_leader_phone_number','score','organization_id'
+            'team_leader_phone_number','score','organization'
             ]
 
         extra_kwargs = {
@@ -27,7 +28,7 @@ class TeamSerializer(serializers.ModelSerializer):
         team.custom_args = organization_info
 
         team.save()
-        
+
         return team
 
 
