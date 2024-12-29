@@ -4,6 +4,7 @@ from ...views.data_views.organization_view import (
     OrganizationProfileView,
     OrganizationEditProfileView,
     CreateOrganizationView,
+    DeleteOrganizationView
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path('organization-list/', OrganizationProfileView.as_view(), name='organization-list'),
     path('organization-profile/<str:organization_name>/', OrganizationProfileView.as_view(), name='organization-profile'),
     path('edit-organization-profile/<str:organization_name>/', OrganizationEditProfileView.as_view(), name='edit-organization-profile'),
+    path('delete-organization/<str:organization_name>/', DeleteOrganizationView.as_view(), name='delete-organization'),
 ]
