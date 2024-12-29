@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save , pre_save
+from django.db.models.signals import post_save , pre_save , pre_delete
 from django.dispatch import receiver
 from .models import User , Team ,JudgeUser , Organization , OrganizationContact
 
@@ -37,3 +37,20 @@ def get_or_create_organization(sender , instance , **kwargs):
                 )
                 organization.save()
             instance.organization_id = organization.id
+
+
+@receiver(pre_delete, sender=Organization)
+def reassign_teams_to_existing_organization(sender, instance, **kwargs):
+    """
+    Before deleting an organization, reassign its teams to another organization if needed.
+    """
+    existing_organization = Organization.objects.filter(name=instance.name).exclude(id=instance.id).first()
+    
+    if existing_organization:
+        # Reassign teams to the existing organization
+        Team.objects.filter(organization=instance).update(organization=existing_organization)
+    else:
+        # Handle the case when no organization with the same name is found
+        # For example, create a new organization or handle accordingly
+        new_org = Organization.objects.create(name=f"Reassigned-{instance.name}")
+        Team.objects.filter(organization=instance).update(organization=new_org)

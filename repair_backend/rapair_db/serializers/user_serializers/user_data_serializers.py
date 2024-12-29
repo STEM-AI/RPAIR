@@ -14,8 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate_password(self, value):
-        # validate_password(value)  # Apply Django's built-in password validation.
-        # return value
     
         """
         This method ensures password validation with custom rules.
