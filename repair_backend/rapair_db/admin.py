@@ -1,6 +1,9 @@
 from django.contrib import admin
-from .models import User , JudgeUser , Organization , OrganizationContact , Team , TeamSponsor , TeamSocialMedia , TeamPreviousCompetition , CompetitionGroup , TeamGroup
-
+from .models import (
+    User , JudgeUser , Organization , OrganizationContact , 
+    Team , TeamSponsor , TeamSocialMedia , TeamPreviousCompetition ,
+    CompetitionGroup , TeamGroup , Competition
+)
 # Register your models here.
 admin.site.register(User)
 admin.site.register(JudgeUser)
@@ -12,4 +15,5 @@ admin.site.register(TeamSocialMedia)
 admin.site.register(TeamPreviousCompetition)
 admin.site.register(CompetitionGroup)
 admin.site.register(TeamGroup)
+admin.site.register(Competition)
 

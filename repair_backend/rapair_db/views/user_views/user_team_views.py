@@ -3,13 +3,23 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated ,IsJudgeUser
 from rest_framework import status
 from ...serializers.team_serializers import TeamSerializer
-from ...models import Team ,Organization
+from ...models import Team ,Organization , Competition
 # //sponsers , scoial meadia , previous comp , team coach 
 class UserCreateTeamView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get_object(self, request):
+        competition = request.data.get('competition', '')
+        if not competition:
+            return Response({"error": "Competition is required"}, status=status.HTTP_400_BAD_REQUEST)
+        competition = Competition.objects.filter(name = competition).first()
+        if not competition:
+            return Response({"error": "Competition not found"}, status=status.HTTP_404_NOT_FOUND)
+        return competition
+
     def post(self, request):
-        print("data" , request.data)
-        serializer = TeamSerializer(data = request.data)
+        competition = self.get_object(request)
+        serializer = TeamSerializer(data = request.data , context = {'competition':competition})
         if serializer.is_valid():
             serializer.save(user_id=request.user.id)
             return Response(f"message': 'Team created successfully Team :{serializer.data} ", status=status.HTTP_201_CREATED)
