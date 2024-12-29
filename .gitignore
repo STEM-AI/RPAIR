@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 
+>>>>>>> main
 # Created by https://www.gitignore.io
 
 ### OSX ###
@@ -88,6 +92,10 @@ local_settings.py
 
 .env
 db.sqlite3
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> main
 # Logs
 logs
 *.log
@@ -112,3 +120,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
+>>>>>>> 59dd173 (frist commite on the front)
+=======
+>>>>>>> main
