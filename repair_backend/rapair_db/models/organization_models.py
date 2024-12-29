@@ -6,6 +6,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True)
     address = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
+    email = models.EmailField(unique=True , default=None)
 
     def __str__(self):
         return self.name
@@ -13,5 +14,8 @@ class Organization(models.Model):
 
 class OrganizationContact(models.Model):
     id = models.AutoField(primary_key=True)
-    organization_id = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=255 , unique=True)
+    
+    def __str__(self):
+        return f"Organization {self.organization.name} {self.phone_number}"

@@ -4,9 +4,8 @@ from .organization_models import Organization
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255 , unique=True)
-    number = models.IntegerField( unique=True)
     robot_name = models.CharField(max_length=255, unique=True)
-    user_id = models.ForeignKey('User', blank=True , on_delete=models.CASCADE)
+    user = models.ForeignKey('User', blank=True , on_delete=models.CASCADE)
     type = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     competition_date = models.DateField(null=True, blank=True)
@@ -14,7 +13,7 @@ class Team(models.Model):
     team_leader_email = models.EmailField(unique=True)
     team_leader_phone_number = models.CharField(max_length=255 , unique=True)
     score = models.IntegerField(null=True, blank=True)
-    organization_id = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
