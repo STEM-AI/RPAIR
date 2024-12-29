@@ -7,11 +7,11 @@ from ..serializers import OrganizationSerializer
 
 class TeamSerializer(serializers.ModelSerializer):
     organization_info = serializers.JSONField(write_only=True)
-    organization = OrganizationTeamSerializer()
+    organization = OrganizationTeamSerializer(read_only=True)
     class Meta:
         model = Team
         fields = [
-            'id','name','robot_name','user_id','type','organization_info',
+            'name','robot_name','user_id','type','organization_info',
             'competition_date','team_leader_name','team_leader_email',
             'team_leader_phone_number','score','organization'
             ]
@@ -19,6 +19,7 @@ class TeamSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'user_id': {'required': False},
             'organization_id': {'required': False},
+            'organization': {'required': False},
         }
 
     def create(self, validated_data) :
