@@ -44,13 +44,23 @@ def reassign_teams_to_existing_organization(sender, instance, **kwargs):
     """
     Before deleting an organization, reassign its teams to another organization if needed.
     """
-    existing_organization = Organization.objects.filter(name=instance.name).exclude(id=instance.id).first()
+    if hasattr(instance , 'custom_args'):
+        organization_info = instance.custom_args
+        if organization_info :
+            organization , created = Organization.objects.get_or_create(
+                        name=organization_info['name'] , 
+                        defaults={
+                            "type": organization_info['type'] , 
+                            'address' : organization_info['address'],
+                            'email' : organization_info['email']
+                            }
+                            )
+            if created :
+                organization.contact = OrganizationContact.objects.create(
+                    organization=organization, 
+                    phone_number=organization_info['contact_phone_number']
+                )
+                organization.save()
+            
+            Team.objects.filter(organization=instance).update(organization=organization)
     
-    if existing_organization:
-        # Reassign teams to the existing organization
-        Team.objects.filter(organization=instance).update(organization=existing_organization)
-    else:
-        # Handle the case when no organization with the same name is found
-        # For example, create a new organization or handle accordingly
-        new_org = Organization.objects.create(name=f"Reassigned-{instance.name}")
-        Team.objects.filter(organization=instance).update(organization=new_org)

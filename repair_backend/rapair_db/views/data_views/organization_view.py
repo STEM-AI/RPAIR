@@ -45,5 +45,23 @@ class OrganizationEditProfileView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class DeleteOrganizationView(APIView):
+    permission_classes = [IsJudgeUser]
+    def patch(self, request ,organization_name ):
+        new_organization = request.data.get('new_organization_info')
+        if not new_organization:
+            return Response({"error": "New Organization information is required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not organization_name:
+            return Response({"error": "Organization name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        organization = Organization.objects.filter(name=organization_name).first()
+        if not organization:
+            return Response({"error": "Organization not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        organization.custom_args = new_organization
+        
+        organization.delete()
+        return Response({"message": "Organization deleted successfully"}, status=status.HTTP_200_OK)
+    
 
 
