@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from ..models import Team
-from .organization_serializers import OrganizationSerializer
+from ..serializers import OrganizationTeamSerializer
 
 
 class TeamSerializer(serializers.ModelSerializer):
     organization_info = serializers.JSONField(write_only=True)
-    organization = OrganizationSerializer()
+    organization = OrganizationTeamSerializer()
     class Meta:
         model = Team
         fields = [

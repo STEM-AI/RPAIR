@@ -8,7 +8,6 @@ from ...models import Organization
 class OrganizationProfileView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request , organization_name=None):
-        print("Organization" , organization_name)
         if organization_name is None:
             return Response({"error": "Organization name is required"}, status=status.HTTP_400_BAD_REQUEST)
         organization = Organization.objects.filter(name=organization_name).first()
