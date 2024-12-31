@@ -91,3 +91,96 @@ Shared Components:
   | - Notifications (Alerts, Toasts)            |
   | - Authentication (Login/Signup, Role-based) |
   +---------------------------------------------+
+
+
++--- RPAIR/frontend/
+|    +--- src/
+|    |    +--- components/        # Reusable UI Components (View Layer)
+|    |    |    +--- Header/
+|    |    |    |    |--- Header.jsx
+|    |    |    |    |--- Header.css
+|    |    |    +--- Footer/
+|    |    |    |    |--- Footer.jsx
+|    |    |    |    |--- Footer.css
+|    |    |    +--- Modals/
+|    |    |    |    |--- CreateCompetitionModal.jsx
+|    |    |    |    |--- ConfirmDialog.jsx
+|    |    |    +--- Tables/
+|    |    |    |    |--- UserTable.jsx
+|    |    |    |    |--- CompetitionTable.jsx
+|    |    |    +--- Forms/
+|    |         |--- LoginForm.jsx
+|    |         |--- SignupForm.jsx
+|    |
+|    |    +--- views/             # Page Layouts (View Layer)
+|    |    |    +--- Home/
+|    |    |    |    |--- HomePage.jsx
+|    |    |    |    |--- HomePage.css
+|    |    |    +--- Dashboard/
+|    |    |    |    +--- AdminDashboard.jsx
+|    |    |    |    +--- JudgeDashboard.jsx
+|    |    |    |    +--- ContestantDashboard.jsx
+|    |    |    +--- Competition/
+|    |    |    |    |--- CompetitionDetails.jsx
+|    |    |    |    |--- RankingPage.jsx
+|    |
+|    |    +--- models/            # Data Models (Model Layer)
+|    |    |    |--- User.js
+|    |    |    |--- Competition.js
+|    |    |    |--- Group.js
+|    |    |    |--- Organization.js
+|    |
+|    |    +--- controllers/       # Business Logic Controllers (Controller Layer)
+|    |    |    |--- AdminController.js
+|    |    |    |--- JudgeController.js
+|    |    |    |--- ContestantController.js
+|    |    |    |--- CompetitionController.js
+|    |
+|    |    +--- services/          # Services (Logic, External Calls)
+|    |    |    |--- UserService.js
+|    |    |    |--- CompetitionService.js
+|    |    |    |--- GroupService.js
+|    |    |    |--- OrganizationService.js
+|    |
+|    |    +--- repositories/      # Data Access (Persistence)
+|    |    |    |--- UserRepository.js
+|    |    |    |--- CompetitionRepository.js
+|    |    |    |--- GroupRepository.js
+|    |    |    |--- OrganizationRepository.js
+|    |
+|    |    +--- utils/             # Utility Functions
+|    |    |    |--- Validator.js
+|    |    |    |--- DateFormatter.js
+|    |    |    |--- APIClient.js
+|    |
+|    |    +--- hooks/             # Custom React Hooks
+|    |    |    |--- useAuth.js
+|    |    |    |--- useFetch.js
+|    |
+|    |    +--- styles/            # Global and Thematic Styles
+|    |    |    |--- variables.css
+|    |    |    |--- global.css
+|    |
+|    |    +--- routes/            # Routing Configurations
+|    |    |    |--- AppRoutes.jsx
+|    |
+|    |    +--- state/             # State Management (Redux or Context API)
+|    |    |    +--- slices/
+|    |    |    |    |--- userSlice.js
+|    |    |    |    |--- competitionSlice.js
+|    |    |    +--- store.js
+|    |
+|    +--- public/                 # Publicly Accessible Files
+|    |    |--- index.html
+|    |    |--- favicon.ico
+|    |
+|    +--- tests/                  # Unit and Integration Tests
+|    |    |--- components/
+|    |    |--- controllers/
+|    |    |--- services/
+|    |
+|    +--- package.json            # NPM Configuration
+|    +--- README.md               # Project Documentation
+|    +--- .gitignore              # Git Ignore Rules
+|  
+
