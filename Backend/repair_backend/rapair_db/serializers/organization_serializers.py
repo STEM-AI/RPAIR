@@ -1,0 +1,70 @@
+from rest_framework import serializers
+from ..models import Organization , OrganizationContact 
+class OrganizationTeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = ['name', 'type']  
+
+class OrganizationContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizationContact
+        fields = ['phone_number']
+
+
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    contact = serializers.SerializerMethodField()
+    teams = serializers.SerializerMethodField()
+    contact_info = serializers.JSONField(write_only=True)
+    class Meta:
+        model = Organization
+        fields = ['name','address','email','type','contact', 'contact_info' , 'teams'] 
+        extra_kwargs = {
+            'name': {'required': True},
+            'address': {'required': True},
+            'type': {'required': True},
+        }
+
+    def create(self, validated_data):
+        ##TODO:
+        ## get organization multivalue contact information
+        #extract the organization contact information and save it in the OrganizationContact
+        organization_info = validated_data.pop('contact_info')
+        organization = super().create(validated_data)
+        organization.contact = OrganizationContact.objects.create(
+            organization=organization, 
+            phone_number=organization_info['phone_number']
+        )
+        organization.save()
+        return organization
+
+    def get_contact(self, obj):
+        contact_obj = OrganizationContact.objects.filter(organization=obj).first()
+        if contact_obj:
+            return OrganizationContactSerializer(contact_obj).data
+        else:
+            return None
+        
+    def get_teams(self, obj):
+        from ..serializers import TeamSerializer
+        teams = obj.team_set.all()
+        # Implement filtering and ordering of teams based on the organization's type
+        return TeamSerializer(teams, many=True).data
+    
+
+    def update(self, instance, validated_data):
+        new_name = validated_data.get("name", instance.name)
+
+        # Check if a different organization with the new name already exists
+        if new_name != instance.name:
+            existing_organization = Organization.objects.filter(name=new_name).first()
+            if existing_organization:
+                # Handle name conflict more gracefully: e.g., return an error message instead of deletion
+                raise serializers.ValidationError({"name": "An organization with this name already exists."})
+
+        # Proceed with regular update if no conflict
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+    
