@@ -28,12 +28,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         contacts_data = validated_data.pop('contacts')
-        organization = super().create(validated_data)
-        for contact_data in contacts_data:
-            organization.contact = OrganizationContact.objects.create(
-                organization=organization, 
-                **contact_data
-            )
+        organization = self.Meta.model(**validated_data)
+        organization.contacts_data = contacts_data
         organization.save()
         return organization
 

@@ -9,7 +9,6 @@ from ...models import Organization
 class CreateOrganizationView(APIView):
     permission_classes = [IsJudgeUser]
     def post(self, request):
-        print("Organization information"  , request.data)
         serializer = OrganizationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
