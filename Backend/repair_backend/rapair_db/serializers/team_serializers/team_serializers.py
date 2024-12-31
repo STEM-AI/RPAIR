@@ -1,19 +1,25 @@
 from rest_framework import serializers
-from ..models import Team 
-from ..serializers import OrganizationTeamSerializer  
-from .competitions_serializers import CompetitionsSerializer
+from ...models import Team 
+from .. import OrganizationTeamSerializer 
+from . import TeamCoachSerializer ,TeamPreviousCompetitionSerializer ,TeamSocialMediaSerializer ,TeamSponsorSerializer
+from ..competitions_serializers import CompetitionsSerializer
 
 
 class TeamSerializer(serializers.ModelSerializer):
     organization_info = serializers.JSONField(write_only=True)
     organization = OrganizationTeamSerializer(read_only=True)
     competition = CompetitionsSerializer(read_only=True)
+    sponsors = TeamSponsorSerializer(many=True) 
+    coach = TeamCoachSerializer(many=True)
+    social_media = TeamSocialMediaSerializer(many=True)
+    previous_competition = TeamPreviousCompetitionSerializer(many=True)
     class Meta:
         model = Team
         fields = [
             'name','robot_name','user_id','type','organization_info',
             'competition_date','team_leader_name','team_leader_email',
-            'team_leader_phone_number','score','organization' ,'competition'
+            'team_leader_phone_number','score','organization','competition' , 
+            'sponsors', 'coach', 'social_media','previous_competition'
             ]
 
         extra_kwargs = {
@@ -21,6 +27,10 @@ class TeamSerializer(serializers.ModelSerializer):
             'organization_id': {'required': False},
             'organization': {'required': False},
             'competition': {'required': False},
+            'sponsors': {'required': True},
+            'coach': {'required': True},
+            'social_media': {'required': True},
+            'previous_competition': {'required': True},
         }
 
     def create(self, validated_data) :
@@ -32,7 +42,7 @@ class TeamSerializer(serializers.ModelSerializer):
         team = self.Meta.model(**validated_data)
         team.competition = competition
 
-        team.custom_args = organization_info
+        team.organization_info = organization_info
 
         team.save()
 

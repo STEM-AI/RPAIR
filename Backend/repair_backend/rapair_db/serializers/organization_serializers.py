@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from ..models import Organization , OrganizationContact 
+
 class OrganizationTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
@@ -13,37 +14,29 @@ class OrganizationContactSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    contact = serializers.SerializerMethodField()
+    contacts = OrganizationContactSerializer(many=True)
     teams = serializers.SerializerMethodField()
-    contact_info = serializers.JSONField(write_only=True)
     class Meta:
         model = Organization
-        fields = ['name','address','email','type','contact', 'contact_info' , 'teams'] 
+        fields = ['name','address','email','type','contacts', 'teams'] 
         extra_kwargs = {
             'name': {'required': True},
             'address': {'required': True},
             'type': {'required': True},
+            'contacts' :{'required': True}
         }
 
     def create(self, validated_data):
-        ##TODO:
-        ## get organization multivalue contact information
-        #extract the organization contact information and save it in the OrganizationContact
-        organization_info = validated_data.pop('contact_info')
+        contacts_data = validated_data.pop('contacts')
         organization = super().create(validated_data)
-        organization.contact = OrganizationContact.objects.create(
-            organization=organization, 
-            phone_number=organization_info['phone_number']
-        )
+        for contact_data in contacts_data:
+            organization.contact = OrganizationContact.objects.create(
+                organization=organization, 
+                **contact_data
+            )
         organization.save()
         return organization
 
-    def get_contact(self, obj):
-        contact_obj = OrganizationContact.objects.filter(organization=obj).first()
-        if contact_obj:
-            return OrganizationContactSerializer(contact_obj).data
-        else:
-            return None
         
     def get_teams(self, obj):
         from ..serializers import TeamSerializer

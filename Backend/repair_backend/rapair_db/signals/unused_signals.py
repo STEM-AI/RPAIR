@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save , pre_save , pre_delete
 from django.dispatch import receiver
-from .models import User , Team ,JudgeUser , Organization , OrganizationContact
+from ..models import User , Team ,JudgeUser , Organization , OrganizationContact
 
 
 @receiver(post_save, sender=User)
@@ -19,8 +19,8 @@ def create_admin(sender , instance ,created , **kwargs):
 
 @receiver(pre_save , sender=Team)
 def get_or_create_organization(sender , instance , **kwargs):
-    if hasattr(instance , 'custom_args'):
-        organization_info = instance.custom_args
+    if hasattr(instance , 'extra_args'):
+        organization_info = instance.extra_args['organization_info']
         if organization_info :
             organization , created = Organization.objects.get_or_create(
                 name=organization_info['name'] , 
@@ -44,21 +44,21 @@ def reassign_teams_to_existing_organization(sender, instance, **kwargs):
     """
     Before deleting an organization, reassign its teams to another organization if needed.
     """
-    if hasattr(instance , 'custom_args'):
-        organization_info = instance.custom_args
-        if organization_info :
+    if hasattr(instance , 'new_organization'):
+        new_organization = instance.new_organization
+        if new_organization :
             organization , created = Organization.objects.get_or_create(
-                        name=organization_info['name'] , 
+                        name=new_organization['name'] , 
                         defaults={
-                            "type": organization_info['type'] , 
-                            'address' : organization_info['address'],
-                            'email' : organization_info['email']
+                            "type": new_organization['type'] , 
+                            'address' : new_organization['address'],
+                            'email' : new_organization['email']
                             }
                             )
             if created :
                 organization.contact = OrganizationContact.objects.create(
                     organization=organization, 
-                    phone_number=organization_info['contact_phone_number']
+                    phone_number=new_organization['contact_phone_number']
                 )
                 organization.save()
             

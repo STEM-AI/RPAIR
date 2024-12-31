@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ....serializers.user_serializers.user_data_serializers import UserSerializer 
 from rest_framework import status
-from rest_framework.permissions import IsJudgeUser , IsSuperUser , AllowAny
+from rest_framework.permissions import IsJudgeUser ,AllowAny
 from datetime import datetime
 from ....models import User 
 

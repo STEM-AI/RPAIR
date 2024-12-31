@@ -21,7 +21,13 @@ class OrganizationProfileView(APIView):
     def get(self, request , organization_name=None):
         if organization_name is None:
             return Response({"error": "Organization name is required"}, status=status.HTTP_400_BAD_REQUEST)
-        organization = Organization.objects.filter(name=organization_name).first()
+        
+        organization = (
+            Organization.objects.filter(name=organization_name)
+            .prefetch_related('contacts', 'team_set__competition')
+            .first()
+            )
+        
         if organization is None:
             return Response({"error": "Organization not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = OrganizationSerializer(organization)
@@ -58,7 +64,7 @@ class DeleteOrganizationView(APIView):
         if not organization:
             return Response({"error": "Organization not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        organization.custom_args = new_organization
+        organization.new_organization = new_organization
         
         organization.delete()
         return Response({"message": "Organization deleted successfully"}, status=status.HTTP_200_OK)

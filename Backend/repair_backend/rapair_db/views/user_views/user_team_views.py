@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated ,IsJudgeUser
 from rest_framework import status
-from ...serializers.team_serializers import TeamSerializer
+from ...serializers.team_serializers.team_serializers import TeamSerializer
 from ...models import Team ,Organization , Competition
 # //sponsers , scoial meadia , previous comp , team coach 
 class UserCreateTeamView(APIView):
@@ -30,7 +30,16 @@ class UserTeamProfileView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         user = request.user
-        team = Team.objects.filter(user=user)
+        team = (
+        Team.objects.filter(user=user)
+        .prefetch_related(
+            'sponsors', 
+            'social_media',
+            'previous_competition',
+            'coach'
+        )
+        .select_related('organization', 'competition')
+        )
         serializer = TeamSerializer(team , many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

@@ -1,5 +1,5 @@
 from .user_models import User , JudgeUser
 from .organization_models import Organization , OrganizationContact
-from .team_models import Team , TeamSponsor , TeamSocialMedia , TeamPreviousCompetition
+from .team_models import Team , TeamSponsor , TeamSocialMedia , TeamPreviousCompetition , TeamCoach
 from .group_models import CompetitionGroup , TeamGroup
-from .competetions_models import Competition
+from .competitions_models import Competition
