@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from ...models import Team 
 from .. import OrganizationTeamSerializer 
-from . import TeamCoachSerializer ,TeamPreviousCompetitionSerializer ,TeamSocialMediaSerializer ,TeamSponsorSerializer
+from . import TeamCoachSerializer ,TeamPreviousCompetitionSerializer ,TeamSocialMediaSerializer ,TeamSponsorSerializer , TeamMemberSerializer
 from ..competitions_serializers import CompetitionsSerializer
 
 
@@ -13,13 +13,14 @@ class TeamSerializer(serializers.ModelSerializer):
     coach = TeamCoachSerializer(many=True)
     social_media = TeamSocialMediaSerializer(many=True)
     previous_competition = TeamPreviousCompetitionSerializer(many=True)
+    members = TeamMemberSerializer(many=True)
     class Meta:
         model = Team
         fields = [
             'name','robot_name','user_id','type','organization_info',
             'competition_date','team_leader_name','team_leader_email',
             'team_leader_phone_number','score','organization','competition' , 
-            'sponsors', 'coach', 'social_media','previous_competition'
+            'sponsors', 'coach', 'social_media','previous_competition' , 'members'
             ]
 
         extra_kwargs = {
@@ -31,11 +32,18 @@ class TeamSerializer(serializers.ModelSerializer):
             'coach': {'required': True},
             'social_media': {'required': True},
             'previous_competition': {'required': True},
+            'members': {'required': True}
         }
 
     def create(self, validated_data) :
 
         organization_info = validated_data.pop('organization_info')
+        sponsors_info = validated_data.pop('sponsors')
+        coachs_info = validated_data.pop('coach')
+        social_media_info = validated_data.pop('social_media')
+        previous_competition_info = validated_data.pop('previous_competition')
+        members_info = validated_data.pop('members')
+
 
         competition = self.context["competition"]
 
@@ -43,6 +51,11 @@ class TeamSerializer(serializers.ModelSerializer):
         team.competition = competition
 
         team.organization_info = organization_info
+        team.sponsors_info = sponsors_info
+        team.coachs_info = coachs_info
+        team.social_media_info = social_media_info
+        team.previous_competition_info = previous_competition_info
+        team.members_info = members_info
 
         team.save()
 

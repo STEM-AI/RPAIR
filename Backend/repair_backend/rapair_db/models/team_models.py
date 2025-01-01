@@ -1,6 +1,7 @@
 from django.db import models
 from .organization_models import Organization
 from .competitions_models import Competition
+from ..validators import phone_validator
 
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
@@ -12,7 +13,7 @@ class Team(models.Model):
     competition_date = models.DateField(null=True, blank=True)
     team_leader_name = models.CharField(max_length=255)
     team_leader_email = models.EmailField(unique=True)
-    team_leader_phone_number = models.CharField(max_length=255 , unique=True)
+    team_leader_phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
     score = models.IntegerField(null=True, blank=True)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True )
     competition = models.ForeignKey(Competition, on_delete=models.SET_NULL, null=True, blank=True )
@@ -24,8 +25,7 @@ class TeamSponsor(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="sponsors")
     name = models.CharField(max_length=255)
-    #TODO:
-    email = models.EmailField(max_length=255 , unique=True , default='@example.com')
+    email = models.EmailField(max_length=255 , unique=True )
 
     class Meta:
         constraints = [
@@ -73,8 +73,20 @@ class TeamSocialMedia(models.Model):
 class TeamPreviousCompetition(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE,related_name="previous_competition")
-    name = models.CharField(max_length=255)
-    year = models.IntegerField(null=True, blank=True)
+    VEX_IQ = "VEX_IQ"
+    ROV = "ROV"
+    ROBOCUP = "ROBOCUP"
+    COMPETITION_CHOICES = [
+        (VEX_IQ, "VEX_IQ"),
+        (ROV, "ROV"),
+        (ROBOCUP , "ROBOCUP")
+    ]
+    name = models.CharField(
+        max_length=255,
+        choices=COMPETITION_CHOICES,
+        default=VEX_IQ
+    )
+    year = models.DateField()
 
     
     class Meta:
@@ -93,7 +105,7 @@ class TeamCoach(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="coach")
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=255 , unique=True)
+    phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
     PRIMARY = "primary"
     SECONDARY = "secondary"
     POSITION_CHOICES = [
@@ -116,3 +128,21 @@ class TeamCoach(models.Model):
 
     def __str__(self):
         return f"Team {self.team} coach {self.name}"
+    
+class TeamMember(models.Model):
+    id = models.AutoField(primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="members")
+    name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['team', 'name' ],
+                name='unique_member'
+            )
+        ]
+    
+    def __str__(self):
+        return f"Team {self.team} member {self.name}"
