@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated ,IsJudgeUser
 from rest_framework import status
-from ...serializers.team_serializers.team_serializers import TeamSerializer
+from ...serializers.team_serializers.team_data_serializers import TeamSerializer
 from ...models import Team ,Organization , Competition
 # //sponsers , scoial meadia , previous comp , team coach 
 class UserCreateTeamView(APIView):
@@ -36,7 +36,8 @@ class UserTeamProfileView(APIView):
             'sponsors', 
             'social_media',
             'previous_competition',
-            'coach'
+            'coach',
+            'members'
         )
         .select_related('organization', 'competition')
         )

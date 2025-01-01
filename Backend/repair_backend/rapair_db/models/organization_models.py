@@ -16,7 +16,7 @@ class Organization(models.Model):
 class OrganizationContact(models.Model):
     id = models.AutoField(primary_key=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='contacts')
-    phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
+    phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
     
     def __str__(self):
         return f"Organization {self.organization.name} {self.phone_number}"

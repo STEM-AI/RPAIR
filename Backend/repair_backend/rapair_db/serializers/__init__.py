@@ -1,5 +1,5 @@
 from .tokens_serializers import MyTokenObtainPairSerializer
 from .organization_serializers import OrganizationSerializer , OrganizationContactSerializer , OrganizationTeamSerializer
-from .team_serializers import TeamSerializer, TeamCoachSerializer , TeamPreviousCompetitionSerializer ,TeamSocialMediaSerializer ,TeamSponsorSerializer
+from .team_serializers  import TeamCoachSerializer , TeamMemberSerializer ,TeamPreviousCompetitionSerializer ,TeamSerializer , TeamSocialMediaSerializer , TeamSponsorSerializer
 from .user_serializers.user_data_serializers import UserSerializer 
 from .competitions_serializers import CompetitionsSerializer

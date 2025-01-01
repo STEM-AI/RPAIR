@@ -2,7 +2,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from ....serializers.tokens_serializers import MyTokenObtainPairSerializer 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ....serializers.user_serializers.user_data_serializers import UserSerializer 
+from ....serializers import UserSerializer 
 from rest_framework import status
 from rest_framework.permissions import IsJudgeUser ,AllowAny
 from datetime import datetime

@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from ...models import Team 
 from .. import OrganizationTeamSerializer 
-from . import TeamCoachSerializer ,TeamPreviousCompetitionSerializer ,TeamSocialMediaSerializer ,TeamSponsorSerializer , TeamMemberSerializer
+from .team_coach_serializers import TeamCoachSerializer 
+from .team_member_serializers import TeamMemberSerializer
+from .team_social_media_serializers import TeamSocialMediaSerializer
+from .team_prev_comp_serializers import TeamPreviousCompetitionSerializer
+from .team_sponsor_serializers import TeamSponsorSerializer
 from ..competitions_serializers import CompetitionsSerializer
 
 

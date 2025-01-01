@@ -13,7 +13,7 @@ class Team(models.Model):
     competition_date = models.DateField(null=True, blank=True)
     team_leader_name = models.CharField(max_length=255)
     team_leader_email = models.EmailField(unique=True)
-    team_leader_phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
+    team_leader_phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
     score = models.IntegerField(null=True, blank=True)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True )
     competition = models.ForeignKey(Competition, on_delete=models.SET_NULL, null=True, blank=True )
@@ -105,7 +105,7 @@ class TeamCoach(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="coach")
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
+    phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
     PRIMARY = "primary"
     SECONDARY = "secondary"
     POSITION_CHOICES = [
@@ -134,7 +134,7 @@ class TeamMember(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="members")
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(validators=phone_validator , max_length=255 , unique=True)
+    phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
 
     class Meta:
         constraints = [
