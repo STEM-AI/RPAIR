@@ -34,7 +34,7 @@
     +-------------------------------------+              +-----------------------------------+
     | - Overview of Competitions          |              | - Assigned Competitions          |
     | - Create/Edit/Delete Competitions   |              | - View Competition Details       |
-    | - Manage Judges and Contestants     |              | - Score Groups/Teams             |
+    | - Manage Judges and users           |              | - Score Groups/Teams             |
     | - Group Management                  |              | - Organize Assigned Competitions |
     | - Organization Management           |              +-----------------------------------+
     +-------------------------------------+
@@ -45,7 +45,7 @@
     +-------------------------------------+
     | - Create Competitions               |
     | - Define Competition Types          |
-    | - Assign Judges and Contestants     |
+    | - Assign Judges and users           |
     | - Monitor Competition Progress      |
     +-------------------------------------+
                     |
@@ -53,8 +53,8 @@
     +-------------------------------------+
     |         Group Management            |
     +-------------------------------------+
-    | - Create Groups for Contestants     |
-    | - Assign Contestants to Groups      |
+    | - Create Groups for user            |
+    | - Assign user to Groups             |
     | - Monitor Group Scores              |
     +-------------------------------------+
                     |
@@ -63,7 +63,7 @@
     |     Organization Management         |
     +-------------------------------------+
     | - Add Organizations                 |
-    | - Assign Contestants to Organizations|
+    | - Assign user to Organizations      |
     | - Monitor Organization Performance  |
     +-------------------------------------+
     
@@ -77,7 +77,7 @@
                                     |   - Link to Organization              |
                                     | - View Competitions                   |
                                     | - View Rankings (Team and Overall)    |
-                                    | - Receive Notifications               |
+                                    | - Receive messions of competition     |
                                     +---------------------------------------+
 
 Shared Components:
@@ -95,7 +95,7 @@ Shared Components:
 
 +--- RPAIR/frontend/
 |    +--- src/
-|    |    +--- components/        # Reusable UI Components (View Layer)
+|    |    +--- components/        # Reusable UI Components (UI Layer)
 |    |    |    +--- Header/
 |    |    |    |    |--- Header.jsx
 |    |    |    |    |--- Header.css
@@ -112,7 +112,7 @@ Shared Components:
 |    |         |--- LoginForm.jsx
 |    |         |--- SignupForm.jsx
 |    |
-|    |    +--- views/             # Page Layouts (View Layer)
+|    |    +--- views/             # Page Layouts (UI Layer)
 |    |    |    +--- Home/
 |    |    |    |    |--- HomePage.jsx
 |    |    |    |    |--- HomePage.css
@@ -136,7 +136,7 @@ Shared Components:
 |    |    |    |--- ContestantController.js
 |    |    |    |--- CompetitionController.js
 |    |
-|    |    +--- services/          # Services (Logic, External Calls)
+|    |    +--- services/          # API Services 
 |    |    |    |--- UserService.js
 |    |    |    |--- CompetitionService.js
 |    |    |    |--- GroupService.js
