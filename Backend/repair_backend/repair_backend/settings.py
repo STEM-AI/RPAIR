@@ -212,9 +212,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+MY_CUSTOM_LOGIN_URL = '/api/user/auth/user-login/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'rapair_db.User'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# youssefelsayed713
+# SMTP Server settings
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail, replace with your SMTP provider if different
+EMAIL_PORT = 587  # Usually 587 for TLS, or 465 for SSL
+EMAIL_USE_TLS = True  # Use TLS (True for Gmail, False for some other services)
+EMAIL_HOST_USER = 'crocomarine@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'wykk fedz maxi lmbt'  # Your email password (or app-specific password)
+DEFAULT_FROM_EMAIL = 'crocomarine@gmail.com'  # Default 'from' address in emails

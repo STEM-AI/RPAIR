@@ -5,8 +5,8 @@ from django.utils.translation import gettext as _
 from django.core.validators import RegexValidator
 
 phone_validator = RegexValidator(
-                regex=r'^\+?1?\d{13}$',  
-                message="Phone number must be entered in the format: '+99999999999'. Must be 13 digits ."
+                regex=r'^\+?1?\d{12}$',  
+                message="Phone number must be entered in the format: '+99999999999'. Must be 12 digits ."
             )
 
 class StrongPasswordValidator:
