@@ -1,9 +1,15 @@
-from django.contrib.auth import views as auth_views
 from django.urls import path
+from ...views.user_views.user_forget_password_views import (
+    UserForgetPasswordView,
+    CreateAndSendEmailWithVerficationCode,
+    VerifyCode,
+    PasswordResetView,
+)
+
 
 urlpatterns = [
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password_reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('forget-password/', UserForgetPasswordView.as_view(), name='forget-password'),
+    path('send-verification-code/', CreateAndSendEmailWithVerficationCode.as_view(), name='send-verification-code'),
+    path('verify-code/', VerifyCode.as_view(), name='verify-code'),
+    path('reset-password/', PasswordResetView.as_view(), name='reset-password'), 
 ]
