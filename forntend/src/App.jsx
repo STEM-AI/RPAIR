@@ -1,15 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import Home from './components/Home/Home.jsx'
 
-function App() {
+const App = () => {
   return (
 <>
 
-  
-
-  
+<Home/>
 </>
-  );
+  )
 }
 
-export default App;
+export default App
+
