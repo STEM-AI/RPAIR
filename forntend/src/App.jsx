@@ -1,17 +1,23 @@
-import './App.css';
-import Navbar from './components/Home/Nav/nav';
-import Footer from './components/Footer/footer';
-function App() {
+
+import React from 'react'
+
+const App = () => {
   return (
     <>
     
-      <Navbar></Navbar>
-      <Footer></Footer>
 
-    </>
+
+
+
+
+<Home/>
+</>
+
 
   
   );
+
 }
 
-export default App;
+export default App
+
