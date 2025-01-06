@@ -18,15 +18,15 @@ from ...views.user_views.auth_views.judge_auth_views import (
 urlpatterns = [
 
     # User APIs
-    path('user-register/', UserResgisterView.as_view(), name='user-register'),  
-    path('user-login/', UserLoginView.as_view(), name='user-login'),
+    path('auth/user-register/', UserResgisterView.as_view(), name='user-register'),  
+    path('auth/user-login/', UserLoginView.as_view(), name='user-login'),
 
     # Judge APIs
-    path('judge-register/', JudgeRegisterView.as_view(), name='register'),
-    path('judge-login/', JudgeLogin.as_view(), name='judge-login'),  
+    path('auth/judge-register/', JudgeRegisterView.as_view(), name='register'),
+    path('auth/judge-login/', JudgeLogin.as_view(), name='judge-login'),  
 
     # Administrator APIs
-    path('admin-login/', AdminLoginView.as_view(), name='admin-login'),  
+    path('auth/admin-login/', AdminLoginView.as_view(), name='admin-login'),  
     
       
 ]

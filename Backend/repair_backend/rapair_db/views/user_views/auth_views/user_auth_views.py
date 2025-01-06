@@ -8,9 +8,9 @@ from rest_framework.permissions import IsJudgeUser ,AllowAny
 from datetime import datetime
 from ....models import User 
 
-
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
 
 
         
@@ -71,6 +71,8 @@ class UserLoginView(APIView):
 
 
     def post(self, request):
+    # from django.contrib.auth import authenticate
+
 
         username = request.data.get('username')
         password = request.data.get('password')

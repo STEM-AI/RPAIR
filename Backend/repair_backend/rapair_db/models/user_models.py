@@ -13,6 +13,8 @@ class User(AbstractUser):
     date_of_birth = models.DateField(blank=True , null=True)
     phone_number = models.CharField(validators=[phone_validator] , max_length = 255, unique=True)
     email = models.EmailField(unique=True)
+    google_verified = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.username
