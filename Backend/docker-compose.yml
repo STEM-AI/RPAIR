@@ -1,26 +1,39 @@
 services:
-  web:
-    build: .
-    container_name: django_app
-    ports:
-      - "8000:8000"
+  rpair:
+    build:
+      context: ./repair_backend
+      dockerfile: Dockerfile
+    container_name: rpair
     volumes:
-      - .:/app
+      - ./repair_backend:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=repair_backend.settings
     depends_on:
       - db
+    networks:
+      - shared_network
+    command: python manage.py runserver 0.0.0.0:8001
+    ports:
+      - "8001:8001"
+
 
   db:
     image: postgres:15
-    container_name: postgres_db
+    container_name: rpair_postgres_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ff15
-      POSTGRES_DB: taarf
-    ports:
-      - "5433:5432"
-
+      POSTGRES_DB: rapair
     volumes:
-    - db_data:/var/lib/postgresql/data  
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - shared_network
+    ports:
+      - "5434:5432"
+
+networks:
+  shared_network:
+    driver: bridge
 
 volumes:
-  db_data:  
+  db_data:
