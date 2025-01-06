@@ -17,6 +17,12 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class UserResgisterView(APIView):
 
     permission_classes = [IsJudgeUser]
+    # Full Flow
+    # User clicks "Sign in with Google" in React.
+    # Google provides an ID token to the React app.
+    # React sends the token to the Django backend.
+    # Django verifies the token using Google's API.
+    # If valid, the backend authenticates or registers the user and returns a response.
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)

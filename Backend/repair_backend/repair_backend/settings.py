@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'social_django',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -47,6 +49,17 @@ INSTALLED_APPS = [
     'rapair_db.apps.RapairDbConfig',
     
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',  # Enable Google OAuth2
+    'django.contrib.auth.backends.ModelBackend',  # Default auth backend
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'YOUR_GOOGLE_CLIENT_ID'  # Replace with your Client ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'YOUR_GOOGLE_CLIENT_SECRET'  # Replace with your Client Secret
+
+# Optional: Enforce email domain (e.g., only @gmail.com)
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['gmail.com']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -226,6 +239,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # For Gmail, replace with your SMTP provider if different
 EMAIL_PORT = 587  # Usually 587 for TLS, or 465 for SSL
 EMAIL_USE_TLS = True  # Use TLS (True for Gmail, False for some other services)
-EMAIL_HOST_USER = 'crocomarine@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = 'wykk fedz maxi lmbt'  # Your email password (or app-specific password)
-DEFAULT_FROM_EMAIL = 'crocomarine@gmail.com'  # Default 'from' address in emails
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password (or app-specific password)
+DEFAULT_FROM_EMAIL =config('DEFAULT_FROM_EMAIL')   # Default 'from' address in emails
