@@ -1,17 +1,17 @@
-
-import React from 'react'
-import Home from './components/Home/Home.jsx'
-import CardSlider from './components/CardSlider/cardSlider.jsx';
-
-
-const App = () => {
+import './App.css';
+import Navbar from './components/Home/Nav/nav';
+import Footer from './components/Footer/footer';
+function App() {
   return (
     <>
-    <Home/>
-    <CardSlider/>
-</>
-  );
+    
+      <Navbar></Navbar>
+      <Footer></Footer>
 
+    </>
+
+  
+  );
 }
 
 export default App
