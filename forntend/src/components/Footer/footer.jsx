@@ -1,5 +1,5 @@
-import React from 'react'
-import logo from '../../assets/logo/logo2.png'
+import { React, useState } from 'react';
+import logo from '../../assets/logo/logo2.png';
 import {
     FaFacebookF,
     FaInstagram,
@@ -7,86 +7,87 @@ import {
     FaYoutube,
     FaTiktok,
 } from "react-icons/fa";
+
 export default function Footer() {
+    const [hovered, setHovered] = useState({
+        title: false,
+        aboutUs: false,
+        challenges: false,
+        gallery: false,
+    });
+
+    const handleMouseEnter = (element) => {
+        setHovered((prevState) => ({ ...prevState, [element]: true }));
+    };
+
+    const handleMouseLeave = (element) => {
+        setHovered((prevState) => ({ ...prevState, [element]: false }));
+    };
+
     return (
         <footer className='bg-cyan-600 text-white py-8 px-40'>
-            <div className=' mb-4 border-b border-slate-500 py-8 flex items-center'>
+            <div className='mb-4 border-b border-slate-500 py-8 grid grid-cols-2 gap-4'>
                 <div className="flex flex-col items-center">
-                <img src={logo} alt="REC Foundation" className="h-16 w-auto mb-4" />
+                    <img src={logo} alt="REC Foundation" className="h-32 w-auto mb-4" />
+                    <h4 className="font-medium text-xl text-center px-24"
+                        style={{textShadow:'2px 2px 5px rgba(0, 0, 0, 0.7)'}}
+                    >
+                        Innovation in organizing competitions
+                        that prepare participants for future jobs
+                    </h4>
                 </div>
-                <div className="flex flex-col items-center">
-                <ul className="text-center space-y-2">
-                <li>
-                    <a href="#" className="hover:text-cyan-700">
-                    ABOUT US
-                    </a>
-                </li>
-                <li>
-                    <a href="#" className="hover:text-cyan-700">
-                    Challenges
-                    </a>
-                </li>
-                <li>
-                    <a href="#" className="hover:text-cyan-700">
-                    EVENT PARTNERS
-                    </a>
-                </li>
-                <li>
-                    <a href="#" className="hover:text-cyan-700">
-                    VOLUNTEERS
-                    </a>
-                </li>
-                <li>
-                    <a href="#" className="hover:text-cyan-700">
-                    Gallery
-                    </a>
-                </li>
-                </ul>
+                <div className="flex flex-col items-center justify-center">
+                    <ul className="text-center text-white space-y-2">
+                        <li>
+                            <a href="#" className="font-bold text-2xl hover:text-cyan-800"
+                                style={{
+                                    textShadow: hovered.aboutUs ? 'none' : '2px 2px 5px rgba(0, 0, 0, 0.7)',
+                                }}
+                                onMouseEnter={() => handleMouseEnter('aboutUs')}
+                                onMouseLeave={() => handleMouseLeave('aboutUs')}>
+                                ABOUT US
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" className="font-bold text-2xl hover:text-cyan-800"
+                                style={{
+                                    textShadow: hovered.challenges ? 'none' : '2px 2px 5px rgba(0, 0, 0, 0.7)',
+                                }}
+                                onMouseEnter={() => handleMouseEnter('challenges')}
+                                onMouseLeave={() => handleMouseLeave('challenges')}>
+                                Challenges
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" className="font-bold text-2xl hover:text-cyan-800"
+                                style={{
+                                    textShadow: hovered.gallery ? 'none' : '2px 2px 5px rgba(0, 0, 0, 0.7)',
+                                }}
+                                onMouseEnter={() => handleMouseEnter('gallery')}
+                                onMouseLeave={() => handleMouseLeave('gallery')}>
+                                Gallery
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            
 
             <div className="flex flex-col items-center space-y-4">
-                {/* Social Icons */}
                 <div className="flex space-x-4">
-                <FaFacebookF className="hover:text-gray-300 cursor-pointer" />
-                <FaInstagram className="hover:text-gray-300 cursor-pointer" />
-                <FaLinkedinIn className="hover:text-gray-300 cursor-pointer" />
-                <FaYoutube className="hover:text-gray-300 cursor-pointer" />
-                <FaTiktok className="hover:text-gray-300 cursor-pointer" />
+                    <FaFacebookF className="text-2xl hover:text-sky-900 cursor-pointer" />
+                    <FaInstagram className="text-2xl hover:text-pink-600 cursor-pointer" />
+                    <FaLinkedinIn className="text-2xl hover:text-sky-400 cursor-pointer" />
+                    <FaYoutube className="text-2xl hover:text-red-700 cursor-pointer" />
+                    <FaTiktok className="text-2xl hover:text-black cursor-pointer" />
                 </div>
 
-                {/* Buttons */}
-                <div className="flex space-x-4">
-                <button className="bg-white text-blue-900 px-6 py-2 rounded-full border border-white hover:bg-gray-200">
-                    DONATE
-                </button>
-                <button className="bg-white text-blue-900 px-6 py-2 rounded-full border border-white hover:bg-gray-200">
-                    EVENTS
-                </button>
-                </div>
-
-                {/* Footer Policies */}
                 <div className="text-center text-sm mt-4">
-                <p className="mb-2">
-                    <a href="#" className="hover:underline">
-                    Privacy Policy
-                    </a>{" "}
-                    |{" "}
-                    <a href="#" className="hover:underline">
-                    Terms of Service
-                    </a>{" "}
-                    |{" "}
-                    <a href="#" className="hover:underline">
-                    Acceptable Use Policy
-                    </a>
-                </p>
-                <p>
-                    © Robotics Education & Competition Foundation, 2024. All rights
-                    reserved.
-                </p>
+                    <p>
+                        © Robotics Education & Competition Foundation, 2024. All rights
+                        reserved.
+                    </p>
                 </div>
             </div>
         </footer>
-    )
+    );
 }
