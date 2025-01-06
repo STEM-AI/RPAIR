@@ -7,7 +7,7 @@ from .user_models import User
 
 
 
-class VerifyCode(models.Model):
+class VerificationCode(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.CharField(unique=True)
