@@ -4,7 +4,8 @@ import Navbar from './components/Nav/nav';
 import Footer from './components/Footer/footer';
 import CardSlider from './components/CardSlider/cardSlider';
 import Home from './components/Home/Home';
-function App() {
+
+const App = () => {
   return (
     <>
       <Navbar />
