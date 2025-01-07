@@ -3,9 +3,6 @@ from rest_framework.response import Response
 from ....serializers.user_serializers.user_data_serializers import UserSerializer 
 from rest_framework import status
 from rest_framework.permissions import IsSuperUser , AllowAny
-from ....models import User 
-from datetime import datetime
-from ....serializers.tokens_serializers import MyTokenObtainPairSerializer
 from ....utils.user_auth_utlis import UserLogin
 
 
