@@ -5,24 +5,15 @@ from rest_framework.response import Response
 from ....serializers import UserSerializer 
 from rest_framework import status
 from rest_framework.permissions import IsJudgeUser ,AllowAny
-from datetime import datetime
-from ....models import User 
+from ....utils.user_auth_utlis import UserLogin
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-
-
-        
+     
 class UserResgisterView(APIView):
 
     permission_classes = [IsJudgeUser]
-    # Full Flow
-    # User clicks "Sign in with Google" in React.
-    # Google provides an ID token to the React app.
-    # React sends the token to the Django backend.
-    # Django verifies the token using Google's API.
-    # If valid, the backend authenticates or registers the user and returns a response.
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -34,42 +25,7 @@ class UserResgisterView(APIView):
         
 class UserLoginView(APIView):
     permission_classes = [AllowAny]
-
-    def get_object(self, request , username=None):
-
-        if username is not None:
-            try :
-                return User.objects.filter(username=username).first()
-            except User.DoesNotExist: 
-                return None
             
-    def get_tokens(self, user=None):
-            token = MyTokenObtainPairSerializer.get_token(user)
-            access_token = str(token.access_token)
-            refresh_token = str(token)
-            expiration_timestamp = token.access_token["exp"]
-            expiration_date = datetime.fromtimestamp(expiration_timestamp)
-            return Response({
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'expiration_date': expiration_date,  # datetime object
-            }, status=status.HTTP_200_OK)
-
-            
-    def user_login_if_valid_return_tokens(self, request , user = None , password = None):
-        if user:
-            # User Valid
-            if user.check_password(password): 
-                # User is already logged in
-                return self.get_tokens(user)
-            
-            else:
-                return Response({'User Not Authenticated Incorrect Password'}, status=status.HTTP_401_UNAUTHORIZED) 
-                
-        else:
-            return Response({'User Not Authenticated Incorrect Username'}, status=status.HTTP_401_UNAUTHORIZED) 
-
-
     def post(self, request):
     # from django.contrib.auth import authenticate
 
@@ -78,9 +34,7 @@ class UserLoginView(APIView):
         password = request.data.get('password')
 
         if username and password:
-
-            user = self.get_object(request , username=username)
-            return self.user_login_if_valid_return_tokens(request, user, password)
+            return UserLogin.user_login_if_valid_return_tokens(username, password)
         
         else:
             return Response({'Bad Request': 'Username and password required'}, status=status.HTTP_400_BAD_REQUEST)
