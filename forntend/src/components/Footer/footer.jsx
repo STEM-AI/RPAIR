@@ -86,7 +86,6 @@ export default function Footer() {
                         © Robotics Education & Competition Foundation, 2024. All rights
                         reserved.
                     </p>
-                    
                 </div>
             </div>
         </footer>

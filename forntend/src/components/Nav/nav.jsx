@@ -15,7 +15,7 @@ return (
 
 <div className="hidden md:flex items-center space-x-6">
     <div className="relative group">
-    <button className="text-cyan-500 font-bold text-xl hover:text-cyan-950">
+    <button className="text-cyan-500 font-bold hover:text-cyan-950">
         ABOUT
     </button>
     <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md py-2  w-32">
@@ -29,7 +29,7 @@ return (
     </div>
 
     <div className="relative group">
-        <button className="text-cyan-500 uppercase font-bold text-xl hover:text-cyan-950">
+        <button className="text-cyan-500 uppercase font-bold hover:text-cyan-950">
         Challenges
         </button>
         <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-60">
@@ -42,7 +42,7 @@ return (
         </div>
     </div>
     <div className="relative group">
-        <button className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950">
+        <button className="text-cyan-500 font-bold uppercase hover:text-cyan-950">
         Resources
         </button>
         <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-60">
@@ -55,7 +55,7 @@ return (
         </div>
     </div>
     <div className="relative group">
-        <button className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950">
+        <button className="text-cyan-500 font-bold uppercase hover:text-cyan-950">
         Gallery
         </button>
     </div>
