@@ -3,13 +3,13 @@ import logo from '../../assets/logo/logo2.png'
 
 export default function Navbar() {
 return (
-    <nav className=" left-0 right-0 bg-white shadow-lg px-10 py-3 flex items-center justify-between">
+    <nav className=" bg-[rgba(0,0,0,0.183)] fixed left-0 right-0 z-40 shadow-lg px-10 py-3 flex items-center justify-between">
         
     <div className="flex items-center space-x-3">
     <img
         src={logo}
         alt="Rpair-Logo"
-        className="h-20 w-28 ps-5"
+        className="h-20 w-28 p-3 ms-3 rounded-full bg-white"
     />
 </div>
 

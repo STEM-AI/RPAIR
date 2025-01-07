@@ -1,21 +1,18 @@
-
-
-import'./App.css'
-import React from 'react'
-import Home from './components/Home/Home.jsx'
-import CardSlider from './components/CardSlider/cardSlider.jsx';
-
+import './App.css';
+import react from 'react';
+import Navbar from './components/Nav/nav';
+import Footer from './components/Footer/footer';
+import CardSlider from './components/CardSlider/cardSlider';
+import Home from './components/Home/Home';
 
 const App = () => {
   return (
     <>
-    
-      <Navbar></Navbar>
-      <Footer></Footer>
-
+      <Navbar />
+      <Home/>
+      <CardSlider />
+      <Footer/>
     </>
-
-  
   );
 }
 
