@@ -69,4 +69,12 @@ class DeleteOrganizationView(APIView):
         return Response({"message": "Organization deleted successfully"}, status=status.HTTP_200_OK)
     
 
+class ListOrganizationsView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        organizations = Organization.objects.all()
+        serializer = OrganizationSerializer(organizations, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
 

@@ -77,6 +77,7 @@ class PasswordResetView(APIView):
         if user is None:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         
+        # use the serializer here 
         new_password = request.data.get('new_password')
         user.set_password(new_password)
         user.save()
