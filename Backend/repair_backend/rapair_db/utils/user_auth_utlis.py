@@ -12,9 +12,9 @@ class UserLogin():
                     return User.objects.filter(username=username).first()
                 except User.DoesNotExist: 
                     return None               
-            if email :
+            if email:
                 try :
-                        return User.objects.filter(email=email).first()
+                    return User.objects.filter(email=email).first()
                 except User.DoesNotExist: 
                     return None
                 
@@ -25,11 +25,11 @@ class UserLogin():
             refresh_token = str(token)
             expiration_timestamp = token.access_token["exp"]
             expiration_date = datetime.fromtimestamp(expiration_timestamp)
-            return Response({
+            return {
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'expiration_date': expiration_date,  # datetime object
-            }, status=status.HTTP_200_OK)
+                'expiration_date': expiration_date,  
+            }
     
     @staticmethod
     def user_login_if_valid_return_tokens( username, password):       
@@ -38,7 +38,8 @@ class UserLogin():
                # User Valid
                if user.check_password(password): 
                    # User is already logged in
-                   return UserLogin.get_tokens(user)
+                   tokens = UserLogin.get_tokens(user)
+                   return Response(tokens, status=status.HTTP_200_OK)
                else:
                    return Response({'User Not Authenticated Incorrect Password'}, status=status.HTTP_401_UNAUTHORIZED) 
            

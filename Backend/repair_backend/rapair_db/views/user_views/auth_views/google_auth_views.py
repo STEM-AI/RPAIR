@@ -4,14 +4,14 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ....serializers import UserSerializer 
-from rest_framework.permissions import IsJudgeUser ,AllowAny
+from rest_framework.permissions import IsJudgeUser , IsAuthenticated
 from rest_framework import status
 from ....models import User 
 from ....utils.user_auth_utlis import UserLogin
 
 
 class GoogleLoginInAndRegisterView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsJudgeUser]
     # Full Flow
     # User clicks "Sign in with Google" in React.
     # Google provides an ID token to the React app.
@@ -21,8 +21,6 @@ class GoogleLoginInAndRegisterView(APIView):
     
     def post(self, request):
         id_token_str = request.data.get('id_token')
-        print("Google")
-        print("id_token: " , id_token_str)
 
         if not id_token_str:
             return Response({'error': 'ID token is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -37,10 +35,7 @@ class GoogleLoginInAndRegisterView(APIView):
             return Response({'error': 'Invalid ID token'}, status=status.HTTP_401_UNAUTHORIZED)
 
         email = id_token_payload['email']
-        print("email: " , email)
-        print("name" ,id_token_payload['name'] )
-        print("first_name: " ,id_token_payload['given_name'])
-        print("google_verified" ,id_token_payload['email_verified'])
+
         user , created = User.objects.get_or_create(
             email=email,
             defaults={
@@ -48,28 +43,29 @@ class GoogleLoginInAndRegisterView(APIView):
                 'google_verified' : id_token_payload['email_verified'],
             }
         )
-        if created:
-            print("created: ")
-            serializer = UserSerializer(user)
-            return Response({'success': serializer.data}, status = status.HTTP_201_CREATED)
 
-        return UserLogin.get_tokens(user)
+        tokens = UserLogin.get_tokens(user)
+        if created:
+            serializer = UserSerializer(user)
+            return Response({'success': serializer.data , "tokens" : tokens}, status = status.HTTP_201_CREATED)
+
+        return Response(tokens,status=status.HTTP_200_OK)
     
     def patch(self , request):
-        email = request.data.pop('email', None)
-        user = UserLogin.get_object(email=email)
-        if not email:
-            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
-        #rest_of_user_data = {'phone_number' : '' , 'phone_number' : '' , 'date_of_birth' : '' , 'address' : '' ,'created_at': '' , 'country' : ''}
-        rest_of_user_data = request.data
+        self.permission_classes = [IsAuthenticated]
+
+        user = request.user
 
         if not user:
-             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        rest_of_user_data = request.data
         
         serializer = UserSerializer(user, data=rest_of_user_data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return UserLogin.get_tokens(user)
+            tokens = UserLogin.get_tokens(user)
+            return Response(tokens,status=status.HTTP_200_OK)
              
         
 
