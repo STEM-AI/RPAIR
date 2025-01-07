@@ -37,7 +37,7 @@ export default function Navbar() {
             <img
             src={logo}
             alt="Rpair-Logo"
-            className="h-24 w-32 p-3 ms-3 rounded-full bg-white"
+            className="h-20 w-28 p-3 ms-3 rounded-full bg-white"
             />
         </div>
 
