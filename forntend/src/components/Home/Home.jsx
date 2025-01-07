@@ -9,7 +9,7 @@ const Home = () => {
 
   return (
     <>
-      <div>
+      <div id="home-section">
           <div
         id="carouselExampleCaptionsFull"
         className="relative"
