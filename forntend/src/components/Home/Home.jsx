@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
+import CardSlider from '../CardSlider/cardSlider';
+
 
 const Home = () => {
   useEffect(() => {
@@ -26,21 +28,11 @@ const Home = () => {
             data-twe-carousel-active
           >
 
-            <video
-              className="h-screen w-full object-cover"
-              playsInline
-              autoPlay
-              muted
-              loop
-            >
-              <source
-                src={require("F:/rpair/RPAIR/forntend/src/assets/videos/heroVideo.mp4")}
-                type="video/mp4"
-              />
-            </video>
-
-
-
+                  <img
+        className="h-screen w-full object-cover"
+        src="https://your-online-image-link.com/your-image.jpg"
+        alt="Hero Background"
+      />
             <div
               className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black opacity-60"
             />
@@ -75,9 +67,12 @@ const Home = () => {
         </div>
         </div>
 
-      
       </div>
       <CardSlider/>
+
+
+
+
     </>
   );
 };
