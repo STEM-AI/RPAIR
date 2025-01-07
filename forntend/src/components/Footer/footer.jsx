@@ -25,10 +25,10 @@ export default function Footer() {
     };
 
     return (
-        <footer className='bg-cyan-600 text-white py-8 px-40'>
+        <footer className='bg-gradient-to-br from-cyan-400 to-cyan-800 text-white py-8 px-40 '>
             <div className='mb-4 border-b border-slate-500 py-8 grid grid-cols-2 gap-4'>
                 <div className="flex flex-col items-center">
-                    <img src={logo} alt="REC Foundation" className="h-32 w-auto mb-4" />
+                    <img src={logo} alt="REC Foundation" className="h-32 w-auto mb-4 p-3  rounded-full bg-gradient-to-br from-white to-black" />
                     <h4 className="font-medium text-xl text-center px-24"
                         style={{textShadow:'2px 2px 5px rgba(0, 0, 0, 0.7)'}}
                     >
