@@ -1,20 +1,26 @@
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import react from 'react';
 import Navbar from './components/Nav/nav';
 import Footer from './components/Footer/footer';
-import CardSlider from './components/CardSlider/cardSlider';
 import Home from './components/Home/Home';
+import About from './pages/About/About'; 
 
 const App = () => {
   return (
-    <>
-      <Navbar />
-      <Home/>
-      <CardSlider />
-      <Footer/>
-    </>
+    <Router>
+      <>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+
+        <Footer />
+      </>
+    </Router>
   );
 }
 
-export default App
-
+export default App;
