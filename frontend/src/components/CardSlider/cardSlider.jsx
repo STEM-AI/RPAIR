@@ -1,4 +1,6 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom'; 
 
 const CardSlider = () => {
   const cardsData = [
@@ -35,31 +37,26 @@ const CardSlider = () => {
   ];
 
   return (
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-10 md:px-20">
-  <div className="col-span-full flex justify-center items-center mb-8">
-    <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
-      RPAIR CHALLENGES
-    </h2>
-  </div>
-  {cardsData.map((card, index) => (
-    <div
-      key={index}
-      className="bg-white rounded-xl shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl"
-    >
-      <div
-        className="w-full h-48 bg-cover bg-center"
-        style={{ backgroundImage: `url(${card.image})` }}
-      />
-      <div className="p-4">
-        <div className="text-xl font-bold text-cyan-700 mb-2">{card.title}</div>
-        <p className="text-gray-500 text-sm">{card.description}</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-10 md:px-20">
+      <div className="col-span-full flex justify-center items-center mb-8">
+        <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+          RPAIR CHALLENGES
+        </h2>
       </div>
+      {cardsData.map((card, index) => (
+        <Link to="/competitions" key={index} className="bg-white rounded-xl shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+          <div
+            className="w-full h-48 bg-cover bg-center"
+            style={{ backgroundImage: `url(${card.image})` }}
+          />
+          <div className="p-4">
+            <div className="text-xl font-bold text-cyan-700 mb-2">{card.title}</div>
+            <p className="text-gray-500 text-sm">{card.description}</p>
+          </div>
+        </Link>
+      ))}
     </div>
-  ))}
-</div>
-
   );
 };
 
 export default CardSlider;
-
