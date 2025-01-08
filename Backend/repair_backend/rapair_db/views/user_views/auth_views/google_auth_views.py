@@ -4,7 +4,8 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ....serializers import UserSerializer 
-from rest_framework.permissions import IsJudgeUser , IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
+from ....permissions import IsJudgeUser
 from rest_framework import status
 from ....models import User 
 from ....utils.user_auth_utlis import UserLogin
