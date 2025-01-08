@@ -14,8 +14,9 @@ import ContactUs from './components/Contact/contactUs';
 
 const App = () => {
   return (
+    <>
     <Router>
-      <>
+    
         <Navbar />
         <Routes>
 
@@ -23,12 +24,12 @@ const App = () => {
           <Route path="/about" element={<About />} />
         </Routes>
 
-        </Routes>
         <ContactUs />
 
         <Footer />
+      
+    </Router >
       </>
-    </Router>
   );
 }
 
