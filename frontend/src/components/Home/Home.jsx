@@ -3,7 +3,6 @@ import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 
 
-
 const Home = () => {
   useEffect(() => {
     // Initialize TW Elements
@@ -14,7 +13,7 @@ const Home = () => {
     <>
       <div id="home-section">
         
-       <div
+      <div
         id="carouselExampleCaptionsFull"
         className="relative"
         data-twe-carousel-init

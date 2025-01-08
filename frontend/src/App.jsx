@@ -5,16 +5,18 @@ import './App.css';
 import Navbar from './components/Nav/nav';
 import Footer from './components/Footer/footer';
 import Home from './components/Home/Home';
+
 import About from './pages/About/About'; 
+
+
 import ContactUs from './components/Contact/contactUs';
 
 
 const App = () => {
   return (
+    <>
+    <Router>
     
-      <>
-        
-        <Router>
         <Navbar />
         <Routes>
 
@@ -22,13 +24,12 @@ const App = () => {
           <Route path="/about" element={<About />} />
         </Routes>
 
-
         <ContactUs />
 
         <Footer />
-        </Router>
+      
+    </Router >
       </>
-    
   );
 }
 
