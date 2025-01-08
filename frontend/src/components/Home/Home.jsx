@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
-import CardSlider from '../CardSlider/cardSlider';
 
 
 const Home = () => {
@@ -14,7 +13,7 @@ const Home = () => {
     <>
       <div id="home-section">
         
-       <div
+      <div
         id="carouselExampleCaptionsFull"
         className="relative"
         data-twe-carousel-init
