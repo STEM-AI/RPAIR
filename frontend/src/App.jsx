@@ -5,11 +5,9 @@ import './App.css';
 import Navbar from './components/Nav/nav';
 import Footer from './components/Footer/footer';
 import Home from './components/Home/Home';
-
 import About from './pages/About/About'; 
-
-
 import ContactUs from './components/Contact/contactUs';
+import Competitions from './pages/Competitions/Competitions';
 
 
 const App = () => {
@@ -22,6 +20,8 @@ const App = () => {
 
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/competitions" element={<Competitions/>} />
+
         </Routes>
 
         <ContactUs />
