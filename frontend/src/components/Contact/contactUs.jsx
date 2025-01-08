@@ -6,7 +6,7 @@ export default function ContactUs({ isVisible, handleOverlayDisplay }) {
     return (
         <div
             id="contantUS"
-            className={`absolute top-0 left-0 right-0 ${isVisible ? '' : 'hidden'} h-screen w-full z-50 bg-[rgba(0,0,0,0.45)]`}
+            className={`fixed top-0 left-0 right-0 ${isVisible ? '' : 'hidden'} h-screen w-full z-50 bg-[rgba(0,0,0,0.45)]`}
         >
             <div className="mx-auto">
                 <div className="flex justify-center px-6 py-12">

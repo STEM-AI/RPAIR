@@ -74,9 +74,9 @@ export default function Navbar() {
             </div>
             </div>
             <div className="relative group">
-            <button className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950">
+            <NavLink to={"/gallery"} className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950">
                 Gallery
-            </button>
+            </NavLink>
             </div>
         </div>
 
