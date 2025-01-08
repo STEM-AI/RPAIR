@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ...serializers.user_serializers.user_data_serializers import UserSerializer 
-from ...models import User  , VerificationCode
+from ...models import VerificationCode
 from rest_framework import status
 from ...utils.generate_verification_code import generate_verification_code
 from ...utils.send_verification_code_email import send_verification_code_email

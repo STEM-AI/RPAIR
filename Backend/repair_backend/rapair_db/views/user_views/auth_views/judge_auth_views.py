@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ....serializers.user_serializers.user_data_serializers import UserSerializer 
 from rest_framework import status
-from rest_framework.permissions import IsSuperUser , AllowAny
+from rest_framework.permissions import AllowAny
+from ....permissions import IsSuperUser
 from ....utils.user_auth_utlis import UserLogin
 
 
