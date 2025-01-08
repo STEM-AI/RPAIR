@@ -1,29 +1,31 @@
 services:
   rpair:
     build:
-      context: ./repair_backend
+      context: .
       dockerfile: Dockerfile
     container_name: rpair
     volumes:
-      - ./repair_backend:/app
+      - .:/app
     environment:
       - DJANGO_SETTINGS_MODULE=repair_backend.settings
     depends_on:
       - db
     networks:
       - shared_network
-    command: python manage.py runserver 0.0.0.0:8001
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
-      - "8001:8001"
+      - "8000:8000"
 
 
   db:
     image: postgres:15
     container_name: rpair_postgres_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ff15
-      POSTGRES_DB: rapair
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+    - .env
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
