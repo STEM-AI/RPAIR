@@ -33,7 +33,7 @@ const JoinTeams = () => {
           {/* Button Container */}
           <div className="mt-8">
             <a
-              href="#"
+              href="/login"
               className="flex py-2 w-full text-center text-lg font-medium text-gray-100 hover:bg-cyan-600 bg-cyan-800 transition-all duration-700 ease-in-out rounded-lg shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] justify-center items-center  hover:shadow-md md:w-48"
             >
                REGISTER A TEAM
