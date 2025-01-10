@@ -7,6 +7,7 @@ import Home from './components/Home/Home';
 import About from './pages/About/About'; 
 import ContactUs from './components/Contact/contactUs';
 import Competitions from './pages/Competitions/Competitions';
+import Login from './pages/Login/login';
 
 const App = () => {
   return (
@@ -19,7 +20,6 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/competitions" element={<Competitions/>} />
-
         </Routes>
 
         <ContactUs />

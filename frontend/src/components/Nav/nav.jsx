@@ -27,9 +27,9 @@ export default function Navbar() {
 
     return (
         <nav
-            className={` left-0 right-0 z-40 shadow-lg px-10 py-3 flex items-center justify-between 
+            className={` left-0 right-0 z-50 shadow-lg px-10 py-3 flex items-center justify-between 
             ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
-            ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed" : "bg-white "}
+            ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed" : "bg-white relative "}
             transition-colors duration-300`}
         >
         <div className="flex items-center space-x-3">
@@ -51,13 +51,12 @@ export default function Navbar() {
             <NavLink to={""} className="text-cyan-500 uppercase font-bold text-xl hover:text-cyan-950">
                 Challenges
             </NavLink>
-            <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-60">
-                <a
-                href="#"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
-                Competitions
-                </a>
+            <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md px-4 pt-2 pb-5 w-60">
+                <p className="block px-2 py-2 text-gray-700 font-bold ">
+                        Competitions:
+                </p>
+                        <NavLink to="/competitions" className=" px-5">VEX IQ Competitions</NavLink>
+                        
             </div>
             </div>
             <div className="relative group">
