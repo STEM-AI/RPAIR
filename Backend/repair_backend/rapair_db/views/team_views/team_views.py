@@ -86,5 +86,12 @@ class UserDeleteTeamView(APIView):
         else:
             return Response({"message": "Team not found"}, status=status.HTTP_404_NOT_FOUND)
         
+class TeamsList(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        teams = Team.objects.all()
+        serializer = TeamSerializer(teams, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
 
