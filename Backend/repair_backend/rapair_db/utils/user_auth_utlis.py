@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import User 
 from datetime import datetime
+from django.core.mail import send_mail
+from django.conf import settings
 
 class UserLogin():
     @staticmethod
@@ -45,5 +47,18 @@ class UserLogin():
            
            else:
                return Response({'User Not Authenticated Incorrect Username'}, status=status.HTTP_401_UNAUTHORIZED)
+           
+    @staticmethod
+    def register_send_welcome_email(email):
+          # Send welcome email here
+        subject = 'Welcom To RPAIR'
+        message = f'Welcome to RPAIR'
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,  # From email
+            [email],  # To email
+            fail_silently=True,  # Set to True to suppress exceptions
+        )
 
 
