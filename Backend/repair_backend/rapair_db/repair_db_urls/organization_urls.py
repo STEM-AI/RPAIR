@@ -1,6 +1,6 @@
 from django.urls import path
 
-from ...views.organization_views.organization_view import (
+from ..views.organization_views.organization_view import (
     OrganizationProfileView,
     OrganizationEditProfileView,
     CreateOrganizationView,

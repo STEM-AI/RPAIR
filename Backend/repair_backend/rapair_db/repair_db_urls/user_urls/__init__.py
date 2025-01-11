@@ -1,10 +1,11 @@
-from . import user_auth_urls , user_data_urls , user_team_urls , user_forget_password_urls , google_auth_urls
+from .. import team_urls
+from . import user_auth_urls , user_data_urls , user_forget_password_urls , google_auth_urls
 
 
 urlpatterns = (
     user_auth_urls.urlpatterns +
     user_data_urls.urlpatterns +
-    user_team_urls.urlpatterns +
+    team_urls.urlpatterns +
     user_forget_password_urls.urlpatterns +
     google_auth_urls.urlpatterns
 )

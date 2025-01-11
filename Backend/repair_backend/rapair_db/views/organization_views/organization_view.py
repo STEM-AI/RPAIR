@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated 
+from rest_framework.permissions import IsAuthenticated , AllowAny
 from ...permissions import IsJudgeUser
 from rest_framework import status
 from ...serializers import OrganizationSerializer
@@ -71,7 +71,7 @@ class DeleteOrganizationView(APIView):
     
 
 class ListOrganizationsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     def get(self, request):
         organizations = Organization.objects.all()
         serializer = OrganizationSerializer(organizations, many=True)
