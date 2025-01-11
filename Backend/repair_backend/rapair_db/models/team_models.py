@@ -16,7 +16,7 @@ class Team(models.Model):
     team_leader_phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
     score = models.IntegerField(null=True, blank=True)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True )
-    competition = models.ForeignKey(Competition, on_delete=models.SET_NULL, null=True, blank=True )
+    competition = models.ForeignKey(Competition, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
 
     def __str__(self):
         return self.name
