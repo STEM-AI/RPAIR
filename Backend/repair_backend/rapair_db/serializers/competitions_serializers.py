@@ -6,7 +6,11 @@ class CompetitionsSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     class Meta:
         model = Competition
-        fields = ['name','start_date','end_date','location','type','rules','description', 'image_url']
+        fields = ['name','start_date','end_date','location','type','rules','description','image', 'image_url']
+
+        extra_kwargs = {
+            'image': {'write_only': True},
+        }
 
     def get_image_url(self, obj):
         request = self.context.get('request')

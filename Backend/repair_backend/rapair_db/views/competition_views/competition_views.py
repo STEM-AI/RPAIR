@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from ...serializers import CompetitionsSerializer
 from ...models import Competition
+from ...permissions import IsJudgeUser
 
 
 class CompetitionProfileView(APIView):
@@ -29,3 +30,12 @@ class ListCompetitionsView(APIView):
         competitions = Competition.objects.all()
         serializer = CompetitionsSerializer(competitions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CompetitionCreateView(APIView):
+    permission_classes = [IsJudgeUser]
+    def post(self, request):
+        serializer = CompetitionsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
