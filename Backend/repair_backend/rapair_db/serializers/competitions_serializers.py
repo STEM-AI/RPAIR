@@ -3,6 +3,14 @@ from ..models import Competition
 
 
 class CompetitionsSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
     class Meta:
         model = Competition
-        fields = ['name','start_date','end_date','location','type','rules','description']
+        fields = ['name','start_date','end_date','location','type','rules','description', 'image_url']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        image_url = obj.get_image_url()
+        if request:
+            return request.build_absolute_uri(image_url)
+        return image_url
