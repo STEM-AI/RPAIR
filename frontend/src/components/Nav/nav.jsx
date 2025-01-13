@@ -32,12 +32,15 @@ export default function Navbar() {
             ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed" : "bg-white relative "}
             transition-colors duration-300`}
         >
-        <div className="flex items-center space-x-3">
-            <img
+            <div className="flex items-center space-x-3">
+                <NavLink to={"/"}>
+                    <img
             src={location.pathname === "/" ? (isScrolled ? logoBlack : logo) : logoBlack}
             alt="Rpair-Logo"
             className="h-28 w-auto p-3 ms-3 rounded-full "
             />
+                </NavLink>
+            
         </div>
 
         <div className="hidden md:flex items-center space-x-6">
@@ -84,7 +87,7 @@ export default function Navbar() {
             DONATE
             </button>
             <button className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50">
-            sign up
+            Login
             </button>
         </div>
         </nav>
