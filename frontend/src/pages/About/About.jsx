@@ -1,8 +1,5 @@
-
-
-
 import React from "react";
-import MissionVision from "../../components/Mission/Mission";
+import MissionVision from "../../components/AboutComp/Mission/Mission";
 import imageSrc1 from '../../assets/imgs/aboutus/IMG_3929.JPG';
 import imageSrc2 from '../../assets/imgs/aboutus/IMG_4376.JPG';
 import imageSrc3 from '../../assets/imgs/aboutus/IMG_4396.JPG';
