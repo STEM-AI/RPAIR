@@ -21,7 +21,7 @@ class UserResgisterView(APIView):
         if serializer.is_valid():
             serializer.save()
             print("before send message")
-            UserLogin.register_send_welcome_email(request.data.get('email'))
+            UserLogin.register_send_welcome_mail(request.data.get('email'))
             return Response(f"message': 'User registered successfully User :{serializer.data} ", status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -44,6 +44,8 @@ class GoogleLoginInAndRegisterView(APIView):
                 'google_verified' : id_token_payload['email_verified'],
             }
         )
+        if not user.google_verified:
+            return Response({'error': 'Google verification failed'}, status=status.HTTP_401_UNAUTHORIZED)
 
         tokens = UserLogin.get_tokens(user)
         if created:
@@ -66,6 +68,7 @@ class GoogleLoginInAndRegisterView(APIView):
         if serializer.is_valid():
             serializer.save()
             tokens = UserLogin.get_tokens(user)
+            UserLogin.register_send_welcome_mail(user.email)
             return Response(tokens,status=status.HTTP_200_OK)
              
         
