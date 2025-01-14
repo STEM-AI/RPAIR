@@ -4,7 +4,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ....serializers import UserSerializer 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated , AllowAny
 from ....permissions import IsJudgeUser
 from rest_framework import status
 from ....models import User 
@@ -12,7 +12,7 @@ from ....utils.user_auth_utlis import UserLogin
 
 
 class GoogleLoginInAndRegisterView(APIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
     # Full Flow
     # User clicks "Sign in with Google" in React.
     # Google provides an ID token to the React app.
@@ -44,6 +44,7 @@ class GoogleLoginInAndRegisterView(APIView):
                 'google_verified' : id_token_payload['email_verified'],
             }
         )
+
         if not user.google_verified:
             return Response({'error': 'Google verification failed'}, status=status.HTTP_401_UNAUTHORIZED)
 
