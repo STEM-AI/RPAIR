@@ -8,8 +8,8 @@ import img6 from "../../assets/imgs/aboutus/IMG_4353.JPG";
 import img7 from "../../assets/imgs/aboutus/IMG_4344.JPG";
 import img8 from "../../assets/imgs/aboutus/IMG_3929.JPG";
 import img9 from "../../assets/imgs/aboutus/IMG_3929.JPG";
-import Rules from "../../components/Rules/Rules";
-import JoinTeams from "../../components/JoinTeams/JoinTeams";
+import Rules from "../../components/CometitionsComponent/Rules/Rules";
+import JoinTeams from "../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 
 const Competitions = () => {
   const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9];

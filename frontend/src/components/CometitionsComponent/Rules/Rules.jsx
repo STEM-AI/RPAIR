@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react';
-import pdfFile from '../../assets/pdf/RulesVEXIQ.pdf'; 
+import pdfFile from '../../../assets/pdf/RulesVEXIQ.pdf'; 
 
 const Rules = () => {
   const [showFullText, setShowFullText] = useState(false);

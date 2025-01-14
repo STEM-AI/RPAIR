@@ -3,7 +3,7 @@
 import React from "react";
 import { TbTargetArrow } from "react-icons/tb";
 import { PiBinocularsBold } from "react-icons/pi";
-import bgImage from "../../assets/imgs/aboutus/bg.png"; 
+import bgImage from "../../../assets/imgs/aboutus/bg.png"; 
 
 const MissionVision = () => {
   return (
