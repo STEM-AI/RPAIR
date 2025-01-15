@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from ....serializers import UserSerializer 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-from ....permissions import IsJudgeUser
 from ....utils.user_auth_utlis import UserLogin
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -14,7 +13,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
      
 class UserResgisterView(APIView):
 
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -30,8 +29,6 @@ class UserLoginView(APIView):
     permission_classes = [AllowAny]
             
     def post(self, request):
-    # from django.contrib.auth import authenticate
-
 
         username = request.data.get('username')
         password = request.data.get('password')
