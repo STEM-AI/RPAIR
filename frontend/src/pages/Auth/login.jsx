@@ -14,14 +14,14 @@ const [navigate, setNavigate] = useState(false);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState(null);
 
-const submit = async (e) => {
+const signIn = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
         const { data } = await axios.post(
-            'http://147.93.56.71:8000/api/user/auth/admin-login/',
+            'http://147.93.56.71:8000/api/user/auth/login/',
             { username, password },
             {
                 headers: {
@@ -47,7 +47,7 @@ const submit = async (e) => {
 };
 
 if (navigate) {
-    return <Navigate to="/Admin" />;
+    return <Navigate to="/dashbord/Admin" />;
 }
 
   
@@ -96,7 +96,7 @@ if (navigate) {
                 <span className="border-b w-1/5 lg:w-1/4"></span>
             </div>
                         
-            <form className="mt-6" onSubmit={submit}>
+            <form className="mt-6" onSubmit={signIn}>
                {error && <div className="mt-4 text-sm text-red-600">{error}</div>} 
                         <div>
                             <label className="block text-gray-700 text-sm font-bold mb-2">

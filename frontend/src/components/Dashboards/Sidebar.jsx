@@ -5,6 +5,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs"; 
 import { RiTeamLine ,  RiUserSettingsLine} from "react-icons/ri";
 import { GiLaurelsTrophy } from "react-icons/gi";
+import { Link, NavLink } from "react-router-dom";
 
 
 
@@ -35,14 +36,15 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-gradient-to-r from-cyan-800 to-teal-500 text-white flex flex-col transition-all duration-300 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-full bg-gradient-to-r from-cyan-800 to-cyan-500 text-white flex flex-col transition-all duration-300 ease-in-out z-40 ${
           isOpen ? "w-64" : "w-0"
         } lg:w-64 lg:block lg:static`}
       >
         {/* Logo */}
+        <NavLink to={"/"}>
         <div className="w-full h-32 flex justify-center items-center py-4">
-          <img src={Logo} alt="Logo" className="max-w-full max-h-full object-contain" />
-        </div>
+         <img src={Logo} alt="Logo" className="max-w-full max-h-full object-contain" />
+        </div></NavLink>
 
         {/* قائمة العناصر الرئيسية */}
         <div className="flex-1">
