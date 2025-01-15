@@ -40,7 +40,7 @@ class UserTeamProfileView(APIView):
             'coach',
             'members'
         )
-        .select_related('organization', 'competition')
+        .select_related('organization', 'teams')
         )
         serializer = TeamSerializer(team , many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -87,7 +87,7 @@ class UserDeleteTeamView(APIView):
             return Response({"message": "Team not found"}, status=status.HTTP_404_NOT_FOUND)
         
 class ListTeamsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsJudgeUser]
     def get(self, request):
         teams = Team.objects.all()
         serializer = TeamSerializer(teams, many=True)

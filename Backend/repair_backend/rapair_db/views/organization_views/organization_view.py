@@ -71,7 +71,7 @@ class DeleteOrganizationView(APIView):
     
 
 class ListOrganizationsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsJudgeUser]
     def get(self, request):
         organizations = Organization.objects.all()
         serializer = OrganizationSerializer(organizations, many=True)
