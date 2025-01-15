@@ -9,6 +9,21 @@ phone_validator = RegexValidator(
                 message="Phone number must be entered in the format: '+99999999999'. Must be 12 digits ."
             )
 
+class EmailValidator:
+    """
+    Validates that the email address is in a valid format.
+    """
+    def validate(self, email, user=None):
+        # Check if the email is in a valid format
+        # if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
+        #     raise ValidationError(_('Enter a valid email address.'))
+        # Check if the email address is a google email address
+        if not email.endswith('@gmail.com'):
+            raise ValidationError(_('Email must be a google email address.'))
+        
+    def __call__(self, email):
+        self.validate(email)
+
 class StrongPasswordValidator:
     """
     Validates that the password contains:
