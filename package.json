@@ -1,9 +1,8 @@
 {
   "dependencies": {
+    "axios": "^1.7.9",
     "react-router-dom": "^7.1.1",
     "react-scripts": "^5.0.1",
     "tailwindcss-textshadow": "^2.1.3"
-
-
   }
 }
