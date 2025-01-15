@@ -9,7 +9,10 @@ import ContactUs from './components/Contact/contactUs';
 import Competitions from './pages/Competitions/Competitions';
 import Login from './pages/Auth/login';
 import Register from './pages/Auth/Register';
-import WelcomeAdmin from './pages/WElcome/welcomeAdmin';
+import Layout from './pages/Dashboards/Layout/Layout';
+import AdminDashboard from './components/Dashboards/AdminDashboard/AdminDashboard';
+import Teams from './components/Dashboards/AdminDashboard/Teams';
+
 const App = () => {
 
 
@@ -25,9 +28,24 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/competitions" element={<Competitions/>} />
-          <Route path="/Admin" element={<Admin/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
+          <Route
+        path="/Dashboard/Admin"
+        element={
+          <Layout>
+            <AdminDashboard />
+          </Layout>
+        }
+      />
+      <Route
+        path="/Dashboard/Admin/Teams"
+        element={
+          <Layout>
+            <Teams />
+          </Layout>
+        }
+      />
 </Routes>
         <ContactUs />
 
