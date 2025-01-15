@@ -1,19 +1,36 @@
-import React from "react";
-import Sidebar from "../../../components/Dashboards/Sidebar";
-import Navbar from "../../../components/Dashboards/Navbar";
 
-function Admin() {
+
+
+// Admin.js
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Layout from "../Layout/Layout";
+import AdminDashboard from "../../../components/Dashboards/AdminDashboard/AdminDashboard";
+import Teams from "../../../components/Dashboards/AdminDashboard/Teams";
+
+const Admin = () => {
+
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-      <div className="flex-1">
-        <Navbar />
-        <div className="p-6">
-          {/* محتوى الصفحة هنا */}
-        </div>
-      </div>
-    </div>
+    <Routes>
+
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <AdminDashboard />
+          </Layout>
+        }
+      />
+      <Route
+        path="/Dashboard/Admin/Teams"
+        element={
+          <Layout>
+            <Teams />
+          </Layout>
+        }
+      />
+    </Routes>
   );
-}
+};
 
 export default Admin;
