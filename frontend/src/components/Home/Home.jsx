@@ -65,7 +65,7 @@ const Home = () => {
           <div className="md:space-x-2">
             <NavLink
               className="inline-block border-2 border-cyan-600 px-8 py-4 text-lg font-semibold uppercase leading-tight text-cyan-300 bg-transparent transition-all duration-300 ease-in-out transform hover:bg-cyan-600 hover:text-white hover:scale-105 hover:opacity-80 focus:outline-none focus:ring-0 shadow-lg hover:shadow-2xl hover:animate-bounce"
-              to="/login"
+              to="/register"
               role="button"
             >
               Get Started

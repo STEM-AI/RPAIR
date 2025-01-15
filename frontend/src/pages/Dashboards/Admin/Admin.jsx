@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../../../components/Dashboards/Sidebar";
 import Navbar from "../../../components/Dashboards/Navbar";
 
-function App() {
+function Admin() {
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
@@ -16,4 +16,4 @@ function App() {
   );
 }
 
-export default App;
+export default Admin;
