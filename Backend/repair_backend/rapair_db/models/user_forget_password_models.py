@@ -12,6 +12,7 @@ class VerificationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.CharField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         constraints = [

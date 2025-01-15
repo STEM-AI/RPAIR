@@ -6,7 +6,9 @@ from datetime import datetime
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 class UserLogin():
+    VERIFIED_EMAIL = False
     @staticmethod
     def get_object(email=None , username=None):
             if username:
@@ -49,7 +51,7 @@ class UserLogin():
                return Response({'User Not Authenticated Incorrect Username'}, status=status.HTTP_401_UNAUTHORIZED)
            
     @staticmethod
-    def register_send_welcome_email(email):
+    def register_send_welcome_mail(email):
           # Send welcome email here
         subject = 'Welcom To RPAIR'
         message = f'Welcome to RPAIR'

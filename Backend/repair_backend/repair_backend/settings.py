@@ -232,6 +232,8 @@ AUTH_USER_MODEL = 'rapair_db.User'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # youssefelsayed713
 # SMTP Server settings
 EMAIL_HOST = 'smtp.gmail.com'  # For Gmail, replace with your SMTP provider if different
@@ -240,6 +242,10 @@ EMAIL_USE_TLS = True  # Use TLS (True for Gmail, False for some other services)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password (or app-specific password)
 DEFAULT_FROM_EMAIL =config('DEFAULT_FROM_EMAIL')   # Default 'from' address in emails
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 CORS_ALLOW_ALL_ORIGINS = True
 
