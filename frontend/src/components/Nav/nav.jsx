@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo/logoWrite-re.png";
 import logoBlack from "../../assets/logo/logo2.png";
-import { useLocation ,NavLink } from "react-router-dom";
+import { useLocation ,NavLink, Link } from "react-router-dom";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -86,9 +86,9 @@ export default function Navbar() {
             <button className="bg-cyan-500  text-white px-4 py-2 rounded-md hover:bg-cyan-700">
             DONATE
             </button>
-            <button className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50">
+            <Link to={"/login"}  className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50">
             Login
-            </button>
+            </Link>
         </div>
         </nav>
     );

@@ -1,106 +1,93 @@
-// import React from "react";
-
-// const Navbar = () => {
-//   return (
-//     <div className="flex items-center justify-between bg-white p-4 shadow-md">
-//       <div className="text-gray-700">
-//         <input
-//           type="text"
-//           placeholder="Search..."
-//           className="border rounded-md px-4 py-2 w-72"
-//         />
-//       </div>
-//       <div className="flex items-center space-x-4">
-//         <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-//           <span className="material-icons">notifications</span>
-//         </button>
-//         <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-//           <span className="material-icons">settings</span>
-//         </button>
-//         <div className="flex items-center space-x-2">
-//           <img
-//             src="https://via.placeholder.com/40"
-//             alt="profile"
-//             className="w-10 h-10 rounded-full"
-//           />
-//           <span className="text-gray-700 font-medium">Admin Name</span>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Navbar;
-
-
-// import React from "react";
-
-// const Navbar = () => {
-//   return (
-//     <div className="flex items-center justify-between bg-white p-4 shadow-md ml-64 w-full">
-//       <div className="text-gray-700">
-//         <input
-//           type="text"
-//           placeholder="Search..."
-//           className="border rounded-md px-4 py-2 w-72"
-//         />
-//       </div>
-//       <div className="flex items-center space-x-4">
-//         <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-//           <span className="material-icons">notifications</span>
-//         </button>
-//         <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-//           <span className="material-icons">settings</span>
-//         </button>
-//         <div className="flex items-center space-x-2">
-//           <img
-//             src="https://via.placeholder.com/40"
-//             alt="profile"
-//             className="w-10 h-10 rounded-full"
-//           />
-//           <span className="text-gray-700 font-medium">Admin Name</span>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Navbar;
-
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { BsFillPersonFill } from "react-icons/bs";
+import { CiLogout } from "react-icons/ci";
+import { IoSettingsOutline } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  const profileDropdownRef = useRef(null);
+  const notificationDropdownRef = useRef(null);
+
+  // Close dropdowns when clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileDropdownRef.current && !profileDropdownRef.current.contains(event.target) &&
+        notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+        setIsProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Close ProfileDropdown when Notifications icon is clicked
+  const handleNotificationClick = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+    setIsProfileDropdownOpen(false); // Close ProfileDropdown when Notifications is clicked
+  };
+
+  // Close NotificationDropdown when Profile icon is clicked
+  const handleProfileClick = () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen); // Toggle ProfileDropdown
+    setIsDropdownOpen(false); // Close NotificationDropdown when Profile is clicked
+  };
+
   return (
     <div className="flex items-center justify-between bg-white p-4 shadow-md w-full">
-      {/* قائمة البحث */}
-      <div className="text-gray-700 flex items-center w-full max-w-4xl">
-        <button className="lg:hidden p-2 text-gray-700" aria-label="Menu">
-          <span className="material-icons">menu</span>
-        </button>
-        <input
-          type="text"
-          placeholder="Search..."
-          className="border rounded-md px-4 py-2 w-full max-w-md lg:max-w-80"
-        />
+      {/* Left Content */}
+      <div className="flex items-center">
+        {/* You can add content for the left side here if needed */}
       </div>
-      
-      {/* الأزرار والصورة */}
-      <div className="flex items-center space-x-4">
-        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-          <span className="material-icons">notifications</span>
-        </button>
-        <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-          <span className="material-icons">settings</span>
-        </button>
-        
-        {/* صورة الملف الشخصي */}
-        <div className="flex items-center space-x-2">
-          <img
-            src="https://via.placeholder.com/40"
-            alt="profile"
-            className="w-10 h-10 rounded-full"
-          />
-          <span className="text-gray-700 font-medium">Admin Name</span>
+
+      {/* Right Content */}
+      <div className="flex items-center space-x-6 ml-auto">
+        {/* Notification Icon */}
+        <div className="relative" ref={notificationDropdownRef}>
+          <button
+            className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"
+            onClick={handleNotificationClick}
+          >
+            <IoMdNotificationsOutline className="text-2xl text-gray-500" />
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
+              <p className="text-gray-700 font-bold border-b pb-2">Notifications</p>
+              <div className="mt-2">
+                <p className="text-gray-600 text-sm">You have no new notifications.</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Profile Section */}
+        <div className="relative" ref={profileDropdownRef}>
+          <button
+            className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"
+            onClick={handleProfileClick}
+          >
+            <BsFillPersonFill className="text-2xl text-gray-500" />
+          </button>
+
+          {isProfileDropdownOpen && (
+            <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
+              <p className="flex items-center text-gray-600 py-2 px-1">
+                <IoSettingsOutline className="text-2xl mx-2" />
+                <span className="text-lg">Account Settings</span>
+              </p>
+              <hr />
+              <NavLink to="/login"  className="flex items-center text-gray-600 py-2 px-1">
+                <CiLogout className="text-2xl mx-2" />
+                <span className="text-lg">Log Out</span>
+              </NavLink>
+            </div>
+          )}
         </div>
       </div>
     </div>
