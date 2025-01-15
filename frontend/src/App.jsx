@@ -4,81 +4,55 @@ import './App.css';
 import Navbar from './components/Nav/nav';
 import Footer from './components/Footer/footer';
 import Home from './components/Home/Home';
-import About from './pages/About/About';
+import About from './pages/About/About'; 
 import ContactUs from './components/Contact/contactUs';
 import Competitions from './pages/Competitions/Competitions';
 import Login from './pages/Auth/login';
 import Register from './pages/Auth/Register';
-import Admin from './pages/Dashboards/Admin/Admin';
-
-// Layout Wrapper Component
-const Layout = ({ children, hideNavbar }) => (
-  <>
-    {!hideNavbar && <Navbar />}
-    {children}
-    {!hideNavbar && <ContactUs />}
-    {!hideNavbar && <Footer />}
-  </>
-);
+import Layout from './pages/Dashboards/Layout/Layout';
+import AdminDashboard from './components/Dashboards/AdminDashboard/AdminDashboard';
+import Teams from './components/Dashboards/AdminDashboard/Teams';
 
 const App = () => {
-  return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Home />
-            </Layout>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <Layout>
-              <About />
-            </Layout>
-          }
-        />
-        <Route
-          path="/competitions"
-          element={
-            <Layout>
-              <Competitions />
-            </Layout>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <Layout>
-              <Login />
-            </Layout>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <Layout>
-              <Register />
-            </Layout>
-          }
-        />
 
-        {/* Dashboard Routes (No Navbar, Footer, or ContactUs) */}
-        <Route
-          path="/dashbord/Admin"
-          element={
-            
-            <Layout hideNavbar>
-              <Admin />
-            </Layout>
-          }
-        />
-      </Routes>
-    </Router>
+
+  return (
+    <>
+    <Router>
+    
+        <Navbar />
+        <Routes>
+
+        
+
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/competitions" element={<Competitions/>} />
+          <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
+          <Route
+        path="/Dashboard/Admin"
+        element={
+          <Layout>
+            <AdminDashboard />
+          </Layout>
+        }
+      />
+      <Route
+        path="/Dashboard/Admin/Teams"
+        element={
+          <Layout>
+            <Teams />
+          </Layout>
+        }
+      />
+</Routes>
+        <ContactUs />
+
+        <Footer />
+      
+    </Router >
+      </>
   );
 };
 
