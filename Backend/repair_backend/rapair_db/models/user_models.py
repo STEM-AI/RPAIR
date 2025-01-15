@@ -11,7 +11,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     address = models.CharField(max_length = 255, blank=True , null=True)
     date_of_birth = models.DateField(blank=True , null=True)
-    phone_number = models.CharField(validators=[phone_validator] , max_length = 255, unique=True)
+    phone_number = models.CharField(validators=[phone_validator] , max_length = 255, unique=True , null=True , blank=True)
     email = models.EmailField(unique=True)
     google_verified = models.BooleanField(default=False)
 
