@@ -52,3 +52,25 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+    
+
+class UserEditProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','profile_name', 'email', 'country' ]
+
+    def to_internal_value(self, data):
+        # Get the allowed fields from the serializer
+        allowed_fields = set(self.fields.keys())
+        # Get the fields sent in the request data
+        input_fields = set(data.keys())
+
+        # Check if there are any extra fields
+        extra_fields = input_fields - allowed_fields
+        if extra_fields:
+            raise serializers.ValidationError({
+                "error": f"Invalid field(s): {', '.join(extra_fields)}"
+            })
+
+        # Continue normal processing if no extra fields
+        return super().to_internal_value(data)
