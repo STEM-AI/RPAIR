@@ -3,10 +3,60 @@ import {React,useState} from "react";
 import logo from "../../assets/logo/logoWrite-re.png"
 import { FcGoogle } from "react-icons/fc";
 import bgimg from "../../assets/imgs/aboutus/bg.png"
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const Register = () => {
+        const [firstname,setFirstname] =useState("")
+        const [lastname,setLastname] =useState("")
+        const [username,setUsername] =useState("")
+        const [email,setEmail] =useState("")
+        const [password,setPassword] =useState("")
+        const [country,setCountry] =useState("")
+        const [address,setAddress] =useState("")
+        const [dateofbirth,setDateofbirth] =useState("")
+        const [phonenumber, setPhonenumber] = useState("")
+        const [navigate, setNavigate] = useState(false);
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState(null);
+          
+        const signUp = async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            setError(null);
+
+            try {
+                const { data } = await axios.post(
+                    'http://147.93.56.71:8000/api/user/auth/user-register/',
+                    { username, password },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        withCredentials: true,
+                    }
+                );
+
+                // Save token to axios defaults and localStorage
+                axios.defaults.headers.common['Authorization'] = `Bearer ${data['access_token']}`;
+                localStorage.setItem('access_token', data.access_token);
+                
+                // Print token stored in localStorage
+                console.log("Access token saved to localStorage:", localStorage.getItem('access_token'));
+                
+                setNavigate(true);
+            } catch (err) {
+                setError(err.response?.data?.detail || "Failed to login. Please check your credentials.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (navigate) {
+            return <Navigate to="/dashbord/Admin" />;
+        }
   
+  
+
   
     return (
     
@@ -42,9 +92,9 @@ const Register = () => {
                     </a>
                     <span className="border-b w-1/5 lg:w-1/4"></span>
                 </div>
-               
-                <form className={` pt-6 pb-8 mb-4 bg-white rounded`}
-              >
+
+            <form className=" pt-6 pb-8 mb-4 bg-white rounded" >
+              {error && <div className="mt-4 text-sm text-red-600">{error}</div>} 
                 <div className="mb-4 md:flex md:justify-between">
                   <div className="mb-4 md:mr-2 md:mb-0">
                     <label
@@ -58,6 +108,9 @@ const Register = () => {
                       id="firstName"
                       type="text"
                       placeholder="First Name"
+                      value={firstname}
+                      onChange={(e) => setFirstname(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="md:ml-2">
@@ -72,6 +125,9 @@ const Register = () => {
                       id="lastName"
                       type="text"
                       placeholder="Last Name"
+                      value={lastname}
+                      onChange={(e) => setLastname(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
@@ -87,7 +143,10 @@ const Register = () => {
                     className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
                       id="username"
                       type="text"
-                      placeholder="User Name"
+                    placeholder="User Name"
+                    value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="md:ml-2">
@@ -100,7 +159,10 @@ const Register = () => {
                     <input
                     className="bg-gray-200  text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
                       id="date_of_birth"
-                      type="date"
+                    type="date"
+                    value={dateofbirth}
+                      onChange={(e) => setDateofbirth(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
@@ -117,6 +179,9 @@ const Register = () => {
                       id="country"
                       type="text"
                       placeholder="country"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                      required
                     />
                 </div>
                 <div className="mb-4">
@@ -131,6 +196,9 @@ const Register = () => {
                       id="address"
                       type="text"
                       placeholder="enter your address"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      required
                     />
                 </div>
                 <div className="mb-4">
@@ -145,6 +213,9 @@ const Register = () => {
                       id="phone"
                       type="text"
                       placeholder="enter your phone"
+                      value={phonenumber}
+                      onChange={(e) => setPhonenumber(e.target.value)}
+                      required
                     />
                 </div>
                 <div className="mb-4">
@@ -159,6 +230,9 @@ const Register = () => {
                     id="email"
                     type="email"
                     placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="mb-4 md:flex md:justify-between">
@@ -174,28 +248,20 @@ const Register = () => {
                       id="password"
                       type="password"
                       placeholder="******************"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                     />
                   </div>
-                  <div className="md:ml-2">
-                    <label
-                      className={`block mb-2 text-sm font-bold text-gray-700 `}
-                      htmlFor="c_password"
-                    >
-                      Confirm Password
-                    </label>
-                    <input
-                    className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                      id="c_password"
-                      type="password"
-                      placeholder="******************"
-                    />
-                  </div>
+                  
                 </div>
                 <div className="mb-6 text-center">
                     <button
                             type="submit"
-                            className="mt-3 bg-cyan-800 text-white font-bold py-2 px-4 w-full rounded hover:bg-cyan-600">
-                            Register Account
+                            className={`mt-8 font-bold py-2 px-4 w-full rounded ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-cyan-800 hover:bg-cyan-600"} text-white`}
+                            disabled={loading}
+                        >
+                            {loading ? "Logging in..." : "Login"}
                         </button>
                 </div>    
             </form>

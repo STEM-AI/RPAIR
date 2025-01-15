@@ -9,6 +9,7 @@ import AdminDashboard from "../../../components/Dashboards/AdminDashboard/AdminD
 import Teams from "../../../components/Dashboards/AdminDashboard/Teams";
 
 const Admin = () => {
+
   return (
     <Routes>
 

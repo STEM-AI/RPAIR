@@ -161,6 +161,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs";
 import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
 import { GiLaurelsTrophy } from "react-icons/gi";
+import { Link, NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -187,13 +188,10 @@ const Sidebar = () => {
         } lg:w-64 lg:block lg:static`}
       >
         {/* Logo */}
+        <NavLink to={"/"}>
         <div className="w-full h-32 flex justify-center items-center py-4">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="max-w-full max-h-full object-contain"
-          />
-        </div>
+        <img src={Logo} alt="Logo" className="max-w-full max-h-full object-contain" />
+        </div></NavLink>
 
         {/* Main items list */}
         <div className="flex-1 overflow-y-auto">
