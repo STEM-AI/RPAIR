@@ -18,13 +18,13 @@ class TeamSerializer(serializers.ModelSerializer):
     social_media = TeamSocialMediaSerializer(many=True)
     previous_competition = TeamPreviousCompetitionSerializer(many=True)
     members = TeamMemberSerializer(many=True)
+    competition_event = serializers.SerializerMethodField()
     class Meta:
         model = Team
         fields = [
-            'name','robot_name','user_id','type','organization_info',
-            'competition_date','team_leader_name','team_leader_email',
+            'name','robot_name','user_id','type','organization_info','team_leader_name','team_leader_email',
             'team_leader_phone_number','score','organization','competition' , 
-            'sponsors', 'coach', 'social_media','previous_competition' , 'members'
+            'sponsors', 'coach', 'social_media','previous_competition' , 'members' , 'competition_event'
             ]
 
         extra_kwargs = {
@@ -36,7 +36,8 @@ class TeamSerializer(serializers.ModelSerializer):
             'coach': {'required': True},
             'social_media': {'required': True},
             'previous_competition': {'required': True},
-            'members': {'required': True}
+            'members': {'required': True},
+            'competition_event' :{'required' : False }
         }
 
     def create(self, validated_data) :
@@ -64,5 +65,10 @@ class TeamSerializer(serializers.ModelSerializer):
         team.save()
 
         return team
+    
+    def get_competition_event(self,obj):
+        if obj.competition_event:
+            return obj.competition_event.competition.name
+        return None
     
 
