@@ -15,46 +15,110 @@ import Teams from "./components/Dashboards/AdminDashboard/Teams";
 import CreateEvent from "./components/Dashboards/AdminDashboard/Management/CreateEvent";
 
 const App = () => {
-  return (
+  // Layout component to dynamically render children with or without Navbar/Footer
+  const Layout = ({ children, hideNavbar = false }) => (
     <>
-      <Router>
-        {/* <Navbar /> */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/competitions" element={<Competitions />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/Dashboard/Admin"
-            element={
+      {!hideNavbar && <Navbar />}
+      {children}
+      {!hideNavbar && (
+        <>
+          <Footer />
+        </>
+      )}
+    </>
+  );
+
+  return (
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Layout>
+              <About />
+            </Layout>
+          }
+        />
+        <Route
+          path="/competitions"
+          element={
+            <Layout>
+              <Competitions />
+            </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Layout>
+              <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Layout>
+              <Register />
+            </Layout>
+          }
+        />
+
+        {/* Admin Dashboard Routes */}
+        <Route
+          path="/Dashboard/Admin"
+          element={
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <AdminDashboard />
               </LayoutDashboard>
-            }
-          />
-          <Route
-            path="/Dashboard/Admin/Teams"
-            element={
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/Teams"
+          element={
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <Teams />
               </LayoutDashboard>
-            }
-          />
-          <Route
-            path="/Dashboard/Admin/CreateEvent"
-            element={
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/CreateEvent"
+          element={
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateEvent />
               </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+            path="/Dashboard/Admin/CreateEvent"
+          element={
+            <Layout hideNavbar>
+                  <LayoutDashboard>
+                    <CreateEvent />
+                  </LayoutDashboard>
+            </Layout>
             }
           />
-        </Routes>
-        <ContactUs />
+      </Routes>
+                <ContactUs />
 
-        {/* <Footer /> */}
-      </Router>
-    </>
+    </Router>
+  
   );
 };
 

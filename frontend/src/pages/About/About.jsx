@@ -24,7 +24,7 @@ function About() {
 
         <div className="gap-14 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6 relative z-10">
           <div className="sm:text-lg">
-            <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+            <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
               About RPAIR
             </h2>
             <h3 className="font-bold mb-4 text-gray-700 relative">

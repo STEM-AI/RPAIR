@@ -21,7 +21,7 @@ const Competitions = () => {
       <div className="w-full max-w-7xl flex flex-col md:flex-row items-start gap-8">
         {/* Text Section */}
         <div className="md:w-2/5">
-        <h2 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+        <h2 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         VEX IQ Competitions
             </h2>
           

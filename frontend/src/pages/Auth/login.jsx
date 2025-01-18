@@ -76,9 +76,7 @@ if (navigate) {
             <h2 className="text-3xl  font-bold text-gray-700 text-center">Login</h2>
             <a
                 href="#"
-                        className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100 
-                "
-            >
+                        className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100 transition-all duration-700 cursor-pointer ">
                 <div className="px-4 py-3">
                 <div className="icon ">
                 <FcGoogle className="text-2xl"/>
@@ -136,7 +134,7 @@ if (navigate) {
 
                          <button
                             type="submit"
-                            className={`mt-8 font-bold py-2 px-4 w-full rounded ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-cyan-800 hover:bg-cyan-600"} text-white`}
+                            className={`mt-8 font-bold py-2 px-4 w-full rounded ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-cyan-800 hover:bg-cyan-600"} transition-all duration-700 cursor-pointer text-white`}
                             disabled={loading}
                         >
                             {loading ? "Logging in..." : "Login"}
