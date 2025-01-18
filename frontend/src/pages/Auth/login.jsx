@@ -47,7 +47,7 @@ const signIn = async (e) => {
 };
 
 if (navigate) {
-    return <Navigate to="/dashbord/Admin" />;
+    return <Navigate to="/Dashboard/Admin" />;
 }
 
   
