@@ -23,11 +23,11 @@ const JoinTeams = () => {
 
         {/* Text Wrapper */}
         <div className="flex flex-col p-12 md:px-16">
-        <h3 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+        <h3 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         Join Now!
             </h3>
           <p className="mt-1 font-normal text-xl text-gray-700">
-          Dream big, work together, and achieve greatness! At <span className='font-bold  bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-xl'>RPAIR</span> , we believe that teams can solve the toughest challenges—join now and bring your ideas to life with the support of like-minded changemakers!
+          Dream big, work together, and achieve greatness! At <span className='font-bold  bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-xl'>RPAIR</span> , we believe that teams can solve the toughest challenges—join now and bring your ideas to life with the support of like-minded changemakers!
           </p>
 
           {/* Button Container */}
