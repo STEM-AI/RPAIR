@@ -1,18 +1,13 @@
-
-
-
 // Admin.js
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Layout from "../Layout/Layout";
+import Layout from "../LayoutDashboard/LayoutDashboard";
 import AdminDashboard from "../../../components/Dashboards/AdminDashboard/AdminDashboard";
 import Teams from "../../../components/Dashboards/AdminDashboard/Teams";
 
 const Admin = () => {
-
   return (
     <Routes>
-
       <Route
         path="/"
         element={

@@ -104,10 +104,21 @@ const App = () => {
             </Layout>
           }
         />
+        <Route
+            path="/Dashboard/Admin/CreateEvent"
+          element={
+            <Layout hideNavbar>
+                  <LayoutDashboard>
+                    <CreateEvent />
+                  </LayoutDashboard>
+            </Layout>
+            }
+          />
       </Routes>
                 <ContactUs />
 
     </Router>
+  
   );
 };
 
