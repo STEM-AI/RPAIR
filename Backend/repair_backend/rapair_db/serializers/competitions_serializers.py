@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from ..models import Competition , CompetitionEvent , Team
-from ..serializers.team_serializers.team_member_serializers import TeamMemberSerializer
+from ..models import Competition 
 
 class CompetitionsSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
@@ -19,15 +18,3 @@ class CompetitionsSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(image_url)
         return image_url
     
-class TeamCompetitionProfileSerializer(serializers.ModelSerializer):
-    members = TeamMemberSerializer(many=True)
-    class Meta:
-        model = Team
-        fields = ['name','robot_name','type','members' , 'team_leader_name' , 'score']
-
-    
-class CompetitionEventSerializer(serializers.ModelSerializer):
-    teams = TeamCompetitionProfileSerializer(many=True)
-    class Meta:
-        model = CompetitionEvent
-        fields = ['start_date', 'end_date', 'location' , 'created_at' , 'teams' ]
