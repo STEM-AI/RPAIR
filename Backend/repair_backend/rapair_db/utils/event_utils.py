@@ -1,13 +1,13 @@
 from ..models import Competition
 
 
-def get_object(self, competition_name):
+def get_object(competition_name):
         try:
             return Competition.objects.get(name=competition_name)
         except Competition.DoesNotExist:
             return None
 
-QUERY = """
+TOP_3_TEAMS_QUERY = """
         SELECT 
             c.name AS competition_name, 
             e.start_date, 
