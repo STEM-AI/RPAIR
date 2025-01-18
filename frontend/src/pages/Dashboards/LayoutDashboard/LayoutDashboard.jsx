@@ -3,7 +3,7 @@ import React from "react";
 import Sidebar from "../../../components/Dashboards/Sidebar";
 import Navbar from "../../../components/Dashboards/Navbar";
 
-const Layout = ({ children }) => {
+const LayoutDashboard = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -17,4 +17,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default LayoutDashboard;
