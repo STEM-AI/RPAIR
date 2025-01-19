@@ -10,6 +10,7 @@ services:
       - DJANGO_SETTINGS_MODULE=repair_backend.settings
     depends_on:
       - db
+      - redis
     networks:
       - shared_network
     command: python manage.py runserver 0.0.0.0:8000
@@ -32,6 +33,14 @@ services:
       - shared_network
     ports:
       - "5434:5432"
+
+  redis:  # Add Redis service
+    image: redis:7
+    container_name: rpair_redis
+    ports:
+      - "6379:6379"  # Expose Redis port
+    networks:
+      - shared_network
 
 networks:
   shared_network:
