@@ -2,7 +2,8 @@
 from . import (
     tokens_ulrs , organization_urls , 
     user_urls , team_urls , 
-    competition_urls , admin_dashboard_urls
+    competition_urls , admin_dashboard_urls ,
+    event_urls
     )
 
 urlpatterns = (
@@ -11,5 +12,6 @@ urlpatterns = (
     organization_urls.urlpatterns +
     team_urls.urlpatterns +
     competition_urls.urlpatterns +
-    admin_dashboard_urls.urlpatterns
+    admin_dashboard_urls.urlpatterns +
+    event_urls.urlpatterns
 )

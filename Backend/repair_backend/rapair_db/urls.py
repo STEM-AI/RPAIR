@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from rapair_db.repair_db_urls import (
     tokens_ulrs ,organization_urls ,
     user_urls ,team_urls , 
-    competition_urls , admin_dashboard_urls
+    competition_urls , admin_dashboard_urls ,
+    event_urls
 )
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path('team/', include(team_urls)),
     path('competition/', include(competition_urls)),
     path('admin/', include(admin_dashboard_urls)),
+    path('event/', include(event_urls)),
     
     
 ]

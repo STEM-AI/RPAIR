@@ -42,6 +42,7 @@ class Competition(models.Model):
 class CompetitionEvent(models.Model):
     id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE , related_name='competition_event')
+    name = models.CharField(max_length=255 , blank=True, null=True , default=None)
     start_date = models.DateField()
     end_date = models.DateField()
     location = models.CharField(max_length=255)
