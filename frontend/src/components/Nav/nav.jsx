@@ -45,13 +45,13 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center space-x-6">
             <div>
-            <NavLink to={"/about"} className="text-cyan-500 font-bold text-xl hover:text-cyan-950">
+            <NavLink to={"/about"} className="text-cyan-500 font-bold text-xl hover:text-cyan-950 transition-all duration-700 cursor-pointer">
                 ABOUT
             </NavLink>
             </div>
 
             <div className="relative group">
-            <NavLink to={""} className="text-cyan-500 uppercase font-bold text-xl hover:text-cyan-950">
+            <NavLink to={""} className="text-cyan-500 uppercase font-bold text-xl hover:text-cyan-950 transition-all duration-700 cursor-pointer">
                 Challenges
             </NavLink>
             <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md px-4 pt-2 pb-5 w-60">
@@ -63,7 +63,7 @@ export default function Navbar() {
             </div>
             </div>
             <div className="relative group">
-            <button className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950">
+            <button className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950 transition-all duration-700 cursor-pointer">
                 Resources
             </button>
             <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-60">
@@ -76,17 +76,17 @@ export default function Navbar() {
             </div>
             </div>
             <div className="relative group">
-            <NavLink to={"/gallery"} className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950">
+            <NavLink to={"/gallery"} className="text-cyan-500 font-bold uppercase text-xl hover:text-cyan-950 transition-all duration-700 cursor-pointer">
                 Gallery
             </NavLink>
             </div>
         </div>
 
         <div className="flex items-center space-x-4">
-            <button className="bg-cyan-500  text-white px-4 py-2 rounded-md hover:bg-cyan-700">
+            <button className="bg-cyan-500  text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition-all duration-700 cursor-pointer">
             DONATE
             </button>
-            <Link to={"/login"}  className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50">
+            <Link to={"/login"}  className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50 transition-all duration-700 cursor-pointer">
             Login
             </Link>
         </div>
