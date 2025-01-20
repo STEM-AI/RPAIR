@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+import Alert from '@mui/material/Alert';
 import axios from "axios";
 import {React,useState} from "react"; 
 import logo from "../../assets/logo/logoWrite-re.png"
@@ -6,52 +8,89 @@ import bgimg from "../../assets/imgs/aboutus/bg.png"
 import { Link, Navigate } from "react-router-dom";
 
 const Register = () => {
-        const [first_name,setFirstname] =useState("")
-        const [last_name,setLastname] =useState("")
-        const [username,setUsername] =useState("")
-        const [ email,setEmail] =useState("")
-        const [password,setPassword] =useState("")
-        const [confirmPassword, setConfirmPassword] = useState('');
-        const [country,setCountry] =useState("")
-        const [address,setAddress] =useState("")
-        const [ date_of_birth,setDateofbirth] =useState("")
-        const [ phone_number, setPhonenumber] = useState("")
-        const [navigate, setNavigate] = useState(false);
-        const [loading, setLoading] = useState(false);
-        const [error, setError] = useState(null);
+    const [first_name, setFirstname] = useState("");
+    const [last_name, setLastname] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [isPasswordValid, setIsPasswordValid] = useState(false);
+    const [country, setCountry] = useState("");
+    const [address, setAddress] = useState("");
+    const [date_of_birth, setDateofbirth] = useState("");
+    const [phone_number, setPhonenumber] = useState("");
+    const [navigate, setNavigate] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
           
+        // Password validation function
+          const validatePassword = (password) => {
+              const hasUppercase = /[A-Z]/.test(password);
+              const hasLowercase = /[a-z]/.test(password);
+              const hasDigit = /\d/.test(password);
+              const hasSpecialChar = /[@#$%^&*(),.?":{}|<>]/.test(password);
+              return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
+                };
+  
+               const handlePasswordChange = (e) => {
+                const value = e.target.value;
+                setPassword(value);
+                setIsPasswordValid(validatePassword(value));
+                  };
         const signUp = async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            setError(null);
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
 
-                if (password !== confirmPassword) {
-                    setError("Passwords do not match.");
-                    document.getElementById("passwordError").classList.remove("hidden");  
-                    setLoading(false);
-                    return;
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            setLoading(false);
+            return;
+        }
+
+        if (!isPasswordValid) {
+            setError("Password does not meet the requirements.");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                "http://147.93.56.71:8000/api/user/auth/user-register/",
+                {
+                    first_name,
+                    last_name,
+                    username,
+                    email,
+                    country,
+                    address,
+                    date_of_birth,
+                    phone_number,
+                    password,
+                },
+                { headers: { "Content-Type": "application/json" }, withCredentials: true }
+            );
+            console.log("Success:", response.data);
+            setNavigate(true);
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Registration successful!",
+                showConfirmButton: false,
+                  });
+              } catch (err) {
+                  console.error("Registration error:", err);
+                  setError(err.response?.data?.detail || "Registration failed. Try again.");
+              } finally {
+                  setLoading(false);
+              }
+          };
+
+          if (navigate) {
+              return <Navigate to="/login" />;
           }
-    
-           try {
-                const response = await axios.post(
-                    'http://147.93.56.71:8000/api/user/auth/user-register/', 
-                    { first_name, last_name, username, email, country, address, date_of_birth, phone_number, password },
-                    { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
-             );
-             console.log(response.data)
-                console.log('Success:', response);
-                setNavigate('/login');  // Redirect to login after success
-            } catch (err) {
-                console.error('Registration error:', err);
-                setError(err.response?.data?.detail || 'Registration failed. Try again.');
-            } finally {
-                setLoading(false);
-            }
-      };
-              
-            if (navigate) {
-                return <Navigate to={navigate} />;
-            }
+
   
     return (
     
@@ -244,8 +283,13 @@ const Register = () => {
                       id="password"
                       type="password"
                       placeholder="******************"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                    onFocus={() => setShowAlert(true)} // Show alert on focus
+                    onBlur={() => {
+                      // Hide alert only if password is valid
+                      if (isPasswordValid) setShowAlert(false);
+                    }}
+                      onChange={handlePasswordChange}
                       required
                     />
                   </div>
@@ -267,9 +311,14 @@ const Register = () => {
                   />
                 </div>
               </div>
-              <div id="passwordError" className="hidden bg-red-100 text-red-800 border border-red-400 rounded-md p-2">
-                  <p>Passwords do not match..!</p>
-              </div>
+             {showAlert && !isPasswordValid && (
+                  <Alert severity="info" className="mt-2">
+                      Password must include uppercase, lowercase, digit, and special character.
+                  </Alert>
+                )}
+                    
+
+              {error && <p id="passwordError" className="error">{error}</p>}
                 <div className="mb-6 text-center">
                     <button
                             type="submit"
