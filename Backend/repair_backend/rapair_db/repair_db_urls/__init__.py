@@ -3,7 +3,7 @@ from . import (
     tokens_ulrs , organization_urls , 
     user_urls , team_urls , 
     competition_urls , admin_dashboard_urls ,
-    event_urls
+    event_urls ,
     )
 
 urlpatterns = (

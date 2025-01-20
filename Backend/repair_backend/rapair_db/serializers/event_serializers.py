@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Competition , CompetitionEvent , Team
+from ..models import CompetitionEvent , Team , EventGame
 from ..serializers.team_serializers.team_member_serializers import TeamMemberSerializer
 
 
@@ -18,3 +18,11 @@ class EventSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'teams': {'read_only': True},
         }
+
+class EventGameSerializer(serializers.ModelSerializer):
+    team1 = serializers.StringRelatedField()
+    team2 = serializers.StringRelatedField()
+
+    class Meta:
+        model = EventGame
+        fields = ['team1', 'team2', 'score']

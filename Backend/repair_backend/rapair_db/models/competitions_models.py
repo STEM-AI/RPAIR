@@ -49,7 +49,7 @@ class CompetitionEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.competition.name
+        return self.name
     
     class Meta:
         constraints = [
@@ -58,6 +58,28 @@ class CompetitionEvent(models.Model):
                 name='unique_event'
             )
         ]
+
+class EventGame(models.Model):
+    id = models.AutoField(primary_key=True)
+    event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE , related_name='event_game')
+    team1  = models.ForeignKey('Team' , on_delete=models.CASCADE , related_name='team1')
+    team2 = models.ForeignKey('Team' , on_delete=models.CASCADE , related_name='team2')
+    score = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+    time = models.TimeField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['event', 'team1', 'team2'],
+                name='unique_game'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.team1} vs {self.team2} at {self.time}"
+    
 
 
     

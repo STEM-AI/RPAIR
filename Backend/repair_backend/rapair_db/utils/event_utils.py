@@ -2,17 +2,13 @@ from ..models import Competition , CompetitionEvent
 
 
 def get_object(competition_name = None , event_name = None):
-        print("competition_name" , competition_name)
-        print("event_name" , event_name)
         if competition_name :
-            print("found object")
             try:
                 return Competition.objects.get(name=competition_name)
             except Competition.DoesNotExist:
                 return None
             
         if event_name :
-             print("Found event" , event_name)
              try:
                 return CompetitionEvent.objects.get(name=event_name)
              except CompetitionEvent.DoesNotExist:
