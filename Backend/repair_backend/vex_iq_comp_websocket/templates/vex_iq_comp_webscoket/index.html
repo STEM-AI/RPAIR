@@ -45,11 +45,15 @@
             console.log("Score Update:", data);
 
             // Find the team element and update the score
-            const teamElement = document.getElementById(`team-${data.team_id}`);
-            if (teamElement) {
+            const teamElement = document.getElementById(`team-${data.team_name}`);
+            console.log("team idddd",data.team_id);
+            if (teamElement != null) {
+                console.log("Score Update" , teamElement);
                 teamElement.querySelector('.score').innerText = `Score: ${data.score}`;
             } else {
                 // If the team is not found, create a new element for it
+                console.log("Creating new team");
+                
                 addNewTeam(data);
             }
         };
@@ -60,9 +64,10 @@
 
         // Function to add a new team to the list
         function addNewTeam(data) {
+            console.log("add new team")
             const teamContainer = document.getElementById('teams');
             const teamElement = document.createElement('div');
-            teamElement.id = `team-${data.team_id}`;
+            teamElement.id = `team-${data.team_name}`;
             teamElement.classList.add('team');
 
             teamElement.innerHTML = `

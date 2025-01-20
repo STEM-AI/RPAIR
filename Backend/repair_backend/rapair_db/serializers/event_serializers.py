@@ -25,4 +25,4 @@ class EventGameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventGame
-        fields = ['team1', 'team2', 'score']
+        fields = ['id' ,'team1', 'team2', 'score']
