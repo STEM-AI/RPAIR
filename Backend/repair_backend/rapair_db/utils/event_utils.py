@@ -1,6 +1,9 @@
 from ..models import Competition , CompetitionEvent
-
-
+from datetime import datetime, timedelta
+from ..models import EventGame
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils.timezone import now
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
@@ -20,7 +23,7 @@ TOP_3_TEAMS_QUERY = """
             e.start_date, 
             e.end_date, 
             COALESCE(
-                array_to_json(array_agg(ROW(t.name, t.score) ORDER BY t.score DESC)), 
+                array_to_json(array_agg(ROW(t.name, t.teamwork_score) ORDER BY t.teamwork_score DESC)), 
                 '[]'::json
             ) AS top_three_teams
         FROM 
@@ -32,9 +35,9 @@ TOP_3_TEAMS_QUERY = """
             SELECT 
                 team.id, 
                 team.name, 
-                team.score, 
+                team.teamwork_score, 
                 team.competition_event_id, 
-                ROW_NUMBER() OVER (PARTITION BY team.competition_event_id ORDER BY team.score DESC) AS rank
+                ROW_NUMBER() OVER (PARTITION BY team.competition_event_id ORDER BY team.teamwork_score DESC) AS rank
             FROM 
                 rapair_db_team team
             ) t ON e.id = t.competition_event_id
@@ -46,3 +49,38 @@ TOP_3_TEAMS_QUERY = """
             e.start_date, 
             e.end_date
         """
+
+def create_event_schedule(event , request):
+    event_teams = event.teams.all() 
+    print("event_teams" , event_teams)
+    game_time = request.data.get('time')
+    game_time = datetime.strptime(game_time,"%H:%M")
+    print("game_time" , game_time.time())
+    games = []
+    for i in range(len(event_teams)):
+        for j in range(i + 1, len(event_teams)):
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time()))
+            game_time += timedelta(minutes=1, seconds=30)
+    
+    print("games" , games)
+    try :
+        EventGame.objects.bulk_create(games)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+def create_final_stage_schedule(event , request):
+    event_teams = event.teams.all().order('-teamwork_score')[:3] 
+    print("event_teams" , event_teams)
+    game_time = request.data.get('time')
+    game_time = datetime.strptime(game_time,"%H:%M")
+    print("game_time" , game_time.time())
+    games = []
+    for i in range(len(event_teams)):
+        games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time()))
+        game_time += timedelta(minutes=1, seconds=30)
+    
+    print("games" , games)
+    try :
+        EventGame.objects.bulk_create(games)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

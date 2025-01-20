@@ -59,24 +59,10 @@ class CreateScheduleEventGameView(APIView):
         if event is None:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        print("event" , event)
+        if not request.data.get('final'):
+            event_utils.create_event_schedule(event=event , request=request)
         
-        event_teams = event.teams.all() 
-        print("event_teams" , event_teams)
-        game_time = request.data.get('time')
-        game_time = datetime.strptime(game_time,"%H:%M")
-        print("game_time" , game_time.time())
-        games = []
-        for i in range(len(event_teams)):
-            for j in range(i + 1, len(event_teams)):
-                games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time()))
-                game_time += timedelta(minutes=1, seconds=30)
-        
-        print("games" , games)
-        try :
-            EventGame.objects.bulk_create(games)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        event_utils.create_final_stage_schedule(event=event , request=request)
         return Response({"message": "Games scheduled successfully."}, status=status.HTTP_201_CREATED)
     
 

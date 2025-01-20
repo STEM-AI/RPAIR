@@ -72,7 +72,7 @@ class EventGame(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['event', 'team1', 'team2'],
+                fields=['event', 'team1', 'team2' , 'time'],
                 name='unique_game'
             )
         ]
