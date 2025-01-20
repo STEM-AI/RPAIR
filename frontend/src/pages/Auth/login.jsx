@@ -34,10 +34,18 @@ const Login = () => {
 
             localStorage.setItem('access_token', data.access_token);
             const decodedToken = jwtDecode(data.access_token); // Corrected usage
+                // Store role data in localStorage
+                    localStorage.setItem('user_role', JSON.stringify({
+                        is_superuser: decodedToken.is_superuser,
+                        is_staff: decodedToken.is_staff,
+                        is_judge: decodedToken.is_judge,
+                    }));
 
             if (decodedToken.is_superuser) {
+                console.log("superuser")
                 setNavigate('/Dashboard/Admin');
-            } else if (decodedToken.is_staff && !decodedToken.is_judge) {
+            } else if (decodedToken.is_staff) {
+                console.log("staff")
                 setNavigate('/Dashboard/Judge');
             } else {
                 setNavigate('/Dashboard/user');
