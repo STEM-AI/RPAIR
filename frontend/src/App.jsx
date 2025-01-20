@@ -13,6 +13,7 @@ import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard"
 import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard";
 import Teams from "./components/Dashboards/AdminDashboard/Teams";
 import CreateEvent from "./components/Dashboards/AdminDashboard/Management/CreateEvent";
+import Judge from "./pages/Dashboards/Judge/Judge";
 
 const App = () => {
   // Layout component to dynamically render children with or without Navbar/Footer
@@ -113,7 +114,17 @@ const App = () => {
                   </LayoutDashboard>
             </Layout>
             }
-          />
+        />
+         <Route
+          path="/Dashboard/Judge"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <Judge />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
       </Routes>
                 <ContactUs />
 

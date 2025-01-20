@@ -3,11 +3,12 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoSettingsOutline } from "react-icons/io5";
-import { NavLink } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [navigate, setNavigate] = useState(null);
 
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
@@ -38,17 +39,22 @@ const Navbar = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen); // Toggle ProfileDropdown
     setIsDropdownOpen(false); // Close NotificationDropdown when Profile is clicked
   };
+  
+  const handleSignOut = () => {
+      setNavigate("/login");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user_role");
+  };
+  if (navigate) {
+          return <Navigate to={navigate} />;
+      }
+  
 
   return (
     <div className="flex items-center justify-between bg-white p-4 shadow-md w-full">
-      {/* Left Content */}
-      <div className="flex items-center">
-        {/* You can add content for the left side here if needed */}
-      </div>
+  
 
-      {/* Right Content */}
       <div className="flex items-center space-x-6 ml-auto">
-        {/* Notification Icon */}
         <div className="relative" ref={notificationDropdownRef}>
           <button
             className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"
@@ -82,10 +88,10 @@ const Navbar = () => {
                 <span className="text-lg">Account Settings</span>
               </p>
               <hr />
-              <NavLink to="/login"  className="flex items-center text-gray-600 py-2 px-1">
+              <div   className="flex items-center text-gray-600 py-2 px-1">
                 <CiLogout className="text-2xl mx-2" />
-                <span className="text-lg">Log Out</span>
-              </NavLink>
+                <button className="text-lg"  onClick={handleSignOut}>Log Out</button>
+              </div>
             </div>
           )}
         </div>
