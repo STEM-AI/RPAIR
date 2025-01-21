@@ -18,37 +18,55 @@ def get_object(competition_name = None , event_name = None):
                 return None
 
 TOP_3_TEAMS_QUERY = """
-        SELECT 
-            c.name AS competition_name, 
-            e.start_date, 
-            e.end_date, 
-            COALESCE(
-                array_to_json(array_agg(ROW(t.name, t.teamwork_score) ORDER BY t.teamwork_score DESC)), 
-                '[]'::json
-            ) AS top_three_teams
-        FROM 
-            rapair_db_competition c
-        JOIN 
-            rapair_db_competitionevent e ON c.id = e.competition_id
-        LEFT JOIN 
-            (
+            WITH ranked_teams AS (
+                SELECT 
+                    team.id, 
+                    team.name, 
+                    (team.teamwork_score + 
+                    team.interview_score + 
+                    team.inspect_score + 
+                    team.eng_note_book_score) AS total_score, 
+                    team.competition_event_id,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY team.competition_event_id 
+                        ORDER BY 
+                            (team.teamwork_score + 
+                            team.interview_score + 
+                            team.inspect_score + 
+                            team.eng_note_book_score) DESC
+                    ) AS rank
+                FROM 
+                    rapair_db_team team
+                WHERE 
+                    team.competition_event_id IS NOT NULL
+            )
             SELECT 
-                team.id, 
-                team.name, 
-                team.teamwork_score, 
-                team.competition_event_id, 
-                ROW_NUMBER() OVER (PARTITION BY team.competition_event_id ORDER BY team.teamwork_score DESC) AS rank
+                c.name AS competition_name, 
+                e.start_date, 
+                e.end_date, 
+                COALESCE(
+                    json_agg(
+                        jsonb_build_object(
+                            'team_name', t.name, 
+                            'total_score', t.total_score
+                        )
+                        ORDER BY t.total_score DESC
+                    ) FILTER (WHERE t.rank <= 3), 
+                    '[]'::json
+                ) AS top_three_teams
             FROM 
-                rapair_db_team team
-            ) t ON e.id = t.competition_event_id
-        WHERE 
-            c.name = %s
-            AND t.rank <= 3
-        GROUP BY 
-            c.name, 
-            e.start_date, 
-            e.end_date
-        """
+                rapair_db_competition c
+            JOIN 
+                rapair_db_competitionevent e ON c.id = e.competition_id
+            LEFT JOIN 
+                ranked_teams t ON e.id = t.competition_event_id
+            WHERE 
+                c.name = %s
+            GROUP BY 
+                c.name, 
+                e.start_date, 
+                e.end_date;
+                """
 
 def create_event_schedule(event , request):
     event_teams = event.teams.all() 
