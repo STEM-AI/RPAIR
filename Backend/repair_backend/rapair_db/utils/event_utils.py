@@ -68,20 +68,43 @@ TOP_3_TEAMS_QUERY = """
                 e.end_date;
                 """
 
-def create_schedule(event , request):
-    if request.data.get('final') == 'True':
-        event_teams = event.teams.all().order_by('-teamwork_score')[:3] 
-    else :
-        event_teams = event.teams.all() 
-    game_time = request.data.get('time')
-    game_time = datetime.strptime(game_time,"%H:%M")
+def teamwork_schedule( event ,event_teams , game_time):
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
             games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time()))
             game_time += timedelta(minutes=1, seconds=30)
-    try :
-        EventGame.objects.bulk_create(games)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+    return games
+
+def skills_or_automation_schedule(event , game_time):
+    event_teams = event.teams.order_by('?')
+    games = []
+    for i in range(len(event_teams)):
+        games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time()))
+        game_time += timedelta(minutes=1, seconds=30)
+    
+    return games
+        
+def create_schedule(event , request):
+
+    game_time = request.data.get('time')
+    game_time = datetime.strptime(game_time,"%H:%M")
+
+    if request.data.get('stage') == ('skills' or 'automation'):
+        games = skills_or_automation_schedule(event, game_time)
+
+    elif request.data.get('stage') == 'final':
+        event_teams = event.teams.all().order_by('-teamwork_score')[:3] 
+        games = teamwork_schedule(event, event_teams, game_time)
+
+    elif request.data.get('stage') == 'start':
+        event_teams = event.teams.all() 
+        games = teamwork_schedule(event, event_teams, game_time)
+    
+
+    try :
+        stage_games = EventGame.objects.bulk_create(games)
+        return stage_games
+    except Exception as e:
+        return None

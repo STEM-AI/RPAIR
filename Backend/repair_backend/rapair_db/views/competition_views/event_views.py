@@ -59,9 +59,13 @@ class CreateScheduleEventGameView(APIView):
         if event is None:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        event_utils.create_schedule(event=event , request=request)
-        
-        return Response({"message": "Games scheduled successfully."}, status=status.HTTP_201_CREATED)
+        try:
+            stage_games = event_utils.create_schedule(event=event , request=request)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                
+        serializer = EventGameSerializer(stage_games, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 

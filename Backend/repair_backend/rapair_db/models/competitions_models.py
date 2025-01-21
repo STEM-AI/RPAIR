@@ -83,7 +83,7 @@ class EventGame(models.Model):
     id = models.AutoField(primary_key=True)
     event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE , related_name='event_game')
     team1  = models.ForeignKey('Team' , on_delete=models.CASCADE , related_name='team1')
-    team2 = models.ForeignKey('Team' , on_delete=models.CASCADE , related_name='team2')
+    team2 = models.ForeignKey('Team' , on_delete=models.SET_NULL , related_name='team2' , null=True , blank=True) 
     score = models.IntegerField(null=True, blank=True , default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
