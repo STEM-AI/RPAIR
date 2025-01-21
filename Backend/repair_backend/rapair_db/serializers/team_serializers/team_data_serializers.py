@@ -23,7 +23,7 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = [
             'name','robot_name','user_id','type','organization_info','team_leader_name','team_leader_email',
-            'team_leader_phone_number','score','organization','competition' , 
+            'team_leader_phone_number','teamwork_score','organization','competition' , 
             'sponsors', 'coach', 'social_media','previous_competition' , 'members' , 'competition_event'
             ]
 
