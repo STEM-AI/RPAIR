@@ -27,7 +27,7 @@ class EventCreateView(APIView):
 
         
 
-class EventsListView(APIView):
+class EventsListWithTop3TeamsView(APIView):
     permission_classes = [IsSuperUser]
 
     def get(self, request, competition_name):
@@ -59,10 +59,8 @@ class CreateScheduleEventGameView(APIView):
         if event is None:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        if not request.data.get('final'):
-            event_utils.create_event_schedule(event=event , request=request)
+        event_utils.create_schedule(event=event , request=request)
         
-        event_utils.create_final_stage_schedule(event=event , request=request)
         return Response({"message": "Games scheduled successfully."}, status=status.HTTP_201_CREATED)
     
 
@@ -106,4 +104,14 @@ class SetGameScoreView(APIView):
         game.score = int(score)
         game.save()
         return Response({"Game Score Set"}, status=status.HTTP_200_OK)
+    
+class EventProfileView(APIView):
+    permission_classes = [IsSuperUser]
+    def get(self, request, event_name):
+        event = event_utils.get_object(event_name=event_name)
+        if event is None:
+            return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = EventSerializer(event)
+        return Response(serializer.data, status=status.HTTP_200_OK)
           

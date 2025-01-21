@@ -47,6 +47,26 @@ class CompetitionEvent(models.Model):
     end_date = models.DateField()
     location = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    fees = models.IntegerField(default=0)
+    age = models.CharField(max_length=255 , default='12-19')
+
+    MINI_EVENT = 'Mini'
+    SMALL_EVENT = 'Full'
+    REGIONAL_EVENT = 'Regional'
+    NATIONAL_EVENT = 'National'
+    INTERNATIONAL_EVENT = 'International'
+    CATEGORY_CHOICES = [
+        ( MINI_EVENT, 'Mini Event'),
+        ( SMALL_EVENT, 'Full Event'),
+        ( REGIONAL_EVENT, 'Regional Event'),
+        ( NATIONAL_EVENT, 'National Event'),
+        ( INTERNATIONAL_EVENT, 'International Event'),
+    ]
+    category = models.CharField(
+        max_length=255,
+        choices= CATEGORY_CHOICES , 
+        default = MINI_EVENT
+        )
 
     def __str__(self):
         return self.name
