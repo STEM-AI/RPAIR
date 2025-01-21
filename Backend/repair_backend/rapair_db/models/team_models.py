@@ -19,6 +19,7 @@ class Team(models.Model):
     eng_note_book_score = models.IntegerField(null=True, blank=True,default=0)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='organization')
     competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
+    note = models.CharField(max_length=255 , null=True, blank=True , default='')
 
     def __str__(self):
         return self.name

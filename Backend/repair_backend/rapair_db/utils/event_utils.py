@@ -41,7 +41,7 @@ TOP_3_TEAMS_QUERY = """
                     team.competition_event_id IS NOT NULL
             )
             SELECT 
-                c.name AS competition_name, 
+                e.name, 
                 e.start_date, 
                 e.end_date, 
                 COALESCE(
@@ -63,42 +63,63 @@ TOP_3_TEAMS_QUERY = """
             WHERE 
                 c.name = %s
             GROUP BY 
-                c.name, 
+                e.name, 
                 e.start_date, 
                 e.end_date;
                 """
 
-def create_event_schedule(event , request):
-    event_teams = event.teams.all() 
-    print("event_teams" , event_teams)
-    game_time = request.data.get('time')
-    game_time = datetime.strptime(game_time,"%H:%M")
-    print("game_time" , game_time.time())
+def teamwork_schedule( event ,event_teams , game_time , stage):
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
-            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time()))
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage))
             game_time += timedelta(minutes=1, seconds=30)
     
-    print("games" , games)
-    try :
-        EventGame.objects.bulk_create(games)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-def create_final_stage_schedule(event , request):
-    event_teams = event.teams.all().order('-teamwork_score')[:3] 
-    print("event_teams" , event_teams)
-    game_time = request.data.get('time')
-    game_time = datetime.strptime(game_time,"%H:%M")
-    print("game_time" , game_time.time())
+    return games
+
+def skills_or_automation_schedule(event , game_time , stage):
+    event_teams = event.teams.order_by('?')
     games = []
     for i in range(len(event_teams)):
-        games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time()))
+        games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage))
         game_time += timedelta(minutes=1, seconds=30)
     
-    print("games" , games)
-    try :
-        EventGame.objects.bulk_create(games)
+    return games
+        
+from django.db import IntegrityError
+
+def create_schedule(event, request):
+    stage = request.data.get('stage')
+    game_time = request.data.get('time')
+
+    try:
+        game_time = datetime.strptime(game_time, "%H:%M")
+    except ValueError:
+        return Response({"error": "Invalid time format. Please use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        if stage in ('skills', 'automation'):
+            games = skills_or_automation_schedule(event, game_time, stage)
+
+        elif stage == 'final':
+            event_teams = event.teams.all().order_by('-teamwork_score')[:3]
+            games = teamwork_schedule(event, event_teams, game_time, stage)
+
+        elif stage == 'start':
+            event_teams = event.teams.all()
+            games = teamwork_schedule(event, event_teams, game_time, stage)
+
+        else:
+            return Response({"error": "Invalid stage provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            stage_games = EventGame.objects.bulk_create(games)
+            return stage_games  # Return the created objects
+
+        except IntegrityError as e:
+            raise IntegrityError(
+                f"Failed to create schedule due to database constraints: {str(e)}"
+            )
+
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise Exception(f"An error occurred: {str(e)}")
