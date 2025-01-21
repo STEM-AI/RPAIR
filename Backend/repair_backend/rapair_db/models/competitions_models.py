@@ -88,6 +88,7 @@ class EventGame(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
     time = models.TimeField()
+    stage = models.CharField(max_length=10 , default='')
 
     class Meta:
         constraints = [
