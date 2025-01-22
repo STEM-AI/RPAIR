@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from ..models import EventGame
 from rest_framework.response import Response
 from rest_framework import status
-from django.utils.timezone import now
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
