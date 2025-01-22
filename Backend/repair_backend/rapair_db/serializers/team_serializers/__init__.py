@@ -1,0 +1,6 @@
+from .team_coach_serializers import TeamCoachSerializer
+from .team_social_media_serializers import TeamSocialMediaSerializer
+from .team_prev_comp_serializers import TeamPreviousCompetitionSerializer
+from .team_sponsor_serializers import TeamSponsorSerializer
+from .team_data_serializers import TeamSerializer 
+from .team_member_serializers import TeamMemberSerializer
