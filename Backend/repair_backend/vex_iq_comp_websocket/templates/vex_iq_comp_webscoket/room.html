@@ -1,50 +1,77 @@
-<!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        #timer {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        #startButton {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #startButton:disabled {
+            background-color: #ccc;
+        }
+    </style>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
+
+    <h1>Game Timer</h1>
+    <button id="startButton" onclick="startGame()">Start Game</button>
+    <div id="timer">Remaining Time: 60</div>
+
     <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const eventName = "future_vex_iq";
+        let socket;
+        let gameId = 52; // Assuming game ID is 1, update it with the correct game ID
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
+        // Function to initialize the WebSocket connection
+        function startGame() {
+            const startTime = Date.now(); // Get current time in milliseconds
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
+            // Establish WebSocket connection
+            socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/game/${gameId}/`);
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+            socket.onopen = () => {
+                console.log('Connected to WebSocket');
+                // Send the start game action with game_id and start_time
+                socket.send(JSON.stringify({
+                    action: "start_game",
+                    event_name : eventName,
+                    game_id: gameId,
+                    start_time: startTime,
+                }));
+                document.getElementById("startButton").disabled = true;
+                document.getElementById("startButton").textContent = "Game Started";
+            };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log("Received message:", data);
+                if (data.remaining_time !== undefined) {
+                    document.getElementById("timer").textContent = `Remaining Time: ${Math.round(data.remaining_time)} seconds`;
+                }
+            };
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };
+
+            socket.onclose = () => {
+                console.log("WebSocket connection closed");
+            };
+        }
     </script>
+
 </body>
 </html>
