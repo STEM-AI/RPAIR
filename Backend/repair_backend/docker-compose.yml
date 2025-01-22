@@ -1,0 +1,50 @@
+services:
+  rpair:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rpair
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=repair_backend.settings
+    depends_on:
+      - db
+      - redis
+    networks:
+      - shared_network
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+
+
+  db:
+    image: postgres:15
+    container_name: rpair_postgres_db
+    environment:
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+    - .env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - shared_network
+    ports:
+      - "5434:5432"
+
+  redis:  # Add Redis service
+    image: redis:7
+    container_name: rpair_redis
+    ports:
+      - "6379:6379"  # Expose Redis port
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    driver: bridge
+
+volumes:
+  db_data:

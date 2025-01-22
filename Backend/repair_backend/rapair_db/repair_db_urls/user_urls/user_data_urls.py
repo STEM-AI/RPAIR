@@ -12,6 +12,6 @@ urlpatterns = [
 
 
     # User Profile APIs
-    path('profile/', UserProfileView.as_view(), name='user-profile'),
-    path('edit-profile/', UserEditProfileView.as_view(), name='edit-profile'),
+    path('data/profile/', UserProfileView.as_view(), name='user-profile'),
+    path('data/edit-profile/', UserEditProfileView.as_view(), name='edit-profile'),
 ]
