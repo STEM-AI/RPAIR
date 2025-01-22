@@ -11,10 +11,16 @@ import Login from "./pages/Auth/login";
 import Register from "./pages/Auth/Register";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard";
-import Teams from "./components/Dashboards/AdminDashboard/Teams";
+import Teams from "./components/Dashboards/AdminDashboard/ListTeams";
 import CreateEvent from "./components/Dashboards/AdminDashboard/Management/CreateEvent";
 import Judge from "./pages/Dashboards/Judge/Judge";
 import User from "./pages/Dashboards/User/User";
+import CreateStaff from "./components/Dashboards/AdminDashboard/Management/CreateStaff";
+import CreateCompetition from "./components/Dashboards/AdminDashboard/Management/CreateCompetition";
+import VexIQ from "./components/Competitions/VexIQ";
+import AllEvents from "./components/Dashboards/AdminDashboard/Management/AllEvents";
+import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
+import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
 
 const App = () => {
   // Layout component to dynamically render children with or without Navbar/Footer
@@ -91,7 +97,7 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <Teams />
+                <ListTeams />
               </LayoutDashboard>
             </Layout>
           }
@@ -116,6 +122,26 @@ const App = () => {
             </Layout>
             }
         />
+        <Route
+            path="/Dashboard/Admin/CreateStaff"
+          element={
+            <Layout hideNavbar>
+                  <LayoutDashboard>
+                    <CreateStaff />
+                  </LayoutDashboard>
+            </Layout>
+            }
+        />
+        <Route
+            path="/Dashboard/Admin/CreateCompetition"
+          element={
+            <Layout hideNavbar>
+                  <LayoutDashboard>
+                    <CreateCompetition />
+                  </LayoutDashboard>
+            </Layout>
+            }
+        />
          <Route
           path="/Dashboard/Judge"
           element={
@@ -132,11 +158,28 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <User/>
+        <Route
+          path="/Dashboard/Admin/Compitions/VexIQ"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <AllEvents />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/CreateOrganization"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CreateOrg />
               </LayoutDashboard>
             </Layout>
           }
         />
       </Routes>
+      
                 <ContactUs />
 
     </Router>

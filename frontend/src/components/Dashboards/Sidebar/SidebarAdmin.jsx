@@ -6,7 +6,7 @@ import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
 import { GiLaurelsTrophy } from "react-icons/gi";
 import { Link, NavLink } from "react-router-dom";
 
-const SidebarAdmin = () => {
+const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
 
@@ -17,12 +17,32 @@ const SidebarAdmin = () => {
   return (
     <div className="relative">
       {/* Hamburger button to toggle sidebar visibility */}
-      <button
-        className="lg:hidden p-4 text-white bg-blue-900 fixed top-4 left-4 z-50"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="material-icons">menu</span>
-      </button>
+         {/* Hamburger button */}
+         <button
+  className="lg:hidden fixed top-4 left-4 z-50"
+  onClick={() => setIsOpen(!isOpen)}
+>
+  <div className="group flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-lg p-1 hover:bg-slate-200">
+    <div className="space-y-1">
+      <span
+        className={`block h-0.5 w-6 rounded-full bg-slate-500 transition-transform ease-in-out ${
+          isOpen ? "rotate-45 translate-y-1.5" : ""
+        }`}
+      ></span>
+      <span
+        className={`block h-0.5 w-6 rounded-full bg-slate-500 transition-transform ease-in-out ${
+          isOpen ? "opacity-0" : ""
+        }`}
+      ></span>
+      <span
+        className={`block h-0.5 w-6 rounded-full bg-slate-500 transition-transform ease-in-out ${
+          isOpen ? "-rotate-45 -translate-y-1.5" : ""
+        }`}
+      ></span>
+    </div>
+  </div>
+</button>
+
 
       {/* Sidebar */}
       <div
@@ -119,13 +139,18 @@ const SidebarAdmin = () => {
             {activeItem === "management" && (
               <ul className="pl-6 mt-2">
                 {[
+                  // {
+                  //   name: "Create Organization ",
+                  //   path: "/Dashboard/Admin/CreateOrganization",
+                  // },
                   {
-                    name: "Create Competition or Event",
+                    name: "Create Event",
                     path: "/Dashboard/Admin/CreateEvent",
                   },
+
                   {
-                    name: "Create Staff",
-                    path: "/Dashboard/Admin/Staff",
+                    name: "Create Judge",
+                    path: "/Dashboard/Admin/CreateStaff",
                   },
                 ].map(({ name, path }) => (
                   <Link key={name} to={path}>
@@ -143,4 +168,5 @@ const SidebarAdmin = () => {
   );
 };
 
-export default SidebarAdmin;
+export default Sidebar;
+
