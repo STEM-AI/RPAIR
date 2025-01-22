@@ -14,6 +14,7 @@ import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboar
 import Teams from "./components/Dashboards/AdminDashboard/ListTeams";
 import CreateEvent from "./components/Dashboards/AdminDashboard/Management/CreateEvent";
 import Judge from "./pages/Dashboards/Judge/Judge";
+import User from "./pages/Dashboards/User/User";
 import CreateStaff from "./components/Dashboards/AdminDashboard/Management/CreateStaff";
 import CreateCompetition from "./components/Dashboards/AdminDashboard/Management/CreateCompetition";
 import VexIQ from "./components/Competitions/VexIQ";
@@ -151,6 +152,12 @@ const App = () => {
             </Layout>
           }
         />
+         <Route
+          path="/Dashboard/User"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <User/>
         <Route
           path="/Dashboard/Admin/Compitions/VexIQ"
           element={

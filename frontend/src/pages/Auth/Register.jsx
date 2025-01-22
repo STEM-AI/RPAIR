@@ -6,6 +6,9 @@ import logo from "../../assets/logo/logoWrite-re.png"
 import { FcGoogle } from "react-icons/fc";
 import bgimg from "../../assets/imgs/aboutus/bg.png"
 import { Link, Navigate } from "react-router-dom";
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
+
+
 
 const Register = () => {
     const [first_name, setFirstname] = useState("");
@@ -23,7 +26,15 @@ const Register = () => {
     const [navigate, setNavigate] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-          
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [confirmPasswordVisible, setconfirmPasswordVisible] = useState(false);
+
+           const handlePasswordVisibility = () => {
+            setPasswordVisible(prevState => !prevState);
+          };
+           const handleConfirmPasswordVisibility = () => {
+            setconfirmPasswordVisible(prevState => !prevState);
+          };
         // Password validation function
           const validatePassword = (password) => {
               const hasUppercase = /[A-Z]/.test(password);
@@ -32,28 +43,29 @@ const Register = () => {
               const hasSpecialChar = /[@#$%^&*(),.?":{}|<>]/.test(password);
               return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
                 };
+                
   
                const handlePasswordChange = (e) => {
                 const value = e.target.value;
                 setPassword(value);
                 setIsPasswordValid(validatePassword(value));
                   };
-        const signUp = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
+                  const signUp = async (e) => {
+                  e.preventDefault();
+                  setLoading(true);
+                  setError(null);
 
-        if (password !== confirmPassword) {
-            setError("Passwords do not match.");
-            setLoading(false);
-            return;
-        }
+                  if (password !== confirmPassword) {
+                      setError("Passwords do not match.");
+                      setLoading(false);
+                      return;
+                  }
 
-        if (!isPasswordValid) {
-            setError("Password does not meet the requirements.");
-            setLoading(false);
-            return;
-        }
+                  if (!isPasswordValid) {
+                      setError("Password does not meet the requirements.");
+                      setLoading(false);
+                      return;
+                  }
 
         try {
             const response = await axios.post(
@@ -71,7 +83,7 @@ const Register = () => {
                 },
                 { headers: { "Content-Type": "application/json" }, withCredentials: true }
             );
-            console.log("Success:", response.data);
+            console.log("Success");
             setNavigate(true);
             Swal.fire({
                 icon: "success",
@@ -80,9 +92,36 @@ const Register = () => {
                 showConfirmButton: false,
                   });
               } catch (err) {
-                  console.error("Registration error:", err);
-                  setError(err.response?.data?.detail || "Registration failed. Try again.");
-              } finally {
+                console.error("Registration error:", err); // Log the full error object
+
+                let errorMessage = "Registration failed. Try again."; // Default error message
+
+                // Check if the error contains a response from the server
+                if (err.response) {
+                  // Log detailed server response data
+                  console.error("Error response data:", err.response.data);
+
+                  // Check if there is a specific error for email, phone_number, or username
+                  if (err.response.data.email) {
+                    errorMessage = err.response.data.email; // Set the error message from the email
+                  } else if (err.response.data.phone_number) {
+                    errorMessage = err.response.data.phone_number; // Set the error message from the phone_number
+                  } else if (err.response.data.username) {
+                    errorMessage = err.response.data.username; // Set the error message from the username
+                  } else {
+                    // For other errors, use a generic error message
+                    errorMessage = err.response.data.detail || errorMessage;
+                  }
+                } else if (err.request) {
+                  console.error("Error request:", err.request);
+                } else {
+                  console.error("Unexpected error:", err.message);
+                }
+
+                // Set the error message in the state
+                setError(errorMessage);
+              }
+              finally {
                   setLoading(false);
               }
           };
@@ -128,7 +167,7 @@ const Register = () => {
                 </div>
 
             <form className=" pt-6 pb-8 mb-4 bg-white rounded" >
-              {error && <div className="mt-4 text-sm text-red-600">{error}</div>} 
+              {error && <Alert className="px-5 my-2 " severity="error">{error}</Alert>} 
                 <div className="mb-4 md:flex md:justify-between">
                   <div className="mb-4 md:mr-2 md:mb-0">
                     <label
@@ -198,7 +237,9 @@ const Register = () => {
                       onChange={(e) => setDateofbirth(e.target.value)}
                       required
                     />
-                  </div>
+                </div>
+               
+
                 </div>
                
                 <div className="mb-4">
@@ -246,32 +287,35 @@ const Register = () => {
                     className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
                       id="phone"
                       type="text"
-                      placeholder="enter your phone"
+                  placeholder="enter your phone"
+                   pattern="^\+2\d{11}$" // This pattern matches a phone number starting with +2 followed by exactly 10 digits.
+                  title="Phone number must start with +2 and contain 11 digits."
                       value={phone_number}
                       onChange={(e) => setPhonenumber(e.target.value)}
                       required
                     />
                 </div>
                 <div className="mb-4">
-                  <label
-                    className={`block mb-2 text-sm font-bold  text-gray-700`}
-                    htmlFor="email"
-                  >
-                    Email
-                  </label>
-                  <input
-                    className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                    id="email"
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                <label
+                  className="block mb-2 text-sm font-bold text-gray-700"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
+                  id="email"
+                  type="text"
+                  value={email} // النص الكامل في الحقل
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  required
+                />
+              </div>
 
-                  />
-                </div>
                 <div className="mb-4 md:flex md:justify-between">
-                  <div className="mb-4 md:mr-2 md:mb-0">
+                  <div className="mb-4 md:mr-2 md:mb-0 relative">
                     <label
                       className={`block mb-2 text-sm font-bold  text-gray-700 `}
                       htmlFor="password"
@@ -281,7 +325,7 @@ const Register = () => {
                     <input
                     className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
                       id="password"
-                      type="password"
+                      type={passwordVisible ? 'text' : 'password'} 
                       placeholder="******************"
                     value={password}
                     onFocus={() => setShowAlert(true)} // Show alert on focus
@@ -291,9 +335,12 @@ const Register = () => {
                     }}
                       onChange={handlePasswordChange}
                       required
-                    />
+                  />
+                  <button className="absolute right-4 top-9 text-3xl" type="button" onClick={handlePasswordVisibility}>
+                    {passwordVisible ? <VscEyeClosed />: <VscEye />}
+                  </button>
                   </div>
-                  <div className="mb-4 md:mr-2 md:mb-0">
+                  <div className="mb-4 md:mr-2 md:mb-0 relative">
                     <label
                       className={`block mb-2 text-sm font-bold  text-gray-700 `}
                       htmlFor="confirmPassword"
@@ -303,22 +350,32 @@ const Register = () => {
                     <input
                     className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
                       id="confirmPassword"
-                      type="password"
+                      type={passwordVisible ? 'text' : 'password'} 
                       placeholder="******************"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                   />
+                   <button className="absolute right-4 top-9 text-3xl" type="button" 
+                   onClick={handleConfirmPasswordVisibility}
+                    >
+                      {confirmPasswordVisible ? <VscEyeClosed /> : <VscEye />}
+                    
+                  </button>
                 </div>
               </div>
-             {showAlert && !isPasswordValid && (
-                  <Alert severity="info" className="mt-2">
-                      Password must include uppercase, lowercase, digit, and special character.
-                  </Alert>
-                )}
-                    
-
-              {error && <p id="passwordError" className="error">{error}</p>}
+                  {showAlert && !isPasswordValid && (
+                        <Alert severity="info" className="mt-2">
+                            Password must include uppercase, lowercase, digit, and special character.
+                        </Alert>
+                    )}
+                    {password !== confirmPassword && (
+                      <Alert severity="error" className="mt-2">
+                        Passwords do not match.
+                      </Alert>
+              )}                    
+              
+              {error && <Alert className="p-5 my-2" severity="error">{error}</Alert>} 
                 <div className="mb-6 text-center">
                     <button
                             type="submit"
