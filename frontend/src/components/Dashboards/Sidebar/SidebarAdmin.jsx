@@ -5,10 +5,12 @@ import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs";
 import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
 import { GiLaurelsTrophy } from "react-icons/gi";
 import { Link, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  const navigate = useNavigate();
 
   const toggleSubMenu = (item) => {
     setActiveItem((prev) => (prev === item ? null : item));
@@ -68,50 +70,57 @@ const Sidebar = () => {
             </Link>
 
             {/* Competitions */}
-            <li
-              className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
-              onClick={() => toggleSubMenu("competitions")}
-            >
-              <GiLaurelsTrophy className="mr-2" />
-              Competitions
-              <span className="ml-auto">
-                {activeItem === "competitions" ? (
-                  <BsChevronDoubleUp />
-                ) : (
-                  <BsChevronDoubleDown />
-                )}
-              </span>
-            </li>
-            {activeItem === "competitions" && (
-              <ul className="pl-6 mt-2">
-                {[
-                  { name: "VEX IQ", path: "/Dashboard/Admin/Compitions/VexIQ" },
-                  { name: "VEX V5", path: "/Dashboard/Admin/Compitions/VexV5" },
-                  {
-                    name: "Electronics & Arduino",
-                    path: "/Dashboard/Admin/Compitions/ElectronicsArduino",
-                  },
-                  {
-                    name: "Artificial Intelligence",
-                    path: "/Dashboard/Admin/Compitions/AI",
-                  },
-                  {
-                    name: "Web Design",
-                    path: "/Dashboard/Admin/Compitions/WebDesign",
-                  },
-                  {
-                    name: "Mobile Application",
-                    path: "/Dashboard/Admin/Compitions/MobileApp",
-                  },
-                ].map(({ name, path }) => (
-                  <Link key={name} to={path}>
-                    <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                      {name}
-                    </li>
-                  </Link>
-                ))}
-              </ul>
-            )}
+
+      <li
+        className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
+        onClick={() => {
+          toggleSubMenu("competitions"); 
+          navigate("/Dashboard/Admin/Competitions"); 
+        }}
+      >
+        <GiLaurelsTrophy className="mr-2" />
+        Competitions
+        <span className="ml-auto">
+          {activeItem === "competitions" ? (
+            <BsChevronDoubleUp />
+          ) : (
+            <BsChevronDoubleDown />
+          )}
+        </span>
+      </li>
+      {activeItem === "competitions" && (
+        <ul className="pl-6 mt-2">
+          {[
+            { name: "VEX IQ", path: "/Dashboard/Admin/Competitions/VexIQ" },
+            { name: "VEX V5", path: "/Dashboard/Admin/Competitions/VexV5" },
+            {
+              name: "Electronics & Arduino",
+              path: "/Dashboard/Admin/Competitions/ElectronicsArduino",
+            },
+            {
+              name: "Artificial Intelligence",
+              path: "/Dashboard/Admin/Competitions/AI",
+            },
+            {
+              name: "Web Design",
+              path: "/Dashboard/Admin/Competitions/WebDesign",
+            },
+            {
+              name: "Mobile Application",
+              path: "/Dashboard/Admin/Competitions/MobileApp",
+            },
+          ].map(({ name, path }) => (
+            <Link key={name} to={path}>
+              <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                {name}
+              </li>
+            </Link>
+          ))}
+        </ul>
+      )}
+
+
+
 
             {/* Teams */}
             <Link to="/Dashboard/Admin/Teams">
