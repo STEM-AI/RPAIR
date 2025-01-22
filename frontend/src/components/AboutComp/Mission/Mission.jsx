@@ -3,7 +3,7 @@
 import React from "react";
 import { TbTargetArrow } from "react-icons/tb";
 import { PiBinocularsBold } from "react-icons/pi";
-import bgImage from "../../assets/imgs/aboutus/bg.png"; 
+import bgImage from "../../../assets/imgs/aboutus/bg.png"; 
 
 const MissionVision = () => {
   return (
@@ -22,7 +22,7 @@ const MissionVision = () => {
       <div className="relative z-10 w-full max-w-6xl px-4 py-10">
         {/* Title Section */}
         <div className="text-center mb-10">
-          <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+          <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
             MISSION AND VISION
           </h2>
         </div>
@@ -33,7 +33,7 @@ const MissionVision = () => {
             <PiBinocularsBold className="text-white text-3xl" />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-teal-900">Vision</h2>
+            <h2 className="text-2xl font-semibold text-cyan-900">Vision</h2>
             <p className="text-gray-700 mt-3">
               Innovation in organizing competitions that prepare participants for future jobs.
             </p>

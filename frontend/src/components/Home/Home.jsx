@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect }  from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
-
+import { NavLink } from "react-router-dom";
+import vi from "../../assets/videos/heroVideo.mp4"
 
 const Home = () => {
   useEffect(() => {
@@ -11,6 +12,7 @@ const Home = () => {
 
   return (
     <>
+      <div></div>
       <div id="home-section">
         
       <div
@@ -27,11 +29,22 @@ const Home = () => {
             data-twe-carousel-active
           >
 
-                  <img
+                  {/* <img
         className="h-screen w-full object-cover"
         src="https://your-online-image-link.com/your-image.jpg"
         alt="Hero Background"
-      />
+      /> */}<video
+            className="h-screen w-full object-cover"
+            playsInline
+            autoPlay
+            muted
+            loop
+          >
+            <source
+              src={vi}
+              type="video/mp4"
+            />
+        </video>
             <div
               className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black opacity-60"
             />
@@ -50,13 +63,13 @@ const Home = () => {
 
 
           <div className="md:space-x-2">
-            <a
+            <NavLink
               className="inline-block border-2 border-cyan-600 px-8 py-4 text-lg font-semibold uppercase leading-tight text-cyan-300 bg-transparent transition-all duration-300 ease-in-out transform hover:bg-cyan-600 hover:text-white hover:scale-105 hover:opacity-80 focus:outline-none focus:ring-0 shadow-lg hover:shadow-2xl hover:animate-bounce"
-              href="#!"
+              to="/register"
               role="button"
             >
               Get Started
-            </a>
+            </NavLink>
           </div>
 
 

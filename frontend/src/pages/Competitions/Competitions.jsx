@@ -8,8 +8,8 @@ import img6 from "../../assets/imgs/aboutus/IMG_4353.JPG";
 import img7 from "../../assets/imgs/aboutus/IMG_4344.JPG";
 import img8 from "../../assets/imgs/aboutus/IMG_3929.JPG";
 import img9 from "../../assets/imgs/aboutus/IMG_3929.JPG";
-import Rules from "../../components/Rules/Rules";
-import JoinTeams from "../../components/JoinTeams/JoinTeams";
+import Rules from "../../components/CometitionsComponent/Rules/Rules";
+import JoinTeams from "../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 
 const Competitions = () => {
   const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
@@ -21,7 +21,7 @@ const Competitions = () => {
       <div className="w-full max-w-7xl flex flex-col md:flex-row items-start gap-8">
         {/* Text Section */}
         <div className="md:w-2/5">
-        <h2 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+        <h2 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         VEX IQ Competitions
             </h2>
           

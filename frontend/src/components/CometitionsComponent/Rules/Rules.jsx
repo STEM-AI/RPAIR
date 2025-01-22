@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react';
-import pdfFile from '../../assets/pdf/RulesVEXIQ.pdf'; 
+import pdfFile from '../../../assets/pdf/RulesVEXIQ.pdf'; 
 
 const Rules = () => {
   const [showFullText, setShowFullText] = useState(false);
@@ -18,7 +18,7 @@ const Rules = () => {
           <div className="w-full flex-col justify-center lg:items-start items-center gap-10 inline-flex">
             <div className="w-full flex-col justify-center items-start gap-8 flex">
               <div className="w-full flex-col justify-start lg:items-start items-center gap-3 flex">
-                <h3 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-teal-500 text-5xl font-black">
+                <h3 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
                   COMPETITION RULES
                 </h3>
                 <p className="text-gray-700 text-base font-normal leading-relaxed lg:text-start text-center">
@@ -56,7 +56,7 @@ const Rules = () => {
               <a
                 href={pdfFile}
                 download
-                className="mt-4 px-4 py-2 bg-teal-600 hover:bg-teal-800 text-white rounded-lg block text-center"
+                className="mt-4 px-4 py-2 bg-cyan-600 hover:bg-cyan-800 text-white rounded-lg block text-center"
               >
                 Download PDF
               </a>
