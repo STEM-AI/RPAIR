@@ -17,10 +17,10 @@ import Judge from "./pages/Dashboards/Judge/Judge";
 import User from "./pages/Dashboards/User/User";
 import CreateStaff from "./components/Dashboards/AdminDashboard/Management/CreateStaff";
 import CreateCompetition from "./components/Dashboards/AdminDashboard/Management/CreateCompetition";
-import VexIQ from "./components/Competitions/VexIQ";
 import AllEvents from "./components/Dashboards/AdminDashboard/Management/AllEvents";
 import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
 import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
+import MyTeam from "./pages/Dashboards/User/MyTeam";
 
 const App = () => {
   // Layout component to dynamically render children with or without Navbar/Footer
@@ -158,6 +158,20 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <User/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/User/MyTeams"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyTeam/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
         <Route
           path="/Dashboard/Admin/Compitions/VexIQ"
           element={
