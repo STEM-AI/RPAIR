@@ -3,10 +3,10 @@ from django.urls import path , include
 from django.conf.urls.static import static
 
 from rapair_db.repair_db_urls import (
-    tokens_ulrs ,organization_urls ,
-    user_urls ,team_urls , 
+    tokens_ulrs ,user_urls ,team_urls , 
     competition_urls , admin_dashboard_urls
 )
+from rapair_db.repair_db_urls.competiotion_urls import event_urls, organization_urls , team_event_urls
 
 urlpatterns = [
     path('token/', include(tokens_ulrs)),
@@ -15,6 +15,8 @@ urlpatterns = [
     path('team/', include(team_urls)),
     path('competition/', include(competition_urls)),
     path('admin/', include(admin_dashboard_urls)),
+    path('event/', include(event_urls)),
+    path('team_event/', include(team_event_urls)),
     
     
 ]

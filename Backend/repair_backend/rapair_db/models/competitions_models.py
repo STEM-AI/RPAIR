@@ -42,13 +42,34 @@ class Competition(models.Model):
 class CompetitionEvent(models.Model):
     id = models.AutoField(primary_key=True)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE , related_name='competition_event')
+    name = models.CharField(max_length=255 , blank=True, null=True , default=None)
     start_date = models.DateField()
     end_date = models.DateField()
     location = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    fees = models.IntegerField(default=0)
+    age = models.CharField(max_length=255 , default='12-19')
+
+    MINI_EVENT = 'Mini'
+    SMALL_EVENT = 'Full'
+    REGIONAL_EVENT = 'Regional'
+    NATIONAL_EVENT = 'National'
+    INTERNATIONAL_EVENT = 'International'
+    CATEGORY_CHOICES = [
+        ( MINI_EVENT, 'Mini Event'),
+        ( SMALL_EVENT, 'Full Event'),
+        ( REGIONAL_EVENT, 'Regional Event'),
+        ( NATIONAL_EVENT, 'National Event'),
+        ( INTERNATIONAL_EVENT, 'International Event'),
+    ]
+    category = models.CharField(
+        max_length=255,
+        choices= CATEGORY_CHOICES , 
+        default = MINI_EVENT
+        )
 
     def __str__(self):
-        return self.competition.name
+        return self.name
     
     class Meta:
         constraints = [
@@ -57,6 +78,29 @@ class CompetitionEvent(models.Model):
                 name='unique_event'
             )
         ]
+
+class EventGame(models.Model):
+    id = models.AutoField(primary_key=True)
+    event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE , related_name='event_game')
+    team1  = models.ForeignKey('Team' , on_delete=models.CASCADE , related_name='team1')
+    team2 = models.ForeignKey('Team' , on_delete=models.SET_NULL , related_name='team2' , null=True , blank=True) 
+    score = models.IntegerField(null=True, blank=True , default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+    time = models.TimeField()
+    stage = models.CharField(max_length=10 , default='')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['event', 'team1', 'team2' , 'time'],
+                name='unique_game'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.team1} vs {self.team2} at {self.time}"
+    
 
 
     
