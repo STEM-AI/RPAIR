@@ -48,7 +48,7 @@ const Login = () => {
                 console.log("staff")
                 setNavigate('/Dashboard/Judge');
             } else {
-                setNavigate('/Dashboard/user');
+                setNavigate('/Dashboard/User');
             }
         } catch (err) {
             setError(err.response?.data?.detail || 'Login failed. Check your credentials.');

@@ -2,6 +2,22 @@ import re
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+from django.core.validators import RegexValidator
+
+phone_validator = RegexValidator(
+                regex=r'^\+?1?\d{12}$',  
+                message="Phone number must be entered in the format: '+99999999999'. Must be 12 digits ."
+            )
+
+def email_validation(email):
+    # Check if the email is in a valid format
+    # if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
+    #     raise ValidationError(_('Enter a valid email address.'))
+    # Check if the email address is a google email address
+    # if not email.endswith('@gmail.com') or not email.endswith('@rpair.admin.com') or not email.endswith('@rpair.judge.com') :
+    #     raise ValidationError(_('Email must be a google email address.'))
+    pass
+
 class StrongPasswordValidator:
     """
     Validates that the password contains:

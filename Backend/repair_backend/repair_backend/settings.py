@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,12 +28,13 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,13 +42,29 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'social_django',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
+    "corsheaders",
+
     'rapair_db.apps.RapairDbConfig',
+    'vex_iq_comp_websocket.apps.VexIqCompWebsocketConfig',
     
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',  # Enable Google OAuth2
+    'django.contrib.auth.backends.ModelBackend',  # Default auth backend
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY') # Replace with your Client ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')  # Replace with your Client Secret
+
+# Optional: Enforce email domain (e.g., only @gmail.com)
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['gmail.com']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -126,15 +144,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 ROOT_URLCONF = 'repair_backend.urls'
 
@@ -155,7 +164,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'repair_backend.wsgi.application'
-
+ASGI_APPLICATION = 'repair_backend.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -166,7 +183,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='repair_db'),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
+        'HOST': config('DB_DOCKER_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432'),
     }
 }
@@ -211,10 +228,35 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
+# STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'rapair_db', 'static')
+]
+MY_CUSTOM_LOGIN_URL = '/api/user/auth/user-login/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'rapair_db.User'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# youssefelsayed713
+# SMTP Server settings
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail, replace with your SMTP provider if different
+EMAIL_PORT = 587  # Usually 587 for TLS, or 465 for SSL
+EMAIL_USE_TLS = True  # Use TLS (True for Gmail, False for some other services)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password (or app-specific password)
+DEFAULT_FROM_EMAIL =config('DEFAULT_FROM_EMAIL')   # Default 'from' address in emails
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True

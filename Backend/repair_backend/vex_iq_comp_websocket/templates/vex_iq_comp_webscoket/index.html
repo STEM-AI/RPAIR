@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competition Event Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .team {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .team .name {
+            font-weight: bold;
+        }
+        .team .score {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Live Competition Event Dashboard</h1>
+    <div id="teams">
+        <!-- Team list will be populated here -->
+    </div>
+
+    <script>
+        const eventName = "future_vex_iq"; // Replace with the actual competition event ID
+        
+        const socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/`);
+
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            console.log("Score Update:", data);
+
+            // Find the team element and update the score
+            const teamElement = document.getElementById(`team-${data.team_name}`);
+            console.log("team idddd",data.team_id);
+            if (teamElement != null) {
+                console.log("Score Update" , teamElement);
+                teamElement.querySelector('.score').innerText = `Score: ${data.score}`;
+            } else {
+                // If the team is not found, create a new element for it
+                console.log("Creating new team");
+                
+                addNewTeam(data);
+            }
+        };
+
+        socket.onclose = function (event) {
+            console.error("WebSocket closed unexpectedly");
+        };
+
+        // Function to add a new team to the list
+        function addNewTeam(data) {
+            console.log("add new team")
+            const teamContainer = document.getElementById('teams');
+            const teamElement = document.createElement('div');
+            teamElement.id = `team-${data.team_name}`;
+            teamElement.classList.add('team');
+
+            teamElement.innerHTML = `
+                <div class="name">${data.team_name}</div>
+                <div class="score">Score: ${data.score}</div>
+            `;
+            teamContainer.appendChild(teamElement);
+        }
+
+        // // Optional: Initialize the teams list (if you already have teams at the start)
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     const initialTeams = [
+        //         { id: 1, name: 'Team A', score: 10 },
+        //         { id: 2, name: 'Team B', score: 12 },
+        //         { id: 3, name: 'Team C', score: 8 },
+        //     ];
+
+        //     initialTeams.forEach(team => addNewTeam(team));
+        // });
+    </script>
+
+</body>
+</html>

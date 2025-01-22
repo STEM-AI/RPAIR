@@ -20,5 +20,6 @@ from django.urls import path , include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('rapair_db.urls')),
+    path('chat/' , include('vex_iq_comp_websocket.urls'))
     
 ]
