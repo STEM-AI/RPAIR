@@ -51,13 +51,13 @@ class CompetitionEvent(models.Model):
     age = models.CharField(max_length=255 , default='12-19')
 
     MINI_EVENT = 'Mini'
-    SMALL_EVENT = 'Full'
+    SMALL_EVENT = 'Small'
     REGIONAL_EVENT = 'Regional'
     NATIONAL_EVENT = 'National'
     INTERNATIONAL_EVENT = 'International'
     CATEGORY_CHOICES = [
         ( MINI_EVENT, 'Mini Event'),
-        ( SMALL_EVENT, 'Full Event'),
+        ( SMALL_EVENT, 'Small Event'),
         ( REGIONAL_EVENT, 'Regional Event'),
         ( NATIONAL_EVENT, 'National Event'),
         ( INTERNATIONAL_EVENT, 'International Event'),
