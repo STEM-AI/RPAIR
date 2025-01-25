@@ -14,11 +14,12 @@ const ListCompetitions = () => {
     { name: "AI & ML", apiName: "ai_ml" },
     { name: "Game Development", apiName: "game_development" },
   ];
-
+ // my edit starts here to solve the issue on navigation ...
   const handleCompetitionClick = (apiName) => {
+    console.log("Navigating to:", `/Dashboard/Admin/Competitions/${apiName}`);
     navigate(`/Dashboard/Admin/Competitions/${apiName}`);
-    console.log(apiName);
   };
+  //////////////////////////////////////////////
 
   return (
     <div className="container mx-auto p-4">

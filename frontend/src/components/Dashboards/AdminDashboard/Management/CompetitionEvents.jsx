@@ -18,48 +18,28 @@ const CompetitionEvents = () => {
 
   const token = localStorage.getItem("access_token");
 
+// my edit starts here to solve the issue on navigation ...
   useEffect(() => {
-
-    if (!token) {
-      setResponseMessage("You are not authorized. Please log in.");
+    console.log("Competition Name from URL:", competition_name);
+  }, [competition_name]);
+  const fetchEvents = async () => {
+    const apiUrl = `http://147.93.56.71:8000/api/admin/competition-event-list/${competition_name}/`;
+    console.log("Fetching events from:", apiUrl);
+  
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEvents(response.data);
+      setResponseMessage("Events fetched successfully!");
+      setAlertType("success");
+    } catch (err) {
+      console.error("Error fetching events:", err);
       setAlertType("error");
-      return;
+      setResponseMessage("Failed to fetch events. Please try again.");
     }
-
-    if (!competition_name) {
-      setResponseMessage("Competition name is missing.");
-      setAlertType("error");
-      return;
-    }
-
- 
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get(
-          `http://147.93.56.71:8000/api/admin/competition-event-list/${competition_name}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setEvents(response.data); 
-        setResponseMessage("Events fetched successfully!");
-        setAlertType("success");
-      } catch (err) {
-
-        if (err.response && err.response.status === 401) {
-          setAlertType("error");
-          setResponseMessage("Unauthorized access. Please check your token.");
-        } else {
-          setAlertType("error");
-          setResponseMessage("Failed to fetch events. Please try again.");
-        }
-      }
-    };
-
-    fetchEvents();
-  }, [competition_name, token]);
+  };
+////////////////////////////////////////////////////////////////////  
 
 
   if (!token) {
