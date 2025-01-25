@@ -15,23 +15,9 @@ def email_validation(email):
     # if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
     #     raise ValidationError(_('Enter a valid email address.'))
     # Check if the email address is a google email address
-    if not (re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email) or email.endswith('@rpair.admin.com') or email.endswith('@rpair.judge.com')) :
-        raise ValidationError(_('Enter a valid email address.'))
-    
-def verify_email_with_zerobounce(email):
-    # Replace with your actual API key
-    
-    url = f"https://api.zerobounce.net/v2/validate?api_key={settings.ZEROBOUNCE_API_KEY}&email={email}"
-
-    # Make a request to ZeroBounce API
-    response = requests.get(url)
-    data = response.json()
-
-    # Check the response status
-    if data['status'] != 'valid':
-        raise ValidationError(f"The email address {email} is invalid or fake. Status: {data['status']}")
-
-    return True
+    # if not email.endswith('@gmail.com') or not email.endswith('@rpair.admin.com') or not email.endswith('@rpair.judge.com') :
+    #     raise ValidationError(_('Email must be a google email address.'))
+    pass
 
 class StrongPasswordValidator:
     """
