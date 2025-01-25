@@ -124,7 +124,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Admin/Competitions/:competition-name"
+          path="/Dashboard/Admin/Competitions/:competition_name"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>

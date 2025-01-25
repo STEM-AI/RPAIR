@@ -1,4 +1,6 @@
 
+
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -13,7 +15,7 @@ const TeamDetails = () => {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `http://147.93.56.71:8000/api/team/team-profile/${name}`,
+          `http://147.93.56.71:8000/api/team/${name}/team-profile/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -42,75 +44,40 @@ const TeamDetails = () => {
       <h2 className="mb-4 text-center text-3xl font-bold">
         {teamDetails.name}
       </h2>
-      <p className="font-semibold">Robot Name: {teamDetails.robot_name}</p>
-      <p>Type: {teamDetails.type}</p>
-      <p>Competition: {teamDetails.competition}</p>
-      <p>Team Leader Name: {teamDetails.team_leader_name}</p>
-      <p>Team Leader Email: {teamDetails.team_leader_email}</p>
-      <p>Team Leader Phone: {teamDetails.team_leader_phone_number}</p>
+      <p className="font-semibold">Competition: {teamDetails.competition || "N/A"}</p>
+      <p>Organization: {teamDetails.organization_info?.name || "N/A"}</p>
 
-      <h3 className="mt-6 text-xl font-semibold">Organization Info</h3>
-      <p>Name: {teamDetails.organization_info?.name}</p>
-      <p>Address: {teamDetails.organization_info?.address}</p>
-      <p>Type: {teamDetails.organization_info?.type}</p>
-      <p>Email: {teamDetails.organization_info?.email}</p>
-      <h4 className="mt-2 text-lg font-semibold">Contacts:</h4>
-      <ul>
-        {teamDetails.organization_info?.contacts?.map((contact, index) => (
-          <li key={index}>{contact.phone_number}</li>
-        ))}
-      </ul>
+      <h3 className="mt-6 text-xl font-semibold">Team Information</h3>
+      <p>Robot Name: {teamDetails.robot_name || "N/A"}</p>
+      <p>Type: {teamDetails.type || "N/A"}</p>
+      <p>Team Leader Name: {teamDetails.team_leader_name || "N/A"}</p>
+      <p>Team Leader Email: {teamDetails.team_leader_email || "N/A"}</p>
+      <p>Team Leader Phone: {teamDetails.team_leader_phone_number || "N/A"}</p>
 
-      <h3 className="mt-6 text-xl font-semibold">Team Members</h3>
+      <h3 className="mt-6 text-xl font-semibold">Members</h3>
       <ul>
-        {teamDetails.members?.map((member, index) => (
-          <li key={index}>
-            {member.name} - {member.email} - {member.phone_number}
-          </li>
-        ))}
+        {teamDetails.members?.length > 0 ? (
+          teamDetails.members.map((member, index) => (
+            <li key={index}>
+              {member.name} - {member.email} - {member.phone_number}
+            </li>
+          ))
+        ) : (
+          <p>No members available.</p>
+        )}
       </ul>
 
       <h3 className="mt-6 text-xl font-semibold">Sponsors</h3>
       <ul>
-        {teamDetails.sponsors?.map((sponsor, index) => (
-          <li key={index}>
-            {sponsor.name} - {sponsor.email}
-          </li>
-        ))}
-      </ul>
-
-      <h3 className="mt-6 text-xl font-semibold">Previous Competitions</h3>
-      <ul>
-        {teamDetails.previous_competition?.map((competition, index) => (
-          <li key={index}>{competition.name}</li>
-        ))}
-      </ul>
-
-      <h3 className="mt-6 text-xl font-semibold">Coaches</h3>
-      <ul>
-        {teamDetails.coach?.map((coach, index) => (
-          <li key={index}>
-            {coach.name} - {coach.email} - {coach.phone_number} -{" "}
-            {coach.position}
-          </li>
-        ))}
-      </ul>
-
-      <h3 className="mt-6 text-xl font-semibold">Social Media</h3>
-      <ul>
-        {teamDetails.social_media?.map((social, index) => (
-          <li key={index}>
-            {social.platform}:{" "}
-            <a
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline"
-            >
-              {social.url}
-            </a>
-          </li>
-        ))}
+        {teamDetails.sponsors?.length > 0 ? (
+          teamDetails.sponsors.map((sponsor, index) => (
+            <li key={index}>
+              {sponsor.name} - {sponsor.email}
+            </li>
+          ))
+        ) : (
+          <p>No sponsors available.</p>
+        )}
       </ul>
     </div>
   );
