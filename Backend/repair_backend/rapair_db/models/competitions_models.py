@@ -89,6 +89,7 @@ class EventGame(models.Model):
     completed = models.BooleanField(default=False)
     time = models.TimeField()
     stage = models.CharField(max_length=10 , default='')
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         constraints = [
