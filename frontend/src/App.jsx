@@ -106,7 +106,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route path="/Dashboard/Admin/Teams/:id" element={
+        <Route path="/Dashboard/Admin/Teams/:name" element={
           <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />
