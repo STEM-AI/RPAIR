@@ -17,6 +17,14 @@ import Judge from "./pages/Dashboards/Judge/Judge";
 import User from "./pages/Dashboards/User/User";
 import CreateStaff from "./components/Dashboards/AdminDashboard/Management/CreateStaff";
 import CreateCompetition from "./components/Dashboards/AdminDashboard/Management/CreateCompetition";
+import VexIQ from "./components/Competitions/VexIQ";
+import AllEvents from "./components/Dashboards/AdminDashboard/Management/ListCompetitions";
+import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
+import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
+import TeamDetails from "./components/Dashboards/AdminDashboard/TeamDetails";
+import ListCompetitions from "./components/Dashboards/AdminDashboard/Management/ListCompetitions";
+import CompetitionEvents from "./components/Dashboards/AdminDashboard/Management/CompetitionEvents";
+
 import AllEvents from "./components/Dashboards/AdminDashboard/Management/AllEvents";
 import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
 import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
@@ -102,12 +110,29 @@ const App = () => {
             </Layout>
           }
         />
+        <Route path="/Dashboard/Admin/Teams/:name" element={
+          <Layout hideNavbar>
+          <LayoutDashboard>
+          <TeamDetails />
+          </LayoutDashboard>
+          </Layout>} />
         <Route
           path="/Dashboard/Admin/CreateEvent"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateEvent />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/Dashboard/Admin/Competitions/:competition_name"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CompetitionEvents />
               </LayoutDashboard>
             </Layout>
           }
@@ -173,11 +198,11 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/Admin/Compitions/VexIQ"
+          path="/Dashboard/Admin/Competitions"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <AllEvents />
+                <ListCompetitions />
               </LayoutDashboard>
             </Layout>
           }
