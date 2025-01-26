@@ -25,6 +25,10 @@ import TeamDetails from "./components/Dashboards/AdminDashboard/TeamDetails";
 import ListCompetitions from "./components/Dashboards/AdminDashboard/Management/ListCompetitions";
 import CompetitionEvents from "./components/Dashboards/AdminDashboard/Management/CompetitionEvents";
 
+import AllEvents from "./components/Dashboards/AdminDashboard/Management/AllEvents";
+import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
+import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
+import MyTeam from "./pages/Dashboards/User/MyTeam";
 
 const App = () => {
   // Layout component to dynamically render children with or without Navbar/Footer
@@ -179,7 +183,17 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <User/>
-                </LayoutDashboard>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/User/MyTeams"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyTeam/>
+                  </LayoutDashboard>
             </Layout>
           }
         />

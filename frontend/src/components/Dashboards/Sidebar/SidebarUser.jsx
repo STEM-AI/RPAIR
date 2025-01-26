@@ -8,11 +8,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const SidebarUser = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState(null);
-
-  const toggleSubMenu = (item) => {
-    setActiveItem((prev) => (prev === item ? null : item));
-  };
+  
 
   return (
     <div className="relative">
@@ -40,18 +36,18 @@ const SidebarUser = () => {
         <div className="flex-1 overflow-y-auto">
           <ul className="space-y-2 p-4">
             {/* Dashboard */}
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/user">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineDashboard className="mr-2" />
                 Dashboard
               </li>
             </Link>
-
-           
-
-           
-
-           
+            <Link to="/Dashboard/User/MyTeams">
+              <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <RiTeamLine className="mr-2" />
+                My Team
+              </li>
+            </Link>
           </ul>
         </div>
       </div>

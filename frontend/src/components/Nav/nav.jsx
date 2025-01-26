@@ -80,13 +80,18 @@ export default function Navbar() {
         >
             ABOUT
         </NavLink>
+        
 
         <NavLink
-            to={"/challenges"}
+            to={"/competitions"}
             className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700"
         >
             CHALLENGES
-        </NavLink>
+                </NavLink>
+                 <div className="hidden md:flex items-center space-x-6">
+        
+          
+      </div>
 
         <NavLink
             to={"/resources"}
