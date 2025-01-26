@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rapair_db.models import EventGame
-
+from django.core.management import call_command
 GAME_DURATION = 60  # 1 minute
 
 @shared_task
@@ -48,3 +48,9 @@ def update_remaining_time(event_name, game_id, start_time=None):
             "remaining_time": remaining_time
         }
     )
+
+
+
+@shared_task
+def run_create_schedule_command():
+    call_command('create_event_schedule')
