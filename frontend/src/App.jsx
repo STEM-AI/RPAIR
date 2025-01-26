@@ -20,10 +20,11 @@ import CreateCompetition from "./components/Dashboards/AdminDashboard/Management
 import VexIQ from "./components/Competitions/VexIQ";
 import AllEvents from "./components/Dashboards/AdminDashboard/Management/ListCompetitions";
 import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
-import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
+import CreateOrganization from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
 import TeamDetails from "./components/Dashboards/AdminDashboard/TeamDetails";
 import ListCompetitions from "./components/Dashboards/AdminDashboard/Management/ListCompetitions";
 import CompetitionEvents from "./components/Dashboards/AdminDashboard/Management/CompetitionEvents";
+import CreateTeam from "./components/Dashboards/AdminDashboard/Management/CreateTeam";
 
 
 const App = () => {
@@ -164,6 +165,16 @@ const App = () => {
             }
         />
          <Route
+            path="/Dashboard/Admin/CreateTeam"
+          element={
+            <Layout hideNavbar>
+                  <LayoutDashboard>
+                    <CreateTeam />
+                  </LayoutDashboard>
+            </Layout>
+            }
+        />
+         <Route
           path="/Dashboard/Judge"
           element={
             <Layout hideNavbar>
@@ -198,7 +209,7 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <CreateOrg />
+                <CreateOrganization />
               </LayoutDashboard>
             </Layout>
           }

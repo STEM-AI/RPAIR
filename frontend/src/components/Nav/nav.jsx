@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo/logoWrite-re.png";
 import logoBlack from "../../assets/logo/logo2.png";
@@ -30,7 +31,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav
+<nav
     className={`left-0 right-0 z-50 shadow-lg px-5 md:px-10 py-3 flex items-center justify-between 
     ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
     ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed" : "bg-white relative"}
@@ -76,36 +77,72 @@ export default function Navbar() {
     >
         <NavLink
             to={"/about"}
-            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700"
+            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"
         >
-            ABOUT
+            About
         </NavLink>
 
-        <NavLink
-            to={"/challenges"}
-            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700"
-        >
-            CHALLENGES
-        </NavLink>
+        {/* Challenges Dropdown */}
+        <div className="relative group">
+            <button className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+                Challenges
+            </button>
+            <ul
+                className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 group-hover:scale-100 group-hover:opacity-100 opacity-0 origin-top transition-transform duration-300 ease-out"
+            >
+                {[
+                    "Vex IQ",
+                    "Vex V5",
+                    "Web Design",
+                    "Open Source",
+                    "Mobile Application",
+                    "programming",
+                    "Arduino",
+                ].map((item, index) => (
+                    <li key={index} className="hover:bg-cyan-50">
+                        <NavLink
+                            to={`/competitions`}
+                            className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105"
+                        >
+                            {item}
+                        </NavLink>
+                    </li>
+                ))}
+            </ul>
+        </div>
 
-        <NavLink
-            to={"/resources"}
-            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700"
-        >
-            RESOURCES
-        </NavLink>
+        {/* Resources Dropdown */}
+        <div className="relative group">
+            <button className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+                Resources
+            </button>
+            <ul
+                className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 group-hover:scale-100 group-hover:opacity-100 opacity-0 origin-top transition-transform duration-300 ease-out"
+            >
+                {["Volunteering", "Event"].map((item, index) => (
+                    <li key={index} className="hover:bg-cyan-50">
+                        <NavLink
+                            to={`/resources/${item.toLowerCase()}`}
+                            className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105"
+                        >
+                            {item}
+                        </NavLink>
+                    </li>
+                ))}
+            </ul>
+        </div>
 
         <NavLink
             to={"/gallery"}
-            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700"
+            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"
         >
-            GALLERY
+            Gallery
         </NavLink>
 
         {/* Login Button in Menu */}
         <Link
             to={"/login"}
-            className="block pt-2  border-t	 border-gray-300 text-cyan-500 uppercase text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700 md:hidden"
+            className="block pt-2 border-t border-gray-300 text-cyan-500 uppercase text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 md:hidden transform hover:scale-105"
         >
             Login
         </Link>
@@ -115,7 +152,7 @@ export default function Navbar() {
     <div className="hidden md:flex items-center space-x-4">
         <Link
             to={"/login"}
-                    className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50 transition-all duration-700"
+            className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50 transition-all duration-300 transform hover:scale-105"
         >
             Login
         </Link>
