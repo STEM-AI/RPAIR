@@ -116,6 +116,7 @@ class TeamProfileView(APIView):
     
 
 class DeleteTeam(APIView):
+    ##Admin view
     permission_classes = [IsSuperUser]
     def delete(self, request, team_name):
         team = Team.objects.filter(name=team_name).first()
