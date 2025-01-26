@@ -3,7 +3,7 @@ from django.urls import path
 from ...views.competition_views.event_views import(
     CreateScheduleEventGameView,
     SetGameScoreView,
-    EventProfileView
+    EventProfileView,
 ) 
 
 urlpatterns =[

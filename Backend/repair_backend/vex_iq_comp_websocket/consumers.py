@@ -1,8 +1,10 @@
 import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer
-
 from .tasks import update_remaining_time  # Import the Celery task
+from rapair_db.models import EventGame
+from asgiref.sync import sync_to_async
+
 
 class EventConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -28,17 +30,6 @@ class EventConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        # print(f"Received text")
-        # data = json.loads(text_data)
-
-        # if data["action"] == "start_game":
-        #     print("Starting game")
-        #     print("data" , data)
-        #     game_id = data["game_id"]  # The ID of the game
-        #     start_time = data["start_time"]  # The start time sent from the frontend
-
-        #     # Call the Celery task to start the timer in the background
-        #     update_remaining_time.delay(game_id, start_time)
         pass
 
     # Handler to send score updates to the WebSocket
@@ -47,13 +38,6 @@ class EventConsumer(AsyncWebsocketConsumer):
         print("score" , event["data"])
         await self.send(text_data=json.dumps(event["data"]))
 
-    # async def game_timer_update(self, event):
-    #     print("Sent game timer update")
-    #     remaining_time = event['remaining_time']
-    #     print("remaining_time" , remaining_time)
-    #     await self.send(json.dumps({
-    #         'remaining_time': remaining_time
-    #     }))
 
 
 class GameConsumer(AsyncWebsocketConsumer):
@@ -82,18 +66,46 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         print(f"Received text")
-        data = json.loads(text_data)
+        try:
+            data = json.loads(text_data)
+            print("Parsed data:", data)
 
-        if data["action"] == "start_game":
-            print("Starting game")
-            print("data" , data)
-            event_name = data["event_name"]
-            game_id = data["game_id"]  # The ID of the game
-            start_time = data["start_time"]  # The start time sent from the frontend
+            if data["action"] == "start_game":
+                print("Starting game")
+                event_name = data["event_name"]
+                game_id = data.get("game_id")
 
-            # Call the Celery task to start the timer in the background
-            update_remaining_time.apply_async(args=[event_name, game_id, start_time], countdown=1)  # Schedule it to run after 1 second
+                if not game_id:
+                    await self.send(json.dumps({"error": "Game ID is required"}))
+                    return
 
+                # Fetch the game instance
+                try:
+                    game = await sync_to_async(EventGame.objects.get)(id=game_id)
+                    print("Game activated" , game.is_active)
+                except EventGame.DoesNotExist:
+                    await self.send(json.dumps({"error": f"Game with ID {game_id} not found"}))
+                    return
+                
+                # Check if the game is already active
+                if game.is_active:
+                    await self.send(json.dumps({"error": "Game is already active"}))
+                    return
+                
+                if game.completed :
+                    await self.send(json.dumps({"error": "Game has already played"}))
+                    return
+
+                # Trigger the Celery task
+                update_remaining_time.delay(event_name, game_id)
+                await self.send(json.dumps({"message": "Game timer started"}))
+
+        except json.JSONDecodeError as e:
+            print(f"Failed to parse JSON: {e}")
+            await self.send(json.dumps({"error": "Invalid JSON data"}))
+        except KeyError as e:
+            print(f"Missing key in data: {e}")
+            await self.send(json.dumps({"error": f"Missing key: {e}"}))
     # Handler to send score updates to the WebSocket
     async def send_score_update(self, event):
         print("Sent score update")

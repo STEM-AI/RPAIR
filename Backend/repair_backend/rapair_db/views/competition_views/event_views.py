@@ -101,7 +101,7 @@ class SetGameScoreView(APIView):
         game.score = int(score)
         game.save()
         return Response({"Game Score Set"}, status=status.HTTP_200_OK)
-    
+            
 class EventProfileView(APIView):
     permission_classes = [IsSuperUser]
     def get(self, request, event_name):
