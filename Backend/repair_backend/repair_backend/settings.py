@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "daphne",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +53,8 @@ INSTALLED_APPS = [
 
     'rapair_db.apps.RapairDbConfig',
     'vex_iq_comp_websocket.apps.VexIqCompWebsocketConfig',
+
+    'django_celery_beat',
     
 ]
 
@@ -183,7 +186,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='repair_db'),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_DOCKER_HOST', default='localhost'),
+        'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432'),
     }
 }
@@ -260,3 +263,9 @@ logging.basicConfig(level=logging.DEBUG)
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis URL
+CELERY_ACCEPT_CONTENT = ['json']               # Accepted content types
+CELERY_TASK_SERIALIZER = 'json'                # Task serialization format
