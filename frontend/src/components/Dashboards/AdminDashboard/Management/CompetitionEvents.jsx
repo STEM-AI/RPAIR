@@ -300,19 +300,20 @@ const CompetitionEvents = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const apiUrl = `http://147.93.56.71:8000/api/admin/competition-event-list/${competition_name}/`;
+  const apiUrl = `${process.env.REACT_APP_API_URL}/admin/competition-event-list/${competition_name}/`;
 
-      try {
-        const response = await axios.get(apiUrl, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setEvents(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch events. Please try again.");
-        setLoading(false);
-      }
-    };
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEvents(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch events. Please try again.");
+      setLoading(false);
+    }
+  };
+
 
     fetchEvents();
   }, [competition_name, token]);

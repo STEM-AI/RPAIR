@@ -43,7 +43,7 @@ const CreateEvent = () => {
 
     try {
       await axios.post(
-        "http://147.93.56.71:8000/api/admin/create-event/",
+        `${process.env.REACT_APP_API_URL}/admin/create-event/`,
         formData,
         {
           headers: {

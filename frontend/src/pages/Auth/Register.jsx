@@ -69,7 +69,8 @@ const Register = () => {
 
         try {
             const response = await axios.post(
-                "http://147.93.56.71:8000/api/user/auth/user-register/",
+              
+                `${process.env.REACT_APP_API_URL_AUTH}/user-register/`,
                 {
                     first_name,
                     last_name,

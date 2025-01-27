@@ -27,7 +27,7 @@ const Login = () => {
         
         try {
             const { data } = await axios.post(
-                'http://147.93.56.71:8000/api/user/auth/login/',
+                `${process.env.REACT_APP_API_URL_AUTH}/login/`,
                 { username, password },
                 { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
             );
