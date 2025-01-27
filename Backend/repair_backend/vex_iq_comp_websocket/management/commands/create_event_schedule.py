@@ -4,11 +4,12 @@ from rapair_db.models import CompetitionEvent
 from django.db.utils import IntegrityError
 from rapair_db.utils import event_utils
 
+
 class Command(BaseCommand):
     help = "Create a schedule for events one week before their start date."
-    request = {
+    event_date = {
         'stage': 'start',
-        'time': '9:00'
+        'time': '09:00',  # 9 AM in 24-hour format
     }
 
     def handle(self, *args, **kwargs):
@@ -24,7 +25,7 @@ class Command(BaseCommand):
         for event in events:
             try:
                 self.stdout.write(f"Creating schedule for event: {event.name}")
-                event_utils.create_schedule(event=event , request=self.request)
+                event_utils.create_schedule(event=event , stage=self.event_date['stage'] , time=self.event_date['time'])
                 self.stdout.write(self.style.SUCCESS(f"Schedule created for event: {event.name}"))
             except IntegrityError as e:
                 self.stdout.write(self.style.ERROR(f"Integrity error for event {event.name}: {str(e)}"))
