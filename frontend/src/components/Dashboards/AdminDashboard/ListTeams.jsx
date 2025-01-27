@@ -145,28 +145,28 @@ const ListTeams = () => {
       return;
     }
 
-    const fetchTeams = async () => {
-      try {
-        const response = await axios.get(
-          "http://147.93.56.71:8000/api/team/teams-list/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setTeams(response.data);
-        setFilteredTeams(response.data);
-      } catch (err) {
-        if (err.response && err.response.status === 401) {
-          setAlertType("error");
-          setResponseMessage("Unauthorized access. Please check your token.");
-        } else {
-          setAlertType("error");
-          setResponseMessage("Failed to fetch teams. Please try again.");
-        }
+   const fetchTeams = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/team/teams-list/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    };
+    );
+    setTeams(response.data);
+    setFilteredTeams(response.data);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      setAlertType("error");
+      setResponseMessage("Unauthorized access. Please check your token.");
+    } else {
+      setAlertType("error");
+      setResponseMessage("Failed to fetch teams. Please try again.");
+    }
+  }
+};
 
     fetchTeams();
   }, [token]);

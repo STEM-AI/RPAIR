@@ -127,7 +127,7 @@ const TeamDetails = () => {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `http://147.93.56.71:8000/api/team/${name}/team-profile/`,
+          `${process.env.REACT_APP_API_URL}/team/${name}/team-profile/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
