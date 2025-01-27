@@ -4,8 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from ...serializers import CompetitionsSerializer 
 from ...models import Competition
-from ...permissions import IsJudgeUser , IsSuperUser
-
+from ...permissions import IsJudgeUser
 
 
 
@@ -17,7 +16,6 @@ class CompetitionProfileView(APIView):
         
         competition = (
             Competition.objects.filter(name=competition_name)
-            .prefetch_related('teams')
             .first()
             )
         
