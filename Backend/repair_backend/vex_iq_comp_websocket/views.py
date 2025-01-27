@@ -6,3 +6,6 @@ def index(request):
 
 def room(request):
     return render(request, "vex_iq_comp_webscoket/room.html")
+
+def user(request):
+    return render(request, "vex_iq_comp_webscoket/user.html")

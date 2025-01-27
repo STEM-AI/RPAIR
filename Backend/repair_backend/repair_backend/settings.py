@@ -255,10 +255,10 @@ EMAIL_USE_TLS = True  # Use TLS (True for Gmail, False for some other services)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password (or app-specific password)
 DEFAULT_FROM_EMAIL =config('DEFAULT_FROM_EMAIL')   # Default 'from' address in emails
+ZEROBOUNCE_API_KEY = config('ZEROBOUNCE_API_KEY')
+# import logging
 
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 CORS_ALLOW_ALL_ORIGINS = True
 

@@ -1,68 +1,56 @@
+# tasks.py
 from celery import shared_task
-from rapair_db.models import EventGame
-from django.utils.timezone import now, make_aware
+from django.utils.timezone import now
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from datetime import datetime
-# from rapair_db.utils.event_utils import get_object
+from rapair_db.models import EventGame
+from django.core.management import call_command
+GAME_DURATION = 60  # 1 minute
 
-
-GAME_DURATION = 60
 @shared_task
-def update_remaining_time(event_name , game_id , game_start_time):
-    """
-    Update the remaining time for a game and notify WebSocket group when the time is up.
-    """
-    print("Update remaining time for game")
-
-    # event = get_object(event_name=event_name)
-    
+def update_remaining_time(event_name, game_id, start_time=None):
     try:
         game = EventGame.objects.get(id=game_id)
     except EventGame.DoesNotExist:
-        return f"Game with ID {game_id} not found." 
+        return f"Game with ID {game_id} not found."
 
-    # Convert game_start_time (in milliseconds) to a naive datetime object
-    game_start_time = datetime.fromtimestamp(game_start_time / 1000)
+    # Mark the game as active
+    game.is_active = True
+    game.save()
 
-    print("game_start_time before make_aware" , game_start_time)
+    # Rest of the timer logic
+    if start_time is None:
+        start_time = now()
 
-    # Convert game_start_time to a timezone-aware datetime (assuming default timezone is UTC)
-    game_start_time = make_aware(game_start_time)
+    # Calculate the elapsed time
+    elapsed_time = (now() - start_time).total_seconds()
 
-    print("game_start_time after make_aware" , game_start_time)
-
-    # Get the current time (timezone-aware)
-    current_time = now()
-
-    print("current_time", current_time)
-
-    # Calculate the elapsed time in seconds
-    elapsed_time = (current_time - game_start_time).total_seconds()
-
-    print("Elapsed time in seconds", elapsed_time)
-
+    # Calculate the remaining time
     remaining_time = GAME_DURATION - elapsed_time
-    print("Remaining time in the update_remaining_time", remaining_time)
 
     if remaining_time <= 0:
-        print("game end")
+        # Game is over
+        game.completed = True
         game.is_active = False
         game.save()
         remaining_time = 0
+        print("Game ended. Stopping the timer.")
+    else:
+        # Schedule the task to run again after 1 second
+        update_remaining_time.apply_async(args=[event_name, game_id, start_time], countdown=1)
 
-    # Notify WebSocket group
-
+    # Notify the WebSocket group
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f"competition_event_{event_name}_game_{game.id}",
+        f"competition_event_{event_name}_game_{game_id}",
         {
             "type": "game_timer_update",
             "remaining_time": remaining_time
         }
     )
 
-    if remaining_time > 0:
-        print("still waiting for")
-        update_remaining_time.apply_async(args=[event_name, game_id, game_start_time.timestamp() * 1000], countdown=1)
 
+
+@shared_task
+def run_create_schedule_command():
+    call_command('create_event_schedule')
