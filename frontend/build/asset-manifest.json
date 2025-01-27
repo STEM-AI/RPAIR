@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/static/css/main.35895e41.css",
+    "main.js": "/static/js/main.75577208.js",
+    "static/media/heroVideo.mp4": "/static/media/heroVideo.f51a2543255786a2795e.mp4",
+    "static/media/IMG_4353.JPG": "/static/media/IMG_4353.cc0fc71f7a10a656c299.JPG",
+    "static/media/IMG_4396.JPG": "/static/media/IMG_4396.4027027e3eb072375b6c.JPG",
+    "static/media/IMG_4376.JPG": "/static/media/IMG_4376.3e396acf9d3f8aea1cd9.JPG",
+    "static/media/IMG_3937.JPG": "/static/media/IMG_3937.d9a5b72f8bc6cf40158a.JPG",
+    "static/media/IMG_4344.JPG": "/static/media/IMG_4344.37688bd747839e0987bf.JPG",
+    "static/media/IMG_3876.JPG": "/static/media/IMG_3876.d1715549e43bcc015e7c.JPG",
+    "static/media/IMG_3888.JPG": "/static/media/IMG_3888.a67efe95ce4498e69078.JPG",
+    "static/media/IMG_3964.JPG": "/static/media/IMG_3964.64fe3a9435109788ba6c.JPG",
+    "static/media/IMG_3929.JPG": "/static/media/IMG_3929.f554c35d79c7e2b0473d.JPG",
+    "static/media/RulesVEXIQ.pdf": "/static/media/RulesVEXIQ.e9c87c60cc79eb6f2ca6.pdf",
+    "static/media/vexv5.jpg": "/static/media/vexv5.39d3016aa68b63b9fb7b.jpg",
+    "static/media/vexiq.jpg": "/static/media/vexiq.59fe8f314a97c2b1b91c.jpg",
+    "static/media/bgleft.png": "/static/media/bgleft.eec536aa8b1f76e1e288.png",
+    "static/media/AI.jpg": "/static/media/AI.28593da3d9699c57cb05.jpg",
+    "static/media/logoWrite-re.png": "/static/media/logoWrite-re.fcb9a8c37ad5176434a9.png",
+    "static/media/open.jpg": "/static/media/open.384812b9fa4f28f258e9.jpg",
+    "static/media/logo2.png": "/static/media/logo2.8d0eb4c8660b00dce4ce.png",
+    "static/media/bg.png": "/static/media/bg.fa8f22af19d4b9ed1534.png",
+    "static/media/Robot-iStock.jpg": "/static/media/Robot-iStock.ccc8f50ce8ff00d04441.jpg",
+    "static/media/web.webp": "/static/media/web.24f92e4c57871a3c7b36.webp",
+    "static/media/mobile.jpg": "/static/media/mobile.4102f4cee02a5dff5b90.jpg",
+    "static/media/aurdoino.jpg": "/static/media/aurdoino.b887268b24f6768eb10b.jpg",
+    "static/media/programming.webp": "/static/media/programming.85432badf8216da218c7.webp",
+    "index.html": "/index.html",
+    "main.35895e41.css.map": "/static/css/main.35895e41.css.map",
+    "main.75577208.js.map": "/static/js/main.75577208.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.35895e41.css",
+    "static/js/main.75577208.js"
+  ]
+}
