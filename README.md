@@ -73,7 +73,8 @@
                                     |           user  Dashboard             |
                                     +---------------------------------------+
                                     | - Team Profile                        |
-                                    |   - Add Members (Name, Age, Field)    |
+                                    |   - Add team in competition           |
+                                    |        (Name, Age, Field)             |
                                     |   - Link to Organization              |
                                     | - View Competitions                   |
                                     | - View Rankings (Team and Overall)    |

@@ -50,10 +50,10 @@ class TeamSerializer(serializers.ModelSerializer):
         members_info = validated_data.pop('members')
 
 
-        competition = self.context["competition"]
+        event = self.context["event"]
 
         team = self.Meta.model(**validated_data)
-        team.competition = competition
+        team.competition_event = event
 
         team.organization_info = organization_info
         team.sponsors_info = sponsors_info
