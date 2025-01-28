@@ -119,3 +119,19 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.send(json.dumps({
             'remaining_time': remaining_time
         }))
+
+
+class NewsConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        # Add the client to the 'news_updates' group
+        await self.channel_layer.group_add('news_updates', self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Remove the client from the 'news_updates' group
+        await self.channel_layer.group_discard('news_updates', self.channel_name)
+
+    async def news_message(self, event):
+        # Send the news content to the client
+        message = event['message']
+        await self.send(text_data=json.dumps({'message': message}))

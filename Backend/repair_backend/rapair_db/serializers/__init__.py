@@ -4,3 +4,4 @@ from .team_serializers  import TeamCoachSerializer , TeamMemberSerializer ,TeamP
 from .user_serializers.user_data_serializers import UserSerializer , UserEditProfileSerializer
 from .competitions_serializers import CompetitionsSerializer 
 from .event_serializers import TeamCompetitionProfileSerializer , EventSerializer , EventGameSerializer
+from .news_serializers import NewsSerializer
