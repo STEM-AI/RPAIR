@@ -266,6 +266,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # Celery settings
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis URL
+CELERY_BROKER_URL = config('CELERY_BROKER_HOST_URL',default='redis://localhost:6379/0')  # Redis URL
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND_HOST_URL',default='redis://localhost:6379/0')  # Redis URL
 CELERY_ACCEPT_CONTENT = ['json']               # Accepted content types
 CELERY_TASK_SERIALIZER = 'json'                # Task serialization format

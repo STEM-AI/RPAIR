@@ -11,22 +11,22 @@ services:
     depends_on:
       - db
       - redis
+      - celery
     networks:
       - shared_network
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
 
-
   db:
     image: postgres:15
     container_name: rpair_postgres_db
     environment:
-    - POSTGRES_USER=${POSTGRES_USER}
-    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     env_file:
-    - .env
+      - .env
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
@@ -34,11 +34,47 @@ services:
     ports:
       - "5434:5432"
 
-  redis:  # Add Redis service
+  redis:
     image: redis:7
     container_name: rpair_redis
     ports:
-      - "6379:6379"  # Expose Redis port
+      - "6379:6379"
+    networks:
+      - shared_network
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rpair_celery
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=repair_backend.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    command: celery -A repair_backend worker --loglevel=info
+    networks:
+      - shared_network
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rpair_celery_beat
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=repair_backend.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    command: celery -A repair_backend beat --loglevel=info
     networks:
       - shared_network
 
