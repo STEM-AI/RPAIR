@@ -21,7 +21,7 @@ const CardSlider = () => {
     },
     {
       image: require('../../assets/imgs/vexComp/vexiq.jpg'),
-      title: 'VEX iQ',
+      title: 'VEX IQ',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, mi sed egestas tincidunt, libero dolor bibendum nisl, non aliquam quam massa id lacus.'
     },
     {

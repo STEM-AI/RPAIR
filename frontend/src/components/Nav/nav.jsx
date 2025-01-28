@@ -2,25 +2,33 @@ import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo/logoWrite-re.png";
 import logoBlack from "../../assets/logo/logo2.png";
 import { useLocation, NavLink, Link } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isChallengesOpen, setIsChallengesOpen] = useState(false);
     const [isResourcesOpen, setIsResourcesOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
     const location = useLocation();
 
     useEffect(() => {
         const handleScroll = () => {
             const homeSection = document.getElementById("home-section");
-
             if (homeSection) {
                 const homeBottom = homeSection.getBoundingClientRect().bottom;
                 setIsScrolled(homeBottom <= 0);
             }
         };
 
+        // Check login status based on token
+        const checkLogin = () => {
+            const token = localStorage.getItem("access_token");
+            setIsLoggedIn(!!token);
+        };
+
         window.addEventListener("scroll", handleScroll);
+        checkLogin(); // Run on component mount
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
@@ -41,10 +49,17 @@ export default function Navbar() {
         setIsChallengesOpen(false);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("user_role");
+        setIsLoggedIn(false);
+    };
+    
+
     return (
-        <nav className={`left-0 right-0 z-50 shadow-lg px-5 md:px-10 py-3 flex items-center justify-between 
+        <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5 md:px-10 py-3 flex items-center justify-between 
             ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
-            ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed" : "bg-white relative"}
+            ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] " : "bg-white "}
             transition-colors duration-300`}
         >
             {/* Logo */}
@@ -89,15 +104,16 @@ export default function Navbar() {
                 >
                     About
                 </NavLink>
-                {/* Challenges Dropdown */}
+                
+                 {/* Challenges Dropdown */}
                 <div className="relative group w-full ">
-                    <button 
+                    <button
                         onClick={toggleChallenges}
                         className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"                    >
                         Challenges
                     </button>
                     <ul
-                        className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 
+                        className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
                             ${isChallengesOpen ? 'scale-100 opacity-100 z-10' : 'opacity-0'}
                             transition-transform duration-300 ease-out origin-top`}
                     >
@@ -124,14 +140,14 @@ export default function Navbar() {
 
                 {/* Resources Dropdown */}
                 <div className="relative group">
-                    <button 
+                    <button
                         onClick={toggleResources}
-                        className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"      
+                        className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"
                     >
                         Resources
                     </button>
                     <ul
-                        className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 
+                        className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
                             ${isResourcesOpen ? 'scale-100 opacity-100 z-10' : 'opacity-0'}
                             transition-transform duration-300 ease-out origin-top`}
                     >
@@ -154,25 +170,44 @@ export default function Navbar() {
                 >
                     Gallery
                 </NavLink>
+                {/* Login Button or Profile in Menu */}
+                
 
-                {/* Login Button in Menu */}
-                <Link
-                    to={"/login"}
-                    className="block pt-2 border-t border-gray-300 text-cyan-500 uppercase text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 md:hidden transform hover:scale-105"
-                >
-                    Login
-                </Link>
+                
+                
             </div>
 
-            {/* Login Button for Larger Screens */}
+           {/* Login or Profile Icon */}
             <div className="hidden md:flex items-center space-x-4">
-                <Link
-                    to={"/login"}
-                    className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50 transition-all duration-300 transform hover:scale-105"
-                >
-                    Login
-                </Link>
+                {isLoggedIn ? (
+                    <div className="relative">
+                        <FaUserCircle className="text-cyan-500 text-3xl cursor-pointer" />
+                        <div className="absolute  right-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 hover:opacity-100 "> 
+                            <NavLink
+                                to="/Dashboard/Admin"
+                                className="block w-full px-4 py-2 text-left text-cyan-500 hover:bg-cyan-50 transition-all"
+                            >
+                                Profile
+                            </NavLink>
+                            <button
+                                onClick={handleLogout}
+                                className="block  w-full px-4 py-2 text-left text-cyan-500 hover:bg-cyan-50 transition-all"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <Link
+                        to={"/login"}
+                        className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50 transition-all duration-300 transform hover:scale-105"
+                    >
+                        Login
+                    </Link>
+                )}
             </div>
+
         </nav>
     );
 }
+
