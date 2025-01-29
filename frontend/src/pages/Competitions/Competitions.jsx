@@ -16,7 +16,7 @@ const Competitions = () => {
 
   return (
     <>
-    <div className="flex flex-col items-center bg-gray-50 min-h-screen py-8  px-4">
+    <div className="flex flex-col items-center bg-gray-50 min-h-screen py-8   px-4">
       {/* Section Container */}
       <div className="w-full max-w-7xl flex flex-col md:flex-row items-start mt-40  gap-8">
         {/* Text Section */}

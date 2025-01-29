@@ -8,6 +8,7 @@ const Home = () => {
   useEffect(() => {
     // Initialize TW Elements
     initTWE({ Carousel, Ripple });
+    
   }, []);
 
   return (
@@ -81,7 +82,6 @@ const Home = () => {
 
       </div>
       <CardSlider/>
-
 
 
 

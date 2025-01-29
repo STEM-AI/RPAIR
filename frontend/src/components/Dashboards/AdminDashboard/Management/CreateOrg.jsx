@@ -284,7 +284,7 @@ const CreateOrganization = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto mt-24 p-4">
       <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         Create Organization
       </h2>

@@ -145,9 +145,9 @@ const Register = () => {
     <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
        
             
-        <div id="signUpForm" onSubmit={signUp} className="relative flex bg-white rounded-2xl  shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-5xl">
+        <div id="signUpForm" onSubmit={signUp} className="relative  mt-24 flex bg-white rounded-2xl  shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-5xl w-full">
             
-            <div className="w-full p-8 lg:w-1/2 flex flex-col mx-auto">
+            <div className="w-full px-8 py-4 lg:w-3/4 flex flex-col mx-auto">
                 <h2 className="text-3xl  font-bold text-gray-700 text-center">Register</h2>
                 <a href="#"className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
                     <div className="px-4 py-3">
@@ -187,7 +187,7 @@ const Register = () => {
                       required
                     />
                   </div>
-                  <div className="md:ml-2">
+                  <div className=" mb-4 md:mr-2 md:mb-0">
                     <label
                       className={`block mb-2 text-sm font-bold text-gray-700 `}
                       htmlFor="lastName"
@@ -203,10 +203,8 @@ const Register = () => {
                       onChange={(e) => setLastname(e.target.value)}
                       required
                     />
-                  </div>
                 </div>
-                <div className="mb-4 md:flex md:justify-between">
-                  <div className="mb-4 md:mr-2 md:mb-0">
+                <div className="md:ml-2">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-700"
                       htmlFor="username"
@@ -223,28 +221,10 @@ const Register = () => {
                       required
                     />
                   </div>
-                  <div className="md:ml-2">
+                </div>
+                <div className="mb-4 md:flex md:justify-between">
+                  <div className="mb-4 md:mr-2 md:mb-0">
                     <label
-                      className="block mb-2 text-sm font-bold text-gray-700"
-                      htmlFor="lastName"
-                    >
-                      Date of Birth
-                    </label>
-                    <input
-                    className="bg-gray-200  text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                      id="date_of_birth"
-                    type="date"
-                    value={date_of_birth}
-                      onChange={(e) => setDateofbirth(e.target.value)}
-                      required
-                    />
-                </div>
-               
-
-                </div>
-               
-                <div className="mb-4">
-                  <label
                     className="block mb-2 text-sm font-bold  text-gray-700"
                     htmlFor="country"
                   >
@@ -259,26 +239,9 @@ const Register = () => {
                       onChange={(e) => setCountry(e.target.value)}
                       required
                     />
-                </div>
-                <div className="mb-4">
-                  <label
-                    className="block mb-2 text-sm font-bold  text-gray-700"
-                    htmlFor="address"
-                  >
-                    Address
-                  </label>
-                  <input
-                    className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                      id="address"
-                      type="text"
-                      placeholder="enter your address"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      required
-                    />
-                </div>
-                <div className="mb-4">
-                  <label
+                  </div>
+                  <div className="mb-4 md:mr-2 md:mb-0">
+                     <label
                     className={`block mb-2 text-sm font-bold  text-gray-700`}
                     htmlFor="phone"
                   >
@@ -296,6 +259,44 @@ const Register = () => {
                       required
                     />
                 </div>
+                  <div className="md:ml-2">
+                    <label
+                      className="block mb-2 text-sm font-bold text-gray-700"
+                      htmlFor="lastName"
+                    >
+                      Date of Birth
+                    </label>
+                    <input
+                    className="bg-gray-200  text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
+                      id="date_of_birth"
+                    type="date"
+                    value={date_of_birth}
+                      onChange={(e) => setDateofbirth(e.target.value)}
+                      required
+                    />
+                </div>
+
+                </div>
+               
+                
+                <div className="mb-4">
+                  <label
+                    className="block mb-2 text-sm font-bold  text-gray-700"
+                    htmlFor="address"
+                  >
+                    Address
+                  </label>
+                  <input
+                    className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
+                      id="address"
+                      type="text"
+                      placeholder="enter your address"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      required
+                    />
+                </div>
+                
                 <div className="mb-4">
                 <label
                   className="block mb-2 text-sm font-bold text-gray-700"
@@ -316,7 +317,7 @@ const Register = () => {
               </div>
 
                 <div className="mb-4 md:flex md:justify-between">
-                  <div className="mb-4 md:mr-2 md:mb-0 relative">
+                  <div className="mb-4 md:mr-2 w-1/2 md:mb-0 relative">
                     <label
                       className={`block mb-2 text-sm font-bold  text-gray-700 `}
                       htmlFor="password"
@@ -341,7 +342,7 @@ const Register = () => {
                     {passwordVisible ? <VscEyeClosed />: <VscEye />}
                   </button>
                   </div>
-                  <div className="mb-4 md:mr-2 md:mb-0 relative">
+                  <div className="mb-4 md:mr-2  w-1/2 md:mb-0 relative">
                     <label
                       className={`block mb-2 text-sm font-bold  text-gray-700 `}
                       htmlFor="confirmPassword"
@@ -377,7 +378,7 @@ const Register = () => {
               )}                    
               
               {error && <Alert className="p-5 my-2" severity="error">{error}</Alert>} 
-                <div className="mb-6 text-center">
+                <div className=" text-center">
                     <button
                             type="submit"
                             className={`mt-8 font-bold py-2 px-4 w-full rounded ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-cyan-800 hover:bg-cyan-600"} text-white`}
