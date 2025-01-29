@@ -88,7 +88,23 @@ class EventGame(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
     time = models.TimeField()
-    stage = models.CharField(max_length=10 , default='')
+    
+    START = 'start'
+    SKILLS = 'skills'
+    AUTOMATION = 'automation'
+    FINAL = 'final'
+    STAGE_CHOICES = (
+        (START, 'Start'),
+        (SKILLS, 'Skill'),
+        (AUTOMATION, 'Automation'),
+        (FINAL, 'Final'),
+    )
+    stage = models.CharField(
+        max_length=10 ,
+        choices= STAGE_CHOICES , 
+        default=START)
+    
+    is_active = models.BooleanField(default=False)
 
     class Meta:
         constraints = [

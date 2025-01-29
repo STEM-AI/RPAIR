@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from ..models import EventGame
 from rest_framework.response import Response
 from rest_framework import status
-from django.utils.timezone import now
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
@@ -73,8 +72,7 @@ def teamwork_schedule( event ,event_teams , game_time , stage):
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
             games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage))
-            game_time += timedelta(minutes=1, seconds=30)
-    
+            game_time += timedelta(minutes=1, seconds=30)    
     return games
 
 def skills_or_automation_schedule(event , game_time , stage):
@@ -88,10 +86,8 @@ def skills_or_automation_schedule(event , game_time , stage):
         
 from django.db import IntegrityError
 
-def create_schedule(event, request):
-    stage = request.data.get('stage')
-    game_time = request.data.get('time')
-
+def create_schedule(event, stage=None , time=None):
+    game_time = time
     try:
         game_time = datetime.strptime(game_time, "%H:%M")
     except ValueError:
