@@ -33,18 +33,15 @@ const App = () => {
   // Layout component to dynamically render children with or without Navbar/Footer
   const Layout = ({ children, hideNavbar = false }) => (
     <>
-      {!hideNavbar && <Navbar />}
       {children}
-      {!hideNavbar && (
-        <>
-          <Footer />
-        </>
-      )}
-    </>
+      {!hideNavbar && <Footer />}
+      
+          </>
   );
 
   return (
     <Router>
+      <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route
