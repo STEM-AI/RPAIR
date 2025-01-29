@@ -41,10 +41,12 @@
             }
 
             try {
+                yourAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ5MzkwLCJpYXQiOjE3MzgxNDU3OTAsImp0aSI6IjcyN2EwOTU2MzNmMjQ3MDJiY2FmZmM2MGRkMDM3ZDYyIiwidXNlcl9pZCI6MjIsInVzZXJuYW1lIjoibmVrbGF3aUp1ZGdlIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6ZmFsc2V9.V1A_0qk8fuT3co6VKDorlsvrbGRp5A_crM7jVQNe4ww'
                 const response = await fetch('http://localhost:8000/api/admin/news/', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${yourAuthToken}`,
                     },
                     body: JSON.stringify({ content }),
                 });

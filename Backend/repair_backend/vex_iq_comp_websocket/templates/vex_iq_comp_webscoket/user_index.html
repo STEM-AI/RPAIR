@@ -26,18 +26,33 @@
 
     <script>
         // Connect to the WebSocket
-        const socket = new WebSocket(`ws://${window.location.host}/ws/news/`);
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ5MTA2LCJpYXQiOjE3MzgxNDU1MDYsImp0aSI6IjY1N2VhMTUwYzFlZDQxZGU4YTZiODlkMTM3NDUzNjJmIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJuZWtsYXdpIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZX0.XMboqRHuysYiWZy37FJyn5EjwC8VgJALIFCexTots2Q";
+        const socket = new WebSocket(`ws://${window.location.host}/ws/news/?token=${token}`);
 
         // Handle incoming WebSocket messages
         socket.onmessage = function (event) {
             const data = JSON.parse(event.data);
             document.getElementById('newsContent').textContent = data.message;
         };
+        // Handle WebSocket errors
+        socket.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
+        // Handle WebSocket connection closure
+        socket.onclose = function () {
+            console.log('WebSocket connection closed');
+        };
 
         // Fetch the latest news on page load
         async function fetchLatestNews() {
             try {
-                const response = await fetch('http://localhost:8000/api/admin/news/');
+                const response = await fetch('http://localhost:8000/api/admin/news/' , 
+                {
+                    headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                }
+            },);
                 const data = await response.json();
                 const latestNews = data[0]?.content || 'No news available.';
                 document.getElementById('newsContent').textContent = latestNews;

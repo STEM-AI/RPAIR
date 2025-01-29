@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
+from vex_iq_comp_websocket.websocket_auth import JWTAuthMiddleware
 
 # Load your ASGI app in the following variable.
 from channels.routing import ProtocolTypeRouter, URLRouter
@@ -20,12 +21,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'repair_backend.settings')
 
 application = ProtocolTypeRouter({
     'websocket': AllowedHostsOriginValidator(
+        JWTAuthMiddleware(
         AuthMiddlewareStack(
             URLRouter(
                 [
                     *websocket_urlpatterns,  # Add your WebSocket URL routing here
                 ]
             )
+        )
         )
     ),
     "http": get_asgi_application(),  # For HTTP requests
