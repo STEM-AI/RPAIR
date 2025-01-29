@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from ..models import EventGame
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import F 
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
@@ -72,7 +73,8 @@ def teamwork_schedule( event ,event_teams , game_time , stage):
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
             games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage))
-            game_time += timedelta(minutes=1, seconds=30)    
+            game_time += timedelta(minutes=1, seconds=30)   
+
     return games
 
 def skills_or_automation_schedule(event , game_time , stage):
@@ -98,8 +100,13 @@ def create_schedule(event, stage=None , time=None):
             games = skills_or_automation_schedule(event, game_time, stage)
 
         elif stage == 'final':
-            event_teams = event.teams.all().order_by('-teamwork_score')[:3]
+            event_teams =( 
+                event.teams.all()
+                .annotate(total_score=F('teamwork_score')+ F('interview_score')+F('inspect_score')+F('eng_note_book_score'))
+                .order_by('-total_score')[:3]
+            )
             games = teamwork_schedule(event, event_teams, game_time, stage)
+            
 
         elif stage == 'start':
             event_teams = event.teams.all()
