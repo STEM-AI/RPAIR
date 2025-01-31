@@ -1,5 +1,4 @@
 {
-  "homepage": "http://rpair.com/",
   "name": "forntend",
   "version": "0.1.0",
   "private": true,
@@ -9,6 +8,7 @@
     "@mui/material": "^6.4.0",
     "animate.css": "^4.1.1",
     "axios": "^1.7.9",
+    "classnames": "^2.5.1",
     "cra-template": "1.2.0",
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",

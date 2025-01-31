@@ -327,7 +327,7 @@ const CompetitionEvents = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 mt-28">
       <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-600 text-5xl font-black">
         {competition_name.replace(/_/g, " ").toUpperCase()} EVENTS
       </h2>
