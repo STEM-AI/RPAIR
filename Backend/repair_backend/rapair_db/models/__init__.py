@@ -4,4 +4,4 @@ from .team_models import Team , TeamSponsor , TeamSocialMedia , TeamPreviousComp
 from .group_models import CompetitionGroup , TeamGroup
 from .competitions_models import Competition ,  CompetitionEvent , EventGame
 from .user_forget_password_models import VerificationCode
-from .news_models import News
+from .news_models import News , Notification

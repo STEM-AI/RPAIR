@@ -4,6 +4,7 @@ from .consumers import (
     EventConsumer,
     GameConsumer,
     NewsConsumer,  # Add NewsConsumer to websocket_urlpatterns if you want to receive news updates.
+    NotificationConsumer,  # Add NotificationConsumer to websocket_urlpatterns if you want to receive notification updates.
 )
 
 websocket_urlpatterns = [
@@ -12,4 +13,7 @@ websocket_urlpatterns = [
     
     # Add NewsConsumer to websocket_urlpatterns if you want to receive news updates.
     re_path(r'ws/news/', NewsConsumer.as_asgi()),
+
+    # Add NotificationConsumer to websocket_urlpatterns if you want to receive notification updates.
+    re_path(r'ws/notification/', NotificationConsumer.as_asgi()),
 ]

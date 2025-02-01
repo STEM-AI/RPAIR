@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .notification {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+        .notification.unread {
+            background-color: #e3f2fd;
+        }
+        .notification.read {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Notifications</h1>
+    <div id="notifications"></div>
+
+    <script>
+        const notificationsContainer = document.getElementById('notifications');
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4NDE2NTc2LCJpYXQiOjE3Mzg0MTI5NzYsImp0aSI6ImRiZmI2NmUxN2JlZDQwNzBiZDA2NTYzNWU0MmQwYzUyIiwidXNlcl9pZCI6MjUsInVzZXJuYW1lIjoidXNlciIsImlzX3N0YWZmIjpmYWxzZSwiaXNfc3VwZXJ1c2VyIjpmYWxzZX0.fxawomCsLHFGXEbcUWfSrw-FaEoo1Bz1_6Peb8gS0rU' // Function to fetch notifications from the database
+        async function fetchNotifications() {
+            try {
+                const response = await fetch(`/api/user/notification/`,
+                {
+                    headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                }
+            },);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch notifications');
+                }
+                const notifications = await response.json();
+                console.log("notifications" , notifications)
+                displayNotifications(notifications);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        }
+
+        // Function to display notifications
+        function displayNotifications(notifications) {
+            notificationsContainer.innerHTML = ''; // Clear existing notifications
+            notifications.forEach(notification => {
+                const notificationElement = document.createElement('div');
+                notificationElement.className = `notification ${notification.is_read ? 'read' : 'unread'}`;
+                notificationElement.textContent = notification.content;
+
+                // Mark notification as read when clicked
+                if (!notification.is_read) {
+                    console.log("notification.id" , notification.id)
+                    notificationElement.addEventListener('click', () => {
+                        markNotificationAsRead(notification.id);
+                        notificationElement.classList.remove('unread');
+                        notificationElement.classList.add('read');
+                    });
+                }
+
+                notificationsContainer.appendChild(notificationElement);
+            });
+        }
+
+        // Function to mark a notification as read
+        async function markNotificationAsRead(notificationId) {
+            try {
+                const response = await fetch(`/api/user/notification/mark-as-read/${notificationId}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to mark notification as read');
+                }
+                console.log('Notification marked as read');
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        // WebSocket connection for real-time notifications
+        const socket = new WebSocket(`ws://${window.location.host}/ws/notification/?token=${token}`);
+
+        socket.onmessage = function (event) {
+            const notification = JSON.parse(event.data);
+            console.log("new notification received" , notification)
+            console.log("received notification id ", notification.message.id);
+            const notificationsContainer = document.getElementById('notifications');
+
+            // Add new notification to the top of the list
+            const notificationElement = document.createElement('div');
+            notificationElement.className = 'notification unread';
+            notificationElement.textContent = notification.message.content;
+
+            notificationElement.addEventListener('click', () => {
+                markNotificationAsRead(notification.message.id);
+                notificationElement.classList.remove('unread');
+                notificationElement.classList.add('read');
+            });
+
+            notificationsContainer.prepend(notificationElement);
+        };
+
+        socket.onopen = function () {
+            console.log('WebSocket connection established');
+        };
+
+        socket.onclose = function () {
+            console.log('WebSocket connection closed');
+        };
+
+        // Fetch notifications when the page loads
+        fetchNotifications();
+    </script>
+</body>
+</html>
