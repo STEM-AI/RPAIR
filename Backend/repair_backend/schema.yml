@@ -1,0 +1,755 @@
+openapi: 3.0.3
+info:
+  title: RPAIR API Documentation
+  version: 1.0.0
+  description: RPAIR Competition
+paths:
+  /api/admin/competition-event-list/{competition_name}/:
+    get:
+      operationId: admin_competition_event_list_retrieve
+      parameters:
+      - in: path
+        name: competition_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+          description: ''
+  /api/admin/create-event/:
+    post:
+      operationId: admin_create_event_create
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/news/:
+    get:
+      operationId: admin_news_list
+      description: List all news items or create a new news item.
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/News'
+          description: ''
+    post:
+      operationId: admin_news_create
+      description: List all news items or create a new news item.
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/News'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/News'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/News'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+          description: ''
+  /api/competition/competition-list/:
+    get:
+      operationId: competition_competition_list_retrieve
+      tags:
+      - competition
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/competition/competition-profile/{competition_name}/:
+    get:
+      operationId: competition_competition_profile_retrieve
+      parameters:
+      - in: path
+        name: competition_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - competition
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/competition/create-competition/:
+    post:
+      operationId: competition_create_competition_create
+      tags:
+      - competition
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/event/{event_name}/event-profile/:
+    get:
+      operationId: event_event_profile_retrieve
+      parameters:
+      - in: path
+        name: event_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - event
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/event/{event_name}/schedule/:
+    get:
+      operationId: event_schedule_retrieve
+      parameters:
+      - in: path
+        name: event_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - event
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/event/{event_name}/schedule-games/:
+    post:
+      operationId: event_schedule_games_create
+      parameters:
+      - in: path
+        name: event_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - event
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/event/set-game-score/{game_id}/:
+    post:
+      operationId: event_set_game_score_create
+      parameters:
+      - in: path
+        name: game_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - event
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/organization/create-organization/:
+    post:
+      operationId: organization_create_organization_create
+      tags:
+      - organization
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/organization/delete-organization/{organization_name}/:
+    patch:
+      operationId: organization_delete_organization_partial_update
+      parameters:
+      - in: path
+        name: organization_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - organization
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/organization/edit-organization-profile/{organization_name}/:
+    patch:
+      operationId: organization_edit_organization_profile_partial_update
+      parameters:
+      - in: path
+        name: organization_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - organization
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/organization/list-organizations/:
+    get:
+      operationId: organization_list_organizations_retrieve
+      tags:
+      - organization
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/organization/organization-list/:
+    get:
+      operationId: organization_organization_list_retrieve
+      tags:
+      - organization
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/organization/organization-profile/{organization_name}/:
+    get:
+      operationId: organization_organization_profile_retrieve
+      parameters:
+      - in: path
+        name: organization_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - organization
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team/{team_name}/team-profile/:
+    get:
+      operationId: team_team_profile_retrieve_2
+      parameters:
+      - in: path
+        name: team_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team/change-team-organization/{team_name}/:
+    patch:
+      operationId: team_change_team_organization_partial_update
+      parameters:
+      - in: path
+        name: team_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team/create-team/:
+    post:
+      operationId: team_create_team_create
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team/delete-team/{team_name}/:
+    delete:
+      operationId: team_delete_team_destroy
+      parameters:
+      - in: path
+        name: team_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/team/edit-team/{team_name}/:
+    patch:
+      operationId: team_edit_team_partial_update
+      parameters:
+      - in: path
+        name: team_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team/team-profile/:
+    get:
+      operationId: team_team_profile_retrieve
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team/teams-list/:
+    get:
+      operationId: team_teams_list_retrieve
+      tags:
+      - team
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/team_event/set-team-extra-scores-fields/:
+    post:
+      operationId: team_event_set_team_extra_scores_fields_create
+      description: Set Inspction , Interview , Engineering Notebook Scores Field
+      tags:
+      - team_event
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyTokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/user/auth/google-login/:
+    post:
+      operationId: user_auth_google_login_create
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: user_auth_google_login_partial_update
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/auth/judge-register/:
+    post:
+      operationId: user_auth_judge_register_create
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/user/auth/login/:
+    post:
+      operationId: user_auth_login_create
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/auth/user-register/:
+    post:
+      operationId: user_auth_user_register_create
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/data/edit-profile/:
+    patch:
+      operationId: user_data_edit_profile_partial_update
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/user/data/profile/:
+    get:
+      operationId: user_data_profile_retrieve
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/user/notification/:
+    get:
+      operationId: user_notification_list
+      description: List all notification items or create a new notification item.
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+          description: ''
+    post:
+      operationId: user_notification_create
+      description: List all notification items or create a new notification item.
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/user/notification/mark-as-read/{id}/:
+    put:
+      operationId: user_notification_mark_as_read_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+    patch:
+      operationId: user_notification_mark_as_read_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotification'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/user/password/forget-password/{email}/:
+    get:
+      operationId: user_password_forget_password_retrieve
+      parameters:
+      - in: path
+        name: email
+        schema:
+          type: string
+        required: true
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/password/reset-password/:
+    patch:
+      operationId: user_password_reset_password_partial_update
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/password/send-verification-code/:
+    post:
+      operationId: user_password_send_verification_code_create
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/password/verify-code/:
+    post:
+      operationId: user_password_verify_code_create
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    EventList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        location:
+          type: string
+          maxLength: 255
+        top3_teams:
+          type: string
+          readOnly: true
+      required:
+      - end_date
+      - id
+      - location
+      - start_date
+      - top3_teams
+    MyTokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
+    News:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+      - content
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_read:
+          type: boolean
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - id
+      - is_read
+      - user
+    PatchedNotification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_read:
+          type: boolean
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
