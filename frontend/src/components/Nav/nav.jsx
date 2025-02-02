@@ -81,7 +81,7 @@ export default function Navbar() {
         >
             About
         </NavLink>
-
+        
         {/* Challenges Dropdown */}
         <div className="relative group">
             <button className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
@@ -110,6 +110,18 @@ export default function Navbar() {
                 ))}
             </ul>
         </div>
+
+        <NavLink
+            to={"/competitions"}
+            className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-700"
+        >
+            CHALLENGES
+                </NavLink>
+                 <div className="hidden md:flex items-center space-x-6">
+        
+          
+      </div>
+
 
         {/* Resources Dropdown */}
         <div className="relative group">
