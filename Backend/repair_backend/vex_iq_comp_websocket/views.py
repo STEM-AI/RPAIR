@@ -16,3 +16,6 @@ def admin(request):
 
 def user_news(request):
     return render(request, "vex_iq_comp_webscoket/user_index.html")
+
+def user_notification(request):
+    return render(request, "vex_iq_comp_webscoket/user_notification_index.html")

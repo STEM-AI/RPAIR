@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ...serializers import EventSerializer
+from ...serializers import EventSerializer , EventListSerializer
 from ...permissions import IsSuperUser ,IsJudgeUser
 from django.db import connection
 from ...utils import event_utils
@@ -31,19 +31,28 @@ class EventsListWithTop3TeamsView(APIView):
     permission_classes = [IsSuperUser]
 
     def get(self, request, competition_name):
+        #TODO: Compare preformance between Query and EventListSerializer
         competition = event_utils.get_object(competition_name)
 
+        events = competition.competition_event.all()
+
+        if not events:
+            return Response({"error": "No events found for this competition"}, status=status.HTTP_404_NOT_FOUND)
+        
         if competition is None:
             return Response({"error": "Competition not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        serializer = EventListSerializer(events, many=True)
 
-        query = event_utils.TOP_3_TEAMS_QUERY
-        with connection.cursor() as cursor:
-            cursor.execute(query, [competition_name])
-            result = cursor.fetchall()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # query = event_utils.TOP_3_TEAMS_QUERY
+        # with connection.cursor() as cursor:
+        #     cursor.execute(query, [competition_name])
+        #     result = cursor.fetchall()
         
 
-        return Response(result, status=status.HTTP_200_OK)
+        # return Response(result, status=status.HTTP_200_OK)
     
 
 class CreateScheduleEventGameView(APIView):
