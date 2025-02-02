@@ -3,13 +3,16 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoSettingsOutline } from "react-icons/io5";
-import { Navigate } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [navigate, setNavigate] = useState(null);
-
+  const [isChallengesOpen, setIsChallengesOpen] = useState(false);
+  const [isResourcesOpen, setIsResourcesOpen] = useState(false);
+  const location = useLocation();
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
 
@@ -47,14 +50,104 @@ const Navbar = () => {
   };
   if (navigate) {
           return <Navigate to={navigate} />;
-      }
+  }
+  
+    const toggleChallenges = () => {
+        setIsChallengesOpen(!isChallengesOpen);
+        setIsResourcesOpen(false);
+    };
+
+    const toggleResources = () => {
+        setIsResourcesOpen(!isResourcesOpen);
+        setIsChallengesOpen(false);
+    };
   
 
   return (
-    <div className="flex items-center justify-between bg-white p-4 shadow-md w-full">
-  
+        <div className="flex items-center justify-between bg-white ps-12  p-4 shadow-md w-full">
+      {/* Navigation Links */}
+      <div className="flex items-center justify-center ml-auto space-x-6">
+        <NavLink
+          to={"/"}
+          className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to={"/about"}
+          className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"
+        >
+          About
+        </NavLink>
+         {/* Challenges Dropdown */}
+          <div className="relative group w-full ">
+              <button 
+                  onClick={toggleChallenges}
+                  className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"                    >
+                  Challenges
+              </button>
+              <ul
+                  className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 
+                      ${isChallengesOpen ? 'scale-100 block z-10' : 'hidden'}
+                      transition-transform duration-300 ease-out origin-top`}
+              >
+                  {[
+                      "Vex IQ",
+                      "Vex V5",
+                      "Web Design",
+                      "Open Source",
+                      "Mobile Application",
+                      "Programming",
+                      "Arduino",
+                  ].map((item, index) => (
+                      <li key={index} className="hover:bg-cyan-50">
+                          <NavLink
+                              to={`/competitions`}
+                              className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105"
+                          >
+                              {item}
+                          </NavLink>
+                      </li>
+                  ))}
+              </ul>
+          </div>
 
-      <div className="flex items-center space-x-6 ml-auto">
+          {/* Resources Dropdown */}
+          <div className="relative group">
+              <button 
+                  onClick={toggleResources}
+                  className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"      
+              >
+                  Resources
+              </button>
+              <ul
+                  className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 
+                      ${isResourcesOpen ? 'scale-100 block z-10' : 'hidden'}
+                      transition-transform duration-300 ease-out origin-top`}
+              >
+                  {["Volunteering", "Event"].map((item, index) => (
+                      <li key={index} className="hover:bg-cyan-50">
+                          <NavLink
+                              to={`/resources/${item.toLowerCase()}`}
+                              className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105"
+                          >
+                              {item}
+                          </NavLink>
+                      </li>
+                  ))}
+              </ul>
+          </div>
+        <NavLink
+          to={"/gallery"}
+          className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300 transform hover:scale-105"
+        >
+          Gallery
+        </NavLink>
+      </div>
+
+      {/* Notification and Profile Section */}
+      <div className="ml-auto flex items-center space-x-4">
+        {/* Notification Section */}
         <div className="relative" ref={notificationDropdownRef}>
           <button
             className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"
@@ -80,7 +173,6 @@ const Navbar = () => {
           >
             <BsFillPersonFill className="text-2xl text-gray-500" />
           </button>
-
           {isProfileDropdownOpen && (
             <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
               <p className="flex items-center text-gray-600 py-2 px-1">
@@ -88,15 +180,18 @@ const Navbar = () => {
                 <span className="text-lg">Account Settings</span>
               </p>
               <hr />
-              <div   className="flex items-center text-gray-600 py-2 px-1">
+              <div className="flex items-center text-gray-600 py-2 px-1">
                 <CiLogout className="text-2xl mx-2" />
-                <button className="text-lg"  onClick={handleSignOut}>Log Out</button>
+                <button className="text-lg" onClick={handleSignOut}>
+                  Log Out
+                </button>
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
+
   );
 };
 

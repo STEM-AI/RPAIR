@@ -48,7 +48,7 @@ const CreateStaff = () => {
 
     try {
       const response = await axios.post(
-        "http://147.93.56.71:8000/api/user/auth/judge-register/",
+        `${process.env.REACT_APP_API_URL_AUTH}/judge-register/`,
         formData,
         {
           headers: {
@@ -83,7 +83,7 @@ const CreateStaff = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto mt-28 p-4">
       <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         Create Judge
       </h2>

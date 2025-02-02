@@ -127,7 +127,7 @@ const TeamDetails = () => {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `http://147.93.56.71:8000/api/team/${name}/team-profile/`,
+          `${process.env.REACT_APP_API_URL}/team/${name}/team-profile/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -178,7 +178,7 @@ const TeamDetails = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl bg-white shadow-lg rounded-xl">
+    <div className="container mx-auto mt-36 p-6 max-w-4xl bg-white shadow-lg rounded-xl">
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-800">
         {teamDetails.name}
       </h2>

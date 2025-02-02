@@ -43,7 +43,7 @@ const CreateEvent = () => {
 
     try {
       await axios.post(
-        "http://147.93.56.71:8000/api/admin/create-event/",
+        `${process.env.REACT_APP_API_URL}/admin/create-event/`,
         formData,
         {
           headers: {
@@ -75,7 +75,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto mt-24 p-4">
       <div className="mt-8">
         <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
           Create Event

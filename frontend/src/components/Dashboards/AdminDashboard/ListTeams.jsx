@@ -145,28 +145,28 @@ const ListTeams = () => {
       return;
     }
 
-    const fetchTeams = async () => {
-      try {
-        const response = await axios.get(
-          "http://147.93.56.71:8000/api/team/teams-list/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setTeams(response.data);
-        setFilteredTeams(response.data);
-      } catch (err) {
-        if (err.response && err.response.status === 401) {
-          setAlertType("error");
-          setResponseMessage("Unauthorized access. Please check your token.");
-        } else {
-          setAlertType("error");
-          setResponseMessage("Failed to fetch teams. Please try again.");
-        }
+   const fetchTeams = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/team/teams-list/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    };
+    );
+    setTeams(response.data);
+    setFilteredTeams(response.data);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      setAlertType("error");
+      setResponseMessage("Unauthorized access. Please check your token.");
+    } else {
+      setAlertType("error");
+      setResponseMessage("Failed to fetch teams. Please try again.");
+    }
+  }
+};
 
     fetchTeams();
   }, [token]);
@@ -187,7 +187,7 @@ const ListTeams = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <div className="container mx-auto mt-32 p-6 max-w-6xl">
       <h2 className="mb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-400 text-5xl font-extrabold">
         All Teams
       </h2>
