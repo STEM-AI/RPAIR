@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { jwtDecode } from 'jwt-decode'; // Corrected import
+import { jwtDecode } from 'jwt-decode'; 
 import logo from "../../assets/logo/logoWrite-re.png";
 import { FcGoogle } from "react-icons/fc";
 import bgimg from "../../assets/imgs/aboutus/bg.png";
