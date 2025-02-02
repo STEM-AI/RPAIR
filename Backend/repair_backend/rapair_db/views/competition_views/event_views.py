@@ -29,6 +29,7 @@ class EventCreateView(APIView):
 
 class EventsListWithTop3TeamsView(APIView):
     permission_classes = [IsSuperUser]
+    serializer_class = EventListSerializer
 
     def get(self, request, competition_name):
         #TODO: Compare preformance between Query and EventListSerializer

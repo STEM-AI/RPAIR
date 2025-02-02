@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'social_django',
 
+    'drf_spectacular',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -72,7 +73,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['gmail.com']
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -270,3 +272,13 @@ CELERY_BROKER_URL = config('CELERY_BROKER_HOST_URL',default='redis://localhost:6
 CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND_HOST_URL',default='redis://localhost:6379/0')  # Redis URL
 CELERY_ACCEPT_CONTENT = ['json']               # Accepted content types
 CELERY_TASK_SERIALIZER = 'json'                # Task serialization format
+
+
+# Swagger settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'RPAIR API Documentation',
+    'DESCRIPTION': 'RPAIR Competition',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
