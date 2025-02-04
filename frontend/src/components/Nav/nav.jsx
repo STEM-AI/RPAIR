@@ -7,7 +7,9 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { RxDropdownMenu } from "react-icons/rx";
+import { GiHamburgerMenu } from "react-icons/gi";
+
+
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -98,7 +100,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5 md:px-10 py-3 flex items-center justify-between 
+    <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
       ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
       ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] " : "bg-white "}
       transition-colors duration-300`}>
@@ -116,7 +118,7 @@ export default function Navbar() {
         onClick={toggleMenu}
         className="md:hidden p-3 ml-auto mr-4 focus:outline-none"
       >
-        <RxDropdownMenu className="text-5xl text-cyan-500 hover:text-cyan-950 transition-all duration-300 transform hover:scale-105" />
+        <GiHamburgerMenu className="text-5xl text-cyan-500 hover:text-cyan-950 transition-all duration-300 transform hover:scale-105" />
       </button>
 
       <div
@@ -226,6 +228,7 @@ export default function Navbar() {
           </Link>
         )}
       </div>
+      
     </nav>
   );
 }

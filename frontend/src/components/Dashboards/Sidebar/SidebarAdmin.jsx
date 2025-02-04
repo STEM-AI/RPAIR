@@ -7,21 +7,25 @@ import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
 import { GiLaurelsTrophy } from "react-icons/gi";
 import { Link, NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { LuWrapText } from "react-icons/lu";
 
-const Sidebar = () => {
+
+const SidebarAdmin = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isManagementOpen, setIsManagementOpen] = useState(false); 
+  const [isMainNavOpen, setIsMainNavOpen] = useState(false); 
+  const [isChallengesOpen, setIsChallengesOpen] = useState(false); 
   const navigate = useNavigate();
 
   return (
     <div className="relative top-0 left-0 h-full  z-50">
       {/* Hamburger button to toggle sidebar visibility */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50"
+        className="lg:hidden fixed top-9 left-4 z-50"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="group flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-lg p-1 hover:bg-slate-200">
-          <div className="space-y-1">
+        <div className="group flex h-8 w-8 items-center justify-center bg-white shadow-lg p-1 hover:bg-slate-200">
+          <div className="space-y-1 ">
             <span
               className={`block h-0.5 w-6 rounded-full bg-slate-500 transition-transform ease-in-out ${
                 isOpen ? "rotate-45 translate-y-1.5" : ""
@@ -53,10 +57,50 @@ const Sidebar = () => {
             <img src={Logo} alt="Logo" className="max-w-full max-h-full object-contain" />
           </div>
         </NavLink>
+        
 
         {/* Main items list */}
         <div className="flex-1 overflow-y-auto">
           <ul className="space-y-2 p-4">
+            {/* Main Nav */}
+          <div className="border-b block md:hidden  border-white mb-2">
+            <li
+              className=" flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              onClick={() => setIsMainNavOpen(!isMainNavOpen)} // Toggle the management sub-menu
+            >
+              <LuWrapText className="mr-2" />
+
+              Main menu
+              {isMainNavOpen ? (
+                <LiaAngleDoubleUpSolid className="ml-2" /> // Show double up icon when open
+              ) : (
+                <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
+              )}
+            </li>
+            {/* Management Sub-menu */}
+            {isMainNavOpen && (
+              <ul className="pl-6 mb-3">
+                <Link  to={"/"}>
+                  <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                    Home
+                  </li>
+                </Link>
+                <Link to={"/about"}>
+                  <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                    About
+                  </li>
+                </Link>
+                  
+                <Link to={"/gallery"}>
+                  <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                    Gallery
+                  </li>
+                </Link>
+                
+              </ul>
+            )}
+          </div>
+
             {/* Dashboard */}
             <Link to="/Dashboard/Admin">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
@@ -127,5 +171,5 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarAdmin;
 

@@ -1,6 +1,6 @@
 // Layout.js
 import React from "react";
-import Navbar from "../../../components/Dashboards/Navbar";
+import NavbarProfile from "../../../components/Dashboards/NavbarProfile";
 import SidebarAdmin from "../../../components/Dashboards/Sidebar/SidebarAdmin";
 import SidebarJadge from "../../../components/Dashboards/Sidebar/SidebarJadge";
 import SidebarUser from "../../../components/Dashboards/Sidebar/SidebarUser";
@@ -25,11 +25,10 @@ const LayoutDashboard = ({ children }) => {
     }  
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
+              <NavbarProfile />
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <div className="p-6 flex-1 overflow-auto">{children}</div>
-        {/* <FooterDash /> */}
       </div>
     </div>
   );
