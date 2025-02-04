@@ -5,10 +5,23 @@ import { NavLink } from "react-router-dom";
 import vi from "../../assets/videos/heroVideo.mp4"
 
 const Home = () => {
-  useEffect(() => {
+  // window.location.reload();
+  // useEffect(() => {
+  //   // Initialize TW Elements
+  //   initTWE({ Carousel, Ripple });
+    
+  // }, []);
+
+   useEffect(() => {
     // Initialize TW Elements
     initTWE({ Carousel, Ripple });
-    
+    const hasRefreshed = sessionStorage.getItem("hasRefreshed");
+    const accessToken = localStorage.getItem("access_token");
+
+    if (accessToken && !hasRefreshed) {
+      sessionStorage.setItem("hasRefreshed", "true");
+      window.location.reload();
+    }
   }, []);
 
   return (
