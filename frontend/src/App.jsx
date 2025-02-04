@@ -30,18 +30,20 @@ import MyTeam from "./pages/Dashboards/User/MyTeam";
 import PaymentForm from "./components/Dashboards/UserDashbord/PayMent";
 
 const App = () => {
-  // Layout component to dynamically render children with or without Navbar/Footer
-  const Layout = ({ children, hideNavbar = false }) => (
+ const Layout = ({ children, hideNavbar = false }) => (
     <>
+      {!hideNavbar && <Navbar />}
       {children}
-      {!hideNavbar && <Footer />}
-      
-          </>
+      {!hideNavbar && (
+        <>
+          <Footer />
+        </>
+      )}
+    </>
   );
 
   return (
     <Router>
-      <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route
@@ -89,7 +91,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <AdminDashboard />
               </LayoutDashboard>
@@ -99,7 +101,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/Teams"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <ListTeams />
               </LayoutDashboard>
@@ -107,7 +109,7 @@ const App = () => {
           }
         />
         <Route path="/Dashboard/Admin/Teams/:name" element={
-          <Layout hideNavbar>
+         <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />
           </LayoutDashboard>
@@ -115,7 +117,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/CreateEvent"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateEvent />
               </LayoutDashboard>
@@ -126,7 +128,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/Competitions/:competition_name"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <CompetitionEvents />
               </LayoutDashboard>
@@ -136,7 +138,7 @@ const App = () => {
         <Route
             path="/Dashboard/Admin/CreateEvent"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
                   <LayoutDashboard>
                     <CreateEvent />
                   </LayoutDashboard>
@@ -146,7 +148,7 @@ const App = () => {
         <Route
             path="/Dashboard/Admin/CreateStaff"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
                   <LayoutDashboard>
                     <CreateStaff />
                   </LayoutDashboard>
@@ -156,7 +158,7 @@ const App = () => {
         <Route
             path="/Dashboard/Admin/CreateCompetition"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
                   <LayoutDashboard>
                     <CreateCompetition />
                   </LayoutDashboard>
@@ -166,7 +168,7 @@ const App = () => {
          <Route
             path="/Dashboard/Admin/CreateTeam"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
                   <LayoutDashboard>
                     <CreateTeam />
                   </LayoutDashboard>
@@ -176,7 +178,7 @@ const App = () => {
          <Route
           path="/Dashboard/Judge"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <Judge />
               </LayoutDashboard>
@@ -187,7 +189,7 @@ const App = () => {
          <Route
           path="/Dashboard/User"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <User/>
                   </LayoutDashboard>
@@ -197,7 +199,7 @@ const App = () => {
          <Route
           path="/Dashboard/User/CreateTeam"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateTeam/>
                   </LayoutDashboard>
@@ -207,7 +209,7 @@ const App = () => {
          <Route
           path="/Dashboard/User/PaymentForm"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <PaymentForm/>
                   </LayoutDashboard>
@@ -217,7 +219,7 @@ const App = () => {
          <Route
           path="/Dashboard/User/MyTeams"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <MyTeam/>
                   </LayoutDashboard>
@@ -227,7 +229,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/Competitions"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <ListCompetitions />
               </LayoutDashboard>
@@ -237,7 +239,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/CreateOrganization"
           element={
-            <Layout hideNavbar>
+           <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateOrganization />
               </LayoutDashboard>
