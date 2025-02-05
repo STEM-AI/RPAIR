@@ -14,7 +14,6 @@ const SidebarAdmin = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isManagementOpen, setIsManagementOpen] = useState(false); 
   const [isMainNavOpen, setIsMainNavOpen] = useState(false); 
-  const [isChallengesOpen, setIsChallengesOpen] = useState(false); 
   const navigate = useNavigate();
 
   return (
