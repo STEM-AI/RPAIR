@@ -19,3 +19,6 @@ def user_news(request):
 
 def user_notification(request):
     return render(request, "vex_iq_comp_webscoket/user_notification_index.html")
+
+def live_dashboard(request):
+    return render(request, "vex_iq_comp_webscoket/live_dashboard.html")

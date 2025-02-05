@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ...permissions import  IsJudgeUser
 from ...utils import event_utils
-from ...models import Team 
+from ...utils.team_event_utils import set_team_score
+from rest_framework import generics
+from ...models import SkillsTeamScore
+from ...serializers import SkillsTeamScoreSerializer
 
-class SetTeamExtraScoresFieldsEventView(APIView):
+
+class SetTeamScoresFieldsView(APIView):
     '''Set Inspction , Interview , Engineering Notebook Scores Field'''
     permission_classes = [IsJudgeUser]
     def post(self, request, event_name):
@@ -17,27 +21,21 @@ class SetTeamExtraScoresFieldsEventView(APIView):
         if event is None:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        team_name = request.data.get('team_name')
-        scores = request.data.get('scores')
-
-        if team_name is None or scores is None:
-            return Response({"error": "Team name and score are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        team = Team.objects.filter(name=team_name).first()
-        print("Team" , team.name)
-
-        if team is None:
-            return Response({"error": "Team not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        if team.competition_event != event:
-                    return Response({"error": "This team is not associated with the specified event"}, status=status.HTTP_400_BAD_REQUEST)
-
-        team.inspect_score = scores['inspect_score']
-        team.eng_note_book_score = scores['eng_note_book_score']
-        team.interview_score = scores['interview_score']
-        print("pre save")
-        team.save()
+        team = set_team_score(request = request , event=event)
+        if isinstance(team, Response):
+            return team
+        
 
         return Response({"message": "Team score updated successfully"}, status=status.HTTP_200_OK)
     
+    
 
+# class SkillsTeamScoreListView(generics.ListView):
+#     permission_classes = [IsJudgeUser]
+#     queryset = SkillsTeamScore.objects.all()
+#     serializer_class = SkillsTeamScoreSerializer
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         queryset = queryset.filter(team__competition_event__event_name=self.kwargs['event_name'])
+#         return queryset
+    

@@ -90,13 +90,13 @@ class EventGame(models.Model):
     time = models.TimeField()
     
     START = 'start'
-    SKILLS = 'skills'
-    AUTOMATION = 'automation'
+    DRIVER = 'driver'
+    AUTONOMOUS = 'autonomous'
     FINAL = 'final'
     STAGE_CHOICES = (
         (START, 'Start'),
-        (SKILLS, 'Skill'),
-        (AUTOMATION, 'Automation'),
+        (DRIVER, 'Driver'),
+        (AUTONOMOUS, 'Autonomous'),
         (FINAL, 'Final'),
     )
     stage = models.CharField(

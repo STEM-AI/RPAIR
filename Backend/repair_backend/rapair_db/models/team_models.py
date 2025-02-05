@@ -13,7 +13,6 @@ class Team(models.Model):
     team_leader_name = models.CharField(max_length=255)
     team_leader_email = models.EmailField(unique=True)
     team_leader_phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
-    teamwork_score = models.IntegerField(null=True, blank=True ,default=0)
     interview_score = models.IntegerField(null=True, blank=True,default=0)
     inspect_score = models.IntegerField(null=True, blank=True,default=0)
     eng_note_book_score = models.IntegerField(null=True, blank=True,default=0)
@@ -24,6 +23,27 @@ class Team(models.Model):
     def __str__(self):
         return self.name
     
+class TeamworkTeamScore(models.Model):
+    id = models.AutoField(primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="teamwork_scores")
+    score = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.team.name} - Average Teamwork Score: {self.get_average_score()}"
+    
+class SkillsTeamScore(models.Model):
+    id = models.AutoField(primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="skills_scores")
+    autonomous_score = models.IntegerField(default=0)
+    driver_score = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    
+    def __str__(self):
+        return f"{self.team.name} - Average Skills Score: {self.get_average_score()}"
+    
+
 class TeamSponsor(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="sponsors")

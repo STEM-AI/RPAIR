@@ -57,7 +57,7 @@
     </div>
 
     <script>
-        const eventName = "future_vex_iq";  // Replace with your event name
+        const eventName = "stem";  // Replace with your event name
         let socket;
         let gameId;  // Store the game ID for later use
 
@@ -118,16 +118,14 @@
         function submitScore() {
             const scoreInput = document.getElementById("scoreInput");
             const score = scoreInput.value;
-            yourAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3ODgzMDM0LCJpYXQiOjE3Mzc4Nzk0MzQsImp0aSI6IjYwNDg0MmM3NzJiYzRlMjFiMTEwM2ExZjA5ZGU4NGFkIiwidXNlcl9pZCI6MjIsInVzZXJuYW1lIjoibmVrbGF3aUp1ZGdlIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6ZmFsc2V9.2D-aLExF0Anpyjcu8TfmSzgFxbuwF_ZPP8GuF0iLbsE'
-
-            // Validate the score input
+            yourAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4NzU3OTMyLCJpYXQiOjE3Mzg3NTQzMzIsImp0aSI6IjY0YjJhYjczM2VhOTQ4NTY4YWUwOTY0YWY1OTIzNTkyIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJuZWtsYXdpIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZX0.kP9BL03bFuclz6JPEexcqd7zr9-BlsYvdyDbjlIQlhI'
             if (!score) {
                 alert("Please enter a valid score.");
                 return;
             }
 
             // Send the score to the backend
-            fetch(`/api/event/set-game-score/${gameId}/`, {
+            fetch(`/api/game/set-game-score/${gameId}/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

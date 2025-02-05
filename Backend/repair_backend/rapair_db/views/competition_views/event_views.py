@@ -10,10 +10,36 @@ from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
 from django.db import IntegrityError
 
+class CreateScheduleEventGameView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = EventGameSerializer
+
+    def post(self, request , event_name=None):
+        print("Creating Schedule Event Game")
+        if not event_name:
+            return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        event = event_utils.get_object(event_name=event_name)
+        if not event:
+            return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            stage_games = event_utils.create_schedule(event=event,stage=request.data.get('stage'), time= request.data.get('time'))
+            if isinstance(stage_games, Response):  # Check if the response is already handled
+                return stage_games
+
+            serializer = EventGameSerializer(stage_games, many=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except IntegrityError as e:
+            return Response({"error": f"Integrity error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class EventCreateView(APIView):
     permission_classes = [IsSuperUser]
+    serializer_class = EventSerializer
     def post(self, request):
         competition = event_utils.get_object(request.data.get('competition_name'))
         if competition is None:
@@ -58,6 +84,7 @@ class EventsListWithTop3TeamsView(APIView):
 
 class CreateScheduleEventGameView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = EventGameSerializer
 
     def post(self, request , event_name=None):
         if not event_name:
@@ -83,6 +110,7 @@ class CreateScheduleEventGameView(APIView):
 
 class GetEventSchedule(APIView):
     permission_classes = [AllowAny]
+    serializer_class = EventGameSerializer
     def get(self, request, event_name):
         event = event_utils.get_object(event_name=event_name)
         if event is None:
@@ -126,6 +154,7 @@ class SetGameScoreView(APIView):
             
 class EventProfileView(APIView):
     permission_classes = [IsSuperUser]
+    serializer_class = EventSerializer
     def get(self, request, event_name):
         event = event_utils.get_object(event_name=event_name)
         if event is None:

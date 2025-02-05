@@ -29,11 +29,27 @@ paths:
       operationId: admin_create_event_create
       tags:
       - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
   /api/admin/news/:
     get:
       operationId: admin_news_list
@@ -87,7 +103,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competitions'
+          description: ''
   /api/competition/competition-profile/{competition_name}/:
     get:
       operationId: competition_competition_profile_retrieve
@@ -104,17 +124,37 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competitions'
+          description: ''
   /api/competition/create-competition/:
     post:
       operationId: competition_create_competition_create
       tags:
       - competition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Competitions'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Competitions'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Competitions'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competitions'
+          description: ''
   /api/event/{event_name}/event-profile/:
     get:
       operationId: event_event_profile_retrieve
@@ -130,7 +170,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
   /api/event/{event_name}/schedule/:
     get:
       operationId: event_schedule_retrieve
@@ -147,7 +191,11 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventGame'
+          description: ''
   /api/event/{event_name}/schedule-games/:
     post:
       operationId: event_schedule_games_create
@@ -159,12 +207,27 @@ paths:
         required: true
       tags:
       - event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventGame'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventGame'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventGame'
       security:
       - jwtAuth: []
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventGame'
+          description: ''
   /api/event/set-game-score/{game_id}/:
     post:
       operationId: event_set_game_score_create
@@ -186,11 +249,27 @@ paths:
       operationId: organization_create_organization_create
       tags:
       - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Organization'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Organization'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
   /api/organization/delete-organization/{organization_name}/:
     patch:
       operationId: organization_delete_organization_partial_update
@@ -218,11 +297,26 @@ paths:
         required: true
       tags:
       - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
   /api/organization/list-organizations/:
     get:
       operationId: organization_list_organizations_retrieve
@@ -232,7 +326,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
   /api/organization/organization-list/:
     get:
       operationId: organization_organization_list_retrieve
@@ -648,6 +746,97 @@ paths:
           description: No response body
 components:
   schemas:
+    CategoryEnum:
+      enum:
+      - Mini
+      - Small
+      - Regional
+      - National
+      - International
+      type: string
+      description: |-
+        * `Mini` - Mini Event
+        * `Small` - Small Event
+        * `Regional` - Regional Event
+        * `National` - National Event
+        * `International` - International Event
+    Competitions:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/NameEnum'
+        type:
+          type: string
+          maxLength: 255
+        rules:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+          writeOnly: true
+          nullable: true
+          maxLength: 255
+        image_url:
+          type: string
+          readOnly: true
+      required:
+      - description
+      - image_url
+      - rules
+      - type
+    Event:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        location:
+          type: string
+          maxLength: 255
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamCompetitionProfile'
+        fees:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        age:
+          type: string
+          maxLength: 255
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+      required:
+      - end_date
+      - location
+      - start_date
+    EventGame:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        team1:
+          type: string
+          readOnly: true
+        team2:
+          type: string
+          readOnly: true
+        score:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        stage:
+          $ref: '#/components/schemas/StageEnum'
+      required:
+      - id
+      - team1
+      - team2
     EventList:
       type: object
       properties:
@@ -688,6 +877,18 @@ components:
       required:
       - password
       - username
+    NameEnum:
+      enum:
+      - vex_iq
+      - rov
+      - robocup
+      - robotics
+      type: string
+      description: |-
+        * `vex_iq` - VEX IQ
+        * `rov` - ROV
+        * `robocup` - ROBOCUP
+        * `robotics` - Robotics
     News:
       type: object
       properties:
@@ -719,6 +920,44 @@ components:
       - id
       - is_read
       - user
+    Organization:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        address:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        type:
+          type: string
+          maxLength: 255
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationContact'
+        teams:
+          type: string
+          readOnly: true
+      required:
+      - address
+      - contacts
+      - name
+      - teams
+      - type
+    OrganizationContact:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          pattern: ^\+?1?\d{12}$
+          maxLength: 255
+      required:
+      - phone_number
     PatchedNotification:
       type: object
       properties:
@@ -737,6 +976,88 @@ components:
         user:
           type: integer
           readOnly: true
+    PatchedOrganization:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        address:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        type:
+          type: string
+          maxLength: 255
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationContact'
+        teams:
+          type: string
+          readOnly: true
+    StageEnum:
+      enum:
+      - start
+      - skills
+      - automation
+      - final
+      type: string
+      description: |-
+        * `start` - Start
+        * `skills` - Skill
+        * `automation` - Automation
+        * `final` - Final
+    TeamCompetitionProfile:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        robot_name:
+          type: string
+          maxLength: 255
+        type:
+          type: string
+          maxLength: 255
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMember'
+        team_leader_name:
+          type: string
+          maxLength: 255
+        total_score:
+          type: string
+          readOnly: true
+      required:
+      - members
+      - name
+      - robot_name
+      - team_leader_name
+      - total_score
+      - type
+    TeamMember:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone_number:
+          type: string
+          pattern: ^\+?1?\d{12}$
+          maxLength: 255
+      required:
+      - email
+      - name
+      - phone_number
     TokenRefresh:
       type: object
       properties:

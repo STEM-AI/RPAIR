@@ -1,32 +1,27 @@
 from django.db.models.signals import post_save , pre_save
 from django.dispatch import receiver
 from asgiref.sync import async_to_sync
-from rapair_db.models import Team
+from rapair_db.models import EventGame
 from channels.layers import get_channel_layer
 
-@receiver(pre_save, sender=Team)
-def broadcast_score_update(sender, instance, **kwargs):
-    if hasattr(instance , 'teamwork_score'):
-        print("score" , instance.teamwork_score)
-        print("team name" , instance.name)
-        score = instance.teamwork_score
-        if instance.competition_event:
-            # Prepare data to send
-            data = {
-                "team_name": instance.name,
-                "score": score,
-            }
-            print("data sent" , data)
-            channel_layer = get_channel_layer()
+@receiver(post_save, sender=EventGame)
+def broadcast_game_score(sender,created, instance, **kwargs):
+    if created :
+        return
 
+    if hasattr(instance, 'operation') and instance.operation == 'set_game_score':
+        channel_layer = get_channel_layer()
 
-            # Send the data to the WebSocket group
-            async_to_sync(channel_layer.group_send)(
-                f"competition_event_{instance.competition_event.name}",
-                {
-                    "type": "send_score_update",
-                    "data": data,
-                }
-            )
-
-
+        data = {
+            "game_id" : instance.id,
+            "team1_name": instance.team1.name,
+            "team2_name": instance.team2.name,
+            "score":instance.score
+        }
+    async_to_sync(channel_layer.group_send)(
+        f"competition_event_{instance.event.name}",
+        {
+            "type": "send_game_score",
+            "data": data,
+        }
+    )

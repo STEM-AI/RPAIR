@@ -76,11 +76,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         except KeyError as e:
             print(f"Missing key in data: {e}")
             await self.send(json.dumps({"error": f"Missing key: {e}"}))
-    # Handler to send score updates to the WebSocket
-    async def send_score_update(self, event):
-        print("Sent score update")
-        print("score" , event["data"])
-        await self.send(text_data=json.dumps(event["data"]))
 
     async def game_timer_update(self, event):
         print("Sent game timer update")

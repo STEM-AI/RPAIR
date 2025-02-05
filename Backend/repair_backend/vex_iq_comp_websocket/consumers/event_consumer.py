@@ -13,7 +13,6 @@ class EventConsumer(AsyncWebsocketConsumer):
             await self.close()
         # Extract the competition_event ID from the URL
         self.competition_event_name= self.scope["url_route"]["kwargs"]["event_name"]
-        print(f"Trying to connect to event: {self.competition_event_name}")
 
         self.room_group_name = f"competition_event_{self.competition_event_name}"
 
@@ -34,7 +33,5 @@ class EventConsumer(AsyncWebsocketConsumer):
         pass
 
     # Handler to send score updates to the WebSocket
-    async def send_score_update(self, event):
-        print("Sent score update")
-        print("score" , event["data"])
+    async def send_game_score(self, event):
         await self.send(text_data=json.dumps(event["data"]))

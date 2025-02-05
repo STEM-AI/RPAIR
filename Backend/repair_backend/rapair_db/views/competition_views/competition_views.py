@@ -10,6 +10,7 @@ from ...permissions import IsJudgeUser
 
 class CompetitionProfileView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = CompetitionsSerializer
     def get(self, request , competition_name=None):
         if competition_name is None:
             return Response({"error": "Competition name is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -26,6 +27,7 @@ class CompetitionProfileView(APIView):
     
 class CompetitionsListView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = CompetitionsSerializer
     def get(self, request):
         competitions = Competition.objects.all()
         serializer = CompetitionsSerializer(competitions, many=True)
@@ -33,6 +35,7 @@ class CompetitionsListView(APIView):
     
 class CompetitionCreateView(APIView):
     permission_classes = [IsJudgeUser]
+    serializer_class = CompetitionsSerializer
     def post(self, request):
         serializer = CompetitionsSerializer(data=request.data)
         if serializer.is_valid():
