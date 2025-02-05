@@ -105,3 +105,15 @@ class TeamProfileView(APIView):
             )
         serializer = TeamSerializer(team)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class DeleteTeam(APIView):
+    ##Admin view
+    permission_classes = [IsSuperUser]
+    def delete(self, request, team_name):
+        team = Team.objects.filter(name=team_name).first()
+        if team:
+            team.delete()
+            return Response({"message": "Team deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "Team not found"}, status=status.HTTP_404_NOT_FOUND)
