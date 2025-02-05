@@ -90,12 +90,9 @@ def add_team_members(sender, instance, created, **kwargs):
 
 @receiver(post_save , sender=EventGame)
 def add_team_teamwork_score(sender, instance, created, **kwargs):
-    print("add_team_teamwork_score")
     if created :
-        print("created")
         return
-    if hasattr(instance, 'operation') == 'set_game_score':
+    if hasattr(instance, 'operation') and instance.operation == 'set_game_score':
         instance.team1.teamwork_scores.create(score = instance.score)
         instance.team2.teamwork_scores.create(score = instance.score)
-        print("score set")
     

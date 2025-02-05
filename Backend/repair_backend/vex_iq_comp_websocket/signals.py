@@ -18,10 +18,10 @@ def broadcast_game_score(sender,created, instance, **kwargs):
             "team2_name": instance.team2.name,
             "score":instance.score
         }
-    async_to_sync(channel_layer.group_send)(
-        f"competition_event_{instance.event.name}",
-        {
-            "type": "send_game_score",
-            "data": data,
-        }
-    )
+        async_to_sync(channel_layer.group_send)(
+            f"competition_event_{instance.event.name}",
+            {
+                "type": "send_game_score",
+                "data": data,
+            }
+        )
