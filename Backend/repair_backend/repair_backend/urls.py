@@ -17,9 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('rapair_db.urls')),
-    path('chat/' , include('vex_iq_comp_websocket.urls'))
+    path('websocket/' , include('vex_iq_comp_websocket.urls')),
+
+    path('api/docs/', SpectacularAPIView.as_view(), name='api-docs'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='api-docs'), name='redoc'),
+    path('api/swagger/', SpectacularSwaggerView.as_view(url_name='api-docs'), name='swagger-ui'),
     
 ]

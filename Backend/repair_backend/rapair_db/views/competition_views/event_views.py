@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ...serializers import EventSerializer
+from ...serializers import EventSerializer , EventListSerializer
 from ...permissions import IsSuperUser ,IsJudgeUser
 from django.db import connection
 from ...utils import event_utils
@@ -10,10 +10,36 @@ from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
 from django.db import IntegrityError
 
+class CreateScheduleEventGameView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = EventGameSerializer
+
+    def post(self, request , event_name=None):
+        print("Creating Schedule Event Game")
+        if not event_name:
+            return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        event = event_utils.get_object(event_name=event_name)
+        if not event:
+            return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            stage_games = event_utils.create_schedule(event=event,stage=request.data.get('stage'), time= request.data.get('time'))
+            if isinstance(stage_games, Response):  # Check if the response is already handled
+                return stage_games
+
+            serializer = EventGameSerializer(stage_games, many=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except IntegrityError as e:
+            return Response({"error": f"Integrity error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class EventCreateView(APIView):
     permission_classes = [IsSuperUser]
+    serializer_class = EventSerializer
     def post(self, request):
         competition = event_utils.get_object(request.data.get('competition_name'))
         if competition is None:
@@ -29,28 +55,38 @@ class EventCreateView(APIView):
 
 class EventsListWithTop3TeamsView(APIView):
     permission_classes = [IsSuperUser]
+    serializer_class = EventListSerializer
 
     def get(self, request, competition_name):
+        #TODO: Compare preformance between Query and EventListSerializer
         competition = event_utils.get_object(competition_name)
 
+        events = competition.competition_event.all()
+
+        if not events:
+            return Response({"error": "No events found for this competition"}, status=status.HTTP_404_NOT_FOUND)
+        
         if competition is None:
             return Response({"error": "Competition not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        serializer = EventListSerializer(events, many=True)
 
-        query = event_utils.TOP_3_TEAMS_QUERY
-        with connection.cursor() as cursor:
-            cursor.execute(query, [competition_name])
-            result = cursor.fetchall()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # query = event_utils.TOP_3_TEAMS_QUERY
+        # with connection.cursor() as cursor:
+        #     cursor.execute(query, [competition_name])
+        #     result = cursor.fetchall()
         
 
-        return Response(result, status=status.HTTP_200_OK)
+        # return Response(result, status=status.HTTP_200_OK)
     
 
 class CreateScheduleEventGameView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = EventGameSerializer
 
-    def post(self, request):
-        event_name = request.data.get('event_name', None)
+    def post(self, request , event_name=None):
         if not event_name:
             return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -59,7 +95,7 @@ class CreateScheduleEventGameView(APIView):
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         
         try:
-            stage_games = event_utils.create_schedule(event=event, request=request)
+            stage_games = event_utils.create_schedule(event=event,stage=request.data.get('stage'), time= request.data.get('time'))
             if isinstance(stage_games, Response):  # Check if the response is already handled
                 return stage_games
 
@@ -70,6 +106,20 @@ class CreateScheduleEventGameView(APIView):
             return Response({"error": f"Integrity error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class GetEventSchedule(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = EventGameSerializer
+    def get(self, request, event_name):
+        event = event_utils.get_object(event_name=event_name)
+        if event is None:
+            return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        events = EventGame.objects.filter(event=event).order_by('time')
+        serializer = EventGameSerializer(events, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
   
                 
     
@@ -101,9 +151,10 @@ class SetGameScoreView(APIView):
         game.score = int(score)
         game.save()
         return Response({"Game Score Set"}, status=status.HTTP_200_OK)
-    
+            
 class EventProfileView(APIView):
     permission_classes = [IsSuperUser]
+    serializer_class = EventSerializer
     def get(self, request, event_name):
         event = event_utils.get_object(event_name=event_name)
         if event is None:

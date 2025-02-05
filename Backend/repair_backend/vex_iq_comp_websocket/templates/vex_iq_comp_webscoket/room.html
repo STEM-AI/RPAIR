@@ -22,44 +22,87 @@
         #startButton:disabled {
             background-color: #ccc;
         }
+        #gameIdInput {
+            font-size: 1.2em;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        #scoreInputContainer {
+            display: none; /* Initially hidden */
+            margin-top: 20px;
+        }
+        #scoreInput {
+            font-size: 1.2em;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        #submitScoreButton {
+            font-size: 1.2em;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <h1>Game Timer</h1>
+    <input type="number" id="gameIdInput" placeholder="Enter Game ID">
     <button id="startButton" onclick="startGame()">Start Game</button>
     <div id="timer">Remaining Time: 60</div>
 
-    <script>
-        const eventName = "future_vex_iq";
-        let socket;
-        let gameId = 52; // Assuming game ID is 1, update it with the correct game ID
+    <!-- Score input and submit button -->
+    <div id="scoreInputContainer">
+        <input type="number" id="scoreInput" placeholder="Enter Score">
+        <button id="submitScoreButton" onclick="submitScore()">Submit Score</button>
+    </div>
 
-        // Function to initialize the WebSocket connection
+    <script>
+        const eventName = "stem";  // Replace with your event name
+        let socket;
+        let gameId;  // Store the game ID for later use
+
         function startGame() {
-            const startTime = Date.now(); // Get current time in milliseconds
+            // Get the gameId from the input box
+            const gameIdInput = document.getElementById("gameIdInput");
+            gameId = gameIdInput.value;
+
+            // Validate the input
+            if (!gameId) {
+                alert("Please enter a valid Game ID.");
+                return;
+            }
+
+            // Disable the button to prevent multiple clicks
+            const startButton = document.getElementById("startButton");
+            startButton.disabled = true;
+            startButton.textContent = "Game Started";
 
             // Establish WebSocket connection
             socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/game/${gameId}/`);
 
             socket.onopen = () => {
-                console.log('Connected to WebSocket');
-                // Send the start game action with game_id and start_time
+                console.log("WebSocket connection established");
+                // Send the "start game" message to the backend
                 socket.send(JSON.stringify({
                     action: "start_game",
-                    event_name : eventName,
+                    event_name: eventName,
                     game_id: gameId,
-                    start_time: startTime,
                 }));
-                document.getElementById("startButton").disabled = true;
-                document.getElementById("startButton").textContent = "Game Started";
             };
 
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 console.log("Received message:", data);
                 if (data.remaining_time !== undefined) {
+                    // Update the timer display
                     document.getElementById("timer").textContent = `Remaining Time: ${Math.round(data.remaining_time)} seconds`;
+
+                    // Show the score input when the game ends
+                    if (data.remaining_time <= 0) {
+                        document.getElementById("scoreInputContainer").style.display = "block";
+                        startButton.disabled = false;
+                        startButton.textContent = "Start Game";
+                    }
                 }
             };
 
@@ -70,6 +113,38 @@
             socket.onclose = () => {
                 console.log("WebSocket connection closed");
             };
+        }
+
+        function submitScore() {
+            const scoreInput = document.getElementById("scoreInput");
+            const score = scoreInput.value;
+            yourAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4NzYyNDM2LCJpYXQiOjE3Mzg3NTg4MzYsImp0aSI6IjY3MTUxMDc0ZDk3ZTQ4Y2RhZjY4NTc1YjM1YzE1NTFkIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJuZWtsYXdpIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZX0.6wmQCr7HM8Q353WKGAYMBzMx0ltCUoiZjb_HDZ4PUF0'
+            if (!score) {
+                alert("Please enter a valid score.");
+                return;
+            }
+
+            // Send the score to the backend
+            fetch(`/api/game/set-game-score/${gameId}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${yourAuthToken}`,
+                },
+                body: JSON.stringify({
+                    event_name: eventName,
+                    score: score,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Score submitted successfully:", data);
+                alert("Score submitted successfully!");
+            })
+            .catch(error => {
+                console.error("Error submitting score:", error);
+                alert("Failed to submit score. Please try again.");
+            });
         }
     </script>
 

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from ..models import EventGame
 from rest_framework.response import Response
 from rest_framework import status
-from django.utils.timezone import now
+from django.db.models import F ,Avg
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
@@ -73,11 +73,11 @@ def teamwork_schedule( event ,event_teams , game_time , stage):
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
             games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage))
-            game_time += timedelta(minutes=1, seconds=30)
-    
+            game_time += timedelta(minutes=1, seconds=30)   
+
     return games
 
-def skills_or_automation_schedule(event , game_time , stage):
+def skills_schedule(event , game_time , stage):
     event_teams = event.teams.order_by('?')
     games = []
     for i in range(len(event_teams)):
@@ -88,22 +88,26 @@ def skills_or_automation_schedule(event , game_time , stage):
         
 from django.db import IntegrityError
 
-def create_schedule(event, request):
-    stage = request.data.get('stage')
-    game_time = request.data.get('time')
-
+def create_schedule(event, stage=None , time=None):
+    game_time = time
     try:
         game_time = datetime.strptime(game_time, "%H:%M")
     except ValueError:
         return Response({"error": "Invalid time format. Please use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        if stage in ('skills', 'automation'):
-            games = skills_or_automation_schedule(event, game_time, stage)
+        if stage in ('driver', 'autonomous'):
+            games = skills_schedule(event, game_time, stage)
 
+## TODO:
         elif stage == 'final':
-            event_teams = event.teams.all().order_by('-teamwork_score')[:3]
+            event_teams =( 
+                event.teams.all()
+                .annotate(avg_teamwork_score=Avg('teamwork_scores__score'))
+                .order_by('-avg_teamwork_score')[:6]
+            )
             games = teamwork_schedule(event, event_teams, game_time, stage)
+            
 
         elif stage == 'start':
             event_teams = event.teams.all()
@@ -123,3 +127,6 @@ def create_schedule(event, request):
 
     except Exception as e:
         raise Exception(f"An error occurred: {str(e)}")
+
+
+# .annotate(total_score=F('teamwork_score')+ F('interview_score')+F('inspect_score')+F('eng_note_book_score'))

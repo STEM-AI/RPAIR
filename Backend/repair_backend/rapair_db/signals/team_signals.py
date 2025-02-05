@@ -1,6 +1,10 @@
 from django.db.models.signals import pre_save ,post_save
 from django.dispatch import receiver
-from ..models import Team , Organization , OrganizationContact , TeamSponsor , TeamCoach , TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame
+from ..models import (
+    Team , Organization , OrganizationContact , TeamSponsor , TeamCoach , 
+    TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame,
+    SkillsTeamScore , TeamworkTeamScore
+    )
 
 @receiver(pre_save , sender=Team)
 def get_or_create_organization(sender , instance , **kwargs):
@@ -85,18 +89,10 @@ def add_team_members(sender, instance, created, **kwargs):
 
 
 @receiver(post_save , sender=EventGame)
-def update_team_teamwork_score(sender, instance, created, **kwargs):
-    print("Update TeamWorkScore")
-    print("game score " , type(instance.score))
-    print("created" , created)
-    if hasattr(instance, 'score'):
-        print("Game")
-        team1 = instance.team1
-        print("team1" , team1)
-        team2 = instance.team2
-        print("team2" , team2)
-        team1.teamwork_score += instance.score
-        team2.teamwork_score += instance.score
-        team1.save()
-        team2.save()
+def add_team_teamwork_score(sender, instance, created, **kwargs):
+    if created :
+        return
+    if hasattr(instance, 'operation') and instance.operation == 'set_game_score':
+        instance.team1.teamwork_scores.create(score = instance.score)
+        instance.team2.teamwork_scores.create(score = instance.score)
     

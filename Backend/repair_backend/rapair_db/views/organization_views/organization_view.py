@@ -9,6 +9,7 @@ from ...models import Organization
 
 class CreateOrganizationView(APIView):
     permission_classes = [IsJudgeUser]
+    serializer_class = OrganizationSerializer
     def post(self, request):
         serializer = OrganizationSerializer(data=request.data)
         if serializer.is_valid():
@@ -35,6 +36,7 @@ class OrganizationProfileView(APIView):
     
 class OrganizationEditProfileView(APIView):
     permission_classes = [IsJudgeUser]
+    serializer_class = OrganizationSerializer
 
     def patch(self, request, organization_name):
         if not organization_name:
@@ -72,6 +74,7 @@ class DeleteOrganizationView(APIView):
 
 class ListOrganizationsView(APIView):
     permission_classes = [IsJudgeUser]
+    serializer_class = OrganizationSerializer
     def get(self, request):
         organizations = Organization.objects.all()
         serializer = OrganizationSerializer(organizations, many=True)

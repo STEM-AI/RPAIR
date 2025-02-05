@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        #timer {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        #startButton {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #startButton:disabled {
+            background-color: #ccc;
+        }
+        #gameIdInput {
+            font-size: 1.2em;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Game Timer</h1>
+    <input type="number" id="gameIdInput" placeholder="Enter Game ID">
+    <button id="startButton" onclick="startGame()">Start Game</button>
+    <div id="timer">Remaining Time: 60</div>
+
+    <script>
+        const eventName = "stem";  // Replace with your event name
+        let socket;
+
+        function startGame() {
+            // Get the gameId from the input box
+            const gameIdInput = document.getElementById("gameIdInput");
+            const gameId = gameIdInput.value;
+
+            // Validate the input
+            if (!gameId) {
+                alert("Please enter a valid Game ID.");
+                return;
+            }
+
+            // Disable the button to prevent multiple clicks
+            const startButton = document.getElementById("startButton");
+            startButton.disabled = true;
+            startButton.textContent = "Game Started";
+
+            // Establish WebSocket connection
+            socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/game/${gameId}/`);
+
+            socket.onopen = () => {
+                console.log("WebSocket connection established");
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log("Received message:", data);
+                if (data.remaining_time !== undefined) {
+                    // Update the timer display
+                    document.getElementById("timer").textContent = `Remaining Time: ${Math.round(data.remaining_time)} seconds`;
+                }
+            };
+
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };
+
+            socket.onclose = () => {
+                console.log("WebSocket connection closed");
+            };
+        }
+    </script>
+
+</body>
+</html>
