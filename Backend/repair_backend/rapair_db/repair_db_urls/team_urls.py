@@ -21,6 +21,5 @@ urlpatterns = [
     path('change-team-organization/<str:team_name>/', UserChangeTeamOrganizationView.as_view(), name='change-team-organization'),
     path('delete-team/<str:team_name>/', UserDeleteTeamView.as_view(), name='delete-team'),
     path('teams-list/', ListTeamsView.as_view(), name='teams-list'),  # List all teams API  # TODO: Add pagination and search functionality.
-    path('<str:name>/team-profile/', TeamProfileView.as_view(), name='admin-team-profile'),  # Team profile API  # TODO: Add pagination and search functionality.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add
-
+    path('<str:name>/team-profile/', TeamProfileView.as_view(), name='admin-team-profile'), 
 ]

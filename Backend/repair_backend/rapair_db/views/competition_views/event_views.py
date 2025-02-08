@@ -167,12 +167,15 @@ class EventProfileView(APIView):
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class TeamWorkRankView(APIView):
+class TeamWorkRankView(ListAPIView):
     '''Rank teams based on Average of thier Teamwork Score For Event'''
     permission_classes = [IsJudgeUser]
-    def get(self, request , event_name):
-        try:
-            teams = (
+    serializer_class = TeamworkScoreSerializer
+    def get_queryset(self):
+        event_name = self.kwargs.get('event_name')
+        if not event_name:
+            return TeamworkTeamScore.objects.none()
+        return (
                 TeamworkTeamScore.objects
                 .filter(team__competition_event__name=event_name)  # Filter by event name
                 .select_related('team')  # Fetch the related Team model
@@ -180,11 +183,7 @@ class TeamWorkRankView(APIView):
                 .annotate(avg_score=Avg('score'))
                 .order_by('-avg_score')
                 )
-            serializers = TeamworkScoreSerializer(teams, many=True)
-            return Response(serializers.data, status=status.HTTP_200_OK)
-        
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
         
 class TeamInterviewScoreRankView(ListAPIView):
     permission_classes = [IsJudgeUser]
