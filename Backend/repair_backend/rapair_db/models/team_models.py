@@ -15,7 +15,7 @@ class Team(models.Model):
     team_leader_phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
     interview_score = models.IntegerField(null=True, blank=True,default=0)
     inspect_score = models.IntegerField(null=True, blank=True,default=0)
-    eng_note_book_score = models.IntegerField(null=True, blank=True,default=0)
+    eng_notebook_score = models.IntegerField(null=True, blank=True,default=0)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='organization')
     competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
     note = models.CharField(max_length=255 , null=True, blank=True , default='')

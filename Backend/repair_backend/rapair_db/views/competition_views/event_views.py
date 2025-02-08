@@ -5,10 +5,14 @@ from ...serializers import EventSerializer , EventListSerializer
 from ...permissions import IsSuperUser ,IsJudgeUser
 from django.db import connection
 from ...utils import event_utils
-from ...models import EventGame
+from ...models import EventGame , Team
 from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
 from django.db import IntegrityError
+from django.db.models import Avg
+from ...models import TeamworkTeamScore
+from ...serializers import TeamworkScoreSerializer , TeamInterviewScoreSerializer , TeamEngNotebookScoreSerializer
+from rest_framework.generics import ListAPIView
 
 class CreateScheduleEventGameView(APIView):
     permission_classes = [AllowAny]
@@ -162,4 +166,50 @@ class EventProfileView(APIView):
         
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class TeamWorkRankView(APIView):
+    '''Rank teams based on Average of thier Teamwork Score For Event'''
+    permission_classes = [IsJudgeUser]
+    def get(self, request , event_name):
+        try:
+            teams = (
+                TeamworkTeamScore.objects
+                .filter(team__competition_event__name=event_name)  # Filter by event name
+                .select_related('team')  # Fetch the related Team model
+                .values('team', 'team__name')  # Include team name directly
+                .annotate(avg_score=Avg('score'))
+                .order_by('-avg_score')
+                )
+            serializers = TeamworkScoreSerializer(teams, many=True)
+            return Response(serializers.data, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class TeamInterviewScoreRankView(ListAPIView):
+    permission_classes = [IsJudgeUser]
+    serializer_class = TeamInterviewScoreSerializer
+    def get_queryset(self):
+        event_name = self.kwargs.get('event_name')
+        if not event_name:
+            return Team.objects.none()
+        return (Team.objects
+                .select_related('competition_event')
+                .filter(competition_event__name=event_name)
+                .order_by('-interview_score')
+                )
+
+class TeamEngNotebookScoreRank(ListAPIView):
+    permission_classes = [IsJudgeUser]
+    serializer_class = TeamEngNotebookScoreSerializer
+    def get_queryset(self):
+        event_name = self.kwargs.get('event_name')
+        if not event_name:
+            return Team.objects.none()
+        return (Team.objects
+                .select_related('competition_event')
+                .filter(competition_event__name=event_name)
+                .order_by('-eng_notebook_score')
+                )
+
           
