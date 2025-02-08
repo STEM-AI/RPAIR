@@ -88,7 +88,10 @@ class EventGame(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
     time = models.TimeField()
-    
+    is_active = models.BooleanField(default=False)
+    is_paused = models.BooleanField(default=False)
+    paused_time = models.FloatField(default=15)
+
     START = 'start'
     DRIVER = 'driver'
     AUTONOMOUS = 'autonomous'
@@ -104,7 +107,6 @@ class EventGame(models.Model):
         choices= STAGE_CHOICES , 
         default=START)
     
-    is_active = models.BooleanField(default=False)
 
     class Meta:
         constraints = [

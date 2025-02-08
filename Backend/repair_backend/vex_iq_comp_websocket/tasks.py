@@ -5,15 +5,17 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rapair_db.models import EventGame
 from django.core.management import call_command
-GAME_DURATION = 5  # 1 minute
+GAME_DURATION = 15  # 1 minute
 
 @shared_task
-def update_remaining_time(event_name, game_id, start_time=None):
+def update_remaining_time(event_name, game_id, start_time=None):    
+
+    ## TODO: check this
     try:
         game = EventGame.objects.get(id=game_id)
     except EventGame.DoesNotExist:
         return f"Game with ID {game_id} not found."
-
+    
     # Mark the game as active
     if not game.is_active :
         game.is_active = True
@@ -27,12 +29,18 @@ def update_remaining_time(event_name, game_id, start_time=None):
     elapsed_time = (now() - start_time).total_seconds()
 
     # Calculate the remaining time
-    remaining_time = GAME_DURATION - elapsed_time
+    remaining_time = game.paused_time - elapsed_time
+
+    if game.is_paused :
+        game.paused_time = remaining_time 
+        game.save()
+        return 
 
     if remaining_time <= 0:
         # Game is over
         game.completed = True
         game.is_active = False
+        game.paused_time = 0
         game.save()
         remaining_time = 0
     else:

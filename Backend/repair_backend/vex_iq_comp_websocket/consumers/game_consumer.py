@@ -4,7 +4,6 @@ from ..tasks import update_remaining_time  # Import the Celery task
 from rapair_db.models import EventGame
 from asgiref.sync import sync_to_async
 
-
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         user = self.scope["user"]
@@ -34,22 +33,21 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        
         try:
             data = json.loads(text_data)
+            self.event_name = data.get("event_name")
+            self.game_id = data.get("game_id")
+            try:
+                game = await sync_to_async(EventGame.objects.get)(id=self.game_id)
+            except EventGame.DoesNotExist:
+                await self.send(json.dumps({"error": f"Game with ID {self.game_id} not found"}))
+                return
 
-            if data["action"] == "start_game":
-                event_name = data["event_name"]
-                game_id = data.get("game_id")
+            if data["action"] == "start_game":   
 
-                if not game_id:
+                if not self.game_id:
                     await self.send(json.dumps({"error": "Game ID is required"}))
-                    return
-
-                # Fetch the game instance
-                try:
-                    game = await sync_to_async(EventGame.objects.get)(id=game_id)
-                except EventGame.DoesNotExist:
-                    await self.send(json.dumps({"error": f"Game with ID {game_id} not found"}))
                     return
                 
                 # Check if the game is already active
@@ -62,8 +60,19 @@ class GameConsumer(AsyncWebsocketConsumer):
                     return
 
                 # Trigger the Celery task
-                update_remaining_time.delay(event_name, game_id)
+                update_remaining_time.delay(self.event_name, self.game_id)
                 await self.send(json.dumps({"message": "Game timer started"}))
+
+            elif data["action"] == "pause_game":
+                game.is_paused = True
+                await sync_to_async(game.save)()
+                await self.send(json.dumps({ "status": "paused" }))
+
+            elif data["action"] == "resume_game":
+                game.is_paused = False
+                await sync_to_async(game.save)()
+                update_remaining_time.delay(self.event_name, self.game_id)
+                await self.send(json.dumps({ "status": "resumed" }))
 
         except json.JSONDecodeError as e:
             await self.send(json.dumps({"error": "Invalid JSON data"}))
