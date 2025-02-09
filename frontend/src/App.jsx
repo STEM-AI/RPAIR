@@ -26,6 +26,8 @@ import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam"
 // import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
 import MyTeam from "./pages/Dashboards/User/MyTeam";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
+import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
+
 
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
@@ -244,9 +246,27 @@ const App = () => {
             </Layout>
           }
         />
+
+        {/* JUDGE DASHBOARD */}
+      <Route
+          path="/Dashboard/Judge/Matches"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <MatchRounds/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+
+
+
+
       </Routes>
+
       
-                <ContactUs />
+      
+                {/* <ContactUs /> */}
 
     </Router>
   
