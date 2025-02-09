@@ -1,18 +1,16 @@
 from rest_framework import serializers
-from ..models import CompetitionEvent , Team , EventGame
+from ..models import CompetitionEvent , Team , EventGame , TeamworkTeamScore
 from ..serializers.team_serializers.team_member_serializers import TeamMemberSerializer
-from django.db.models import F 
+from ..serializers.team_serializers.team_score_serializers import TeamworkScoreSerializer
+from django.db.models import Avg
+from drf_spectacular.utils import extend_schema_field
 
 
 class TeamCompetitionProfileSerializer(serializers.ModelSerializer):
     members = TeamMemberSerializer(many=True)
-    total_score = serializers.SerializerMethodField()
     class Meta:
         model = Team
-        fields = ['name','robot_name','type','members' , 'team_leader_name' , 'total_score']
-
-    def get_total_score(self, obj):
-        return obj.teamwork_score + obj.interview_score + obj.eng_note_book_score
+        fields = ['name','robot_name','type','members' , 'team_leader_name' ]
 
 class EventSerializer(serializers.ModelSerializer):
     teams = TeamCompetitionProfileSerializer(many=True , required=False)
@@ -32,15 +30,6 @@ class EventGameSerializer(serializers.ModelSerializer):
         model = EventGame
         fields = ['id' ,'team1', 'team2', 'score' , 'stage']
 
-class TopTeamsSerializer(serializers.ModelSerializer):
-    total_score = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Team
-        fields = ['id' , 'name' , 'total_score']
-
-    def get_total_score(self, obj):
-        return obj.teamwork_score + obj.interview_score + obj.eng_note_book_score
 
 class EventListSerializer(serializers.ModelSerializer):
     top3_teams = serializers.SerializerMethodField(read_only = True)
@@ -48,12 +37,15 @@ class EventListSerializer(serializers.ModelSerializer):
         model = CompetitionEvent
         fields = ['id' ,'name', 'start_date', 'end_date', 'location' , 'top3_teams']
 
-    
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_top3_teams(self, obj):
         top3_teams = (
-            obj.teams.all()
-                .annotate(total_score=F('teamwork_score')+ F('interview_score')+F('inspect_score')+F('eng_note_book_score'))
-                .order_by('-total_score')[:3]
-        )
-        serializers = TopTeamsSerializer(top3_teams , many = True)
+                TeamworkTeamScore.objects
+                .select_related('team' , 'team_competition_event')  # Fetch the related Team model
+                .filter(team__competition_event=obj)
+                .values('team', 'team__name')  # Include team name directly
+                .annotate(avg_score=Avg('score'))
+                .order_by('-avg_score')[:3]
+                )
+        serializers = TeamworkScoreSerializer(top3_teams , many = True)
         return serializers.data
