@@ -87,6 +87,7 @@ class ListTeamsView(ListAPIView):
 class TeamProfileView(RetrieveAPIView):
     permission_classes = [IsSuperUser]
     serializer_class = TeamSerializer
+    lookup_url_kwarg = 'team_name'
     lookup_field = 'name'  # Lookup by team name instead of the default 'pk'
 
     def get_queryset(self):
