@@ -12,6 +12,7 @@
 //   const [searchQuery, setSearchQuery] = useState("");
 //   const [responseMessage, setResponseMessage] = useState(null);
 //   const [alertType, setAlertType] = useState("");
+//   const [userRole, setUserRole] = useState(""); 
 //   const token = localStorage.getItem("access_token");
 
 //   useEffect(() => {
@@ -21,16 +22,30 @@
 //       return;
 //     }
 
+//     const fetchUserRole = async () => {
+//       try {
+//         const response = await axios.get(
+//           `${process.env.REACT_APP_API_URL}/user/profile/`, 
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+//         setUserRole(response.data.role);
+//         console.log(response.data)
+//       } catch (error) {
+//         console.error("Failed to fetch user role", error);
+//       }
+//     };
+
 //     const fetchTeams = async () => {
 //       try {
 //         const response = await axios.get(
-//           "http://147.93.56.71:8000/api/team/teams-list/",
+//           `${process.env.REACT_APP_API_URL}/team/teams-list/`,
 //           {
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//             },
+//             headers: { Authorization: `Bearer ${token}` },
 //           }
 //         );
+//         console.log("Teams data:", response.data);
 //         setTeams(response.data);
 //         setFilteredTeams(response.data);
 //       } catch (err) {
@@ -44,6 +59,7 @@
 //       }
 //     };
 
+//     fetchUserRole();
 //     fetchTeams();
 //   }, [token]);
 
@@ -63,13 +79,13 @@
 //   }
 
 //   return (
-//     <div className="container mx-auto p-4">
-//       <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
-//         ALL TEAMS
+//     <div className="container mx-auto mt-32 p-6 max-w-6xl">
+//       <h2 className="mb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-400 text-5xl font-extrabold">
+//         All Teams
 //       </h2>
 
 //       {responseMessage && (
-//         <div className="mb-4">
+//         <div className="mb-6">
 //           <Alert severity={alertType}>
 //             <AlertTitle>
 //               {alertType === "success" ? "Success" : "Error"}
@@ -79,7 +95,7 @@
 //         </div>
 //       )}
 
-//       <div className="mb-4 flex justify-center">
+//       <div className="mb-6 flex justify-center">
 //         <TextField
 //           label="Search Teams"
 //           variant="outlined"
@@ -94,24 +110,28 @@
 //         {filteredTeams.map((team) => (
 //           <div
 //             key={team.id}
-//             className="bg-white max-w-2xl shadow overflow-hidden sm:rounded-lg"
+//             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
 //           >
-//             <div className="px-4 py-5 sm:px-6">
-//               <h3 className="text-lg leading-6 font-medium text-gray-900">
+//             <div className="px-6 py-4">
+//               <h3 className="text-lg font-bold text-gray-800">
 //                 {team.name || "Unnamed Team"}
 //               </h3>
-//               <p className="mt-1 text-sm text-gray-500">
-//                 Competition: {team.competition || "N/A"}
+//               <p className="mt-2 text-sm text-gray-600">
+//                 Competition: <span className="font-medium">{team.competition || "N/A"}</span>
 //               </p>
-//               <p className="mt-1 text-sm text-gray-500">
-//                 Organization: {team.organization_name || "N/A"}
+//               <p className="mt-2 text-sm text-gray-600">
+//                 Organization: <span className="font-medium">{team.organization_name || "N/A"}</span>
 //               </p>
-//               <Link
-//                 to={`/Dashboard/Admin/Teams/${team.name}`}
-//                 className="mt-2 text-blue-600 underline"
-//               >
-//                 View Details
-//               </Link>
+              
+
+//               {userRole === "Admin" && (
+//                 <Link
+//                   to={`/Dashboard/Admin/Teams/${team.name}`}
+//                   className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
+//                 >
+//                   View Details
+//                 </Link>
+//               )}
 //             </div>
 //           </div>
 //         ))}
@@ -121,6 +141,7 @@
 // };
 
 // export default ListTeams;
+
 
 
 import React, { useState, useEffect } from "react";
@@ -136,6 +157,7 @@ const ListTeams = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
+  const [userRole, setUserRole] = useState(""); 
   const token = localStorage.getItem("access_token");
 
   useEffect(() => {
@@ -145,29 +167,42 @@ const ListTeams = () => {
       return;
     }
 
-   const fetchTeams = async () => {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/team/teams-list/`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const fetchUserRole = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/profile/`, 
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setUserRole(response.data.role);
+      } catch (error) {
+        console.error("Failed to fetch user role", error);
       }
-    );
-    setTeams(response.data);
-    setFilteredTeams(response.data);
-  } catch (err) {
-    if (err.response && err.response.status === 401) {
-      setAlertType("error");
-      setResponseMessage("Unauthorized access. Please check your token.");
-    } else {
-      setAlertType("error");
-      setResponseMessage("Failed to fetch teams. Please try again.");
-    }
-  }
-};
+    };
 
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/team/teams-list/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setTeams(response.data);
+        setFilteredTeams(response.data);
+      } catch (err) {
+        if (err.response && err.response.status === 401) {
+          setAlertType("error");
+          setResponseMessage("Unauthorized access. Please check your token.");
+        } else {
+          setAlertType("error");
+          setResponseMessage("Failed to fetch teams. Please try again.");
+        }
+      }
+    };
+
+    fetchUserRole();
     fetchTeams();
   }, [token]);
 
@@ -230,12 +265,56 @@ const ListTeams = () => {
               <p className="mt-2 text-sm text-gray-600">
                 Organization: <span className="font-medium">{team.organization_name || "N/A"}</span>
               </p>
-              <Link
-                to={`/Dashboard/Admin/Teams/${team.name}`}
+
+              {userRole === "Admin" ? (
+                <>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Phone Number: <span className="font-medium">{team.phone_number || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Coach: <span className="font-medium">{team.coach || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Team Leader: <span className="font-medium">{team.team_leader_name || "N/A"}</span>
+                  </p>
+                </>
+              ) : userRole === "Judge" && (
+                <>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Coach: <span className="font-medium">{team.coach || "N/A"}</span>
+                  </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Team Leader: <span className="font-medium">{team.team_leader_name || "N/A"}</span>
+                  </p>
+                </>
+              )}
+
+              {/* <Link
+                to={`/Dashboard/${userRole}/Teams/${team.name}`}
                 className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
               >
                 View Details
-              </Link>
+              </Link> */}
+
+<Link
+  to={`/Dashboard/${userRole}/Teams/${team.name ? team.name : ''}`}
+  className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
+>
+  View Details
+</Link>
+
             </div>
           </div>
         ))}
