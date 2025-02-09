@@ -12,8 +12,8 @@ import Register from "./pages/Auth/Register";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
 import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
-import Judge from "./pages/Dashboards/Judge/Judge";
-import User from "./pages/Dashboards/User/User";
+import Interview from "./pages/Dashboards/Judge/interview";
+import User from "./pages/Dashboards/UserDashbord/User";
 import CreateStaff from "./pages/Dashboards/AdminDashboard/Management/CreateStaff";
 import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/CreateCompetition";
 import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
@@ -24,7 +24,6 @@ import CompetitionEvents from "./pages/Dashboards/AdminDashboard/Management/Comp
 import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam";
 
 // import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
-import MyTeam from "./pages/Dashboards/User/MyTeam";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
 
@@ -36,7 +35,7 @@ const App = () => {
       {children}
       {!hideNavbar && (
         <>
-          <Footer />
+          {/* <Footer /> */}
         </>
       )}
     </>
@@ -60,7 +59,7 @@ const App = () => {
             <Layout>
               <About />
             </Layout>
-          }
+          }Ve
         />
         <Route
           path="/competitions"
@@ -176,15 +175,17 @@ const App = () => {
             }
         />
          <Route
-          path="/Dashboard/Judge"
+          path="/Dashboard/Interview"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-                <Judge />
+                <Interview />
               </LayoutDashboard>
             </Layout>
           }
         />
+        
+
         {/* User Dashboard Routes */}
          <Route
           path="/Dashboard/User"
@@ -216,16 +217,7 @@ const App = () => {
             </Layout>
           }
         />
-         <Route
-          path="/Dashboard/User/MyTeams"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-                <MyTeam/>
-                  </LayoutDashboard>
-            </Layout>
-          }
-        />
+        
         <Route
           path="/Dashboard/Admin/Competitions"
           element={
