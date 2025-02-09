@@ -99,7 +99,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/Admin/Teams"
+          path="/Dashboard/:role/Teams"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -108,7 +108,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route path="/Dashboard/Admin/Teams/:name" element={
+        <Route path="/Dashboard/:role/Teams/:name" element={
          <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />

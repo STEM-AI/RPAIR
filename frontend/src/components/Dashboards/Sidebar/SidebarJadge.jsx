@@ -3,8 +3,10 @@ import Logo from "../../../assets/logo/logo2.png";
 import { MdOutlineDashboard } from "react-icons/md";
 import { BsChevronDoubleDown, BsChevronDoubleUp } from "react-icons/bs";
 import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
-import { GiLaurelsTrophy } from "react-icons/gi";
+
 import { Link, NavLink } from "react-router-dom";
+import { MdEventNote } from "react-icons/md";
+
 
 const SidebarJadge = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +47,25 @@ const SidebarJadge = () => {
                 <MdOutlineDashboard className="mr-2" />
                 Dashboard
               </li>
+              
+              {/* {Event Details} */}
+              <Link to="/Dashboard/Admin/EventDetails">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                          <MdEventNote className="mr-2" />
+
+                            Event Details
+                          </li>
+                        </Link>
+
+              {/* {TEAMS} */}
             </Link>
+            <Link to="/Dashboard/Admin/Teams">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <RiTeamLine className="mr-2" />
+                            Teams
+                          </li>
+                        </Link>
+
 
            
 
