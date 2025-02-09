@@ -88,23 +88,23 @@ class EventGame(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
     time = models.TimeField()
-    
-    START = 'start'
+    is_active = models.BooleanField(default=False)
+    is_paused = models.BooleanField(default=False)
+    paused_time = models.FloatField(default=15)
+
+    TEAMWORK = 'teamwork'
     SKILLS = 'skills'
-    AUTOMATION = 'automation'
-    FINAL = 'final'
+    TEAMWORK_FINAL = 'final'
     STAGE_CHOICES = (
-        (START, 'Start'),
-        (SKILLS, 'Skill'),
-        (AUTOMATION, 'Automation'),
-        (FINAL, 'Final'),
+        (TEAMWORK, 'Teamwork'),
+        (SKILLS, 'Skills'),
+        (TEAMWORK_FINAL, 'Teamwork Final'),
     )
     stage = models.CharField(
         max_length=10 ,
         choices= STAGE_CHOICES , 
-        default=START)
+        default=TEAMWORK)
     
-    is_active = models.BooleanField(default=False)
 
     class Meta:
         constraints = [

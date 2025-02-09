@@ -4,20 +4,19 @@ from ..tasks import update_remaining_time  # Import the Celery task
 from rapair_db.models import EventGame
 from asgiref.sync import sync_to_async
 
-
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         user = self.scope["user"]
 
-        if user.is_authenticated:
-            await self.accept()
-            await self.send(json.dumps({"message": f"Welcome {user.username}!"}))
-        else:
-            await self.close()
+        # if user.is_authenticated:
+        #     await self.accept()
+        #     await self.send(json.dumps({"message": f"Welcome {user.username}!"}))
+        # else:
+        #     await self.close()
         # Extract the competition_event ID from the URL
+        await self.accept()
         self.competition_event_name= self.scope["url_route"]["kwargs"]["event_name"]
         self.event_game_id= self.scope["url_route"]["kwargs"]["game_id"]
-        print(f"Trying to connect to event: {self.competition_event_name} to game : {self.event_game_id}")
 
         self.room_group_name = f"competition_event_{self.competition_event_name}_game_{self.event_game_id}"
 
@@ -27,7 +26,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
     async def disconnect(self, close_code):
-        print(f"Disconnected room_group_name: {self.room_group_name}")
         # Leave the competition event group
         await self.channel_layer.group_discard(
             self.room_group_name,
@@ -35,26 +33,21 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        print(f"Received text")
+        
         try:
             data = json.loads(text_data)
-            print("Parsed data:", data)
+            self.event_name = data.get("event_name")
+            self.game_id = data.get("game_id")
+            try:
+                game = await sync_to_async(EventGame.objects.get)(id=self.game_id)
+            except EventGame.DoesNotExist:
+                await self.send(json.dumps({"error": f"Game with ID {self.game_id} not found"}))
+                return
 
-            if data["action"] == "start_game":
-                print("Starting game")
-                event_name = data["event_name"]
-                game_id = data.get("game_id")
+            if data["action"] == "start_game":   
 
-                if not game_id:
+                if not self.game_id:
                     await self.send(json.dumps({"error": "Game ID is required"}))
-                    return
-
-                # Fetch the game instance
-                try:
-                    game = await sync_to_async(EventGame.objects.get)(id=game_id)
-                    print("Game activated" , game.is_active)
-                except EventGame.DoesNotExist:
-                    await self.send(json.dumps({"error": f"Game with ID {game_id} not found"}))
                     return
                 
                 # Check if the game is already active
@@ -67,25 +60,27 @@ class GameConsumer(AsyncWebsocketConsumer):
                     return
 
                 # Trigger the Celery task
-                update_remaining_time.delay(event_name, game_id)
+                update_remaining_time.delay(self.event_name, self.game_id)
                 await self.send(json.dumps({"message": "Game timer started"}))
 
+            elif data["action"] == "pause_game":
+                game.is_paused = True
+                await sync_to_async(game.save)()
+                await self.send(json.dumps({ "status": "paused" }))
+
+            elif data["action"] == "resume_game":
+                game.is_paused = False
+                await sync_to_async(game.save)()
+                update_remaining_time.delay(self.event_name, self.game_id)
+                await self.send(json.dumps({ "status": "resumed" }))
+
         except json.JSONDecodeError as e:
-            print(f"Failed to parse JSON: {e}")
             await self.send(json.dumps({"error": "Invalid JSON data"}))
         except KeyError as e:
-            print(f"Missing key in data: {e}")
             await self.send(json.dumps({"error": f"Missing key: {e}"}))
-    # Handler to send score updates to the WebSocket
-    async def send_score_update(self, event):
-        print("Sent score update")
-        print("score" , event["data"])
-        await self.send(text_data=json.dumps(event["data"]))
 
     async def game_timer_update(self, event):
-        print("Sent game timer update")
         remaining_time = event['remaining_time']
-        print("remaining_time" , remaining_time)
         await self.send(json.dumps({
             'remaining_time': remaining_time
         }))
