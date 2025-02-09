@@ -1,10 +1,9 @@
 // Layout.js
 import React from "react";
-import NavbarProfile from "../../../components/Dashboards/NavbarProfile";
-import SidebarAdmin from "../../../components/Dashboards/Sidebar/SidebarAdmin";
-import SidebarJadge from "../../../components/Dashboards/Sidebar/SidebarJadge";
-import SidebarUser from "../../../components/Dashboards/Sidebar/SidebarUser";
-import FooterDash from "../../../components/Dashboards/FooterDash";
+import NavbarProfile from "../NavbarProfile";
+import SidebarAdmin from "../Sidebar/SidebarAdmin";
+import SidebarJadge from "../Sidebar/SidebarJadge";
+import SidebarUser from "../Sidebar/SidebarUser"
 
 const LayoutDashboard = ({ children }) => {
       // Get user role from localStorage
@@ -20,7 +19,6 @@ const LayoutDashboard = ({ children }) => {
             Sidebar = SidebarUser;
         }
     } else {
-        // Default fallback if role data is missing
         Sidebar = () => <div>No Access</div>;
     }  
   return (

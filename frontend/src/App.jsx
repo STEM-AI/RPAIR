@@ -10,24 +10,22 @@ import Competitions from "./pages/Competitions/Competitions";
 import Login from "./pages/Auth/login";
 import Register from "./pages/Auth/Register";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
-import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard";
-import Teams from "./components/Dashboards/AdminDashboard/ListTeams";
-import CreateEvent from "./components/Dashboards/AdminDashboard/Management/CreateEvent";
+import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
+import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
 import Judge from "./pages/Dashboards/Judge/Judge";
 import User from "./pages/Dashboards/User/User";
-import CreateStaff from "./components/Dashboards/AdminDashboard/Management/CreateStaff";
-import CreateCompetition from "./components/Dashboards/AdminDashboard/Management/CreateCompetition";
-import VexIQ from "./components/Competitions/VexIQ";
-import ListTeams from "./components/Dashboards/AdminDashboard/ListTeams";
-import CreateOrganization from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
-import TeamDetails from "./components/Dashboards/AdminDashboard/TeamDetails";
-import ListCompetitions from "./components/Dashboards/AdminDashboard/Management/ListCompetitions";
-import CompetitionEvents from "./components/Dashboards/AdminDashboard/Management/CompetitionEvents";
-import CreateTeam from "./components/Dashboards/AdminDashboard/Management/CreateTeam";
+import CreateStaff from "./pages/Dashboards/AdminDashboard/Management/CreateStaff";
+import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/CreateCompetition";
+import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
+import CreateOrganization from "./pages/Dashboards/AdminDashboard/Management/CreateOrg";
+import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
+import ListCompetitions from "./pages/Dashboards/AdminDashboard/Management/ListCompetitions";
+import CompetitionEvents from "./pages/Dashboards/AdminDashboard/Management/CompetitionEvents";
+import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam";
 
 // import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
 import MyTeam from "./pages/Dashboards/User/MyTeam";
-import PaymentForm from "./components/Dashboards/UserDashbord/PayMent";
+import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
