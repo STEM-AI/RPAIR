@@ -5,6 +5,7 @@ from ...permissions import IsJudgeUser
 from rest_framework import status
 from ...serializers import OrganizationSerializer
 from ...models import Organization 
+from rest_framework.generics import ListAPIView , RetrieveAPIView
 
 
 class CreateOrganizationView(APIView):
@@ -17,22 +18,15 @@ class CreateOrganizationView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class OrganizationProfileView(APIView):
+class OrganizationProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-    def get(self, request , organization_name=None):
-        if organization_name is None:
-            return Response({"error": "Organization name is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        organization = (
-            Organization.objects.filter(name=organization_name)
-            .prefetch_related('contacts', 'team_set__competition')
-            .first()
-            )
-        
-        if organization is None:
-            return Response({"error": "Organization not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = OrganizationSerializer(organization)
-        return Response(serializer.data , status=status.HTTP_200_OK)
+    serializer_class = OrganizationSerializer
+    lookup_field = 'name'
+    queryset = (
+        Organization.objects
+        .prefetch_related('team_organization' , 'contacts')
+        )
+
     
 class OrganizationEditProfileView(APIView):
     permission_classes = [IsJudgeUser]
@@ -72,13 +66,9 @@ class DeleteOrganizationView(APIView):
         return Response({"message": "Organization deleted successfully"}, status=status.HTTP_200_OK)
     
 
-class ListOrganizationsView(APIView):
+class ListOrganizationsView(ListAPIView):
     permission_classes = [IsJudgeUser]
     serializer_class = OrganizationSerializer
-    def get(self, request):
-        organizations = Organization.objects.all()
-        serializer = OrganizationSerializer(organizations, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+    queryset = Organization.objects.all()
 
 

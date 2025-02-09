@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ...models import SkillsTeamScore , TeamworkTeamScore
+from ...models import SkillsTeamScore , TeamworkTeamScore , Team
 
 class SkillsTeamScoreSerializer(serializers.Serializer):
     team_name = serializers.SerializerMethodField()
@@ -17,3 +17,13 @@ class TeamworkScoreSerializer(serializers.Serializer):
     class Meta:
         model = TeamworkTeamScore
         fields = ['team','team_name','avg_score']
+
+class TeamInterviewScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ['id' , 'name' , 'interview_score']
+
+class TeamEngNotebookScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ['id' , 'name' , 'eng_notebook_score']

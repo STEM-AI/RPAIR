@@ -10,6 +10,9 @@ from rapair_db.repair_db_urls.competiotion_urls import (
     event_urls, organization_urls , 
     team_event_urls , game_urls)
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
+
 urlpatterns = [
     path('token/', include(tokens_ulrs)),
     path('organization/', include(organization_urls)),
@@ -20,6 +23,10 @@ urlpatterns = [
     path('event/', include(event_urls)),
     path('team_event/', include(team_event_urls)),
     path('game/', include(game_urls)),
+    path('docs/', SpectacularAPIView.as_view(), name='api-docs'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='api-docs'), name='redoc'),
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='api-docs'), name='swagger-ui'),
+
     
     
     

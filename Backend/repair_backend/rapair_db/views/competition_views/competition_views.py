@@ -5,33 +5,22 @@ from rest_framework import status
 from ...serializers import CompetitionsSerializer 
 from ...models import Competition
 from ...permissions import IsJudgeUser
+from rest_framework.generics import ListAPIView , RetrieveAPIView
 
 
 
-class CompetitionProfileView(APIView):
+class CompetitionProfileView(RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = CompetitionsSerializer
-    def get(self, request , competition_name=None):
-        if competition_name is None:
-            return Response({"error": "Competition name is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        competition = (
-            Competition.objects.filter(name=competition_name)
-            .first()
-            )
-        
-        if competition is None:
-            return Response({"error": "Competition not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = CompetitionsSerializer(competition)
-        return Response(serializer.data , status=status.HTTP_200_OK)
+    lookup_url_kwarg = 'competition_name'
+    lookup_field = 'name'  # Lookup by competition name instead of the default 'pk'
+    queryset = Competition.objects.all()
+
     
-class CompetitionsListView(APIView):
+class CompetitionsListView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = CompetitionsSerializer
-    def get(self, request):
-        competitions = Competition.objects.all()
-        serializer = CompetitionsSerializer(competitions, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    queryset = Competition.objects.all()
     
 class CompetitionCreateView(APIView):
     permission_classes = [IsJudgeUser]

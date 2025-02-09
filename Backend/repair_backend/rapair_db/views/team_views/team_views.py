@@ -6,7 +6,7 @@ from rest_framework import status
 from ...serializers.team_serializers.team_data_serializers import TeamSerializer
 from ...models import Team ,Organization
 from ...utils import event_utils
-# //sponsers , scoial meadia , previous comp , team coach 
+from rest_framework.generics import RetrieveAPIView , ListAPIView
 class UserCreateTeamView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -19,24 +19,24 @@ class UserCreateTeamView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-class UserTeamProfileView(APIView):
+class UserTeamProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-    def get(self, request):
-        user = request.user
-        team = (
-        Team.objects.filter(user=user)
-        .prefetch_related(
+    serializer_class = TeamSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return (
+            Team.objects
+            .filter(user=user)
+            .prefetch_related(
             'sponsors', 
             'social_media',
             'previous_competition',
             'coach',
             'members'
-        )
-        .select_related('organization' , 'competition_event')
-        )
-        serializer = TeamSerializer(team , many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+            )
+            .select_related('organization' , 'competition_event')
+            )
 
 class UserTeamEditTeamProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -78,21 +78,21 @@ class UserDeleteTeamView(APIView):
         else:
             return Response({"message": "Team not found"}, status=status.HTTP_404_NOT_FOUND)
         
-class ListTeamsView(APIView):
+class ListTeamsView(ListAPIView):
     permission_classes = [IsJudgeUser]
-    def get(self, request):
-        teams = Team.objects.all()
-        serializer = TeamSerializer(teams, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    serializer_class = TeamSerializer
+    queryset = Team.objects.all()
         
 
-class TeamProfileView(APIView):
+class TeamProfileView(RetrieveAPIView):
     permission_classes = [IsSuperUser]
+    serializer_class = TeamSerializer
+    lookup_url_kwarg = 'team_name'
+    lookup_field = 'name'  # Lookup by team name instead of the default 'pk'
 
-    def get(self, request, team_name):
-        team = (
+    def get_queryset(self):
+        return (
             Team.objects
-            .filter(name=team_name)
             .prefetch_related(
             'sponsors', 
             'social_media',
@@ -101,10 +101,7 @@ class TeamProfileView(APIView):
             'members'
             )
             .select_related('organization' , 'competition_event')
-            .first()
             )
-        serializer = TeamSerializer(team)
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class DeleteTeam(APIView):
