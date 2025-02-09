@@ -30,7 +30,7 @@ class TeamworkTeamScore(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.team.name} - Average Teamwork Score: {self.get_average_score()}"
+        return f"{self.team.name}"
     
 class SkillsTeamScore(models.Model):
     id = models.AutoField(primary_key=True)
@@ -41,7 +41,7 @@ class SkillsTeamScore(models.Model):
 
     
     def __str__(self):
-        return f"{self.team.name} - Average Skills Score: {self.get_average_score()}"
+        return f"{self.team.name}"
     
 
 class TeamSponsor(models.Model):

@@ -89,10 +89,16 @@ def add_team_members(sender, instance, created, **kwargs):
 
 
 @receiver(post_save , sender=EventGame)
-def add_team_teamwork_score(sender, instance, created, **kwargs):
+def add_team_score(sender, instance, created, **kwargs):
     if created :
         return
-    if hasattr(instance, 'operation') and instance.operation == 'set_game_score':
+    if hasattr(instance, 'operation') and instance.operation == 'set_teamwork_game_score':
         instance.team1.teamwork_scores.create(score = instance.score)
         instance.team2.teamwork_scores.create(score = instance.score)
-    
+
+    if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
+        instance.team1.skills_scores.create(
+            driver_score = instance.driver_score,
+            autonomous_score = instance.autonomous_score
+            )
+

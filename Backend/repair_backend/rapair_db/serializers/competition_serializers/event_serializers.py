@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from ..models import CompetitionEvent , Team , EventGame , TeamworkTeamScore
-from ..serializers.team_serializers.team_member_serializers import TeamMemberSerializer
-from ..serializers.team_serializers.team_score_serializers import TeamworkScoreSerializer
+from ...models import CompetitionEvent , Team , EventGame , TeamworkTeamScore
+from ..team_serializers.team_member_serializers import TeamMemberSerializer
+from ..team_serializers.team_score_serializers import TeamworkScoreSerializer
 from django.db.models import Avg
 from drf_spectacular.utils import extend_schema_field
 

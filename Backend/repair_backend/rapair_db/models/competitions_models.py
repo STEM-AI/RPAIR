@@ -92,20 +92,18 @@ class EventGame(models.Model):
     is_paused = models.BooleanField(default=False)
     paused_time = models.FloatField(default=15)
 
-    START = 'start'
-    DRIVER = 'driver'
-    AUTONOMOUS = 'autonomous'
-    FINAL = 'final'
+    TEAMWORK = 'teamwork'
+    SKILLS = 'skills'
+    TEAMWORK_FINAL = 'final'
     STAGE_CHOICES = (
-        (START, 'Start'),
-        (DRIVER, 'Driver'),
-        (AUTONOMOUS, 'Autonomous'),
-        (FINAL, 'Final'),
+        (TEAMWORK, 'Teamwork'),
+        (SKILLS, 'Skills'),
+        (TEAMWORK_FINAL, 'Teamwork Final'),
     )
     stage = models.CharField(
         max_length=10 ,
         choices= STAGE_CHOICES , 
-        default=START)
+        default=TEAMWORK)
     
 
     class Meta:

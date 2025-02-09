@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Competition 
+from ...models import Competition 
 
 class CompetitionsSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
