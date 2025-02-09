@@ -319,7 +319,7 @@ const CompetitionEvents = () => {
   }, [competition_name, token]);
 
   if (loading) {
-    return <div className="text-center mt-8">Loading...</div>;
+    return <div className="text-center ">Loading...</div>;
   }
 
   if (error) {
@@ -327,7 +327,7 @@ const CompetitionEvents = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 mt-28">
+    <div className="container mx-auto p-4 ">
       <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-600 text-5xl font-black">
         {competition_name.replace(/_/g, " ").toUpperCase()} EVENTS
       </h2>

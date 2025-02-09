@@ -95,10 +95,8 @@ export default function NavbarProfile() {
   }, []);
 
   return (
-    <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
-      ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
-      ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] " : "bg-white "}
-      transition-colors duration-300`}>
+    <nav className={`fixed left-0 right-0  shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
+      transition-colors duration-300 bg-white `}>
       <div className="flex items-center space-x-3">
         <NavLink to={"/"}>
           <img

@@ -18,7 +18,7 @@ const SidebarJadge = () => {
   };
 
   return (
-    <div className="relative top-0 left-0 h-full  z-50">
+    <div className="relative top-0 left-0 h-full  ">
      {/* Hamburger button to toggle sidebar visibility */}
       <button
         className="lg:hidden fixed top-9 left-4 z-50"
@@ -104,6 +104,13 @@ const SidebarJadge = () => {
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineDashboard className="mr-2" />
                 Dashboard
+              </li>
+            </Link>
+            {/* Dashboard */}
+            <Link to="/Dashboard/Interview">
+              <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <MdOutlineDashboard className="mr-2" />
+                Interview
               </li>
             </Link>
           </ul>
