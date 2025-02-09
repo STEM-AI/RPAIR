@@ -18,7 +18,7 @@ const SidebarUser = () => {
   };
 
   return (
-    <div className="relative top-0 left-0 h-full  z-50">
+    <div className="relative top-0 left-0 h-full ">
      {/* Hamburger button to toggle sidebar visibility */}
       <button
         className="lg:hidden fixed top-9 left-4 z-50"

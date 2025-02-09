@@ -1,6 +1,6 @@
 // Layout.js
 import React from "react";
-import NavbarProfile from "../NavbarProfile";
+import NavbarProfile from "../../../pages/Dashboards/NavbarProfile";
 import SidebarAdmin from "../Sidebar/SidebarAdmin";
 import SidebarJadge from "../Sidebar/SidebarJadge";
 import SidebarUser from "../Sidebar/SidebarUser"
@@ -24,9 +24,9 @@ const LayoutDashboard = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-100">
               <NavbarProfile />
-      <Sidebar />
+      <Sidebar  />
       <div className="flex-1 flex flex-col">
-        <div className="p-6 flex-1 overflow-auto">{children}</div>
+        <div className="p-6 flex-1 overflow-auto mt-24">{children}</div>
       </div>
     </div>
   );

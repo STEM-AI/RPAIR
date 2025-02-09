@@ -100,7 +100,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
+    <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5  md:px-10 py-2 flex items-center justify-between 
       ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
       ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] " : "bg-white "}
       transition-colors duration-300`}>
