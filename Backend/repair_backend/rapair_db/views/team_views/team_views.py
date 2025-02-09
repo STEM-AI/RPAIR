@@ -6,18 +6,27 @@ from rest_framework import status
 from ...serializers.team_serializers.team_data_serializers import TeamSerializer
 from ...models import Team ,Organization
 from ...utils import event_utils
-from rest_framework.generics import RetrieveAPIView , ListAPIView
-class UserCreateTeamView(APIView):
-    permission_classes = [IsAuthenticated]
+from rest_framework.generics import RetrieveAPIView , ListAPIView , CreateAPIView
 
-    def post(self, request):
-        event = event_utils.get_object(request)
-        serializer = TeamSerializer(data = request.data , context = {'event':event})
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(f"message': 'Team created successfully Team :{serializer.data} ", status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserCreateTeamView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TeamSerializer
+
+    def get_serializer_context(self):
+        """
+        Override this method to add the event to the serializer context.
+        """
+        context = super().get_serializer_context()
+        # Fetch the event using your utility function
+        event = event_utils.get_object(event_name=self.request.data.get('event_name'))
+        if event is None:
+            return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
+        context['event'] = event
+        return context
+
+    def perform_create(self, serializer):
+        # Save the team with the user ID and event
+        serializer.save(user_id=self.request.user.id)
         
 class UserTeamProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]

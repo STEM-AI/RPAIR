@@ -33,12 +33,9 @@ def get_or_create_sponsor(sender, instance, created, **kwargs):
         sponsors_info = instance.sponsors_info
         if sponsors_info :
             for sponsor_data in sponsors_info:
-                sponsor , created = TeamSponsor.objects.get_or_create(
-                    name=sponsor_data['name'] , 
-                    defaults={
-                        'email' : sponsor_data['email'],
-                        'team' : instance
-                        }
+                sponsor = TeamSponsor.objects.create(
+                        team = instance,
+                        **sponsor_data
                         )
                 sponsor.save()
 
