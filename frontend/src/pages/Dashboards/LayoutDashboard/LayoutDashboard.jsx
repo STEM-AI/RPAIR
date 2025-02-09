@@ -26,7 +26,7 @@ const LayoutDashboard = ({ children }) => {
               <NavbarProfile />
       <Sidebar  />
       <div className="flex-1 flex flex-col">
-        <div className="p-6 flex-1 overflow-auto mt-24">{children}</div>
+        <div className="p-6 flex-1 overflow-auto">{children}</div>
       </div>
     </div>
   );

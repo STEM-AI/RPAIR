@@ -26,6 +26,7 @@ import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam"
 // import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
+import JudgeDashboard from "./pages/Dashboards/Judge/judgeDahboard";
 
 
 const App = () => {
@@ -240,6 +241,16 @@ const App = () => {
         />
 
         {/* JUDGE DASHBOARD */}
+        <Route
+          path="/Dashboard/Judge"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <JudgeDashboard/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
       <Route
           path="/Dashboard/Judge/Matches"
           element={
