@@ -1,52 +1,78 @@
-// import React from 'react'
+
+
+// import React from 'react';
+// import { BiJoystick } from "react-icons/bi";
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
+
+// import { FaLaptopCode } from "react-icons/fa6";
+// import { useNavigate } from "react-router-dom";
+
 
 // const MatchRounds = () => {
-//     return (
-//       <div className="h-full min-h-screen w-full mt-16 pt-12 p-4">
-//         <div className="grid gap-14 md:grid-cols-3 md:gap-5">
-//           {[ 
-//             { 
-//               title: "TREE AND SHRUB PRUNING", 
-//               color: "bg-teal-400", 
-//               shadow: "shadow-teal-500/40", 
-//               svg: "M24.75 23H8.25V28.75H24.75V23ZM32.3984 9.43359...", 
-//             },
-//             { 
-//               title: "IRRIGATION & DRAINAGE", 
-//               color: "bg-rose-500", 
-//               shadow: "shadow-rose-500/40", 
-//               svg: "M12 0C11.0532 0 10.2857 0.767511 10.2857 1.71432V5.14285H13.7142...", 
-//             },
-//             { 
-//               title: "LANDSCAPE LIGHTING", 
-//               color: "bg-sky-500", 
-//               shadow: "shadow-sky-500/40", 
-//               svg: "M8.25 19.25C11.2836 19.25 13.75 16.7836 13.75 13.75C13.75 10.7164...", 
-//             }
-//           ].map((service, index) => (
-//             <div key={index} className="rounded-xl bg-white p-6 text-center shadow-xl">
-//               <div className={`mx-auto flex h-16 w-16 -translate-y-12 transform items-center justify-center rounded-full ${service.color} ${service.shadow}` }>
-//                 <svg viewBox="0 0 55 44" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white">
-//                   <path d={service.svg} fill="white"></path>
-//                 </svg>
-//               </div>
-//               <h1 className="text-darken mb-3 text-xl font-medium lg:px-14">{service.title}</h1>
-//               <p className="px-4 text-gray-500">
-//                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo iure inventore amet modi accusantium vero perspiciatis, incidunt dicta sed aspernatur!
-//               </p>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     );
+//   const navigate = useNavigate();
+
+//   const handleClick = (path) => {
+//     navigate(path);
 //   };
-  
-//   export default MatchRounds;
+
+//   return (
+//     <div className="h-full min-h-screen w-full  p-4 flex items-center justify-center">
+//       <div className="grid gap-14 md:grid-cols-3 md:gap-5">
+//         {[ 
+//           { 
+//             title: "Teamwork Challenge", 
+//             color: "bg-teal-400", 
+//             shadow: "shadow-teal-500/40", 
+//             icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-4xl" />,
+//             path: "/teamwork",
+//             description: "Work together, win together! In this round, two teams collaborate to score as many points as possible within the time limit. Communication and strategy are key to achieving the highest combined score!"
+
+//           },
+//           { 
+//             title: "Driver Skills Challenge", 
+//             color: "bg-rose-500", 
+//             shadow: "shadow-rose-500/40", 
+//             icon: <BiJoystick className="text-white text-4xl" />, 
+//             path: "/driver-skills",
+//             description: "One team controls their robot and tries to score as many points as possible within the time limit. Precision, speed, and strategy will make the difference!"
+
+//           },
+//           { 
+//             title: "Autonomous Challenge", 
+//             color: "bg-sky-500", 
+//             shadow: "shadow-sky-500/40", 
+//             icon: <FaLaptopCode className="text-white text-4xl" />,
+//             path: "/autonomous",
+//             description: "Robots must complete tasks and score points without any driver control. This round tests your programming skills and how well your robot can execute pre-planned commands!"
+
+//           }
+//         ].map((service, index) => (
+//           <div 
+//             key={index} 
+//             onClick={() => handleClick(service.path)}
+//             className="rounded-xl bg-white p-6 text-center shadow-xl h-96 flex flex-col items-center justify-center transform transition-transform duration-300 hover:scale-105 cursor-pointer">
+//             <div className={`mx-auto flex h-20 w-20 -translate-y-12 transform items-center justify-center rounded-full ${service.color} ${service.shadow}` }>
+//               {service.icon}
+//             </div>
+//             <h1 className="text-darken mb-3 text-xl font-medium lg:px-14">{service.title}</h1>
+
+//             <p className="px-4 text-gray-500">{service.description}
+//             </p>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MatchRounds;
 
 
 import React from 'react';
 import { BiJoystick } from "react-icons/bi";
-import { FaLaptopCode } from "react-icons/fa6";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 
 const MatchRounds = () => {
@@ -57,42 +83,37 @@ const MatchRounds = () => {
   };
 
   return (
-    <div className="h-full min-h-screen w-full  p-4 flex items-center justify-center">
-      <div className="grid gap-14 md:grid-cols-3 md:gap-5">
+    <div className="h-full min-h-screen w-full flex items-center justify-center p-8">
+      <div className="grid gap-12 md:grid-cols-2 md:gap-8">
         {[ 
           { 
-            title: "Teawork", 
+            title: "Teamwork Challenge", 
             color: "bg-teal-400", 
             shadow: "shadow-teal-500/40", 
-            icon: <i className="fa-solid fa-people-group text-white text-2xl"></i>,
-            path: "/teawork"
+            icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-4xl" />, 
+            path: "/Dashboard/Judge/matches/teamwork",
+            description: "Work together, win together! In this round, two teams collaborate to score as many points as possible within the time limit. Communication and strategy are key to achieving the highest combined score!"
           },
           { 
-            title: "Driver Skills", 
+            title: "Skills Challenge", 
             color: "bg-rose-500", 
             shadow: "shadow-rose-500/40", 
-            icon: <BiJoystick className="text-white text-2xl" />, 
-            path: "/driver-skills"
-          },
-          { 
-            title: "Autonomous", 
-            color: "bg-sky-500", 
-            shadow: "shadow-sky-500/40", 
-            icon: <FaLaptopCode className="text-white text-2xl" />,
-            path: "/autonomous"
+            icon: <BiJoystick className="text-white text-4xl" />, 
+            path: "/Dashboard/Judge/matches/skills",
+            description: "Test your robot's capabilities in both autonomous and driver-controlled modes! Score as many points as possible through precise programming and skilled driving. Master both to dominate the competition!"
           }
         ].map((service, index) => (
           <div 
             key={index} 
             onClick={() => handleClick(service.path)}
-            className="rounded-xl bg-white p-6 text-center shadow-xl h-72 flex flex-col items-center justify-center transform transition-transform duration-300 hover:scale-105 cursor-pointer">
-            <div className={`mx-auto flex h-16 w-16 -translate-y-12 transform items-center justify-center rounded-full ${service.color} ${service.shadow}` }>
+            className="relative rounded-xl mt-12 bg-white p-6 text-center shadow-xl h-96 flex flex-col items-center justify-center transform transition-transform duration-300 hover:scale-105 cursor-pointer">
+            
+            <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex h-20 w-20 items-center justify-center rounded-full ${service.color} ${service.shadow}`}>
               {service.icon}
             </div>
-            <h1 className="text-darken mb-3 text-xl font-medium lg:px-14">{service.title}</h1>
-            <p className="px-4 text-gray-500">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo iure inventore amet modi accusantium vero perspiciatis, incidunt dicta sed aspernatur!
-            </p>
+
+            <h1 className="text-darken mb-4 text-xl font-semibold px-6">{service.title}</h1>
+            <p className="px-6 text-gray-500 text-base leading-relaxed">{service.description}</p>
           </div>
         ))}
       </div>

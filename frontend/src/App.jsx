@@ -27,6 +27,8 @@ import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam"
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
 import JudgeDashboard from "./pages/Dashboards/Judge/judgeDahboard";
+import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
+import Skills from "./pages/Dashboards/Judge/matches/skills";
 
 
 const App = () => {
@@ -261,6 +263,27 @@ const App = () => {
             </Layout>
           }
         />
+        <Route
+          path="/Dashboard/Judge/Matches/teamwork"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <Teamwork/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Judge/Matches/skills"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <Skills/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+
 
 
 
