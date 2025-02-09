@@ -51,7 +51,7 @@ const Login = () => {
            localStorage.setItem("user_role", JSON.stringify({
                 is_superuser: decodedToken?.is_superuser || false,
                 is_staff: decodedToken?.is_staff || false,
-                is_judge: decodedToken?.is_judge || false,
+                
             }));
 
             navigate("/", { replace: true }); 
