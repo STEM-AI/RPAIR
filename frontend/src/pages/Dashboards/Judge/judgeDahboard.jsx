@@ -29,7 +29,7 @@ export default function JudgeDashboard() {
             <div className="mb-4">{card.icon}</div>
             <div className="text-xl font-semibold">{card.title}</div>
             <button className="mt-4 px-6 py-2 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-300 transition-all">
-              View More
+              Get Started
             </button>
           </div>
         ))}
