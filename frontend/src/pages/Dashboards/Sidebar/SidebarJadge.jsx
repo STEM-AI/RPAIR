@@ -4,13 +4,18 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { LiaAngleDoubleDownSolid, LiaAngleDoubleUpSolid } from "react-icons/lia"; 
 
 import { Link, NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { LuWrapText } from "react-icons/lu";
+import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
+import { GiLaurelsTrophy } from "react-icons/gi";
+import { TbCalendarEvent } from "react-icons/tb";
+import { MdOutlineEventNote } from "react-icons/md";
+
 
 const SidebarJadge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
   const [isMainNavOpen, setIsMainNavOpen] = useState(false); 
+  const [isEventOpen, setIsEventOpen] = useState(false); 
   
 
   const toggleSubMenu = (item) => {
@@ -106,11 +111,55 @@ const SidebarJadge = () => {
                 Dashboard
               </li>
             </Link>
-            {/* Dashboard */}
-            <Link to="/Dashboard/Interview">
+            <Link to="/Dashboard/Judge">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                <MdOutlineDashboard className="mr-2" />
-                Interview
+                <MdOutlineEventNote className="mr-2" />
+                Event Details
+              </li>
+            </Link>
+            {/* Event */}
+              <li
+                className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                onClick={() => setIsEventOpen(!isEventOpen)} // Toggle the management sub-menu
+              >
+                <TbCalendarEvent className="mr-2" />
+                Event
+                {isEventOpen ? (
+                  <LiaAngleDoubleUpSolid className="ml-2" /> // Show double up icon when open
+                ) : (
+                  <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
+                )}
+              </li>
+              {/* Management Sub-menu */}
+              {isEventOpen && (
+                <ul className="pl-6 mt-2">
+                  <Link to="/Dashboard/Judge/inspection">
+                    <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                        Robot Inspection
+                    </li>
+                  </Link>
+                  <Link to="/Dashboard/Judge/matches">
+                    <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                      Matches
+                    </li>
+                  </Link>
+                  <Link to="/Dashboard/Judge/Notebook">
+                    <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                      Engineering Notebook
+                    </li>
+                  </Link>
+                  <Link to="/Dashboard/Judge/interview">
+                    <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                      Team Interview
+                    </li>
+                  </Link>
+                  
+                </ul>
+              )}
+            <Link to="/Dashboard/Judge">
+              <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <RiTeamLine className="mr-2" />
+                Teams
               </li>
             </Link>
           </ul>

@@ -301,7 +301,6 @@ const CompetitionEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
   const apiUrl = `${process.env.REACT_APP_API_URL}/admin/competition-event-list/${competition_name}/`;
-
     try {
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },

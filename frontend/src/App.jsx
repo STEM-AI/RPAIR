@@ -12,7 +12,6 @@ import Register from "./pages/Auth/Register";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
 import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
-import Interview from "./pages/Dashboards/Judge/interview";
 import User from "./pages/Dashboards/UserDashbord/User";
 import CreateStaff from "./pages/Dashboards/AdminDashboard/Management/CreateStaff";
 import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/CreateCompetition";
@@ -27,6 +26,9 @@ import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam"
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
 import JudgeDashboard from "./pages/Dashboards/Judge/judgeDahboard";
+import Interview from "./pages/Dashboards/Judge/interview";
+import Inspection from "./pages/Dashboards/Judge/Inspection";
+import Notebook from "./pages/Dashboards/Judge/Notebook"
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 
@@ -177,18 +179,7 @@ const App = () => {
             </Layout>
             }
         />
-         <Route
-          path="/Dashboard/Interview"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-                <Interview />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
         
-
         {/* User Dashboard Routes */}
          <Route
           path="/Dashboard/User"
@@ -285,7 +276,36 @@ const App = () => {
         />
 
 
-
+           <Route
+          path="/Dashboard/Judge/Interview"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <Interview />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/Judge/inspection"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <Inspection />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/Judge/Notebook"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <Notebook />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
 
 
       </Routes>

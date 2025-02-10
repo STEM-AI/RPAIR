@@ -23,10 +23,11 @@ const LayoutDashboard = ({ children }) => {
     }  
   return (
     <div className="flex h-screen bg-gray-100">
-              <NavbarProfile />
-      <Sidebar  />
+              <NavbarProfile className="fixed top-0 left-0 w-full " />
+      <Sidebar className="fixed top-16 left-0 w-64 h-full z-50"  />
       <div className="flex-1 flex flex-col">
-        <div className="p-6 flex-1 overflow-auto mt-24">{children}</div>
+        <div className="p-6 flex-1 overflow-auto ">{children}</div>
+
       </div>
     </div>
   );

@@ -5,16 +5,17 @@ import { FaSearch, FaUsers, FaBook, FaMicrophone } from 'react-icons/fa';
 const cards = [
   { title: 'Inspection', icon: <FaSearch size={50} />, route: '/Dashboard/Judge/inspection', bg: 'bg-blue-500' },
   { title: 'Matches', icon: <FaUsers size={50} />, route: '/Dashboard/Judge/matches', bg: 'bg-green-500' },
-  { title: 'Engineering Notebook', icon: <FaBook size={50} />, route: '/Dashboard/Judge/notebook', bg: 'bg-yellow-500' },
+  { title: 'Engineering Notebook', icon: <FaBook size={50} />, route: '/Dashboard/Judge/Notebook', bg: 'bg-yellow-500' },
   { title: 'Interview', icon: <FaMicrophone size={50} />, route: '/Dashboard/Judge/interview', bg: 'bg-red-500' },
 ];
+
 
 export default function JudgeDashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="mx-auto text-center min-h-screen flex flex-col items-center justify-center">
-      <h2 className="mb-10 py-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 
+    <div className="mx-auto mt text-center min-h-screen flex flex-col items-center justify-center">
+      <h2 className="mb-10 py-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r text-blue-950
         text-3xl sm:text-4xl lg:text-5xl font-black">
         Welcome to VEX IQ Event 27/Feb
       </h2>
