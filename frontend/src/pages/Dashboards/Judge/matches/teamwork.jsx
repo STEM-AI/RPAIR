@@ -1,111 +1,191 @@
+// import { useState } from "react";
+// import ScoreTeams from "../Scores/scoreTeams"; // تأكدي من أن ملف الحاسبة موجود
 
+// const Teamwork = () => {
+//   const [selectedMatch, setSelectedMatch] = useState(null);
+//   const [scores, setScores] = useState({});
+
+//   const matches = [
+//     { code: "M001", team1: "Team A", team2: "Team B" },
+//     { code: "M002", team1: "Team C", team2: "Team D" },
+//   ];
+
+//   const handleOpenCalculator = (matchCode) => {
+//     setSelectedMatch(matchCode);
+//   };
+
+//   const handleCalculate = (score) => {
+//     setScores((prevScores) => ({
+//       ...prevScores,
+//       [selectedMatch]: score,
+//     }));
+//     setSelectedMatch(null);
+//   };
+
+//   return (
+//     <div className="shadow-lg rounded-lg overflow-hidden mx-4 md:mx-10">
+//       <table className="w-full table-fixed">
+//         <thead>
+//           <tr className="bg-gray-100">
+//             <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Match Code</th>
+//             <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Team 1</th>
+//             <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Team 2</th>
+//             <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Score</th>
+//             <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Calculator</th>
+//           </tr>
+//         </thead>
+//         <tbody className="bg-white">
+//           {matches.map((match) => (
+//             <tr key={match.code}>
+//               <td className="py-4 px-6 border-b border-gray-200">{match.code}</td>
+//               <td className="py-4 px-6 border-b border-gray-200">{match.team1}</td>
+//               <td className="py-4 px-6 border-b border-gray-200">{match.team2}</td>
+//               <td className="py-4 px-6 border-b border-gray-200 text-center font-bold text-blue-600">
+//                 {scores[match.code] ?? 0 }
+//               </td>
+//               <td className="py-4 px-6 border-b border-gray-200 text-center">
+//                 <button
+//                   onClick={() => handleOpenCalculator(match.code)}
+//                   className="bg-green-500 text-white py-1 px-3 rounded-lg hover:bg-green-600 transition"
+//                 >
+//                  Calculator
+//                 </button>
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+
+//       {selectedMatch && (
+//         <ScoreTeams
+//           onCalculate={handleCalculate}
+//           onClose={() => setSelectedMatch(null)}
+//           mode="manual"
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Teamwork;
 
 import { useState } from "react";
-import axios from "axios";
-import { FaChevronDown, FaCheck } from "react-icons/fa";
+import ScoreTeams from "../Scores/scoreTeams"; // تأكدي من أن ملف الحاسبة موجود
+import { FaTrophy } from "react-icons/fa";
 
 const Teamwork = () => {
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const [scores, setScores] = useState({});
-  const [expandedRounds, setExpandedRounds] = useState({});
-  const [loading, setLoading] = useState({});
+  const [showRanking, setShowRanking] = useState(false);
 
-  const teams = [
-    { id: 1, name: "Team Alpha", matchCode: "A123" },
-    { id: 2, name: "Team Beta", matchCode: "B456" },
-    { id: 3, name: "Team Gamma", matchCode: "C789" },
+  const matches = [
+    { code: "M001", team1: "Team A", team2: "Team B" },
+    { code: "M002", team1: "Team C", team2: "Team D" },
   ];
 
-  const toggleRound = (round) => {
-    setExpandedRounds((prev) => ({
-      ...prev,
-      [round]: !prev[round],
+  const handleOpenCalculator = (matchCode) => {
+    setSelectedMatch(matchCode);
+  };
+
+  const handleCalculate = (score) => {
+    setScores((prevScores) => ({
+      ...prevScores,
+      [selectedMatch]: score,
     }));
+    setSelectedMatch(null);
   };
 
-  const handleScoreChange = (id, round, field, value) => {
-    setScores({
-      ...scores,
-      [id]: { ...scores[id], [round]: { ...scores[id]?.[round], [field]: Number(value) } },
+  const calculateRankings = () => {
+    const teamScores = {};
+
+    matches.forEach(({ code, team1, team2 }) => {
+      const matchScore = scores[code] ?? 0;
+      teamScores[team1] = (teamScores[team1] || 0) + matchScore;
+      teamScores[team2] = (teamScores[team2] || 0) + matchScore;
     });
+
+    return Object.entries(teamScores)
+      .map(([name, total]) => ({ name, total }))
+      .sort((a, b) => b.total - a.total);
   };
 
-  const handleSave = async (team, round) => {
-    const teamData = {
-      team: team.name,
-      matchCode: team.matchCode,
-      driverSkills: scores[team.id]?.[round]?.driverSkills || 0,
-      autoSkills: scores[team.id]?.[round]?.autoSkills || 0,
-      round: round,
-    };
+  return (
+    <div className="mx-4 md:mx-10 p-4">
+      {/* العنوان الرئيسي */}
+      <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4">
+        Teamwork Challenge
+      </h1>
 
-    console.log(`Sending Scores for ${team.name} in Round ${round}:`, teamData);
-
-    setLoading((prev) => ({ ...prev, [team.id]: true }));
-
-    try {
-      const response = await axios.post("https://your-backend-api.com/save-score", teamData);
-      console.log(`Response for ${team.name}:`, response.data);
-      alert(`Scores for ${team.name} saved successfully!`);
-    } catch (error) {
-      console.error(`Error saving scores for ${team.name}:`, error);
-      alert(`Failed to save scores for ${team.name}.`);
-    } finally {
-      setLoading((prev) => ({ ...prev, [team.id]: false }));
-    }
-  };
-
-  const renderTable = (round) => (
-    <div className="mb-6">
-      <div className="flex justify-between items-center bg-gray-200 px-6 py-3 rounded-lg cursor-pointer" onClick={() => toggleRound(round)}>
-        <h1 className="text-xl font-bold text-gray-700">{`Round ${round}`}</h1>
-        <FaChevronDown className={`text-gray-600 transition-transform ${expandedRounds[round] ? "rotate-180" : ""}`} />
+      {/* جدول المباريات */}
+      <div className="shadow-lg rounded-lg overflow-hidden">
+        <table className="w-full table-fixed">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Match Code</th>
+              <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Team 1</th>
+              <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Team 2</th>
+              <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Score</th>
+              <th className="w-1/5 py-4 px-6 text-left text-gray-600 font-bold uppercase">Calculator</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {matches.map((match) => (
+              <tr key={match.code}>
+                <td className="py-4 px-6 border-b border-gray-200">{match.code}</td>
+                <td className="py-4 px-6 border-b border-gray-200">{match.team1}</td>
+                <td className="py-4 px-6 border-b border-gray-200">{match.team2}</td>
+                <td className="py-4 px-6 border-b border-gray-200 text-center font-bold text-blue-600">
+                  {scores[match.code] ?? 0}
+                </td>
+                <td className="py-4 px-6 border-b border-gray-200 text-center">
+                  <button
+                    onClick={() => handleOpenCalculator(match.code)}
+                    className="bg-green-500 text-white py-1 px-3 rounded-lg hover:bg-green-600 transition"
+                  >
+                    Calculator
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {expandedRounds[round] && (
-        <div className="overflow-x-auto shadow-lg rounded-lg mt-3">
-          <table className="min-w-full table-auto border border-gray-200 rounded-lg">
+      {selectedMatch && (
+        <ScoreTeams
+          onCalculate={handleCalculate}
+          onClose={() => setSelectedMatch(null)}
+          mode="manual"
+        />
+      )}
+
+      {/* زر عرض الترتيب */}
+      <div className="flex justify-center my-4">
+        <button
+          onClick={() => setShowRanking(!showRanking)}
+          className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-yellow-600 transition"
+        >
+          <FaTrophy /> View Ranking
+        </button>
+      </div>
+
+      {/* جدول الترتيب */}
+      {showRanking && (
+        <div className="overflow-x-auto shadow-lg rounded-lg mb-6">
+          <table className="w-full table-auto border border-gray-200 text-center rounded-lg">
             <thead>
-              <tr className="bg-gray-100 text-xs md:text-sm lg:text-base">
-                <th className="py-3 px-4 text-gray-600 font-bold uppercase">Team Name</th>
-                <th className="py-3 px-4 text-gray-600 font-bold uppercase">Match Code</th>
-                <th className="py-3 px-4 text-gray-600 font-bold uppercase">Driver Skills</th>
-                <th className="py-3 px-4 text-gray-600 font-bold uppercase">Auto Skills</th>
-                <th className="py-3 px-4 text-gray-600 font-bold uppercase">Action</th>
+              <tr className="bg-gray-100">
+                <th className="py-2 px-4">Rank</th>
+                <th className="py-2 px-4">Team Name</th>
+                <th className="py-2 px-4">Total Score</th>
               </tr>
             </thead>
-            <tbody className="bg-white text-xs md:text-sm lg:text-base">
-              {teams.map((team) => (
-                <tr key={team.id} className="border-b border-gray-200">
-                  <td className="py-3 px-4">{team.name}</td>
-                  <td className="py-3 px-4">{team.matchCode}</td>
-                  <td className="py-3 px-4">
-                    <input
-                      type="number"
-                      className="w-16 p-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
-                      value={scores[team.id]?.[round]?.driverSkills || ""}
-                      onChange={(e) => handleScoreChange(team.id, round, "driverSkills", e.target.value)}
-                    />
-                  </td>
-                  <td className="py-3 px-4">
-                    <input
-                      type="number"
-                      className="w-16 p-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
-                      value={scores[team.id]?.[round]?.autoSkills || ""}
-                      onChange={(e) => handleScoreChange(team.id, round, "autoSkills", e.target.value)}
-                    />
-                  </td>
-                  <td className="py-3 px-4 flex items-center space-x-2">
-                    <button className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition text-xs md:text-sm">
-                      Go
-                    </button>
-                    <button
-                      onClick={() => handleSave(team, round)}
-                      className={`bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition ${loading[team.id] ? "opacity-50 cursor-not-allowed" : ""}`}
-                      disabled={loading[team.id]}
-                    >
-                      <FaCheck />
-                    </button>
-                  </td>
+            <tbody>
+              {calculateRankings().map((team, index) => (
+                <tr key={team.name} className="border-t">
+                  <td className="py-2 px-4">{index + 1}</td>
+                  <td className="py-2 px-4">{team.name}</td>
+                  <td className="py-2 px-4">{team.total}</td>
                 </tr>
               ))}
             </tbody>
@@ -114,14 +194,7 @@ const Teamwork = () => {
       )}
     </div>
   );
-
-  return (
-    <div className="mx-4 md:mx-10 p-4">
-      {renderTable("1")}
-      {renderTable("2")}
-      {renderTable("3")}
-    </div>
-  );
 };
 
 export default Teamwork;
+
