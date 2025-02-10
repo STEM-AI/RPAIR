@@ -29,6 +29,9 @@ import JudgeDashboard from "./pages/Dashboards/Judge/judgeDahboard";
 import Interview from "./pages/Dashboards/Judge/interview";
 import Inspection from "./pages/Dashboards/Judge/Inspection";
 import Notebook from "./pages/Dashboards/Judge/Notebook"
+import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
+import Skills from "./pages/Dashboards/Judge/matches/skills";
+
 
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
@@ -251,6 +254,27 @@ const App = () => {
             </Layout>
           }
         />
+        <Route
+          path="/Dashboard/Judge/Matches/teamwork"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <Teamwork/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Judge/Matches/skills"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <Skills/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+
 
            <Route
           path="/Dashboard/Judge/Interview"

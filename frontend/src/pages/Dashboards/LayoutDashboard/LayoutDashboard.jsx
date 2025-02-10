@@ -27,6 +27,7 @@ const LayoutDashboard = ({ children }) => {
       <Sidebar className="fixed top-16 left-0 w-64 h-full z-50"  />
       <div className="flex-1 flex flex-col">
         <div className="p-6 flex-1 overflow-auto mt-16">{children}</div>
+
       </div>
     </div>
   );
