@@ -151,16 +151,7 @@ const SidebarAdmin = () => {
                     Create Judge
                   </li>
                 </Link>
-                {/* <Link to="/Dashboard/Admin/CreateOrganization">
-                  <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                    Create Organization
-                  </li>
-                </Link> */}
-                {/* <Link to="/Dashboard/Admin/CreateTeam">
-                  <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                    Create Team
-                  </li>
-                </Link> */}
+                
               </ul>
             )}
           </ul>
