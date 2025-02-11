@@ -33,7 +33,6 @@ import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import Gallery from "./pages/Gallary/Gallary";
 
-
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
     <>
@@ -41,7 +40,7 @@ const App = () => {
       {children}
       {!hideNavbar && (
         <>
-          {/* <Footer /> */}
+          <Footer />
         </>
       )}
     </>
@@ -121,7 +120,8 @@ const App = () => {
             </Layout>
           }
         />
-        <Route path="/Dashboard/:role/Teams/:name" element={
+
+        <Route path="/Dashboard/:role/Teams/:team_name" element={
          <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />
@@ -139,7 +139,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Admin/Competitions/:competition_name"
+          path="/Dashboard/Admin/Competitions/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>

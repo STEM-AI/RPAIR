@@ -81,28 +81,10 @@ export default function Navbar() {
     }));
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        profileDropdownRef.current && !profileDropdownRef.current.contains(event.target) &&
-        notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target)
-      ) {
-        setDropdowns((prevState) => ({
-          challenges: false,
-          resources: false,
-          notifications: false,
-          profile: false
-        }));
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <nav className={`fixed left-0 right-0 z-50 shadow-lg px-5  md:px-10 py-2 flex items-center justify-between 
-      ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)]"}
-      ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] " : "bg-white "}
+    <nav className={` z-50 shadow-lg px-5  md:px-10 py-2 flex items-center justify-between 
+      ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)] "}
+      ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed left-0 right-0 " :  "sticky top-0 bg-white "}
       transition-colors duration-300`}>
       <div className="flex items-center space-x-3">
         <NavLink to={"/"}>
@@ -136,18 +118,16 @@ export default function Navbar() {
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
             Challenges
           </button>
-          <ul
-            className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
-              ${dropdowns.challenges ? 'scale-100 opacity-100 z-10' : 'opacity-0'}
-              transition-transform duration-300 ease-out origin-top`}>
+          {dropdowns.challenges && (<ul
+            className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg `}>
             {["Vex IQ", "Vex V5", "Web Design", "Open Source", "Mobile Application", "Programming", "Arduino"].map((item, index) => (
               <li key={index} className="hover:bg-cyan-50">
-                <NavLink to={`/competitions`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105">
+                <NavLink to={`/competitions`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950">
                   {item}
                 </NavLink>
               </li>
             ))}
-          </ul>
+          </ul>)}
         </div>
 
         <div className="relative group">
@@ -156,9 +136,9 @@ export default function Navbar() {
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
             Resources
           </button>
-          <ul
+          {dropdowns.resources &&(
+            <ul
             className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
-              ${dropdowns.resources ? 'scale-100 opacity-100 z-10' : 'opacity-0'}
               transition-transform duration-300 ease-out origin-top`}>
               
             {["Volunteering", "Event"].map((item, index) => (
@@ -168,7 +148,7 @@ export default function Navbar() {
                 </NavLink>
               </li>
             ))}
-          </ul>
+          </ul>)}
         </div>
 
         <NavLink to={"/gallery"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">

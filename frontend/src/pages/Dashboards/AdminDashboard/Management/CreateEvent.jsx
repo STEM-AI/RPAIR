@@ -19,6 +19,7 @@ const CreateEvent = () => {
   const [alertType, setAlertType] = useState("");
 
   const token = localStorage.getItem("access_token");
+  
 
   if (!token) {
     return (
@@ -43,7 +44,7 @@ const CreateEvent = () => {
 
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/admin/create-event/`,
+        `${process.env.REACT_APP_API_URL}/admin/event/`,
         formData,
         {
           headers: {
@@ -65,6 +66,7 @@ const CreateEvent = () => {
         age: "00-00",
       });
     } catch (err) {
+      console.error("Error Response:", err.response); 
       setAlertType("error");
       setResponseMessage(
         err.response?.data?.detail || "Failed to create the event. Please try again."
@@ -75,7 +77,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container px-4">
       <div className="mt-8">
         <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
           Create Event

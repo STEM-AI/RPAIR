@@ -5,7 +5,6 @@ import { NavLink } from "react-router-dom";
 import vi from "../../assets/videos/heroVideo.mp4"
 
 const Home = () => {
-  // window.location.reload();
   // useEffect(() => {
   //   // Initialize TW Elements
   //   initTWE({ Carousel, Ripple });
@@ -55,7 +54,7 @@ const Home = () => {
             loop
           >
             <source
-              src={vi}
+              src={"https://rpair.org/media/videos/MVI_0285.mp4"}
               type="video/mp4"
             />
         </video>

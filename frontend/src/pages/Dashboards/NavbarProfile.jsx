@@ -95,22 +95,22 @@ export default function NavbarProfile() {
   }, []);
 
   return (
-    <nav className={`fixed left-0 right-0   shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
+    <nav className={`shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
       transition-colors duration-300 bg-white `}>
-      <div className="flex items-center space-x-3">
-        <NavLink to={"/"}>
-          <img
-            src={location.pathname === "/" ? (isScrolled ? logoBlack : logo) : logoBlack}
-            alt="Rpair-Logo"
-            className="h-20 w-auto p-2 rounded-full"
-          />
-        </NavLink>
-      </div>
+      <div className="flex items-center space-x-3 md:hidden">
+          <NavLink to={"/"}>
+            <img
+              src={logoBlack}
+              alt="Rpair-Logo"
+              className="h-20 w-auto p-2 rounded-full"
+            />
+          </NavLink>
+        </div>
 
       
 <div
   id="menu"
-  className="hidden md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 md:static rounded-lg right-0 w-80 md:w-auto md:bg-transparent shadow-md md:shadow-none"
+  className="text-center hidden md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 md:static rounded-lg right-0 w-80 md:w-auto md:bg-transparent shadow-md md:shadow-none"
 >
   <NavLink
     to={"/"}
@@ -126,58 +126,44 @@ export default function NavbarProfile() {
   </NavLink>
 
   {/* Challenges Dropdown */}
-  <div className="relative group w-full">
-    <button
-      onClick={() => handleDropdownToggle("challenges")}
-      className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300"
-    >
-      Challenges
-    </button>
-    <ul
-      className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
-      ${dropdowns.challenges ? "scale-100 opacity-100 z-10" : "opacity-0"}
-      transition-transform duration-300 ease-out origin-top`}
-    >
-      {["Vex IQ", "Vex V5", "Web Design", "Open Source", "Mobile Application", "Programming", "Arduino"].map(
-        (item, index) => (
-          <li key={index} className="hover:bg-cyan-50">
-            <NavLink
-              to={`/competitions`}
-              className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105"
-            >
-              {item}
-            </NavLink>
-          </li>
-        )
-      )}
-    </ul>
-  </div>
-
-  {/* Resources Dropdown */}
-  <div className="relative group">
-    <button
-      onClick={() => handleDropdownToggle("resources")}
-      className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300"
-    >
-      Resources
-    </button>
-    <ul
-      className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
-      ${dropdowns.resources ? "scale-100 opacity-100 z-10" : "opacity-0"}
-      transition-transform duration-300 ease-out origin-top`}
-    >
-      {["Volunteering", "Event"].map((item, index) => (
-        <li key={index} className="hover:bg-cyan-50">
-          <NavLink
-            to={`/resources/${item.toLowerCase()}`}
-            className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105"
-          >
-            {item}
-          </NavLink>
-        </li>
-      ))}
-    </ul>
-  </div>
+    <div className="relative group w-full">
+            <button
+              onClick={() => handleDropdownToggle("challenges")}
+              className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+              Challenges
+            </button>
+            {dropdowns.challenges && (<ul
+              className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg `}>
+              {["Vex IQ", "Vex V5", "Web Design", "Open Source", "Mobile Application", "Programming", "Arduino"].map((item, index) => (
+                <li key={index} className="hover:bg-cyan-50">
+                  <NavLink to={`/competitions`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950">
+                    {item}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>)}
+          </div>
+  
+          <div className="relative group">
+            <button
+              onClick={() => handleDropdownToggle("resources")}
+              className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+              Resources
+            </button>
+            {dropdowns.resources &&(
+              <ul
+              className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
+                transition-transform duration-300 ease-out origin-top`}>
+                
+              {["Volunteering", "Event"].map((item, index) => (
+                <li key={index} className="hover:bg-cyan-50">
+                  <NavLink to={`/resources/${item.toLowerCase()}`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105">
+                    {item}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>)}
+          </div>
 
   <NavLink
     to={"/gallery"}

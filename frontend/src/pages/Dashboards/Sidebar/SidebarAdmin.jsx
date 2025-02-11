@@ -46,7 +46,7 @@ const SidebarAdmin = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-gradient-to-r from-cyan-800 to-cyan-500 text-white flex flex-col transition-all duration-300 ease-in-out z-40 ${
+        className={` h-full bg-gradient-to-r from-cyan-800 to-cyan-500 text-white flex flex-col transition-all duration-300 ease-in-out z-40 ${
           isOpen ? "w-64" : "w-0"
         } lg:w-64 lg:block lg:static`}
       >
