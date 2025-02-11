@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ...models import SkillsTeamScore , TeamworkTeamScore , Team
+from ...models import SkillsTeamScore , Team
 
 class SkillsTeamScoreSerializer(serializers.Serializer):
     team_name = serializers.SerializerMethodField()

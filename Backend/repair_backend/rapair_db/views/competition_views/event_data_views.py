@@ -25,9 +25,16 @@ class EventCreateView(APIView):
 class EventsListWithTop3TeamsView(ListAPIView):
     permission_classes = [IsSuperUser]
     serializer_class = EventListSerializer
-    lookup_url_kwarg = 'event_name'
-    lookup_field = 'name'
-    queryset = CompetitionEvent.objects.all()
+
+    def get_queryset(self):
+        competition_name = self.kwargs.get('competition_name')
+        print("competition_name" , competition_name)
+        return (
+            CompetitionEvent.objects
+            .select_related('competition')
+            .filter(competition__name=competition_name)
+            .all()
+            )
 
             
 class EventProfileView(RetrieveAPIView):
