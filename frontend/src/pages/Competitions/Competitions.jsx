@@ -16,12 +16,12 @@ const Competitions = () => {
 
   return (
     <>
-    <div className="flex flex-col items-center bg-gray-50 min-h-screen py-8   px-4">
+    <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">
       {/* Section Container */}
-      <div className="w-full max-w-7xl flex flex-col md:flex-row items-start mt-40  gap-8">
+      <div className="w-full max-w-7xl flex flex-col md:flex-row items-start gap-8">
         {/* Text Section */}
         <div className="md:w-2/5">
-        <h2 className="mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
+        <h2 className=" tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         VEX IQ Competitions
             </h2>
           

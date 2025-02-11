@@ -170,7 +170,7 @@ const ListTeams = () => {
     const fetchUserRole = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/user/profile/`, 
+          `${process.env.REACT_APP_API_URL}/team/profile/`, 
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -184,7 +184,7 @@ const ListTeams = () => {
     const fetchTeams = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/teams-list/`,
+          `${process.env.REACT_APP_API_URL}/team/list/`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -260,16 +260,16 @@ const ListTeams = () => {
                 {team.name || "Unnamed Team"}
               </h3>
               <p className="mt-2 text-sm text-gray-600">
-                Competition: <span className="font-medium">{team.competition || "N/A"}</span>
+                Competition: <span className="font-medium">{team.competition_event || "N/A"}</span>
               </p>
               <p className="mt-2 text-sm text-gray-600">
-                Organization: <span className="font-medium">{team.organization_name || "N/A"}</span>
+                Organization: <span className="font-medium">{team.organization?.name || "N/A"}</span>
               </p>
 
               {userRole === "Admin" ? (
                 <>
                   <p className="mt-2 text-sm text-gray-600">
-                    Phone Number: <span className="font-medium">{team.phone_number || "N/A"}</span>
+                    Phone Number: <span className="font-medium">{team.team_leader_phone_number || "N/A"}</span>
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
                     Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
@@ -278,7 +278,7 @@ const ListTeams = () => {
                     Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
-                    Coach: <span className="font-medium">{team.coach || "N/A"}</span>
+                    Coach: <span className="font-medium">{team.coach?.name || "N/A"}</span>
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
                     Team Leader: <span className="font-medium">{team.team_leader_name || "N/A"}</span>
@@ -293,7 +293,7 @@ const ListTeams = () => {
                     Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
-                    Coach: <span className="font-medium">{team.coach || "N/A"}</span>
+                    Coach: <span className="font-medium">{team.coach?.name || "N/A"}</span>
                   </p>
                   <p className="mt-2 text-sm text-gray-600">
                     Team Leader: <span className="font-medium">{team.team_leader_name || "N/A"}</span>
@@ -308,13 +308,12 @@ const ListTeams = () => {
                 View Details
               </Link> */}
 
-<Link
-  to={`/Dashboard/${userRole}/Teams/${team.name ? team.name : ''}`}
-  className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
->
-  View Details
-</Link>
-
+              <Link
+                to={`/Dashboard/${userRole}/Teams/${team.name ? team.name : ''}`}
+                className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
+              >
+                View Details
+              </Link>
             </div>
           </div>
         ))}
