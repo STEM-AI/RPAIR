@@ -95,22 +95,22 @@ export default function NavbarProfile() {
   }, []);
 
   return (
-    <nav className={`fixed left-0 right-0   shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
+    <nav className={`shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
       transition-colors duration-300 bg-white `}>
-      <div className="flex items-center space-x-3">
-        <NavLink to={"/"}>
-          <img
-            src={location.pathname === "/" ? (isScrolled ? logoBlack : logo) : logoBlack}
-            alt="Rpair-Logo"
-            className="h-20 w-auto p-2 rounded-full"
-          />
-        </NavLink>
-      </div>
+      <div className="flex items-center space-x-3 md:hidden">
+          <NavLink to={"/"}>
+            <img
+              src={logoBlack}
+              alt="Rpair-Logo"
+              className="h-20 w-auto p-2 rounded-full"
+            />
+          </NavLink>
+        </div>
 
       
 <div
   id="menu"
-  className="hidden md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 md:static rounded-lg right-0 w-80 md:w-auto md:bg-transparent shadow-md md:shadow-none"
+  className="text-center hidden md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 md:static rounded-lg right-0 w-80 md:w-auto md:bg-transparent shadow-md md:shadow-none"
 >
   <NavLink
     to={"/"}

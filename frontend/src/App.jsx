@@ -32,7 +32,6 @@ import Notebook from "./pages/Dashboards/Judge/Notebook"
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 
-
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
     <>
@@ -40,7 +39,7 @@ const App = () => {
       {children}
       {!hideNavbar && (
         <>
-          {/* <Footer /> */}
+          <Footer />
         </>
       )}
     </>
@@ -130,7 +129,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Admin/Competitions/:competition_name"
+          path="/Dashboard/Admin/Competitions/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>

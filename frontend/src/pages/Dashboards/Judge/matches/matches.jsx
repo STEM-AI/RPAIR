@@ -83,7 +83,7 @@ const MatchRounds = () => {
   };
 
   return (
-    <div className="h-full min-h-screen w-full flex items-center justify-center p-8">
+    <div className=" w-full flex  p-8">
       <div className="grid gap-12 md:grid-cols-2 md:gap-8">
         {[ 
           { 
