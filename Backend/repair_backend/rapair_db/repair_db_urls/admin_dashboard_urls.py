@@ -1,5 +1,5 @@
 from django.urls import path
-from ..views.competition_views.event_views import(
+from ..views.competition_views.event_data_views import(
     EventsListWithTop3TeamsView,
     EventCreateView
 )

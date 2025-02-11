@@ -10,12 +10,12 @@ class SkillsTeamScoreSerializer(serializers.Serializer):
     def get_team_name(self, obj):
         return obj.team.name
     
-class TeamworkScoreSerializer(serializers.Serializer):
+class TeamScoreSerializer(serializers.Serializer):
     team__name = serializers.CharField()
-    team = serializers.IntegerField(write_only=True)
+    team = serializers.IntegerField()
     avg_score = serializers.IntegerField()
+
     class Meta:
-        model = TeamworkTeamScore
         fields = ['team','team_name','avg_score']
 
 class TeamInterviewScoreSerializer(serializers.ModelSerializer):
