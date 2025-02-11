@@ -28,7 +28,7 @@ class UserCreateTeamView(CreateAPIView):
         # Save the team with the user ID and event
         serializer.save(user_id=self.request.user.id)
         
-class UserTeamProfileView(RetrieveAPIView):
+class UserTeamProfileView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TeamSerializer
 
