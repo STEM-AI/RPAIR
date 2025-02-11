@@ -120,7 +120,8 @@ const App = () => {
             </Layout>
           }
         />
-        <Route path="/Dashboard/:role/Teams/:name" element={
+
+        <Route path="/Dashboard/:role/Teams/:team_name" element={
          <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />

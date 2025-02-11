@@ -145,7 +145,7 @@ const Register = () => {
     <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
        
             
-        <div id="signUpForm" onSubmit={signUp} className="relative  mt-24 flex bg-white rounded-2xl  shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-5xl w-full">
+        <div id="signUpForm" onSubmit={signUp} className="relative flex bg-white rounded-2xl  shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-5xl w-full">
             
             <div className="w-full px-8 py-4 lg:w-3/4 flex flex-col mx-auto">
                 <h2 className="text-3xl  font-bold text-gray-700 text-center">Register</h2>

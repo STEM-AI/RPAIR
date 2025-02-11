@@ -74,7 +74,7 @@ const Login = () => {
             }}
         >
             <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
-            <div id="loginForm" className="relative  mt-24 flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
+            <div id="loginForm" className="relative  flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
                 <div className="hidden lg:block lg:w-1/3 bg-cover bg-gradient-to-br from-cyan-800 to-cyan-400">
                     <div className="flex items-center py-16 flex-col">
                         <img src={logo} alt="Logo" className="w-60" />
