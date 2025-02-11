@@ -31,6 +31,7 @@ import Inspection from "./pages/Dashboards/Judge/Inspection";
 import Notebook from "./pages/Dashboards/Judge/Notebook"
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
+import Gallery from "./pages/Gallary/Gallary";
 
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
@@ -86,6 +87,14 @@ const App = () => {
           element={
             <Layout>
               <Register />
+            </Layout>
+          }
+        />
+        <Route
+          path="/gallery"
+          element={
+            <Layout>
+              <Gallery />
             </Layout>
           }
         />
