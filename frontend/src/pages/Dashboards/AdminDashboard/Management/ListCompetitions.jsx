@@ -90,7 +90,7 @@ const ListCompetitions = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container px-4">
       <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-cyan-500 text-5xl font-black">
         ALL COMPETITIONS
       </h2>

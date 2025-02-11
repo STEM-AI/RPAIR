@@ -222,7 +222,7 @@ const ListTeams = () => {
   }
 
   return (
-    <div className="container  p-6 max-w-6xl">
+    <div className="container max-w-6xl">
       <h2 className="mb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-400 text-5xl font-extrabold">
         All Teams
       </h2>

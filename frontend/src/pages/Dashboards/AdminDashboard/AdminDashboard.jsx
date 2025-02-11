@@ -131,7 +131,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="p-6 ">
+    <div className="px-6">
       <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-cyan-400 text-5xl font-black">
         VEX Competitions
       </h2>
