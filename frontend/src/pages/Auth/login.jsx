@@ -1,69 +1,72 @@
-import { React, useState } from "react";
-import { jwtDecode } from 'jwt-decode'; // Corrected import
+import { useState,useEffect } from "react";
+import { jwtDecode } from 'jwt-decode'; 
 import logo from "../../assets/logo/logoWrite-re.png";
 import { FcGoogle } from "react-icons/fc";
 import bgimg from "../../assets/imgs/aboutus/bg.png";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [navigate, setNavigate] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+            navigate("/", { replace: true });
+        }
+    }, [navigate]);
+
+
 
     const signIn = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
-
         if (!username || !password) {
             setError("Username and password are required.");
             setLoading(false);
             return;
         }
-        
+
         try {
             const { data } = await axios.post(
                 `${process.env.REACT_APP_API_URL_AUTH}/login/`,
                 { username, password },
-                { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
             );
 
-            localStorage.setItem('access_token', data.access_token);
-            const decodedToken = jwtDecode(data.access_token); // Corrected usage
-                // Store role data in localStorage
-                    localStorage.setItem('user_role', JSON.stringify({
-                        is_superuser: decodedToken.is_superuser,
-                        is_staff: decodedToken.is_staff,
-                        is_judge: decodedToken.is_judge,
-                    }));
+            localStorage.setItem("access_token", data.access_token);
+            Cookies.set('refresh_token', data.refresh_token,{expires: 7});
 
-            if (decodedToken.is_superuser) {
-                console.log("superuser")
-                setNavigate('/Dashboard/Admin');
-            } else if (decodedToken.is_staff) {
-                console.log("staff")
-                setNavigate('/Dashboard/Judge');
-            } else {
-                setNavigate('/Dashboard/User');
-            }
+            const decodedToken = jwtDecode(data.access_token);
+           localStorage.setItem("user_role", JSON.stringify({
+                is_superuser: decodedToken?.is_superuser || false,
+                is_staff: decodedToken?.is_staff || false,
+                
+            }));
+
+            navigate("/", { replace: true }); 
+
         } catch (err) {
-            setError(err.response?.data?.detail || 'Login failed. Check your credentials.');
+            setError(err.response?.data?.detail || "Login failed. Check your credentials.");
         } finally {
             setLoading(false);
         }
     };
 
-    if (navigate) {
-        return <Navigate to={navigate} />;
-    }
 
     return (
         <div
-            className="relative py-14"
+            className="relative py-14 "
             style={{
                 backgroundImage: `url(${bgimg})`,
                 backgroundSize: "cover",
@@ -71,7 +74,7 @@ const Login = () => {
             }}
         >
             <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
-            <div id="loginForm" className="relative flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
+            <div id="loginForm" className="relative  flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
                 <div className="hidden lg:block lg:w-1/3 bg-cover bg-gradient-to-br from-cyan-800 to-cyan-400">
                     <div className="flex items-center py-16 flex-col">
                         <img src={logo} alt="Logo" className="w-60" />
