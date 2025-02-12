@@ -39,9 +39,7 @@ const App = () => {
       {!hideNavbar && <Navbar />}
       {children}
       {!hideNavbar && (
-        <>
           <Footer />
-        </>
       )}
     </>
   );

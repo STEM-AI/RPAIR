@@ -192,18 +192,14 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from 'react-icons/f
 
 export default function Footer() {
     return (
-        <footer className="bg-gradient-to-br from-cyan-800 to-cyan-400 text-white py-2 px-40">
-            <div className="border-b border-slate-500 mb-4">
-                <div className="py-4 grid md:grid-cols-2 gap-4">
+        <footer className="bg-gradient-to-br from-cyan-800 to-cyan-400 text-white py-6 px-6 md:px-20 lg:px-40">
+            <div className="border-b border-slate-500 pb-4">
+                <div className="grid md:grid-cols-2 gap-6 items-center">
                     {/* Logo and Description Section */}
-                    <div className="flex flex-col items-center">
-                        <img
-                            src={logo}
-                            alt="logo"
-                            className="h-32 w-auto mb-4 p-3 rounded-full"
-                        />
+                    <div className="flex flex-col md:flex-row items-center text-center md:text-left">
+                        <img src={logo} alt="logo" className="h-24 w-auto mb-4 md:mb-0 md:mr-6 rounded-full p-2" />
                         <h4
-                            className="font-light text-xl text-center px-24"
+                            className="font-light text-lg md:text-xl px-4 md:px-0"
                             style={{ textShadow: "2px 2px 5px rgba(0, 0, 0, 0.7)" }}
                         >
                             Innovation in organizing competitions that prepare participants for future jobs
@@ -212,69 +208,39 @@ export default function Footer() {
 
                     {/* Links Section */}
                     <div className="flex flex-col items-center justify-center">
-                        <ul className="footer-links text-white flex flex-wrap justify-center space-x-6">
-                            <li>
-                                <a
-                                    href="#"
-                                    className="font-normal text-2xl hover:text-cyan-900 transition-all duration-500"
-                                >
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="#"
-                                    className="font-normal text-2xl hover:text-cyan-900 transition-all duration-500"
-                                >
-                                    About
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="#"
-                                    className="text-2xl font-normal hover:text-cyan-900 transition-all duration-500"
-                                >
-                                    Challenges
-                                </a>
-                            </li>
-
-                            <li>
-                                <a
-                                    href="#"
-                                    className="text-2xl font-normal hover:text-cyan-900 transition-all duration-500"
-                                >
-                                    Gallery
-                                </a>
-                            </li>
-
+                        <ul className="footer-links text-white flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0">
+                            {["Home", "About", "Challenges", "Gallery"].map((link) => (
+                                <li key={link}>
+                                    <a href="#" className="text-lg font-normal hover:text-cyan-900 transition-all duration-500">
+                                        {link}
+                                    </a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
             </div>
 
             {/* Social Media Links */}
-            <div className="flex flex-col items-center space-y-4">
+            <div className="flex flex-col items-center space-y-4 mt-4">
                 <div className="flex space-x-4">
-                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                        <FaFacebookF className="text-2xl hover:text-sky-900 transition-all duration-700 cursor-pointer" />
-                    </a>
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                        <FaInstagram className="text-2xl hover:text-pink-600 transition-all duration-700 cursor-pointer" />
-                    </a>
-                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                        <FaLinkedinIn className="text-2xl hover:text-sky-400 transition-all duration-700 cursor-pointer" />
-                    </a>
-                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                        <FaTwitter className="text-2xl hover:text-blue-400 transition-all duration-700 cursor-pointer" />
-                    </a>
+                    {[ 
+                        { icon: FaFacebookF, link: "https://facebook.com", color: "hover:text-sky-900" },
+                        { icon: FaInstagram, link: "https://instagram.com", color: "hover:text-pink-600" },
+                        { icon: FaLinkedinIn, link: "https://linkedin.com", color: "hover:text-sky-400" },
+                        { icon: FaTwitter, link: "https://twitter.com", color: "hover:text-blue-400" }
+                    ].map(({ icon: Icon, link, color }, index) => (
+                        <a key={index} href={link} target="_blank" rel="noopener noreferrer">
+                            <Icon className={`text-2xl ${color} transition-all duration-700 cursor-pointer`} />
+                        </a>
+                    ))}
                 </div>
 
-                <div className="text-center text-sm mt-4">
-                    <p>
-                        &copy; 2025 RPAIR. All rights reserved.
-                    </p>
+                <div className="text-center text-sm">
+                    <p>&copy; 2025 RPAIR. All rights reserved.</p>
                 </div>
             </div>
         </footer>
     );
 }
+
