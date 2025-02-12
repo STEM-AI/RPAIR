@@ -11,17 +11,16 @@ const Home = () => {
     
   // }, []);
 
-   useEffect(() => {
-    // Initialize TW Elements
-    initTWE({ Carousel, Ripple });
-    const hasRefreshed = sessionStorage.getItem("hasRefreshed");
-    const accessToken = localStorage.getItem("access_token");
+   // Initialize TW Elements immediately
+  initTWE({ Carousel, Ripple });
 
-    if (accessToken && !hasRefreshed) {
-      sessionStorage.setItem("hasRefreshed", "true");
-      window.location.reload();
-    }
-  }, []);
+  const hasRefreshed = sessionStorage.getItem("hasRefreshed");
+  const accessToken = localStorage.getItem("access_token");
+
+  if (accessToken && !hasRefreshed) {
+    sessionStorage.setItem("hasRefreshed", "true");
+    window.location.reload();
+  }
 
   return (
     <>
