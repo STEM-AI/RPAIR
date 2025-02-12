@@ -19,6 +19,25 @@ class Team(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='team_organization')
     competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
     note = models.CharField(max_length=255 , null=True, blank=True , default='')
+    teamwork_rank = models.IntegerField(null=True, blank=True)  # New field to store the rank
+    skills_rank = models.IntegerField(null=True, blank=True)  # New field to store the rank
+
+    HIGH_SCHOOL = 'HS'
+    ELEMENTARY_SCHOOL = 'ES'
+    MIDDELE_SCHOOL = 'MS'
+    UNIVERSITY = 'UNIVERSITY'
+
+    GRADE_LEVEL_CHOICES = (
+        (HIGH_SCHOOL, 'High School'),
+        (ELEMENTARY_SCHOOL, 'Elementary School'),
+        (MIDDELE_SCHOOL, 'Middle School'),
+        (UNIVERSITY, 'University'),
+    )
+    grade_level = models.CharField(
+        max_length=50 ,choices=GRADE_LEVEL_CHOICES ,  
+        default='ES' , blank=True , null=True
+        ) # New field to store the Grade Level
+
 
     def __str__(self):
         return self.name
@@ -30,7 +49,7 @@ class TeamworkTeamScore(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.team.name} - Average Teamwork Score: {self.get_average_score()}"
+        return f"{self.team.name}"
     
 class SkillsTeamScore(models.Model):
     id = models.AutoField(primary_key=True)
@@ -41,7 +60,7 @@ class SkillsTeamScore(models.Model):
 
     
     def __str__(self):
-        return f"{self.team.name} - Average Skills Score: {self.get_average_score()}"
+        return f"{self.team.name}"
     
 
 class TeamSponsor(models.Model):

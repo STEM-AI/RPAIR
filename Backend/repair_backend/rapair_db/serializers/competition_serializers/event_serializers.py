@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from ..models import CompetitionEvent , Team , EventGame , TeamworkTeamScore
-from ..serializers.team_serializers.team_member_serializers import TeamMemberSerializer
-from ..serializers.team_serializers.team_score_serializers import TeamworkScoreSerializer
+from ...models import CompetitionEvent , Team , EventGame , TeamworkTeamScore
+from ..team_serializers.team_member_serializers import TeamMemberSerializer
+from ..team_serializers.team_score_serializers import TeamScoreSerializer
 from django.db.models import Avg
 from drf_spectacular.utils import extend_schema_field
 
@@ -47,5 +47,5 @@ class EventListSerializer(serializers.ModelSerializer):
                 .annotate(avg_score=Avg('score'))
                 .order_by('-avg_score')[:3]
                 )
-        serializers = TeamworkScoreSerializer(top3_teams , many = True)
+        serializers = TeamScoreSerializer(top3_teams , many = True)
         return serializers.data
