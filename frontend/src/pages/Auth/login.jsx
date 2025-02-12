@@ -6,7 +6,7 @@ import bgimg from "../../assets/imgs/aboutus/bg.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -45,7 +45,7 @@ const Login = () => {
             );
 
             localStorage.setItem("access_token", data.access_token);
-            Cookies.set('refresh_token', data.refresh_token,{expires: 7});
+            // Cookies.set('refresh_token', data.refresh_token,{expires: 7});
 
             const decodedToken = jwtDecode(data.access_token);
            localStorage.setItem("user_role", JSON.stringify({

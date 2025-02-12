@@ -184,22 +184,24 @@
 //         </footer>
 //     );
 // }
-
-
-import React from 'react';
-import logo from '../../assets/logo/logo2.png';
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from 'react-icons/fa';
+import React from "react";
+import logo from "../../assets/logo/logo2.png";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 
 export default function Footer() {
     return (
-        <footer className="bg-gradient-to-br from-cyan-800 to-cyan-400 text-white py-6 px-6 md:px-20 lg:px-40">
-            <div className="border-b border-slate-500 pb-4">
-                <div className="grid md:grid-cols-2 gap-6 items-center">
+        <footer className="bg-gradient-to-br from-cyan-800 to-cyan-400 text-white py-4 px-6 md:px-40">
+            <div className="border-b border-slate-500 mb-4">
+                <div className="py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Logo and Description Section */}
-                    <div className="flex flex-col md:flex-row items-center text-center md:text-left">
-                        <img src={logo} alt="logo" className="h-24 w-auto mb-4 md:mb-0 md:mr-6 rounded-full p-2" />
+                    <div className="flex flex-col items-center text-center">
+                        <img
+                            src={logo}
+                            alt="logo"
+                            className="h-32 w-auto mb-4 p-3 rounded-full"
+                        />
                         <h4
-                            className="font-light text-lg md:text-xl px-4 md:px-0"
+                            className="font-light text-lg md:text-xl px-6 md:px-24"
                             style={{ textShadow: "2px 2px 5px rgba(0, 0, 0, 0.7)" }}
                         >
                             Innovation in organizing competitions that prepare participants for future jobs
@@ -208,11 +210,14 @@ export default function Footer() {
 
                     {/* Links Section */}
                     <div className="flex flex-col items-center justify-center">
-                        <ul className="footer-links text-white flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0">
-                            {["Home", "About", "Challenges", "Gallery"].map((link) => (
-                                <li key={link}>
-                                    <a href="#" className="text-lg font-normal hover:text-cyan-900 transition-all duration-500">
-                                        {link}
+                        <ul className="flex flex-wrap justify-center space-x-4 md:space-x-6">
+                            {["Home", "About", "Challenges", "Gallery"].map((item) => (
+                                <li key={item}>
+                                    <a
+                                        href="#"
+                                        className="text-lg md:text-2xl font-normal hover:text-cyan-900 transition-all duration-500"
+                                    >
+                                        {item}
                                     </a>
                                 </li>
                             ))}
@@ -222,9 +227,9 @@ export default function Footer() {
             </div>
 
             {/* Social Media Links */}
-            <div className="flex flex-col items-center space-y-4 mt-4">
+            <div className="flex flex-col items-center space-y-4">
                 <div className="flex space-x-4">
-                    {[ 
+                    {[
                         { icon: FaFacebookF, link: "https://facebook.com", color: "hover:text-sky-900" },
                         { icon: FaInstagram, link: "https://instagram.com", color: "hover:text-pink-600" },
                         { icon: FaLinkedinIn, link: "https://linkedin.com", color: "hover:text-sky-400" },
@@ -236,11 +241,10 @@ export default function Footer() {
                     ))}
                 </div>
 
-                <div className="text-center text-sm">
+                <div className="text-center text-sm mt-4">
                     <p>&copy; 2025 RPAIR. All rights reserved.</p>
                 </div>
             </div>
         </footer>
     );
 }
-
