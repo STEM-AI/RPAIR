@@ -52,7 +52,7 @@ export default function Navbar() {
   const Url = userRole
     ? userRole.is_superuser
       ? "/Dashboard/Admin"
-      : userRole.is_staff && !userRole.is_judge
+      : userRole.is_staff && !userRole.is_superuser
       ? "/Dashboard/Judge"
       : "/Dashboard/User"
     : "/";

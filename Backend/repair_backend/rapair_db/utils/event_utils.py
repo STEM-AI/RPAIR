@@ -1,8 +1,11 @@
 from ..models import Competition , CompetitionEvent
 from datetime import datetime, timedelta
-from ..models import EventGame
+from ..models import EventGame , TeamworkTeamScore , Team
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Avg
+from django.db import IntegrityError
+
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
@@ -16,66 +19,17 @@ def get_object(competition_name = None , event_name = None):
              except CompetitionEvent.DoesNotExist:
                 return None
 
-TOP_3_TEAMS_QUERY = """
-            WITH ranked_teams AS (
-                SELECT 
-                    team.id, 
-                    team.name, 
-                    (team.teamwork_score + 
-                    team.interview_score + 
-                    team.inspect_score + 
-                    team.eng_note_book_score) AS total_score, 
-                    team.competition_event_id,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY team.competition_event_id 
-                        ORDER BY 
-                            (team.teamwork_score + 
-                            team.interview_score + 
-                            team.inspect_score + 
-                            team.eng_note_book_score) DESC
-                    ) AS rank
-                FROM 
-                    rapair_db_team team
-                WHERE 
-                    team.competition_event_id IS NOT NULL
-            )
-            SELECT 
-                e.name, 
-                e.start_date, 
-                e.end_date, 
-                COALESCE(
-                    json_agg(
-                        jsonb_build_object(
-                            'team_name', t.name, 
-                            'total_score', t.total_score
-                        )
-                        ORDER BY t.total_score DESC
-                    ) FILTER (WHERE t.rank <= 3), 
-                    '[]'::json
-                ) AS top_three_teams
-            FROM 
-                rapair_db_competition c
-            JOIN 
-                rapair_db_competitionevent e ON c.id = e.competition_id
-            LEFT JOIN 
-                ranked_teams t ON e.id = t.competition_event_id
-            WHERE 
-                c.name = %s
-            GROUP BY 
-                e.name, 
-                e.start_date, 
-                e.end_date;
-                """
 
 def teamwork_schedule( event ,event_teams , game_time , stage):
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
             games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage))
-            game_time += timedelta(minutes=1, seconds=30)    
+            game_time += timedelta(minutes=1, seconds=30)   
+
     return games
 
-def skills_or_automation_schedule(event , game_time , stage):
+def skills_schedule(event , game_time , stage):
     event_teams = event.teams.order_by('?')
     games = []
     for i in range(len(event_teams)):
@@ -84,7 +38,6 @@ def skills_or_automation_schedule(event , game_time , stage):
     
     return games
         
-from django.db import IntegrityError
 
 def create_schedule(event, stage=None , time=None):
     game_time = time
@@ -94,16 +47,25 @@ def create_schedule(event, stage=None , time=None):
         return Response({"error": "Invalid time format. Please use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        if stage in ('skills', 'automation'):
-            games = skills_or_automation_schedule(event, game_time, stage)
+        if stage in ('skills'):
+            games = skills_schedule(event, game_time, stage)
 
         elif stage == 'final':
-            event_teams = event.teams.all().order_by('-teamwork_score')[:3]
-            games = teamwork_schedule(event, event_teams, game_time, stage)
+            teams = (
+                Team.objects
+                .select_related('competition_event')
+                .prefetch_related('teamwork_scores')
+                .filter(competition_event__name=event.name)
+                .annotate(avg_score=Avg('teamwork_scores__score'))
+                .order_by('-avg_score')[:3]
 
-        elif stage == 'start':
-            event_teams = event.teams.all()
-            games = teamwork_schedule(event, event_teams, game_time, stage)
+            )
+            games = teamwork_schedule(event, teams, game_time, stage)
+            
+
+        elif stage == 'teamwork':
+            teams = event.teams.all()
+            games = teamwork_schedule(event, teams, game_time, stage)
 
         else:
             return Response({"error": "Invalid stage provided."}, status=status.HTTP_400_BAD_REQUEST)
@@ -119,3 +81,6 @@ def create_schedule(event, stage=None , time=None):
 
     except Exception as e:
         raise Exception(f"An error occurred: {str(e)}")
+
+
+# .annotate(total_score=F('teamwork_score')+ F('interview_score')+F('inspect_score')+F('eng_note_book_score'))

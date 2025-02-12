@@ -5,18 +5,21 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rapair_db.models import EventGame
 from django.core.management import call_command
-GAME_DURATION = 60  # 1 minute
+GAME_DURATION = 15  # 1 minute
 
 @shared_task
-def update_remaining_time(event_name, game_id, start_time=None):
+def update_remaining_time(event_name, game_id, start_time=None):    
+
+    ## TODO: check this
     try:
         game = EventGame.objects.get(id=game_id)
     except EventGame.DoesNotExist:
         return f"Game with ID {game_id} not found."
-
+    
     # Mark the game as active
-    game.is_active = True
-    game.save()
+    if not game.is_active :
+        game.is_active = True
+        game.save()
 
     # Rest of the timer logic
     if start_time is None:
@@ -26,15 +29,20 @@ def update_remaining_time(event_name, game_id, start_time=None):
     elapsed_time = (now() - start_time).total_seconds()
 
     # Calculate the remaining time
-    remaining_time = GAME_DURATION - elapsed_time
+    remaining_time = game.paused_time - elapsed_time
+
+    if game.is_paused :
+        game.paused_time = remaining_time 
+        game.save()
+        return 
 
     if remaining_time <= 0:
         # Game is over
         game.completed = True
         game.is_active = False
+        game.paused_time = 0
         game.save()
         remaining_time = 0
-        print("Game ended. Stopping the timer.")
     else:
         # Schedule the task to run again after 1 second
         update_remaining_time.apply_async(args=[event_name, game_id, start_time], countdown=1)

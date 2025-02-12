@@ -6,7 +6,7 @@ from .team_member_serializers import TeamMemberSerializer
 from .team_social_media_serializers import TeamSocialMediaSerializer
 from .team_prev_comp_serializers import TeamPreviousCompetitionSerializer
 from .team_sponsor_serializers import TeamSponsorSerializer
-from ..competitions_serializers import CompetitionsSerializer
+from ..competition_serializers.competitions_serializers import CompetitionsSerializer
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -23,8 +23,8 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = [
             'name','robot_name','user_id','type','organization_info','team_leader_name','team_leader_email',
-            'team_leader_phone_number','teamwork_score','organization','competition' , 
-            'sponsors', 'coach', 'social_media','previous_competition' , 'members' , 'competition_event'
+            'team_leader_phone_number','organization','competition' ,'sponsors', 'coach', 'social_media',
+            'previous_competition' , 'members' , 'competition_event'
             ]
 
         extra_kwargs = {
@@ -72,3 +72,9 @@ class TeamSerializer(serializers.ModelSerializer):
         return None
     
 
+class TeamGamesSerializer(serializers.ModelSerializer):
+    team = serializers.CharField()
+    score = serializers.IntegerField()
+    
+    class Meta:
+        fields = ['team' , 'score']
