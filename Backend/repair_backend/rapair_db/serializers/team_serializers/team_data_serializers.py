@@ -72,3 +72,9 @@ class TeamSerializer(serializers.ModelSerializer):
         return None
     
 
+class TeamGamesSerializer(serializers.ModelSerializer):
+    team = serializers.CharField()
+    score = serializers.IntegerField()
+    
+    class Meta:
+        fields = ['team' , 'score']
