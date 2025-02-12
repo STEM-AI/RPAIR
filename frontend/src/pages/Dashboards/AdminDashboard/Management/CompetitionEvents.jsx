@@ -291,8 +291,8 @@ import axios from "axios";
 
 
 const CompetitionEvents = () => {
-  const { competition_name } = useParams();
-  const [events, setEvents] = useState([]);
+const { event_name } = useParams() || {};  // Ensure destructuring doesn't break
+const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -300,8 +300,7 @@ const CompetitionEvents = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-  const apiUrl = `${process.env.REACT_APP_API_URL}/admin/competition-event-list/${competition_name}/`;
-
+  const apiUrl = `${process.env.REACT_APP_API_URL}/admin/${event_name}/event-list/`;
     try {
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
@@ -316,10 +315,10 @@ const CompetitionEvents = () => {
 
 
     fetchEvents();
-  }, [competition_name, token]);
+  }, [event_name, token]);
 
   if (loading) {
-    return <div className="text-center mt-8">Loading...</div>;
+    return <div className="text-center ">Loading...</div>;
   }
 
   if (error) {
@@ -327,9 +326,9 @@ const CompetitionEvents = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4">
       <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-600 text-5xl font-black">
-        {competition_name.replace(/_/g, " ").toUpperCase()} EVENTS
+        {formattedEventName} EVENTS
       </h2>
 
       <div className="grid grid-cols-1 gap-6">
@@ -343,29 +342,34 @@ const CompetitionEvents = () => {
                 Event {index + 1}
               </h3>
               <p className="text-sm text-gray-500 mb-2">
-                Start Date: {event[1] || "N/A"}
+                Event Name: {event.name || "N/A"}
               </p>
               <p className="text-sm text-gray-500 mb-2">
-                End Date: {event[2] || "N/A"}
+                Start Date: {event.start_date || "N/A"}
+              </p>
+              <p className="text-sm text-gray-500 mb-2">
+                End Date: {event.end_date || "N/A"}
+              </p>
+              <p className="text-sm text-gray-500 mb-2">
+                Location: {event.location || "N/A"}
               </p>
 
-              {event[3]?.length > 0 ? (
+              {event.top3_teams?.length > 0 ? (
                 <div className="mt-4">
-                  <h4 className="text-md font-medium text-gray-700">Teams:</h4>
+                  <h4 className="text-md font-medium text-gray-700">Top 3 Teams:</h4>
                   <ul className="list-disc list-inside">
-                    {event[3].map((team, teamIndex) => (
+                    {event.top3_teams.map((team, teamIndex) => (
                       <li key={teamIndex} className="text-sm text-gray-600">
-                        {team.team_name} - Total Score:{" "}
-                        {team.total_score !== null
-                          ? team.total_score
-                          : "No score available"}
+                        {Object.entries(team).map(([key, value]) => (
+                          <div key={key}>{key}: {value}</div>
+                        ))}
                       </li>
                     ))}
                   </ul>
                 </div>
               ) : (
                 <p className="text-sm text-gray-500 mt-4">
-                  No teams participated in this event.
+                  No top teams available.
                 </p>
               )}
             </div>
