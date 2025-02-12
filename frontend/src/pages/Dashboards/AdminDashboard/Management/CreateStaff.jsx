@@ -11,7 +11,7 @@ const CreateStaff = () => {
     first_name: "",
     last_name: "",
     username: "",
-    email: "",
+    email: "@rpair.judge.com",
     password: "",
     country: "",
     address: "",
