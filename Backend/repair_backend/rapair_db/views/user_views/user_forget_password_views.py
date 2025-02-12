@@ -1,19 +1,19 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ...serializers.user_serializers.user_data_serializers import UserSerializer 
-from ...models import VerificationCode
+from ...models import VerificationCode , User
 from rest_framework import status
 from ...utils.forget_password_utils import generate_verification_code , send_verification_code_email , verify
 from ...utils.user_auth_utlis import UserLogin
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import AllowAny
 
-class UserForgetPasswordView(APIView):
+class UserForgetPasswordView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'email'
 
-    def get(self, request , email=None):       
-        user = UserLogin.get_object(email)
-        
-        serializer = UserSerializer(user)
-        
-        return Response({"User Found": serializer.data} , status=status.HTTP_200_OK)
 
 class CreateAndSendEmailWithVerficationCode(APIView):
 
