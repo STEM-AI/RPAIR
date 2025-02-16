@@ -97,7 +97,7 @@ export default function NavbarProfile() {
   return (
     <nav className={`shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
       transition-colors duration-300 bg-white `}>
-      <div className="flex items-center space-x-3 md:hidden">
+      <div className="flex items-center space-x-3 ml-1 lg:hidden">
           <NavLink to={"/"}>
             <img
               src={logoBlack}
