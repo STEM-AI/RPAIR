@@ -2,7 +2,6 @@ import React, { useEffect }  from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
-import vi from "../../assets/videos/heroVideo.mp4"
 
 const Home = () => {
   // useEffect(() => {
