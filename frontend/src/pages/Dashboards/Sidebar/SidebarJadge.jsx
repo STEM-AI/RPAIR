@@ -26,10 +26,10 @@ const SidebarJadge = () => {
     <div className="relative top-0 left-0 h-full  ">
      {/* Hamburger button to toggle sidebar visibility */}
       <button
-        className="lg:hidden fixed top-9 left-4 z-50"
+        className="lg:hidden fixed top-9 left-4  z-50"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="group flex h-8 w-8 items-center justify-center bg-white shadow-lg p-1 hover:bg-slate-200">
+        <div className="group flex h-8 w-8 items-center justify-center bg-white  p-1 hover:bg-slate-200">
           <div className="space-y-1 ">
             <span
               className={`block h-0.5 w-6 rounded-full bg-slate-500 transition-transform ease-in-out ${
