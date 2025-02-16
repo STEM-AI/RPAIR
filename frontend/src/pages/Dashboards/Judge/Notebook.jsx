@@ -288,7 +288,7 @@ function Notebook() {
     head: [tableColumn],
     body: tableRows,
     styles: { fontSize: 9 },
-    headStyles: { fillColor: [200, 200, 200] },
+    headStyles: { fillColor:  [234, 179, 8] },
     margin: { left: 14, right: 14 },
     theme: "grid",
   });
@@ -317,7 +317,7 @@ function Notebook() {
   doc.text(`Total Score: ${totalScore || "N/A"}`, 150, finalY + 40);
 
   // Save PDF
-  doc.save(`${teamName || "Unknown"}_Team_Interview_Rubric.pdf`);
+  doc.save(`${teamName || "Unknown"}_Team_Engineering_Notebook_Rubric.pdf`);
 };
 
 

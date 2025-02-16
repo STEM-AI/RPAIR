@@ -263,13 +263,13 @@ function Interview() {
     ];
   });
 
-  // Generate Table
+  // Generate Table with Red Headers
   doc.autoTable({
     startY: 40,
     head: [tableColumn],
     body: tableRows,
     styles: { fontSize: 9 },
-    headStyles: { fillColor: [200, 200, 200] },
+    headStyles: { fillColor: [239, 68, 68], textColor: [255, 255, 255] }, // Red header with white text
     margin: { left: 14, right: 14 },
     theme: "grid",
   });
@@ -289,7 +289,6 @@ function Interview() {
     "Did anything stand out about this team in their interview? Please describe:",
     14, finalY + 15
   );
-
 
   // Notes and Total Score
   doc.setFont("helvetica");
