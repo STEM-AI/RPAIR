@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
@@ -9,10 +10,12 @@ import { IoIosRemoveCircle } from "react-icons/io";
 const CreateTeam = () => {
   const [formData, setFormData] = useState({
     event_name: "",
+    competition: "",
     organization_info: {
       name: "",
       address: "",
       email: "",
+      type: "",
       contacts: [{ phone_number: "" }],
     },
     name: "",
@@ -30,25 +33,6 @@ const CreateTeam = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
-
-  const validatePhoneNumber = (phone) => {
-    const phoneRegex = /^\+?[\d\s-]{10,}$/;
-    return phoneRegex.test(phone);
-  };
-
-  const validateUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   const handleChange = (e, section, index, key, subSection) => {
     const value = e.target.value;
@@ -119,55 +103,67 @@ const CreateTeam = () => {
       </div>
     );
   }
- const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setResponseMessage(null);
+  const handleSubmit = async (event) => {
+  event.preventDefault();
+  setIsSubmitting(true);
+  setResponseMessage(null);
 
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/team/create/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setAlertType("success");
-      setResponseMessage("Event created successfully!");
-      setFormData({
-        event_name: "",
-        organization_info: {
-          name: "",
-          address: "",
-          email: "",
-          contacts: [{ phone_number: "" }],
+  try {
+    const response = await axios.post( // هنا خزّنا الـ response
+      `${process.env.REACT_APP_API_URL}/team/create/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
+      }
+    );
+
+    setAlertType("success");
+    setResponseMessage("Event created successfully!");
+    console.log("Response Data:", response.data); 
+
+    setFormData({
+      event_name: "",
+      competition: "",
+      organization_info: {
         name: "",
-        robot_name: "",
+        address: "",
+        email: "",
         type: "",
-        team_leader_name: "",
-        team_leader_email: "",
-        team_leader_phone_number: "",
-        sponsors: [{ name: "", email: "" }],
-        coach: [{ name: "", email: "", phone_number: "", position: "" }],
-        social_media: [{ platform: "", url: "" }],
-        previous_competition: [{ name: "", year: "" }],
-        members: [{ name: "", email: "", phone_number: "" }],
-        });
-    } catch (err) {
-      console.error("Error Response:", err.response); 
-      setAlertType("error");
-      setResponseMessage(
-        err.response?.data?.detail || "Failed to create the event. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+        contacts: [{ phone_number: "" }],
+      },
+      name: "",
+      robot_name: "",
+      type: "",
+      team_leader_name: "",
+      team_leader_email: "",
+      team_leader_phone_number: "",
+      sponsors: [{ name: "", email: "" }],
+      coach: [{ name: "", email: "", phone_number: "", position: "" }],
+      social_media: [{ platform: "", url: "" }],
+      previous_competition: [{ name: "", year: "" }],
+      members: [{ name: "", email: "", phone_number: "" }],
+    });
+     Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Registration successful!",
+                    showConfirmButton: false,
+                      });
+    return response.data; 
+  } catch (err) {
+    console.error("Error Response:", err.response); 
+    setAlertType("error");
+    setResponseMessage(
+      err.response?.data?.detail || "Failed to create the event. Please try again."
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -260,6 +256,9 @@ const CreateTeam = () => {
             <div key={index} className="flex items-center gap-4">
               <input
                 type="text"
+                 placeholder="enter your phone"
+                   pattern="^\+20\d{10}$"
+                  title="Phone number must start with +2 and contain 12 digits."
                 value={contact.phone_number}
                 onChange={(e) =>
                   handleChange(e, "organization_info", index, "phone_number", "contacts")
@@ -361,6 +360,9 @@ const CreateTeam = () => {
               <input
                 type="text"
                 name="team_leader_phone_number"
+                placeholder="enter your phone"
+                   pattern="^\+20\d{10}$"
+                  title="Phone number must start with +2 and contain 12 digits."
                 value={formData.team_leader_phone_number}
                 onChange={handleChange}
                 className="bg-gray-200 border rounded py-2 px-4 w-full"
@@ -435,7 +437,7 @@ const CreateTeam = () => {
               <div className="w-full md:w-1/2">
                 <label className="block mb-2 text-sm font-bold text-gray-700">Year</label>
                 <input
-                  type="text"
+                  type="date"
                   value={competition.year}
                   onChange={(e) => handleChange(e, "previous_competition", index, "year")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
@@ -495,6 +497,9 @@ const CreateTeam = () => {
                   <label className="block mb-2 text-sm font-bold text-gray-700">Phone Number</label>
                   <input
                     type="text"
+                    placeholder="enter your phone"
+                   pattern="^\+20\d{10}$"
+                  title="Phone number must start with +2 and contain 12 digits."
                     value={coach.phone_number}
                     onChange={(e) => handleChange(e, "coach", index, "phone_number")}
                     className="bg-gray-200 border rounded py-2 px-4 w-full"
@@ -565,6 +570,9 @@ const CreateTeam = () => {
                   <label className="block mb-2 text-sm font-bold text-gray-700">Phone Number</label>
                   <input
                     type="text"
+                    placeholder="enter your phone"
+                    pattern="^\+20\d{10}$"
+                    title="Phone number must start with +2 and contain 12 digits."
                     value={member.phone_number}
                     onChange={(e) => handleChange(e, "members", index, "phone_number")}
                     className="bg-gray-200 border rounded py-2 px-4 w-full"
