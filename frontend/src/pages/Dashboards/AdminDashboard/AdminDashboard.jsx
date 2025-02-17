@@ -120,11 +120,11 @@ function AdminDashboard() {
   const getStatusStyle = (status) => {
     switch (status) {
       case 'active':
-        return 'bg-green-700 text-white';
+        return 'bg-vexIq text-white';
       case 'upcoming':
-        return 'bg-yellow-600 text-white';
+        return 'bg-vexIq text-white';
       case 'completed':
-        return 'bg-blue-700 text-white';
+        return 'bg-vexGo text-white';
       default:
         return '';
     }
