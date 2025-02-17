@@ -135,7 +135,7 @@ const Skills = () => {
   return (
     <div className="mx-4 md:mx-10 p-4">
       <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4">
-        Skills Challenge
+      Skills Matches
       </h1>
 
       {renderTable("1")}
@@ -184,4 +184,5 @@ const Skills = () => {
 };
 
 export default Skills;
+
 

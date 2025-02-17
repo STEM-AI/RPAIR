@@ -7,6 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        vexIq:"#0074BD",
+        vexV5:"#D8262F",
+        vexGo:"#007378",
        
       }, 
     },
