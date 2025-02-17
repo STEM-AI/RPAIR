@@ -19,7 +19,7 @@ export default function JudgeDashboard() {
         text-3xl sm:text-4xl lg:text-5xl font-black">
         Welcome to VEX IQ Event 27/Feb
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 w-full ">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-6 w-full ">
         {cards.map((card, index) => (
           <div
             key={index}
