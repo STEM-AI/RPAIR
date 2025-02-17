@@ -27,7 +27,10 @@ class UserCreateTeamView(CreateAPIView):
 
     def perform_create(self, serializer):
         # Save the team with the user ID and event
-        serializer.save(user_id=self.request.user.id)
+        try:
+            serializer.save(user_id=self.request.user.id)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class UserTeamProfileView(ListAPIView):
     permission_classes = [IsAuthenticated]
