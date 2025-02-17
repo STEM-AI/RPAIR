@@ -76,8 +76,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await self.send(json.dumps({ "status": "resumed" }))
 
             elif data["action"] == "restart_game":
-                game.is_active = False
-                game.completed = False
                 game.paused_time = 15
                 await sync_to_async(game.save)()
                 update_remaining_time.delay(self.event_name, self.game_id)

@@ -31,6 +31,7 @@ def update_remaining_time(event_name, game_id, start_time=None):
 
     # Calculate the remaining time
     remaining_time = game.paused_time - elapsed_time
+    print("game paused time " ,game.paused_time)
     print("remiaing time " , remaining_time)
 
     if game.is_paused :
