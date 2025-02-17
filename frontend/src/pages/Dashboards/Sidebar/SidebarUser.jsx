@@ -109,7 +109,7 @@ const SidebarUser = () => {
             <Link to="/Dashboard/User/CreateTeam">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineDashboard className="mr-2" />
-                My Tean
+                My Team
               </li>
             </Link>
            
