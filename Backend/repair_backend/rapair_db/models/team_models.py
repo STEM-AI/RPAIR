@@ -19,8 +19,8 @@ class Team(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='team_organization')
     competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
     note = models.CharField(max_length=255 , null=True, blank=True , default='')
-    teamwork_rank = models.IntegerField(null=True, blank=True,default=0)  # New field to store the rank
-    skills_rank = models.IntegerField(null=True, blank=True,default=0)  # New field to store the rank
+    teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
+    skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
 
     HIGH_SCHOOL = 'HS'
     ELEMENTARY_SCHOOL = 'ES'
