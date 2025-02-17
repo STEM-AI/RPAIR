@@ -18,6 +18,7 @@ def update_remaining_time(event_name, game_id, start_time=None):
     
     # Mark the game as active
     if not game.is_active :
+        print("Game is not active")
         game.is_active = True
         game.save()
 
@@ -30,6 +31,7 @@ def update_remaining_time(event_name, game_id, start_time=None):
 
     # Calculate the remaining time
     remaining_time = game.paused_time - elapsed_time
+    print("remiaing time " , remaining_time)
 
     if game.is_paused :
         game.paused_time = remaining_time 

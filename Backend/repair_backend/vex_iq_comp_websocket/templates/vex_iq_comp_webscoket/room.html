@@ -14,13 +14,13 @@
             font-size: 2em;
             margin-top: 20px;
         }
-        #startButton, #pauseButton, #resumeButton, #submitScoreButton {
+        #startButton, #pauseButton, #resumeButton, #restartButton, #submitScoreButton {
             font-size: 1.5em;
             padding: 10px 20px;
             cursor: pointer;
             margin: 5px;
         }
-        #startButton:disabled, #pauseButton:disabled, #resumeButton:disabled {
+        #startButton:disabled, #pauseButton:disabled, #resumeButton:disabled, #restartButton:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
@@ -42,6 +42,7 @@
     <button id="startButton" onclick="startGame()">Start Game</button>
     <button id="pauseButton" onclick="pauseGame()" disabled>Pause Game</button>
     <button id="resumeButton" onclick="resumeGame()" disabled>Resume Game</button>
+    <button id="restartButton" onclick="restartGame()" disabled>Restart Game</button>
 
     <div id="timer">Remaining Time: 60</div>
 
@@ -61,20 +62,16 @@
             if (gameActive) return; 
             gameActive = true;
 
-            const gameIdInput = document.getElementById("gameIdInput");
-            gameId = gameIdInput.value;
-
+            gameId = document.getElementById("gameIdInput").value;
             if (!gameId) {
                 alert("Please enter a valid Game ID.");
                 return;
             }
 
-            const startButton = document.getElementById("startButton");
-            const pauseButton = document.getElementById("pauseButton");
-            const resumeButton = document.getElementById("resumeButton");
-            startButton.disabled = true;
-            pauseButton.disabled = false;
-            startButton.textContent = "Game Started";
+            document.getElementById("startButton").disabled = true;
+            document.getElementById("pauseButton").disabled = false;
+            document.getElementById("restartButton").disabled = false;
+            document.getElementById("startButton").textContent = "Game Started";
 
             socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/game/${gameId}/`);
 
@@ -94,16 +91,16 @@
                 if (data.status === "paused") {
                     document.getElementById("timer").textContent = "Game Paused";
                     gamePaused = true;
-                    pauseButton.disabled = true;
-                    resumeButton.disabled = false;
+                    document.getElementById("pauseButton").disabled = true;
+                    document.getElementById("resumeButton").disabled = false;
                     return;
                 }
 
                 if (data.status === "resume") {
                     document.getElementById("timer").textContent = "Game Resumed";
                     gamePaused = false;
-                    pauseButton.disabled = false;
-                    resumeButton.disabled = true;
+                    document.getElementById("pauseButton").disabled = false;
+                    document.getElementById("resumeButton").disabled = true;
                     return;
                 }
 
@@ -112,10 +109,11 @@
 
                     if (data.remaining_time <= 0) {
                         document.getElementById("scoreInputContainer").style.display = "block";
-                        startButton.disabled = false;
-                        pauseButton.disabled = true;
-                        resumeButton.disabled = true;
-                        startButton.textContent = "Start Game";
+                        document.getElementById("startButton").disabled = false;
+                        document.getElementById("pauseButton").disabled = true;
+                        document.getElementById("resumeButton").disabled = true;
+                        document.getElementById("restartButton").disabled = false;
+                        document.getElementById("startButton").textContent = "Start Game";
                         gameActive = false;
                     }
                 }
@@ -136,7 +134,6 @@
 
             document.getElementById("pauseButton").disabled = true;
             document.getElementById("resumeButton").disabled = false;
-
             console.log("Pause request sent");
         }
 
@@ -151,8 +148,28 @@
 
             document.getElementById("pauseButton").disabled = false;
             document.getElementById("resumeButton").disabled = true;
-
             console.log("Resume request sent");
+        }
+
+        function restartGame() {
+            if (!gameId) {
+                alert("Game ID is missing. Start a game first.");
+                return;
+            }
+
+            socket.send(JSON.stringify({
+                action: "restart_game",
+                event_name: eventName,
+                game_id: gameId,
+            }));
+
+            document.getElementById("timer").textContent = "Restarting Game...";
+            document.getElementById("pauseButton").disabled = false;
+            document.getElementById("resumeButton").disabled = true;
+            document.getElementById("restartButton").disabled = false;
+            document.getElementById("scoreInputContainer").style.display = "none";
+
+            console.log("Restart request sent");
         }
 
         function submitScore() {
