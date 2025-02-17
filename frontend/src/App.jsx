@@ -1,18 +1,26 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+
+//                          Home                   //
 import Navbar from "./components/Nav/nav";
 import Footer from "./components/Footer/footer";
+import ContactUs from "./components/Contact/contactUs";
 import Home from "./components/Home/Home";
 import About from "./pages/About/About";
-import ContactUs from "./components/Contact/contactUs";
 import Competitions from "./pages/Competitions/Competitions";
 import Login from "./pages/Auth/login";
 import Register from "./pages/Auth/Register";
+import Gallery from "./pages/Gallary/Gallary";
+
+//                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
+
+
+
+//                          Admin                   //
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
 import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
-import User from "./pages/Dashboards/UserDashbord/User";
 import CreateStaff from "./pages/Dashboards/AdminDashboard/Management/CreateStaff";
 import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/CreateCompetition";
 import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
@@ -20,18 +28,23 @@ import CreateOrganization from "./pages/Dashboards/AdminDashboard/Management/Cre
 import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
 import ListCompetitions from "./pages/Dashboards/AdminDashboard/Management/ListCompetitions";
 import CompetitionEvents from "./pages/Dashboards/AdminDashboard/Management/CompetitionEvents";
-import CreateTeam from "./pages/Dashboards/AdminDashboard/Management/CreateTeam";
 
-// import CreateOrg from "./components/Dashboards/AdminDashboard/Management/CreateOrg";
+
+//                          User                   //
+import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
+import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
-import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
+
+
+//                          Judge                   //
 import JudgeDashboard from "./pages/Dashboards/Judge/judgeDahboard";
+import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
 import Interview from "./pages/Dashboards/Judge/interview";
 import Inspection from "./pages/Dashboards/Judge/Inspection";
 import Notebook from "./pages/Dashboards/Judge/Notebook"
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
-import Gallery from "./pages/Gallary/Gallary";
+
 
 const App = () => {
  const Layout = ({ children, hideNavbar = false }) => (
@@ -176,16 +189,6 @@ const App = () => {
             </Layout>
             }
         />
-         <Route
-            path="/Dashboard/Admin/CreateTeam"
-          element={
-           <Layout hideNavbar>
-                  <LayoutDashboard>
-                    <CreateTeam />
-                  </LayoutDashboard>
-            </Layout>
-            }
-        />
         
         {/* User Dashboard Routes */}
          <Route
@@ -193,7 +196,7 @@ const App = () => {
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-                <User/>
+                <UserDashbord/>
                   </LayoutDashboard>
             </Layout>
           }
