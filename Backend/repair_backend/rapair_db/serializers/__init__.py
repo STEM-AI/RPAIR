@@ -4,5 +4,6 @@ from .team_serializers  import *
 from .user_serializers.user_data_serializers import UserSerializer , UserEditProfileSerializer 
 from .user_serializers.user_notification_serializers import NotificationSerializer
 from .competition_serializers.competitions_serializers import CompetitionsSerializer 
+from .competition_serializers.judge_event_serializers import JudgeForCompetitionEventSerializer , JudgeEventListSerializer
 from .competition_serializers.event_serializers import TeamCompetitionProfileSerializer , EventSerializer , EventGameSerializer , EventListSerializer
 from .news_serializers import NewsSerializer
