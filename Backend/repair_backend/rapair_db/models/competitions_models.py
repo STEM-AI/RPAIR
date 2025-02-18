@@ -116,7 +116,22 @@ class EventGame(models.Model):
 
     def __str__(self):
         return f"{self.team1} vs {self.team2} at {self.time}"
-    
+
+class JudgeForCompetitionEvent(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        # Ensure the user is a staff member
+        if not self.user.is_staff:
+            raise ValueError("Must be a Judge member")
+
+        super().save(*args, **kwargs)  # Call the parent save method
+
+    class Meta:
+        unique_together = ('user', 'competition_event')
+    def __str__(self):
+        return f"{self.user.username} - {self.competition_event.name}"
 
 
     

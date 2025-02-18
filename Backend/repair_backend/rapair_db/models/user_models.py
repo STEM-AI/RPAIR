@@ -14,6 +14,7 @@ class User(AbstractUser):
     phone_number = models.CharField(validators=[phone_validator] , max_length = 255, unique=True , null=True , blank=True)
     email = models.EmailField(unique=True , validators=[email_validation , verify_email_with_zerobounce])
     google_verified = models.BooleanField(default=False)
+    competition_events = models.ManyToManyField('CompetitionEvent',related_name='events' , through='JudgeForCompetitionEvent')
 
 
     def __str__(self):
