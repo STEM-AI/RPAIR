@@ -10,7 +10,7 @@ const cards = [
 ];
 
 
-export default function JudgeDashboard() {
+export default function StartMatch() {
   const navigate = useNavigate();
 
   return (

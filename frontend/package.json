@@ -8,6 +8,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@heroicons/react": "^2.2.0",
     "@mui/material": "^6.4.0",
     "@shadcn/ui": "^0.0.4",
     "animate.css": "^4.1.1",
