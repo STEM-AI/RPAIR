@@ -253,7 +253,7 @@ const Register = () => {
                       type="text"
                   placeholder="enter your phone"
                    pattern="^\+20\d{10}$"
-                  title="Phone number must start with +2 and contain 12 digits."
+                  title="Phone number must start with +2 and contain 11 digits."
                       value={phone_number}
                       onChange={(e) => setPhonenumber(e.target.value)}
                       required

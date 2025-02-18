@@ -37,13 +37,14 @@ import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 
 
 //                          Judge                   //
-import JudgeDashboard from "./pages/Dashboards/Judge/judgeDahboard";
+import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
 import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
 import Interview from "./pages/Dashboards/Judge/interview";
 import Inspection from "./pages/Dashboards/Judge/Inspection";
 import Notebook from "./pages/Dashboards/Judge/Notebook"
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
+import StartMatch from "./pages/Dashboards/Judge/StartMatch";
 
 
 const App = () => {
@@ -245,11 +246,21 @@ const App = () => {
 
         {/* JUDGE DASHBOARD */}
         <Route
-          path="/Dashboard/Judge"
+          path="/Dashboard/JudgeEvent/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-              <JudgeDashboard/>
+              <StartMatch/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/JudgeEvent"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <JudgeEvent/>
               </LayoutDashboard>
             </Layout>
           }
