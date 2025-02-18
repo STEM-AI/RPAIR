@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 
 const CreateEvent = () => {
   const [formData, setFormData] = useState({
+    name: "",
     competition_name: "",
     start_date: "",
     end_date: "",
@@ -57,6 +58,7 @@ const CreateEvent = () => {
       setAlertType("success");
       setResponseMessage("Event created successfully!");
       setFormData({
+        name : "",
         competition_name: "",
         start_date: "",
         end_date: "",
@@ -94,6 +96,23 @@ const CreateEvent = () => {
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
           <div className="p-2">
+            <label htmlFor="name" className="block text-gray-700 font-bold">
+              Event Name:
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter Event name"
+              value={formData.name}
+              onChange={handleChange}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+
+
+          <div className="p-2">
             <label htmlFor="competition_name" className="block text-gray-700 font-bold">
               Competition Name:
             </label>
@@ -107,6 +126,11 @@ const CreateEvent = () => {
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
             />
           </div>
+
+
+
+
+
 
           <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
