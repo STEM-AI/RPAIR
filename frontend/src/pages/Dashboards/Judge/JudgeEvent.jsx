@@ -154,16 +154,18 @@ export default function JudgeEvent() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-center  py-4 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent
-          text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">
+        {/* <h2 className="text-center  py-4 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent
+          text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight"> */}
+                <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-600 text-5xl font-black">
+
           Your Events
         </h2>
         <button
-          onClick={handleRetry}
-          className="inline-flex items-center px-4 py-2 text-blue-600 hover:text-blue-700 
+         onClick={handleRetry}
+          className="inline-flex items-center px-4 py-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-600 hover:text-cyan-700 
             font-medium rounded-lg transition-colors duration-200"
         >
-          <MdRefresh className="h-5 w-5 mr-2" />
+          <MdRefresh className="h-5 w-5 mr-2 text-cyan-800" />
           Refresh
         </button>
       </div>
