@@ -37,9 +37,10 @@ class CompetitionEventSerializer(serializers.ModelSerializer):
         fields = ['name', 'start_date', 'end_date', 'location']
 
 
-class JudgeEventListSerializer(serializers.Serializer):
-    competition_event = CompetitionEventSerializer()
+class JudgeEventListSerializer(serializers.ModelSerializer):
+    competition_event = CompetitionEventSerializer()  # Serialize the related event properly
 
     class Meta:
-        fields = ['user','competition_event']
+        model = JudgeForCompetitionEvent  # Specify the correct model
+        fields = ['competition_event']
     

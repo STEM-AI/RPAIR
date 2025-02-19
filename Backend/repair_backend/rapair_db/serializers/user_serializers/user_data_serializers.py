@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from ...models import User
 from django.contrib.auth.password_validation import validate_password
-
+from ..competition_serializers.judge_event_serializers import JudgeEventListSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -74,3 +74,12 @@ class UserEditProfileSerializer(serializers.ModelSerializer):
 
         # Continue normal processing if no extra fields
         return super().to_internal_value(data)
+    
+    
+
+class JudgeListSerializer(serializers.ModelSerializer):
+    judging_events = JudgeEventListSerializer(source='judgeforcompetitionevent_set', many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'judging_events']

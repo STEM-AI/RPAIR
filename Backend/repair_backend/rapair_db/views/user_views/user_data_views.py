@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated 
+from rest_framework.permissions import IsAuthenticated ,AllowAny
 from rest_framework import status
-from ...serializers.user_serializers.user_data_serializers import UserSerializer , UserEditProfileSerializer
-from rest_framework.generics import RetrieveAPIView
-
+from ...serializers.user_serializers.user_data_serializers import UserSerializer , UserEditProfileSerializer , JudgeListSerializer
+from rest_framework.generics import RetrieveAPIView , ListAPIView
+from ...models import User
+from django.db.models import Q
 
 class UserProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
@@ -23,3 +24,11 @@ class UserEditProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class JudgeUserListView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = JudgeListSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(Q(is_staff=True)&Q(is_superuser=False))

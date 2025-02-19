@@ -13,7 +13,6 @@ from ...views.competition_views.event_operations_views import(
     SkillsRankView
 )
 from ...views.competition_views.judge_event_views import(
-    JudgeForCompetitionEventCreateView,
     JudgeForCompetitionEventListView
 )
 
@@ -25,6 +24,5 @@ urlpatterns =[
     path('<str:event_name>/teams-interview-rank/', TeamsInterviewScoreRankView.as_view(), name='team-interview-rank'),  # Get team interview score rank API  # TODO: Add validation and permissions for viewing team interview score rank.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO:
     path('<str:event_name>/teams-eng-notebook-rank/', TeamsEngNotebookScoreRank.as_view(), name='team-eng-notebook-rank'),  # Get team eng notebook score rank API  # TODO: Add validation and permissions for viewing team eng notebook score rank.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO
     path('<str:event_name>/skills-rank/', SkillsRankView.as_view(), name='skills-rank'),  # Get skills rank API  # TODO: Add validation and permissions for viewing skills rank.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add
-    path('judge-event/', JudgeForCompetitionEventCreateView.as_view(), name='judge-event'),  # Judge event API  # TODO: Add validation and permissions for judging event.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add
     path('judge-event-list/', JudgeForCompetitionEventListView.as_view(), name='judge-event-list'),  # List judged events API  # TODO: Add validation and permissions for viewing judged events.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add
 ]
