@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated ,AllowAny
 from rest_framework import status
 from ...serializers.user_serializers.user_data_serializers import UserSerializer , UserEditProfileSerializer , JudgeListSerializer
-from rest_framework.generics import RetrieveAPIView , ListAPIView
+from rest_framework.generics import RetrieveAPIView , ListAPIView , DestroyAPIView
 from ...models import User
 from django.db.models import Q
+from ...permissions import IsSuperUser
 
 class UserProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
@@ -32,3 +33,10 @@ class JudgeUserListView(ListAPIView):
 
     def get_queryset(self):
         return User.objects.filter(Q(is_staff=True)&Q(is_superuser=False))
+    
+
+class DeleteUser(DestroyAPIView):
+    permission_classes = [IsSuperUser]
+    queryset = User.objects.all()
+    lookup_field = 'username'
+    lookup_url_kwarg = 'username'
