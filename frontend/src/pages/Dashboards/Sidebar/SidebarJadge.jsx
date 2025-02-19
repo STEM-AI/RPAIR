@@ -105,10 +105,16 @@ const SidebarJadge = () => {
                       </div>
             
             {/* Dashboard */}
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/JudgeEvent">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineDashboard className="mr-2" />
                 Dashboard
+              </li>
+            </Link>
+            <Link to="/Dashboard/Judge">
+              <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <MdOutlineEventNote className="mr-2" />
+                Join New Event
               </li>
             </Link>
             <Link to="/Dashboard/Judge">

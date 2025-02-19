@@ -78,9 +78,9 @@
 
 
 import React from 'react';
-import vexGoLogo from '../../../assets/imgs/dashboards/vex-go-logo.png';
+import vexGoLogo from '../../../assets/imgs/dashboards/vex-go-logo.webp';
 import vexGo from '../../../assets/imgs/dashboards/vex-go.webp';
-import vexIqLogo from '../../../assets/imgs/dashboards/vex-iq-logo.webp';
+import vexIqLogo from '../../../assets/imgs/dashboards/vex-iq-logo.webp'
 import vexIq from '../../../assets/imgs/dashboards/vexiq.webp';
 
 function AdminDashboard() {
@@ -132,7 +132,7 @@ function AdminDashboard() {
 
   return (
     <div className="px-6">
-      <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-cyan-400 text-5xl font-black">
+      <h2 className="mb-4 pt-4 pb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-cyan-400 text-5xl font-black">
         VEX Competitions
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -141,7 +141,7 @@ function AdminDashboard() {
             key={competition.id}
             className={`p-8 rounded-xl shadow-2xl flex flex-col items-center ${getStatusStyle(competition.status)}`}
           >
-            <img src={competition.logo} alt="Competition Logo" className="w-24 h-24 mb-4 object-contain" />
+            <img src={competition.logo} alt="Competition Logo" className="w-full h-24 mb-4 object-contain" />
             <img src={competition.image} alt={competition.name} className="w-full h-40 object-cover rounded mb-4" />
             <h2 className="text-2xl font-bold mb-2 text-center">{competition.name}</h2>
             <p className="mb-1">📅 {competition.date}</p>

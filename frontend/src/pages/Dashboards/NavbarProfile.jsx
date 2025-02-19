@@ -50,7 +50,7 @@ export default function NavbarProfile() {
     ? userRole.is_superuser
       ? "/Dashboard/Admin"
       : userRole.is_staff && !userRole.is_judge
-      ? "/Dashboard/Judge"
+      ? "/Dashboard/JudgeEvent"
       : "/Dashboard/User"
     : "/";
 
@@ -203,7 +203,7 @@ export default function NavbarProfile() {
                 <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
                   <NavLink to={Url} className="flex items-center text-gray-600 py-2 px-1">
                     <BsFillPersonFill className="text-2xl mx-2" />
-                    <span className="text-lg">My Account</span>
+                    <span className="text-lg">Dashbord</span>
                   </NavLink>
                   <p className="flex items-center text-gray-600 py-2 px-1">
                     <IoSettingsOutline className="text-2xl mx-2" />
