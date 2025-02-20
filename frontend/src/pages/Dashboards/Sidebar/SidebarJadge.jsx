@@ -117,7 +117,7 @@ const SidebarJadge = () => {
                 Join New Event
               </li>
             </Link>
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/Judge/eventDetails">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineEventNote className="mr-2" />
                 Event Details
@@ -162,7 +162,7 @@ const SidebarJadge = () => {
                   
                 </ul>
               )}
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/Judge/TeamList">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <RiTeamLine className="mr-2" />
                 Teams
