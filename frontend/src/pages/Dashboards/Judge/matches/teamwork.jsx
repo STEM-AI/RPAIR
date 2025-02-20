@@ -42,7 +42,7 @@ const Teamwork = () => {
     <div className="mx-4 md:mx-10 p-4">
       {/* العنوان الرئيسي */}
       <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4">
-      Skills Matches
+      Teamwork Matches
       </h1>
 
       {/* جدول المباريات */}
