@@ -9,7 +9,7 @@ import { IoIosRemoveCircle } from "react-icons/io";
 
 const CreateTeam = () => {
   const [formData, setFormData] = useState({
-    event_name: "",
+    competition_event: "",
     competition: "",
     organization_info: {
       name: "",
@@ -125,7 +125,7 @@ const CreateTeam = () => {
     console.log("Response Data:", response.data); 
 
     setFormData({
-      event_name: "",
+      competition_event: "",
       competition: "",
       organization_info: {
         name: "",
@@ -185,8 +185,8 @@ const CreateTeam = () => {
             <label className="block mb-2 text-sm font-bold text-gray-700">Event Name</label>
             <input
               type="text"
-              name="event_name"
-              value={formData.event_name}
+              name="competition_event"
+              value={formData.competition_event}
               onChange={handleChange}
               className="bg-gray-200 border rounded py-2 px-4 w-full"
               required

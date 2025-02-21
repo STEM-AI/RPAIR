@@ -256,6 +256,7 @@ const App = () => {
         />
 
         {/* JUDGE DASHBOARD */}
+      
         <Route
           path="/Dashboard/JudgeEvent/:event_name"
           element={
