@@ -15,6 +15,7 @@
     "axios": "^1.7.9",
     "classnames": "^2.5.1",
     "cra-template": "1.2.0",
+    "framer-motion": "^12.4.4",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "jwt-decode": "^4.0.0",

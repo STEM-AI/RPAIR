@@ -3,6 +3,8 @@ import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { MdEvent, MdAccessTime, MdLocationOn, MdInfo, MdRefresh, MdError, MdPlayArrow, MdLock, MdDone } from 'react-icons/md';
+import { Link } from "react-router-dom";
+
 
 export default function JudgeEvent() {
   const [events, setEvents] = useState([]);
@@ -254,7 +256,7 @@ export default function JudgeEvent() {
                     </div>
                   </div>
                 </div>
-                
+                <Link to="/Dashboard/JudgeEvent/:event_name">
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
                   <button 
                     className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
@@ -266,6 +268,7 @@ export default function JudgeEvent() {
                     {eventStatus.message}
                   </button>
                 </div>
+                </Link>
               </div>
             );
           })}
