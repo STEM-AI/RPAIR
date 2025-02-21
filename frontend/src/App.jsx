@@ -45,6 +45,7 @@ import Notebook from "./pages/Dashboards/Judge/Notebook"
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
+import EventDetails from "./pages/Dashboards/Judge/eventDetails";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 
 
@@ -277,6 +278,7 @@ const App = () => {
             </Layout>
           }
         />
+
       <Route
           path="/Dashboard/Judge/Matches"
           element={
@@ -296,6 +298,17 @@ const App = () => {
               </LayoutDashboard>
             </Layout>
           }
+        />
+        <Route
+          path="/Dashboard/Judge/eventDetails"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <EventDetails/>
+              </LayoutDashboard>
+            </Layout>
+          }
+
         />
         <Route
           path="/Dashboard/Judge/Matches/skills"
