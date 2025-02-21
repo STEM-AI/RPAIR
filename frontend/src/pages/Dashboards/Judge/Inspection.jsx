@@ -3,7 +3,6 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaRegCheckCircle } from "react-icons/fa";
 
-
 export default function Inspection() {
   const inspectionChecklist = [
     { title: "Team Robot Compliance", description: "Team is only competing with ONE robot. They have no spare or replacement robots.", rule: "<R1>" },
@@ -61,63 +60,120 @@ export default function Inspection() {
   };
 
   return (
-    <div className="p-6 flex flex-col">
-      <div className="text-center">
-        <h2 className="mb-4 py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-4xl md:text-5xl font-black">
+    <div className="p-4 flex flex-col max-w-7xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-3xl md:text-4xl lg:text-5xl font-black">
           Robot Inspection Checklist
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl">
-        <div className="flex items-center gap-2">
-          <label htmlFor="teamNumber" className="text-cyan-600 text-lg md:text-xl font-black">Team Number:</label>
-          <input type="text" id="teamNumber" value={teamNumber} onChange={(e) => setTeamNumber(e.target.value)}
-            className="border-b-2 border-cyan-400 bg-transparent outline-none w-3/4 md:w-40" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <label htmlFor="teamNumber" className="text-cyan-600 text-base sm:text-lg font-bold whitespace-nowrap">Team Number:</label>
+          <input 
+            type="text" 
+            id="teamNumber" 
+            value={teamNumber} 
+            onChange={(e) => setTeamNumber(e.target.value)}
+            className="border-b-2 border-cyan-400 bg-transparent outline-none w-full sm:w-40 px-2" 
+          />
         </div>
 
-        <div className="flex items-center gap-2">
-          <label htmlFor="division" className="text-cyan-600 text-lg md:text-xl font-black">Division:</label>
-          <input type="text" id="division" value={division} onChange={(e) => setDivision(e.target.value)}
-            className="border-b-2 border-cyan-400 bg-transparent outline-none w-3/4 md:w-40" />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <label htmlFor="division" className="text-cyan-600 text-base sm:text-lg font-bold whitespace-nowrap">Division:</label>
+          <input 
+            type="text" 
+            id="division" 
+            value={division} 
+            onChange={(e) => setDivision(e.target.value)}
+            className="border-b-2 border-cyan-400 bg-transparent outline-none w-full sm:w-40 px-2" 
+          />
         </div>
       </div>
 
-      <div className="p-4 mt-4">
-        <div className="overflow-x-auto rounded-3xl border border-gray-300">
-          <table className="min-w-full border border-gray-300 bg-white shadow-md rounded-3xl">
-            <thead className="bg-gray-100">
+      {/* Mobile View */}
+      <div className="block md:hidden">
+        <div className="space-y-4">
+          {inspectionChecklist.map((item, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="flex items-start gap-3">
+                <div className="pt-1">
+                  <input
+                    type="checkbox"
+                    checked={checkedItems[index]}
+                    onChange={() => handleCheckboxChange(index)}
+                    className="w-5 h-5 rounded-full accent-green-600"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                  <span className="inline-block bg-gray-100 text-gray-600 text-sm px-2 py-1 rounded">
+                    {item.rule}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex flex-col gap-2">
+              <label className="font-semibold text-gray-900">Final Inspection Score:</label>
+              <div className="relative flex items-center max-w-[120px]">
+                <input 
+                  type="number" 
+                  max={10} 
+                  min={0} 
+                  value={score} 
+                  onChange={(e) => setScore(e.target.value)}
+                  className="w-full border-2 border-gray-300 rounded-md bg-white p-2 pr-8 outline-none text-center" 
+                />
+                <span className="absolute right-2 text-gray-500">/10</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop View */}
+      <div className="hidden md:block">
+        <div className="overflow-x-auto rounded-xl border border-gray-300">
+          <table className="min-w-full bg-white shadow-sm">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="p-3 border text-left">Check</th>
-                <th className="p-3 border text-left">Inspection Item</th>
-                <th className="p-3 border text-left">Description</th>
-                <th className="p-3 border text-left">Rule</th>
+                <th className="p-3 border-b text-left font-semibold text-gray-600">Check</th>
+                <th className="p-3 border-b text-left font-semibold text-gray-600">Inspection Item</th>
+                <th className="p-3 border-b text-left font-semibold text-gray-600">Description</th>
+                <th className="p-3 border-b text-left font-semibold text-gray-600">Rule</th>
               </tr>
             </thead>
             <tbody>
               {inspectionChecklist.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td className="p-3 border text-center">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={checkedItems[index]}
-                        onChange={() => handleCheckboxChange(index)}
-                        className="w-5 h-5 rounded-full accent-green-600"
-                      />
-                    </label>
+                  <td className="p-3 border-b text-center">
+                    <input
+                      type="checkbox"
+                      checked={checkedItems[index]}
+                      onChange={() => handleCheckboxChange(index)}
+                      className="w-5 h-5 rounded-full accent-green-600"
+                    />
                   </td>
-                  <td className="p-3 border">{item.title}</td>
-                  <td className="p-3 border">{item.description}</td>
-                  <td className="p-3 border">{item.rule}</td>
+                  <td className="p-3 border-b">{item.title}</td>
+                  <td className="p-3 border-b">{item.description}</td>
+                  <td className="p-3 border-b">{item.rule}</td>
                 </tr>
               ))}
-
-              <tr className="bg-gray-100 font-bold text-lg">
-                <td className="p-3 border " colSpan={3}>Final Inspection (Circle when passed):</td>
-                <td className="p-3 border text-center">
-                  <div className="relative flex items-center">
-                    <input type="number" max={10} min={0} value={score} onChange={(e) => setScore(e.target.value)}
-                      className="w-full border-b-2 bg-transparent p-1 outline-none text-center pr-6" />
+              <tr className="bg-gray-50 font-semibold">
+                <td className="p-3 border-b" colSpan={3}>Final Inspection Score:</td>
+                <td className="p-3 border-b">
+                  <div className="relative flex items-center max-w-[120px]">
+                    <input 
+                      type="number" 
+                      max={10} 
+                      min={0} 
+                      value={score} 
+                      onChange={(e) => setScore(e.target.value)}
+                      className="w-full border-2 border-gray-300 rounded-md bg-white p-2 pr-8 outline-none text-center" 
+                    />
                     <span className="absolute right-2 text-gray-500">/10</span>
                   </div>
                 </td>
@@ -126,19 +182,20 @@ export default function Inspection() {
           </table>
         </div>
       </div>
-        <div className="flex flex-col sm:flex-row justify-between px-4 sm:px-14 gap-2 sm:gap-3">
-            <button
-              onClick={generatePDF}
-              className="bg-green-700 text-white px-4 py-2 rounded-xl flex items-center w-full sm:w-auto justify-center"
-            >
-              <FaRegCheckCircle className="mr-1" /> Download PDF
-            </button>
-            
-            <button
-              className="rounded-2xl w-full sm:w-auto bg-green-700 p-2 text-white flex items-center justify-center"
-            >
-              <FaRegCheckCircle className="mr-1" /> Done
-            </button>
+
+      <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-3 mt-6">
+        <button
+          onClick={generatePDF}
+          className="bg-green-700 hover:bg-green-800 text-white px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
+        >
+          <FaRegCheckCircle /> Download PDF
+        </button>
+        
+        <button
+          className="bg-green-700 hover:bg-green-800 text-white px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
+        >
+          <FaRegCheckCircle /> Done
+        </button>
       </div>
     </div>
   );

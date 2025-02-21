@@ -46,6 +46,7 @@ import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
+import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 
 
 const App = () => {
@@ -77,7 +78,7 @@ const App = () => {
             <Layout>
               <About />
             </Layout>
-          }Ve
+          }
         />
         <Route
           path="/competitions"
@@ -230,6 +231,16 @@ const App = () => {
            <Layout hideNavbar>
               <LayoutDashboard>
                 <ListCompetitions />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/listJudges"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <ListJudges />
               </LayoutDashboard>
             </Layout>
           }

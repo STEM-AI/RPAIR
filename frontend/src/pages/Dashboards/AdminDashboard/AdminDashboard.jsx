@@ -132,7 +132,7 @@ function AdminDashboard() {
 
   return (
     <div className="px-6">
-      <h2 className="mb-4 pt-4 pb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-cyan-400 text-5xl font-black">
+      <h2 className="mb-4 pt-4 pb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r  from-cyan-950 to-cyan-500  text-5xl font-black">
         VEX Competitions
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

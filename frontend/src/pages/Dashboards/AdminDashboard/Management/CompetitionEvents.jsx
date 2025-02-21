@@ -292,7 +292,8 @@ import axios from "axios";
 
 const CompetitionEvents = () => {
 const { event_name } = useParams() || {};  // Ensure destructuring doesn't break
-const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";  const [events, setEvents] = useState([]);
+  const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -327,7 +328,7 @@ const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCas
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-600 text-5xl font-black">
+      <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl font-black">
         {formattedEventName} EVENTS
       </h2>
 

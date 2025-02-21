@@ -8,6 +8,8 @@ import { GiLaurelsTrophy } from "react-icons/gi";
 import { Link, NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { LuWrapText } from "react-icons/lu";
+import { TbBrandTeams } from "react-icons/tb";
+
 
 
 const SidebarAdmin = () => {
@@ -115,6 +117,14 @@ const SidebarAdmin = () => {
             >
               <GiLaurelsTrophy className="mr-2" />
               Competitions
+            </li>
+            {/* list of judges */}
+            <li
+              className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              onClick={() => navigate("/Dashboard/Admin/listJudges")}
+            >
+              <TbBrandTeams className="mr-2" />
+              Judes
             </li>
 
             {/* Teams */}
