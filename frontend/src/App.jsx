@@ -50,6 +50,7 @@ import JTeamList from "./pages/Dashboards/Judge/JTeamList";
 import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
 import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
+import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
 
 
 const App = () => {
@@ -123,6 +124,16 @@ const App = () => {
            <Layout hideNavbar>
               <LayoutDashboard>
                 <AdminDashboard />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Matchess"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <Matchess />
               </LayoutDashboard>
             </Layout>
           }
@@ -367,7 +378,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/Judge"
+          path="/Dashboard/LiveTeam"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -377,7 +388,7 @@ const App = () => {
           }
         />
                 <Route
-          path="/Dashboard/Judge/Shofy"
+          path="/Dashboard/LiveSkills"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>

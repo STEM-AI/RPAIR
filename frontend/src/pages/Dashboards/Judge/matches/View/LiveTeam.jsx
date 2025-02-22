@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaTrophy, FaMedal } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { Link } from "react-router-dom";
+
 
 const LiveTeam = () => {
   const [matches, setMatches] = useState([]);
@@ -42,6 +45,11 @@ const LiveTeam = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
+      <div>
+        <Link to="/Dashboard/Admin" className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300">
+          <IoMdArrowRoundBack className="text-2xl" />
+        </Link>
+      </div>
       {/* Header with last update time */}
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Live Teamwork Matches</h1>
