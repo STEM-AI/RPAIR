@@ -19,10 +19,6 @@ const CreateStaff = () => {
     phone_number: "",
   });
 
-  const [formEvents, setFormEvents] = useState({
-    competition_event: "",
-    user: ""
-  });
  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
@@ -46,13 +42,7 @@ const CreateStaff = () => {
     }));
   };
 
-  const handleEventChange = (event) => {
-    const { name, value } = event.target;
-    setFormEvents((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -73,23 +63,7 @@ const CreateStaff = () => {
         }
       );
 
-      // After successful judge registration, send the event data
-      const eventData = {
-        ...formEvents,
-        user: formData.username // Ensure the username is set from formData
-      };
-
-      const eventResponse = await axios.post(
-        `${process.env.REACT_APP_API_URL}/event/judge-event/`,
-        eventData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      
       setAlertType("success");
       setResponseMessage("Judge and event created successfully!");
       Swal.fire({
@@ -112,15 +86,12 @@ const CreateStaff = () => {
         phone_number: "",
       });
       
-      setFormEvents({
-        competition_event: "",
-        user: ""
-      });
+      
     } catch (err) {
       console.error("Error Response:", err.response);
       setAlertType("error");
       setResponseMessage(
-        err.response?.data?.detail || "Failed to create the judge and event. Please try again."
+        err.response?.data?.detail || "Failed to create the judge. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -143,21 +114,7 @@ const CreateStaff = () => {
       )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
-        <div className="p-2">
-          <label htmlFor="event_name" className="block text-gray-700 font-bold">
-            Event Name:
-          </label>
-          <input
-            type="text"
-            id="event_name"
-            name="competition_event"
-            placeholder="Enter event name"
-            value={formEvents.competition_event}
-            onChange={handleEventChange}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
-            required
-          />
-        </div>
+        
 
         <div className="p-2">
           <label htmlFor="first_name" className="block text-gray-700 font-bold">

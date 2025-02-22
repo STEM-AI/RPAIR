@@ -49,6 +49,7 @@ import EventDetails from "./pages/Dashboards/Judge/eventDetails";
 import JTeamList from "./pages/Dashboards/Judge/JTeamList";
 import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
 import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
+import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 
 
 const App = () => {
@@ -80,7 +81,7 @@ const App = () => {
             <Layout>
               <About />
             </Layout>
-          }Ve
+          }
         />
         <Route
           path="/competitions"
@@ -238,6 +239,16 @@ const App = () => {
           }
         />
         <Route
+          path="/Dashboard/Admin/listJudges"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <ListJudges />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
           path="/Dashboard/Admin/CreateOrganization"
           element={
            <Layout hideNavbar>
@@ -249,6 +260,7 @@ const App = () => {
         />
 
         {/* JUDGE DASHBOARD */}
+      
         <Route
           path="/Dashboard/JudgeEvent/:event_name"
           element={
