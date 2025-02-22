@@ -46,6 +46,9 @@ import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
+import JTeamList from "./pages/Dashboards/Judge/JTeamList";
+import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
+import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 
 
@@ -321,6 +324,17 @@ const App = () => {
           }
         />
 
+<Route
+          path="/Dashboard/Judge/TeamList"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <JTeamList/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+
 
            <Route
           path="/Dashboard/Judge/Interview"
@@ -348,6 +362,26 @@ const App = () => {
            <Layout hideNavbar>
               <LayoutDashboard>
                 <Notebook />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Judge"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <LiveTeam />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+                <Route
+          path="/Dashboard/Judge/Shofy"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <LiveSkills/>
               </LayoutDashboard>
             </Layout>
           }
