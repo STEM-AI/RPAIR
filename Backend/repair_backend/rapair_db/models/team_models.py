@@ -115,9 +115,9 @@ class TeamSocialMedia(models.Model):
 class TeamPreviousCompetition(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE,related_name="previous_competition")
-    VEX_IQ = "VEX_IQ"
-    ROV = "ROV"
-    ROBOCUP = "ROBOCUP"
+    VEX_IQ = "vex_iq"
+    ROV = "rov"
+    ROBOCUP = "robocup"
     COMPETITION_CHOICES = [
         (VEX_IQ, "VEX_IQ"),
         (ROV, "ROV"),
