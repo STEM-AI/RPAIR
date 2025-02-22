@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
@@ -18,14 +18,14 @@ const CreateStaff = () => {
     date_of_birth: "",
     phone_number: "",
   });
+
+ 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
 
-
   const token = localStorage.getItem("access_token");
   
-
   if (!token) {
     return (
       <div className="text-red-600 text-center mt-8">
@@ -42,38 +42,53 @@ const CreateStaff = () => {
     }));
   };
 
+  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     setResponseMessage(null);
+    setAlertType("");
 
     try {
-      const response = await axios.post(
+      // First, register the judge
+      const judgeResponse = await axios.post(
         `${process.env.REACT_APP_API_URL_AUTH}/judge-register/`,
         formData,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
+      
       setAlertType("success");
-      setResponseMessage("Judge created successfully!");
+      setResponseMessage("Judge and event created successfully!");
+      Swal.fire({
+                      icon: "success",
+                      title: "Success",
+                      text: "Registration successful!",
+                      showConfirmButton: false,
+                        });
+      
+      // Reset both forms after successful submission
       setFormData({
         first_name: "",
         last_name: "",
         username: "",
-        email: "",
+        email: "@rpair.judge.com",
         password: "",
         country: "",
         address: "",
         date_of_birth: "",
         phone_number: "",
       });
+      
+      
     } catch (err) {
-      console.error("Error Response:", err.response);  
+      console.error("Error Response:", err.response);
       setAlertType("error");
       setResponseMessage(
         err.response?.data?.detail || "Failed to create the judge. Please try again."
@@ -84,12 +99,11 @@ const CreateStaff = () => {
   };
 
   return (
-    <div className="container mx-auto  px-4">
+    <div className="container mx-auto px-4">
       <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
         Create Judge
       </h2>
 
-      {/* رسائل التنبيه */}
       {responseMessage && (
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity={alertType}>
@@ -99,8 +113,9 @@ const CreateStaff = () => {
         </Stack>
       )}
 
-
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
+        
+
         <div className="p-2">
           <label htmlFor="first_name" className="block text-gray-700 font-bold">
             First Name:
@@ -113,6 +128,7 @@ const CreateStaff = () => {
             value={formData.first_name}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -128,6 +144,7 @@ const CreateStaff = () => {
             value={formData.last_name}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -140,9 +157,12 @@ const CreateStaff = () => {
             id="username"
             name="username"
             placeholder="Enter username"
+            pattern="^[a-zA-Z0-9@.+\-_]+$"
+            title=" This value may contain only letters, numbers, and @/./+/-/_ characters"
             value={formData.username}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -158,6 +178,7 @@ const CreateStaff = () => {
             value={formData.email}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -173,6 +194,7 @@ const CreateStaff = () => {
             value={formData.password}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -188,6 +210,7 @@ const CreateStaff = () => {
             value={formData.country}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -203,6 +226,7 @@ const CreateStaff = () => {
             value={formData.address}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -217,6 +241,7 @@ const CreateStaff = () => {
             value={formData.date_of_birth}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -228,10 +253,13 @@ const CreateStaff = () => {
             type="text"
             id="phone_number"
             name="phone_number"
-            placeholder="Enter phone number"
+            placeholder="enter your phone"
+            pattern="^\+20\d{10}$"
+            title="Phone number must start with +2 and contain 11 digits."
             value={formData.phone_number}
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+            required
           />
         </div>
 
@@ -241,7 +269,7 @@ const CreateStaff = () => {
             disabled={isSubmitting}
             className="block w-full bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-full transition-all duration-200"
           >
-            {isSubmitting ? "Submitting..." : "Create Judge"}
+            {isSubmitting ? "Submitting..." : "Create Judge and Event"}
           </button>
         </div>
       </form>

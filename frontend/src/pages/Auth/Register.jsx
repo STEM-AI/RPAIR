@@ -252,7 +252,7 @@ const Register = () => {
                       id="phone"
                       type="text"
                   placeholder="enter your phone"
-                   pattern="^\+2\d{11}$" // This pattern matches a phone number starting with +2 followed by exactly 10 digits.
+                   pattern="^\+20\d{10}$"
                   title="Phone number must start with +2 and contain 11 digits."
                       value={phone_number}
                       onChange={(e) => setPhonenumber(e.target.value)}

@@ -26,10 +26,10 @@ const SidebarJadge = () => {
     <div className="relative top-0 left-0 h-full  ">
      {/* Hamburger button to toggle sidebar visibility */}
       <button
-        className="lg:hidden fixed top-9 left-4 z-50"
+        className="lg:hidden fixed top-9 left-4  z-50"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="group flex h-8 w-8 items-center justify-center bg-white shadow-lg p-1 hover:bg-slate-200">
+        <div className="group flex h-8 w-8 items-center justify-center bg-white  p-1 hover:bg-slate-200">
           <div className="space-y-1 ">
             <span
               className={`block h-0.5 w-6 rounded-full bg-slate-500 transition-transform ease-in-out ${
@@ -105,7 +105,7 @@ const SidebarJadge = () => {
                       </div>
             
             {/* Dashboard */}
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/JudgeEvent">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineDashboard className="mr-2" />
                 Dashboard
@@ -114,9 +114,16 @@ const SidebarJadge = () => {
             <Link to="/Dashboard/Judge">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineEventNote className="mr-2" />
+                Join New Event
+              </li>
+            </Link>
+            <Link to="/Dashboard/Judge/eventDetails">
+              <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <MdOutlineEventNote className="mr-2" />
                 Event Details
               </li>
             </Link>
+            
             {/* Event */}
               <li
                 className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
@@ -156,7 +163,7 @@ const SidebarJadge = () => {
                   
                 </ul>
               )}
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/Judge/TeamList">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <RiTeamLine className="mr-2" />
                 Teams

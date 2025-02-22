@@ -100,12 +100,19 @@ const SidebarUser = () => {
                       </div>
             
             {/* Dashboard */}
-            <Link to="/Dashboard/Judge">
+            <Link to="/Dashboard/User">
               <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                 <MdOutlineDashboard className="mr-2" />
                 Dashboard
               </li>
             </Link>
+            <Link to="/Dashboard/User/CreateTeam">
+              <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <MdOutlineDashboard className="mr-2" />
+                My Team
+              </li>
+            </Link>
+           
           </ul>
         </div>
       </div>
