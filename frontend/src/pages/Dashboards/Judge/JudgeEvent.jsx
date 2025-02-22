@@ -256,18 +256,20 @@ export default function JudgeEvent() {
                     </div>
                   </div>
                 </div>
-                <Link to="/Dashboard/JudgeEvent/:event_name">
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                  <button 
-                    className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
-                      transition-colors duration-200 flex items-center justify-center`}
-                    onClick={() => {/* Handle view details */}}
-                    disabled={eventStatus.status === 'ended'}
-                  >
-                    <eventStatus.icon className="h-5 w-5 mr-2" />
-                    {eventStatus.message}
-                  </button>
-                </div>
+                <Link 
+                  to={`/Dashboard/JudgeEvent/${event.competition_event.name}`}
+                  onClick={() => localStorage.setItem("selected_event_name", event.competition_event.name)}
+                >
+                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                    <button 
+                      className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
+                        transition-colors duration-200 flex items-center justify-center`}
+                      disabled={eventStatus.status === 'ended'}
+                    >
+                      <eventStatus.icon className="h-5 w-5 mr-2" />
+                      {eventStatus.message}
+                    </button>
+                  </div>
                 </Link>
               </div>
             );
