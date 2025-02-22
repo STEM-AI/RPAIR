@@ -82,11 +82,23 @@ import vexGoLogo from '../../../assets/imgs/dashboards/vex-go-logo.webp';
 import vexGo from '../../../assets/imgs/dashboards/vex-go.webp';
 import vexIqLogo from '../../../assets/imgs/dashboards/vex-iq-logo.webp'
 import vexIq from '../../../assets/imgs/dashboards/vexiq.webp';
+import { Link } from 'react-router-dom';
 
-function User() {
+function AdminDashboard() {
   const competitions = [
     {
       id: 1,
+      name: 'VEX IQ Competition',
+      date: '2025-02-22',
+      time: '11:00 AM',
+      location: 'Smouha Alex, Egypt',
+      status: 'active',
+      image: vexIq,
+      logo: vexIqLogo,
+      link: '/Dashboard/Matchess'
+    },
+    {
+      id: 2,
       name: 'VEX IQ Competition',
       date: '2025-02-14',
       time: '10:00 AM',
@@ -132,7 +144,7 @@ function User() {
 
   return (
     <div className="px-6">
-      <h2 className="mb-4 pt-4 pb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-cyan-400 text-5xl font-black">
+      <h2 className="mb-4 pt-4 pb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r  from-cyan-950 to-cyan-500  text-5xl font-black">
         VEX Competitions
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -147,11 +159,12 @@ function User() {
             <p className="mb-1">📅 {competition.date}</p>
             <p className="mb-1">⏰ {competition.time}</p>
             <p className="mb-3">📍 {competition.location}</p>
-            <button 
+            <Link
+            to={competition.link}  
               className={`py-2 px-4 rounded font-semibold mt-3 cursor-pointer bg-white ${competition.status === 'active' ? 'text-green-700' : competition.status === 'upcoming' ? 'text-yellow-700' : 'text-blue-700'}`}
             >
               Details
-            </button>
+            </Link>
           </div>
         ))}
       </div>
@@ -159,4 +172,4 @@ function User() {
   );
 }
 
-export default User;
+export default AdminDashboard;
