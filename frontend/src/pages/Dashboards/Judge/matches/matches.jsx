@@ -21,7 +21,7 @@
 //       <div className="grid gap-14 md:grid-cols-3 md:gap-5">
 //         {[ 
 //           { 
-//             title: "Teamwork Challenge", 
+//             title: "Teamwork Matche", 
 //             color: "bg-teal-400", 
 //             shadow: "shadow-teal-500/40", 
 //             icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-4xl" />,
@@ -30,7 +30,7 @@
 
 //           },
 //           { 
-//             title: "Driver Skills Challenge", 
+//             title: "Driver Skills Matche", 
 //             color: "bg-rose-500", 
 //             shadow: "shadow-rose-500/40", 
 //             icon: <BiJoystick className="text-white text-4xl" />, 
@@ -39,7 +39,7 @@
 
 //           },
 //           { 
-//             title: "Autonomous Challenge", 
+//             title: "Autonomous Matche", 
 //             color: "bg-sky-500", 
 //             shadow: "shadow-sky-500/40", 
 //             icon: <FaLaptopCode className="text-white text-4xl" />,
@@ -87,7 +87,7 @@ const MatchRounds = () => {
       <div className="grid gap-12 md:grid-cols-2 md:gap-8">
         {[ 
           { 
-            title: "Teamwork Challenge", 
+            title: "Teamwork Matches", 
             color: "bg-teal-400", 
             shadow: "shadow-teal-500/40", 
             icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-4xl" />, 
@@ -95,7 +95,7 @@ const MatchRounds = () => {
             description: "Work together, win together! In this round, two teams collaborate to score as many points as possible within the time limit. Communication and strategy are key to achieving the highest combined score!"
           },
           { 
-            title: "Skills Challenge", 
+            title: "Skills Matches", 
             color: "bg-rose-500", 
             shadow: "shadow-rose-500/40", 
             icon: <BiJoystick className="text-white text-4xl" />, 
