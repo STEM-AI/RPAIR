@@ -26,8 +26,8 @@ import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/Crea
 import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
 import CreateOrganization from "./pages/Dashboards/AdminDashboard/Management/CreateOrg";
 import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
-import ListCompetitions from "./pages/Dashboards/AdminDashboard/Management/ListCompetitions";
-import CompetitionEvents from "./pages/Dashboards/AdminDashboard/Management/CompetitionEvents";
+import ListCompetitions from "./pages/Dashboards/AdminDashboard/ListCompetitions";
+import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEvents";
 
 
 //                          User                   //
@@ -46,7 +46,6 @@ import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
-import JTeamList from "./pages/Dashboards/Judge/JTeamList";
 import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
 import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
@@ -335,16 +334,6 @@ const App = () => {
           }
         />
 
-<Route
-          path="/Dashboard/Judge/TeamList"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-              <JTeamList/>
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
 
 
            <Route

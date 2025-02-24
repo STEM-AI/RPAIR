@@ -63,19 +63,19 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import VexIq from "../../../../assets/imgs/vexComp/vexiq.jpg";
-import AI from "../../../../assets/imgs/vexComp/AI.jpg";
-import aurdoino from "../../../../assets/imgs/vexComp/arduino.jpg";
-import mobile from "../../../../assets/imgs/vexComp/mobile.jpg";
-import OpenSource from "../../../../assets/imgs/vexComp/open.jpg";
-import Web from "../../../../assets/imgs/vexComp/web.jpeg";
-import programming from "../../../../assets/imgs/vexComp/programming.webp";
+import VexIq from "../../../assets/imgs/vexComp/vexiq.jpg";
+import AI from "../../../assets/imgs/vexComp/AI.jpg";
+import aurdoino from "../../../assets/imgs/vexComp/arduino.jpg";
+import mobile from "../../../assets/imgs/vexComp/mobile.jpg";
+import OpenSource from "../../../assets/imgs/vexComp/open.jpg";
+import Web from "../../../assets/imgs/vexComp/web.jpeg";
+import programming from "../../../assets/imgs/vexComp/programming.webp";
 
 const ListCompetitions = () => {
   const navigate = useNavigate();
 
   const competitions = [
-    { name: "VEX ", apiName: "vex_iq", image: VexIq },
+    { name: "Robotics ", apiName: "vex_iq", image: VexIq },
     { name: "Open Source", apiName: "mobile_app", image: OpenSource },
     { name: "Web Design", apiName: "web_development", image: Web },
     { name: "Programming", apiName: "python_programming", image: programming },

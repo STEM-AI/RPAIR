@@ -298,30 +298,62 @@
 import { useState, useEffect } from "react";
 import ScoreTeams from "../Scores/scoreTeams";
 import { FaTrophy, FaCheck } from "react-icons/fa";
+import axios from "axios";
 
 const Teamwork = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
-  const [scores, setScores] = useState(() => {
-    const storedScores = localStorage.getItem("matchScores");
-    return storedScores ? JSON.parse(storedScores) : {};
-  });
-  const [rankings, setRankings] = useState(() => {
-    const storedRankings = localStorage.getItem("teamRankings");
-    return storedRankings ? JSON.parse(storedRankings) : [];
-  });
+  const [scores, setScores] = useState({});
+  const [rankings, setRankings] = useState([]);
   const [tempScores, setTempScores] = useState({});
   const [showRanking, setShowRanking] = useState(false);
+  const [schedule, setSchedule] = useState([]);
 
-  const matches = [
-    { code: "M001", team1: "FutureAlex", team2: "Osiris" },
-    { code: "M002", team1: "FutureAlex", team2: "Monsters" },
-    { code: "M003", team1: "Osiris", team2: "Monsters" },
-  ];
+  const event_name = localStorage.getItem("selected_event_name");
+  const token = localStorage.getItem("access_token");
+
+  const formData = {
+    stage: "teamwork",
+    time: "5:30",
+  };
+
+ 
+
+  // Handle posting game schedule and then fetch updated schedule
+  const handleSubmit = async (event) => {
+  event.preventDefault();
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/event/${event_name}/games-schedule/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("Schedule posted successfully");
+    console.log("Response Data:", response.data); 
+
+    // 🟢 تحديث حالة الجدول بالبيانات المسترجعة من API
+    setSchedule(response.data); 
+
+  } catch (err) {
+    console.error("Error posting schedule:", err);
+  }
+};
+
 
   useEffect(() => {
-    localStorage.setItem("matchScores", JSON.stringify(scores));
     updateRankings();
   }, [scores]);
+
+  useEffect(() => {
+  if (schedule.length > 0) {
+    updateRankings();
+  }
+}, [schedule]);
 
   const handleOpenCalculator = (matchCode) => {
     setSelectedMatch(matchCode);
@@ -345,27 +377,38 @@ const Teamwork = () => {
   };
 
   const updateRankings = () => {
-    const teamScores = { FutureAlex: 0, Osiris: 0, Monsters: 0 };
+  if (!schedule || schedule.length === 0) return; // تأكد أن هناك بيانات
 
-    matches.forEach(({ code, team1, team2 }) => {
-      const matchScore = scores[code] ?? 0;
-      teamScores[team1] += matchScore;
-      teamScores[team2] += matchScore;
-    });
+  const teamScores = {};
 
-    const sortedRankings = Object.entries(teamScores)
-      .map(([name, total]) => ({ name, total }))
-      .sort((a, b) => b.total - a.total);
+  schedule.forEach(({ id, team1, team2 }) => {
+    const matchScore = scores[id] ?? 0;
+    teamScores[team1] = (teamScores[team1] || 0) + matchScore;
+    teamScores[team2] = (teamScores[team2] || 0) + matchScore;
+  });
 
-    setRankings(sortedRankings);
-    localStorage.setItem("teamRankings", JSON.stringify(sortedRankings));
-  };
+  const sortedRankings = Object.entries(teamScores)
+    .map(([name, total]) => ({ name, total }))
+    .sort((a, b) => b.total - a.total);
 
+  setRankings(sortedRankings);
+  console.log("Updated Rankings:", sortedRankings);
+};
+
+  
   return (
     <div className="mx-4 md:mx-10 p-4">
       <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4">
         Teamwork Matches
       </h1>
+      <div className="flex justify-center mb-4">
+        <button
+          onClick={handleSubmit}
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+          View Schedule
+        </button>
+      </div>
 
       <div className="shadow-lg rounded-lg overflow-hidden">
         <table className="w-full table-fixed">
@@ -379,20 +422,21 @@ const Teamwork = () => {
               <th className="py-4 px-6 text-center">Save</th>
             </tr>
           </thead>
+      
           <tbody className="bg-white">
-            {matches.map((match) => (
-              <tr key={match.code}>
-                <td className="py-4 px-6 border-b">{match.code}</td>
-                <td className="py-4 px-6 border-b">{match.team1}</td>
-                <td className="py-4 px-6 border-b">{match.team2}</td>
-                <td className="py-4 px-6 border-b text-center font-bold text-blue-600">
-                  {tempScores[match.code] !== undefined
-                    ? tempScores[match.code]
-                    : scores[match.code] ?? 0}
+            {schedule.map((match) => (
+              <tr key={match.id} className="border-b">
+                <td className="py-4 px-6">{match.id}</td>
+                <td className="py-4 px-6">{match.team1}</td>
+                <td className="py-4 px-6">{match.team2}</td>
+                <td className="py-4 px-6 text-center">
+                   {tempScores[match.id] !== undefined
+                    ? tempScores[match.id]
+                    : scores[match.id] ?? 0}
                 </td>
                 <td className="py-4 px-6 border-b text-center">
                   <button
-                    onClick={() => handleOpenCalculator(match.code)}
+                    onClick={() => handleOpenCalculator(match.id)}
                     className="bg-green-500 text-white py-1 px-3 rounded-lg hover:bg-green-600 transition"
                   >
                     Calculator
@@ -400,7 +444,7 @@ const Teamwork = () => {
                 </td>
                 <td className="py-4 px-6 border-b text-center">
                   <button
-                    onClick={() => handleSaveScore(match.code)}
+                    onClick={() => handleSaveScore(match.id)}
                     className="text-white bg-blue-500 p-2 rounded-full hover:bg-blue-600 transition"
                   >
                     <FaCheck />
@@ -409,6 +453,7 @@ const Teamwork = () => {
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
 
@@ -442,12 +487,7 @@ const Teamwork = () => {
             </thead>
             <tbody className="text-gray-900 text-lg">
               {rankings.map((team, index) => (
-                <tr
-                  key={index}
-                  className={`border-b border-gray-300 text-lg ${
-                    index === 0 ? "bg-yellow-300 text-black font-bold" : index === 1 ? "bg-gray-300" : index === 2 ? "bg-yellow-100" : "bg-white"
-                  }`}
-                >
+                <tr key={index} className="border-b border-gray-300 text-lg">
                   <td className="py-3 px-4">{index + 1}</td>
                   <td className="py-3 px-4">{team.name}</td>
                   <td className="py-3 px-4 font-bold">{team.total}</td>
