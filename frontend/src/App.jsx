@@ -34,6 +34,7 @@ import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEven
 import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
+import GameTimer from "./pages/Dashboards/Judge/Scores/GameTimer";
 
 
 //                          Judge                   //
@@ -272,6 +273,16 @@ const App = () => {
         {/* JUDGE DASHBOARD */}
       
         <Route
+          path="/Dashboard/Game"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <GameTimer/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
           path="/Dashboard/JudgeEvent/:event_name"
           element={
            <Layout hideNavbar>
@@ -303,7 +314,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/Judge/Matches/teamwork"
+          path="/Dashboard/Judge/matches/teamwork"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
