@@ -314,7 +314,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/JudgeEvent/:event_name/Matches_teamwork"
+          path="/Dashboard/Judge/matches/teamwork"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>

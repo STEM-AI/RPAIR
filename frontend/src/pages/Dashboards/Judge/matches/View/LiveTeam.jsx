@@ -10,7 +10,7 @@ const LiveTeam = () => {
 
   useEffect(() => {
     // Initialize WebSocket connection
-    socketRef.current = new WebSocket(`ws://147.93.56.71:8000/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`ws://${process.env.REACT_APP_API_HOST}/ws/competition_event/${eventName}/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");

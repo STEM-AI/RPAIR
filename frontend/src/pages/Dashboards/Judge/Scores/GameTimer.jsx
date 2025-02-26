@@ -25,14 +25,14 @@ const GameTimer = () => {
        
         console.log("brfotr socket");
         
-        socketRef.current = new WebSocket(`ws://147.93.56.71:8000/ws/competition_event/next_event/game/426/`);
+        socketRef.current = new WebSocket(`ws://147.93.56.71:8000/ws/competition_event/FutureAlex/game/693/`);
         // console.log("eventName", eventName)
         // console.log("gameId", gameId)
     
         socketRef.current.onopen = () => {
             console.log("WebSocket connection established");
             socketRef.current.send(
-                JSON.stringify({ action: "start_game", event_name: 'next_event', game_id: '426' })
+                JSON.stringify({ action: "start_game", event_name: 'FutureAlex', game_id: '693' })
             );
         };
 
@@ -63,13 +63,13 @@ const GameTimer = () => {
 
     const pauseGame = () => {
         if (!gameActive || gamePaused) return;
-        socketRef.current.send(JSON.stringify({ action: "pause_game", event_name: eventName, game_id: gameId }));
+        socketRef.current.send(JSON.stringify({ action: "pause_game", event_name: "FutureAlex", game_id: "693" }));
         setGamePaused(true);
     };
 
     const resumeGame = () => {
         if (!gameActive || !gamePaused) return;
-        socketRef.current.send(JSON.stringify({ action: "resume_game", event_name: eventName, game_id: gameId }));
+        socketRef.current.send(JSON.stringify({ action: "resume_game", event_name: "FutureAlex", game_id: "693" }));
         setGamePaused(false);
     };
 
@@ -78,7 +78,7 @@ const GameTimer = () => {
             alert("Game ID is missing. Start a game first.");
             return;
         }
-        socketRef.current.send(JSON.stringify({ action: "restart_game", event_name: eventName, game_id: gameId }));
+        socketRef.current.send(JSON.stringify({ action: "restart_game", event_name: "FutureAlex", game_id: "693" }));
         setRemainingTime(60);
         setGamePaused(false);
         setScoreVisible(false);

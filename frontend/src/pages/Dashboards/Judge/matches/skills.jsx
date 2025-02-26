@@ -288,6 +288,7 @@ import { FaChevronDown, FaCheck, FaTrophy } from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import CalculatorSkills from "../Scores/ScoresSkills";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Skills = () => {
   const [expandedRounds, setExpandedRounds] = useState({ 1: true, 2: false, 3: false });
@@ -317,6 +318,7 @@ const event_name = localStorage.getItem("selected_event_name");
     );
 
     console.log("Schedule posted successfully:", response.data);
+    
     setSchedule(response.data);
   } catch (err) {
     console.error("Error posting schedule:", err);
@@ -329,20 +331,58 @@ const event_name = localStorage.getItem("selected_event_name");
     );
   };
 
-const confirmScores = (round, teamId) => {
-  setConfirmed((prev) => ({
+
+  
+  const confirmScores = async (round, teamId) => {
+  const team = schedule.find(t => t.id === teamId);
+  if (!team) return;
+
+  setConfirmed(prev => ({
     ...prev,
     [round]: { ...prev[round], [teamId]: true },
   }));
 
   if (round < 3 && isRoundCompleted(round)) {
-    console.log(`Round ${round} completed! Unlocking Round ${round + 1}`);
-    setExpandedRounds((prev) => ({
+    setExpandedRounds(prev => ({
       ...prev,
       [round + 1]: true,
     }));
   }
+
+  // تجهيز البيانات للإرسال
+  const data = {
+    event_name: event_name,
+    score: {
+      driver: scores[round]?.[teamId]?.driver ?? "0",
+      autonomous: scores[round]?.[teamId]?.auto ?? "0",
+    },
+  };
+
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // تأكد من أن التوكن مخزن في `localStorage`
+        },
+      }
+    );
+
+    console.log("Score submitted successfully:", response.data);
+    Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Score submitted successfully!",
+                showConfirmButton: true,
+                confirmButtonColor: "#28a745" 
+              });
+  } catch (error) {
+    console.error("Error submitting score:", error);
+  }
 };
+
 
 
 
@@ -502,7 +542,9 @@ const confirmScores = (round, teamId) => {
       ))}
 
       {showCalculator && selectedTeam && selectedRound && (
-        <CalculatorSkills onCalculate={handleScoreCalculated} onClose={() => setShowCalculator(false)} />
+        <CalculatorSkills onCalculate={handleScoreCalculated}
+          onClose={() => setShowCalculator(false)}
+          gameId={selectedTeam.id}  />
       )}
       <button onClick={() => setShowRanking(!showRanking)} className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto mb-4">
         <FaTrophy /> View Ranking

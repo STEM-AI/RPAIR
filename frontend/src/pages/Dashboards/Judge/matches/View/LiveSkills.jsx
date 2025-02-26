@@ -185,7 +185,7 @@ const LiveSkills = () => {
  
  useEffect(() => {
     // Initialize WebSocket connection
-    socketRef.current = new WebSocket(`ws://147.93.56.71:8000/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`ws://${process.env.REACT_APP_API_HOST}/ws/competition_event/${eventName}/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");
@@ -287,6 +287,7 @@ const LiveSkills = () => {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-100">
+                    <th className="py-2 px-3 text-left text-sm">Match Code</th>
                     <th className="py-2 px-3 text-left text-sm">Team</th>
                     <th className="py-2 px-3 text-center text-sm">Auto</th>
                     <th className="py-2 px-3 text-center text-sm">Driver</th>
@@ -296,7 +297,8 @@ const LiveSkills = () => {
                <tbody>
                 {matches.map((team) => {
                   return (
-                    <tr key={team.game_id} className="border-b hover:bg-gray-50">
+                    <tr key={team.code} className="border-b hover:bg-gray-50">
+                      <td className="py-2 px-3 text-sm">{team.code}</td>
                       <td className="py-2 px-3 text-sm">{team.team1}</td>
                       <td className="py-2 px-3 text-center text-sm">
                         {team.score.autonomous > 0 ? (
