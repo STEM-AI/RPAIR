@@ -426,9 +426,11 @@ const Teamwork = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm text-left text-gray-500 uppercase tracking-wider">Match</th>
-                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm text-left text-gray-500 uppercase tracking-wider">Team 1</th>
-                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm text-left text-gray-500 uppercase tracking-wider">Team 2</th>
+                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm  text-gray-500 uppercase tracking-wider text-center">Match</th>
+                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm  text-gray-500 uppercase tracking-wider text-center">Team 1</th>
+                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm  text-gray-500 uppercase tracking-wider text-center">Team1-Code</th>
+                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm  text-gray-500 uppercase tracking-wider text-center">Team 2</th>
+                <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm  text-gray-500 uppercase tracking-wider text-center">Team2-Code</th>
                 <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm text-center text-gray-500 uppercase tracking-wider">Score</th>
                 <th className="px-3 py-3 sm:px-6 text-xs sm:text-sm text-center text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
@@ -436,9 +438,11 @@ const Teamwork = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {schedule.map((match) => (
                 <tr key={match.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{match.id}</td>
-                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{match.team1}</td>
-                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{match.team2}</td>
+                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 text-center">{match.id}</td>
+                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 text-center">{match.team1}</td>
+                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 text-center">{match.team1_id}</td>
+                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 text-center">{match.team2}</td>
+                  <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 text-center">{match.team2_id}</td>
                   <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-center">
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
                       <span className="text-xs sm:text-sm font-medium text-blue-600">
