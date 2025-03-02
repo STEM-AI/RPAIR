@@ -365,7 +365,7 @@ const event_name = localStorage.getItem("selected_event_name");
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // تأكد من أن التوكن مخزن في `localStorage`
+          Authorization: `Bearer ${token}`, 
         },
       }
     );
