@@ -52,7 +52,7 @@ export default function NavbarProfile() {
       : userRole.is_staff && !userRole.is_judge
       ? "/Dashboard/JudgeEvent"
       : "/Dashboard/User"
-    : "/";
+      : "/";
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
