@@ -23,12 +23,18 @@ class EventSerializer(serializers.ModelSerializer):
         }
 
 class EventGameSerializer(serializers.ModelSerializer):
+    team1_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all() , source='team1.id')
+    team2_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all() , source='team2.id')
     team1 = serializers.StringRelatedField()
     team2 = serializers.StringRelatedField()
 
     class Meta:
         model = EventGame
-        fields = ['id' ,'team1', 'team2', 'score' , 'stage']
+        fields = ['id' ,'team1', 'team2', 'score' , 'stage' , 'team1_id' , 'team2_id']
+        extra_kwargs = {
+            'team1_id': {'read_only': True},
+            'team2_id': {'read_only': True},
+        }
 
 
 class EventListSerializer(serializers.ModelSerializer):
