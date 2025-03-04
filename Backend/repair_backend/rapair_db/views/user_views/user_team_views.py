@@ -6,7 +6,7 @@ from rest_framework import status
 from ...serializers.team_serializers.team_data_serializers import TeamSerializer
 from ...models import Team ,Organization
 from ...utils import event_utils
-from rest_framework.generics import ListAPIView , CreateAPIView
+from rest_framework.generics import ListAPIView , CreateAPIView , RetrieveAPIView
 
 
 class UserCreateTeamView(CreateAPIView):
@@ -32,7 +32,7 @@ class UserCreateTeamView(CreateAPIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-class UserTeamProfileView(ListAPIView):
+class UserTeamListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TeamSerializer
 
@@ -51,6 +51,26 @@ class UserTeamProfileView(ListAPIView):
             .select_related('organization' , 'competition_event')
             )
 
+class UserTeamRetrieveView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TeamSerializer
+    lookup_field = 'name'
+    lookup_url_kwarg = 'team_name'
+
+    def get_queryset(self):
+        user = self.request.user
+        return (
+            Team.objects
+            .filter(user=user)
+            .prefetch_related(
+            'sponsors', 
+            'social_media',
+            'previous_competition',
+            'coach',
+            'members'
+            )
+            .select_related('organization' , 'competition_event')
+            )
 class UserTeamEditTeamProfileView(APIView):
     permission_classes = [IsAuthenticated]
     def patch(self, request, team_name):
