@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from ...serializers import EventSerializer , EventListSerializer
 from ...permissions import IsSuperUser 
@@ -23,7 +24,7 @@ class EventCreateView(APIView):
 
         
 class EventsListWithTop3TeamsView(ListAPIView):
-    permission_classes = [IsSuperUser]
+    permission_classes = [IsAuthenticated]
     serializer_class = EventListSerializer
 
     def get_queryset(self):
