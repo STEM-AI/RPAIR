@@ -55,6 +55,9 @@ import RoboticsPage from "./components/CardSlider/roboticsPage";
 import OpenSourcePage from "./components/CardSlider/openSourcePage";
 import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
 import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
+import UADashboard from "./pages/Dashboards/UADashboard";
+import EventDash from "./pages/Dashboards/EventsDash";
+import SelectEvent from "./pages/Dashboards/Judge/matches/SelectMatch";
 
 
 const App = () => {
@@ -143,7 +146,27 @@ const App = () => {
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-                <AdminDashboard />
+                <UADashboard />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Event/:competition_name/:event_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <SelectEvent />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Event/:competition_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <EventDash />
               </LayoutDashboard>
             </Layout>
           }
@@ -233,7 +256,7 @@ const App = () => {
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-                <UserDashbord/>
+                <UADashboard/>
                   </LayoutDashboard>
             </Layout>
           }

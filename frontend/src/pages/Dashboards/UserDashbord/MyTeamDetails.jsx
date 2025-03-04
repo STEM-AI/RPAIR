@@ -19,7 +19,7 @@ const MyTeamDetails = () => {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/${team_name}/profile/`,
+          `${process.env.REACT_APP_API_URL}/team/user/${team_name}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -60,8 +60,6 @@ const MyTeamDetails = () => {
         <p className="text-lg"><span className="font-semibold">Phone:</span> {team.team_leader_phone_number || "N/A"}</p>
         <p className="text-lg"><span className="font-semibold">Organization:</span> {team.organization?.name || "N/A"}</p>
         <p className="text-lg"><span className="font-semibold">Competition:</span> {team.competition?.name || "N/A"}</p>
-        <p className="text-lg"><span className="font-semibold">Rules:</span> {team.competition?.rules || "N/A"}</p>
-        <p className="text-lg"><span className="font-semibold">Description:</span> {team.competition?.description || "N/A"}</p>
       </div>
       
       <h3 className="text-2xl font-semibold mt-6">Members</h3>

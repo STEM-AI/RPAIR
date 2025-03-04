@@ -190,7 +190,7 @@ const MyTeams = () => {
     const fetchTeams = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/profile/`,
+          `${process.env.REACT_APP_API_URL}/team/user/`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
