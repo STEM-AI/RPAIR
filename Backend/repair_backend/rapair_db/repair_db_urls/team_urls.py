@@ -23,7 +23,7 @@ urlpatterns = [
     # User Team APIs
     path('create/', UserCreateTeamView.as_view(), name='create-team'),
     path('user/', UserTeamListView.as_view(), name='team-profile'),
-    path('<str:team_name>/', UserTeamRetrieveView.as_view(), name='retrieve-team'),  # Retrieve a team API  # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add team history functionality.   # TODO: Add team scorecard functionality.   # TODO: Add team game statistics functionality
+    path('user/<str:team_name>/', UserTeamRetrieveView.as_view(), name='retrieve-team'),  # Retrieve a team API  # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add team history functionality.   # TODO: Add team scorecard functionality.   # TODO: Add team game statistics functionality
     path('<str:team_name>/edit/', UserTeamEditTeamProfileView.as_view(), name='edit-team'),
     path('<str:team_name>/change-organization/', UserChangeTeamOrganizationView.as_view(), name='change-team-organization'),
     path('<str:team_name>/delete/', UserDeleteTeamView.as_view(), name='delete-team'),
