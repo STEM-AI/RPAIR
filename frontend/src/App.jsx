@@ -53,6 +53,8 @@ import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
 import RoboticsPage from "./components/CardSlider/roboticsPage";
 import OpenSourcePage from "./components/CardSlider/openSourcePage";
+import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
+import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 
 
 const App = () => {
@@ -236,6 +238,27 @@ const App = () => {
             </Layout>
           }
         />
+                 <Route
+          path="/Dashboard/User/Teams"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyTeams/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/teams/:team_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyTeamDetails/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
+
          <Route
           path="/Dashboard/User/CreateTeam"
           element={
@@ -246,6 +269,7 @@ const App = () => {
             </Layout>
           }
         />
+
          <Route
           path="/Dashboard/User/PaymentForm"
           element={
