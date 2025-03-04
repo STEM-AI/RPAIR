@@ -1,3 +1,47 @@
+// import React, { useEffect, useState } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+
+// const SelectEvent = () => {
+//   const { eventName } = useParams(); // قراءه اسم الحدث من الـ URL
+//   const navigate = useNavigate();
+//   const [selectedEvent, setSelectedEvent] = useState("");
+
+//   useEffect(() => {
+//     setSelectedEvent(eventName || localStorage.getItem("selected_event_name"));
+//   }, [eventName]);
+
+//   return (
+//     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+//       <div className="bg-white p-8 shadow-lg rounded-lg text-center">
+//         <h1 className="text-2xl font-bold text-gray-800 mb-4">
+//           {selectedEvent ? `Event: ${selectedEvent}` : "No Event Selected"}
+//         </h1>
+//         <p className="text-gray-600 mb-6">Choose your match type:</p>
+
+//         <div className="flex gap-6">
+//           {/* زر Teamwork Matches */}
+//           <button 
+//             onClick={() => navigate("/Dashboard/Judge/matches/teamwork")} 
+//             className="bg-teal-500 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-teal-600 transition"
+//           >
+//             Teamwork Matches
+//           </button>
+
+//           {/* زر Skills Matches */}
+//           <button 
+//             onClick={() => navigate("/Dashboard/Judge/matches/skills")} 
+//             className="bg-rose-500 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-rose-600 transition"
+//           >
+//             Skills Matches
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SelectEvent;
+
 
 
 
@@ -7,7 +51,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 
-const MatchRounds = () => {
+const SelectMatch = () => {
   const navigate = useNavigate();
 
   const handleClick = (path) => {
@@ -23,7 +67,7 @@ const MatchRounds = () => {
             color: "bg-teal-400", 
             shadow: "shadow-teal-500/40", 
             icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-4xl" />, 
-            path: "/Dashboard/Judge/matches/teamwork",
+            path: "/Dashboard/LiveTeam",
             description: "Work together, win together! In this round, two teams collaborate to score as many points as possible within the time limit. Communication and strategy are key to achieving the highest combined score!"
           },
           { 
@@ -31,7 +75,7 @@ const MatchRounds = () => {
             color: "bg-rose-500", 
             shadow: "shadow-rose-500/40", 
             icon: <BiJoystick className="text-white text-4xl" />, 
-            path: "/Dashboard/Judge/matches/skills",
+            path: "/Dashboard/LiveSkills",
             description: "Test your robot's capabilities in both autonomous and driver-controlled modes! Score as many points as possible through precise programming and skilled driving. Master both to dominate the competition!"
           }
         ].map((service, index) => (
@@ -53,4 +97,5 @@ const MatchRounds = () => {
   );
 };
 
-export default MatchRounds;
+export default SelectMatch;
+

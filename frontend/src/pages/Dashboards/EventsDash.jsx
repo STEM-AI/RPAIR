@@ -4,10 +4,11 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { MdEvent, MdAccessTime, MdLocationOn, MdInfo, MdRefresh, MdError, MdPlayArrow, MdLock, MdDone } from 'react-icons/md';
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
-
-export default function JudgeEvent() {
+export default function EventDash() {
+  const { competition_name } = useParams()
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,7 +63,7 @@ export default function JudgeEvent() {
     return `${days}d ${remainingHours}h`;
   };
 
-  const fetchJudgeEvent = async () => {
+  const fetchEventDash = async () => {
     if (!token) {
       setError("Authentication Error");
       setResponseMessage("You are not authorized. Please log in.");
@@ -71,7 +72,7 @@ export default function JudgeEvent() {
       return;
     }
 
-    const myURL = `${process.env.REACT_APP_API_URL}/event/judge-event-list/`;
+    const myURL = `${process.env.REACT_APP_API_URL}/admin/${competition_name}/event-list/`;
     
     try {
       setLoading(true);
@@ -119,11 +120,11 @@ export default function JudgeEvent() {
   };
 
   useEffect(() => {
-    fetchJudgeEvent();
+    fetchEventDash();
   }, [token]); // Added token as dependency
 
   const handleRetry = () => {
-    fetchJudgeEvent();
+    fetchEventDash();
   };
 
   if (loading) {
@@ -161,7 +162,7 @@ export default function JudgeEvent() {
           text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight"> */}
                 <h2 className="mb-4 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-600 text-5xl font-black">
 
-          Your Events
+          All Events
         </h2>
         <button
          onClick={handleRetry}
@@ -198,8 +199,8 @@ export default function JudgeEvent() {
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {events.map((event, index) => {
             const eventStatus = getEventStatus(
-              event.competition_event.start_date,
-              event.competition_event.end_date
+              event.start_date,
+              event.end_date
             );
 
             return (
@@ -209,7 +210,7 @@ export default function JudgeEvent() {
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
-                      {event.competition_event.name}
+                      {event.name}
                     </h3>
                     <span className={`
                       px-2 py-1 text-xs font-semibold rounded-full
@@ -231,7 +232,7 @@ export default function JudgeEvent() {
                       <div>
                         <p className="text-sm font-medium">Start Date</p>
                         <p className="text-sm">
-                          {new Date(event.competition_event.start_date).toLocaleDateString()}
+                          {new Date(event.start_date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -241,7 +242,7 @@ export default function JudgeEvent() {
                       <div>
                         <p className="text-sm font-medium">End Date</p>
                         <p className="text-sm">
-                          {new Date(event.competition_event.end_date).toLocaleDateString()}
+                          {new Date(event.end_date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -251,15 +252,15 @@ export default function JudgeEvent() {
                       <div>
                         <p className="text-sm font-medium">Location</p>
                         <p className="text-sm line-clamp-1">
-                          {event.competition_event.location || 'No location specified'}
+                          {event.location || 'No location specified'}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <Link 
-                  to={`/Dashboard/JudgeEvent/${event.competition_event.name}`}
-                  onClick={() => localStorage.setItem("selected_event_name", event.competition_event.name)}
+                {/* <Link 
+                  to={`/Dashboard/Event/${event.name}`}
+                  onClick={() => localStorage.setItem("selected_event_name", event.name)}
                 >
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
                     <button 
@@ -271,7 +272,26 @@ export default function JudgeEvent() {
                       {eventStatus.message}
                     </button>
                   </div>
-                </Link>
+                </Link> */}
+
+
+<Link 
+  to={`/Dashboard/Event/${competition_name}/${event.name}`}
+  state={{ eventName: event.name }}
+>
+  <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+    <button 
+      className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
+        transition-colors duration-200 flex items-center justify-center`}
+      disabled={eventStatus.status === 'ended'}
+    >
+      <eventStatus.icon className="h-5 w-5 mr-2" />
+      {eventStatus.message}
+    </button>
+  </div>
+</Link>
+
+
               </div>
             );
           })}
@@ -280,3 +300,6 @@ export default function JudgeEvent() {
     </div>
   );
 }
+
+
+
