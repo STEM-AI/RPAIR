@@ -7,6 +7,10 @@ import { GiLaurelsTrophy } from "react-icons/gi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { LuWrapText } from "react-icons/lu";
 import { TbBrandTeams, TbCalendarEvent } from "react-icons/tb";
+import { MdGroupAdd } from "react-icons/md";
+import { FaPeopleGroup } from "react-icons/fa6";
+
+
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -177,10 +181,16 @@ const Sidebar = () => {
                             Dashboard
                           </li>
                         </Link>
+                        <Link to="/Dashboard/User/Teams">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <FaPeopleGroup className="mr-2" />
+                            My Teams
+                          </li>
+                        </Link>
                         <Link to="/Dashboard/User/CreateTeam">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineDashboard className="mr-2" />
-                            My Team
+                            <MdGroupAdd className="mr-2" />
+                            Create Team
                           </li>
                         </Link>
           </>
