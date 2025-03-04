@@ -10,6 +10,7 @@ module.exports = {
         vexIq:"#0074BD",
         vexV5:"#D8262F",
         vexGo:"#007378",
+        vex123:"#6D4284", 
        
       }, 
     },
