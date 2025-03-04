@@ -55,6 +55,8 @@ import RoboticsPage from "./components/CardSlider/roboticsPage";
 import OpenSourcePage from "./components/CardSlider/openSourcePage";
 import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
 import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
+import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
+import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 
 
 const App = () => {
@@ -169,29 +171,31 @@ const App = () => {
           }
         />
 
-        <Route path="/Dashboard/:role/Teams/:team_name" element={
+        <Route path="/Dashboard/Teams/:team_name" element={
+          
          <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />
           </LayoutDashboard>
           </Layout>} />
-        <Route
-          path="/Dashboard/Admin/CreateEvent"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateEvent />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
 
+       
         <Route
-          path="/Dashboard/Admin/Competitions/:event_name"
+          path="/Dashboard/Admin/Competitions/robotics/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
                 <CompetitionEvents />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/Competitions/Robotics"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <VexPage />
               </LayoutDashboard>
             </Layout>
           }
@@ -205,6 +209,16 @@ const App = () => {
                   </LayoutDashboard>
             </Layout>
             }
+        />
+         <Route
+          path="/Dashboard/Admin/Competitions/OpenSource"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <SourcePage />
+              </LayoutDashboard>
+            </Layout>
+          }
         />
         <Route
             path="/Dashboard/Admin/CreateStaff"
