@@ -57,7 +57,7 @@ const Sidebar = () => {
                     {/* Competitions */}
                     <li
                       className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                      onClick={() => navigate("/Dashboard/Admin/Competitions")}
+                      onClick={() => navigate("/Dashboard/Competitions")}
                     >
                       <GiLaurelsTrophy className="mr-2" />
                       Competitions
@@ -181,6 +181,13 @@ const Sidebar = () => {
                             Dashboard
                           </li>
                         </Link>
+                        <li
+                      className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                      onClick={() => navigate("/Dashboard/Competitions")}
+                    >
+                      <GiLaurelsTrophy className="mr-2" />
+                      Competitions
+                    </li>
                         <Link to="/Dashboard/User/Teams">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <FaPeopleGroup className="mr-2" />
@@ -193,6 +200,7 @@ const Sidebar = () => {
                             Create Team
                           </li>
                         </Link>
+
           </>
         );
 

@@ -10,16 +10,16 @@ import vexV5Logo from '../../../../assets/imgs/dashboards/vex-v5-logo.webp';
 import vexV5 from '../../../../assets/imgs/dashboards/vex-v5.webp';
 
 const roboticsKits = [
-    {
-      id: 3,
-      name: 'VEX IQ',
-      image: vexIq,
-      logo: vexIqLogo,
-      description: 'A modular robotics platform designed for intermediate students.',
-      bgColor: 'bg-vexIq',
-      textColor: 'text-blue-900',
-      apiName: 'vex_iq'
-    },
+  {
+    id: 1,
+    name: 'VEX 123',
+    image: vex123,
+    logo: vex123Logo,
+    description: 'A simple and interactive robotics kit for young learners.',
+    bgColor: 'bg-vex123',
+    textColor: 'text-purple-900',
+    apiName: 'vex_123'
+  },
   {
     id: 2,
     name: 'VEX GO',
@@ -30,15 +30,16 @@ const roboticsKits = [
     textColor: 'text-teal-900',
     apiName: 'vex_go'
     },
+  
   {
-    id: 1,
-    name: 'VEX 123',
-    image: vex123,
-    logo: vex123Logo,
-    description: 'A simple and interactive robotics kit for young learners.',
-    bgColor: 'bg-vex123',
-    textColor: 'text-purple-900',
-    apiName: 'vex_123'
+    id: 3,
+    name: 'VEX IQ',
+    image: vexIq,
+    logo: vexIqLogo,
+    description: 'A modular robotics platform designed for intermediate students.',
+    bgColor: 'bg-vexIq',
+    textColor: 'text-blue-900',
+    apiName: 'vex_iq'
   },
   {
     id: 4,
@@ -58,8 +59,8 @@ function VexPage() {
     const navigate = useNavigate();
     
      const handleCompetitionClick = (apiName) => {
-    console.log("Navigating to:", `/Dashboard/Admin/Robotics/${apiName}`);
-    navigate(`/Dashboard/Admin/Competitions/robotics/${apiName}`);
+    console.log("Navigating to:", `/Dashboard/Robotics/${apiName}`);
+    navigate(`/Dashboard/Competitions/robotics/${apiName}`);
   };
 
   return (
