@@ -136,7 +136,7 @@ export default function Navbar() {
           About
         </NavLink>
 
-        <div className="relative group w-full">
+        {/* <div className="relative group w-full">
           <button
             onClick={() => handleDropdownToggle("challenges")}
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
@@ -152,7 +152,43 @@ export default function Navbar() {
               </li>
             ))}
           </ul>)}
-        </div>
+        </div> */}
+
+
+
+
+
+<div className="relative group w-full">
+  <button
+    onClick={() => handleDropdownToggle("challenges")}
+    className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+    Challenges
+  </button>
+  {dropdowns.challenges && (
+    <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
+      {[
+        "Vex IQ",
+        "Vex V5",
+        "Web Design",
+        "Open Source",
+        "Mobile Application",
+        "Programming",
+        "Arduino"
+      ].map((item, index) => (
+        <li key={index} className="hover:bg-cyan-50">
+          <NavLink
+            to={`/competitions`}
+            className="block px-4 py-2 text-cyan-500 hover:text-cyan-950"
+            onClick={() => handleDropdownToggle("challenges")} // يغلق الدروب داون عند النقر
+          >
+            {item}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
         <div className="relative group">
           <button
