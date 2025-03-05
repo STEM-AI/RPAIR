@@ -4,6 +4,8 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { MdEvent, MdAccessTime, MdLocationOn, MdInfo, MdRefresh, MdError, MdPlayArrow, MdLock, MdDone } from 'react-icons/md';
 import { Link } from "react-router-dom";
+import { RiLoginBoxFill } from "react-icons/ri";
+
 import { useParams } from "react-router-dom";
 
 
@@ -17,18 +19,54 @@ export default function EventDash() {
 
   const token = localStorage.getItem("access_token");
 
+  // const getEventStatus = (startDate, endDate) => {
+  //   const now = new Date();
+  //   const start = new Date(startDate);
+  //   const end = new Date(endDate);
+
+  //   if (now < start) {
+  //     return {
+  //       status: 'upcoming',
+  //       message: 'Not Started',
+  //       timeLeft: Math.floor((start - now) / (1000 * 60)), // minutes until start
+  //       color: 'bg-yellow-600 hover:bg-yellow-700',
+  //       icon: MdLock
+  //     };
+  //   } else if (now >= start && now <= end) {
+  //     return {
+  //       status: 'in_progress',
+  //       message: 'Start Judging',
+  //       timeLeft: Math.floor((end - now) / (1000 * 60)), // minutes until end
+  //       color: 'bg-green-600 hover:bg-green-700',
+  //       icon: MdPlayArrow
+  //     };
+  //   } else {
+  //     return {
+  //       status: 'ended',
+  //       message: 'Event Ended',
+  //       timeLeft: 0,
+  //       color: 'bg-gray-600 hover:bg-gray-700',
+  //       icon: MdDone
+  //     };
+  //   }
+  // };
+
   const getEventStatus = (startDate, endDate) => {
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
 
+    // استرجاع بيانات المستخدم من Local Storage
+    const userData = JSON.parse(localStorage.getItem("user_role")) || {};
+    const isAdmin = userData.is_superuser || userData.is_staff; // يتحقق إذا كان أدمن
+
     if (now < start) {
       return {
         status: 'upcoming',
-        message: 'Not Started',
+        message: isAdmin ? 'Not Started' : 'Join',
         timeLeft: Math.floor((start - now) / (1000 * 60)), // minutes until start
         color: 'bg-yellow-600 hover:bg-yellow-700',
-        icon: MdLock
+        icon:  isAdmin ? MdLock : RiLoginBoxFill
       };
     } else if (now >= start && now <= end) {
       return {
@@ -47,7 +85,7 @@ export default function EventDash() {
         icon: MdDone
       };
     }
-  };
+};
 
   const formatTimeLeft = (minutes) => {
     if (minutes < 60) {
