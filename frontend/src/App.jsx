@@ -210,7 +210,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Admin/Competitions/:event_name"
+          path="/Dashboard/Competitions/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -305,7 +305,7 @@ const App = () => {
         />
         
         <Route
-          path="/Dashboard/Admin/Competitions"
+          path="/Dashboard/Competitions"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>

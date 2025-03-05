@@ -10,6 +10,8 @@ import img8 from "../../assets/imgs/aboutus/IMG_3929.JPG";
 import img9 from "../../assets/imgs/aboutus/IMG_3929.JPG";
 import Rules from "../../components/CometitionsComponent/Rules/Rules";
 import JoinTeams from "../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
+import AwardsList from "../../components/Awards/awards";
+
 
 const Competitions = () => {
   const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
@@ -53,6 +55,7 @@ const Competitions = () => {
       </div>
     </div>
     <Rules/>
+    <AwardsList/>
     <JoinTeams/>
     </>
 
