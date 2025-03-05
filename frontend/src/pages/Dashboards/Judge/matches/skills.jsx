@@ -51,9 +51,7 @@
 
 //   const isRoundCompleted = (round) => {
 //     return teams.every(
-//       (team) =>
-//         scores[round]?.[team.id]?.driver !== undefined &&
-//         scores[round]?.[team.id]?.auto !== undefined
+//       (team) => confirmed[round]?.[team.id] === true
 //     );
 //   };
 
@@ -327,7 +325,7 @@ const event_name = localStorage.getItem("selected_event_name");
 
   const isRoundCompleted = (round) => {
     return schedule.every(
-      (team) => scores[round]?.[team.id]?.driver !== undefined && scores[round]?.[team.id]?.auto !== undefined
+      (team) => confirmed[round]?.[team.id] === true
     );
   };
 
@@ -581,4 +579,3 @@ const event_name = localStorage.getItem("selected_event_name");
 };
 
 export default Skills;
-

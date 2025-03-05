@@ -313,10 +313,10 @@ export default function EventDash() {
                 </Link> */}
 
 
-<Link 
-  to={`/Dashboard/Event/${competition_name}/${event.name}`}
-  state={{ eventName: event.name }}
->
+    <Link 
+      to={`/Dashboard/Event/${competition_name}/${event.name}`}
+       onClick={() => localStorage.setItem("event_name", event.name)}                       
+    >
   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
     <button 
       className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
