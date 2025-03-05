@@ -7,6 +7,7 @@ import imageSrc4 from '../../assets/imgs/aboutus/IMG_3937.JPG';
 import bgImage from '../../assets/imgs/aboutus/bgleft.png'; 
 import CardSlider from "../../components/CardSlider/cardSlider";
 
+
 function About() {
   return (
     <>
@@ -91,6 +92,7 @@ function About() {
         </div>
       </section>
       <MissionVision/>
+
       <CardSlider/>
     </>
   );
