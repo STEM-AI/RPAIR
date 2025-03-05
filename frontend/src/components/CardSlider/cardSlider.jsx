@@ -171,6 +171,13 @@ const CardSlider = () => {
       description: 'Bring your engineering and fabrication skills to life by designing and prototyping innovative projects using cutting-edge tools and technologies.',
       link: '/competitions'
     }
+    ,
+    {
+      image: require('../../assets/imgs/vexComp/ST-math.jpeg'),
+      title: 'ST egy Math competitions',
+      description: 'the ability to perform mathematical calculations quickly and accurately in the mind without using a calculator or paper. It enhances problem-solving skills, memory, and concentration.',
+      link: '/competitions'
+    }
   ];
 
   return (
@@ -180,8 +187,8 @@ const CardSlider = () => {
           RPAIR CHALLENGES
         </h2>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-6xl">
-        {cardsData.slice(0, cardsData.length - 1).map((card, index) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-6xl">
+        {cardsData.map((card, index) => (
           <Link to={card.link} key={index} className="bg-white rounded-xl shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
             <div
               className="w-full h-48 bg-cover bg-center"
@@ -194,18 +201,7 @@ const CardSlider = () => {
           </Link>
         ))}
       </div>
-      <div className="w-full max-w-md mt-4">
-        <Link to={cardsData[cardsData.length - 1].link} className="bg-white rounded-xl shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl block mx-auto">
-          <div
-            className="w-full h-48 bg-cover bg-center"
-            style={{ backgroundImage: `url(${cardsData[cardsData.length - 1].image})` }}
-          />
-          <div className="p-4">
-            <div className="text-xl font-bold text-cyan-700 mb-2 text-center">{cardsData[cardsData.length - 1].title}</div>
-            <p className="text-gray-500 text-sm text-center">{cardsData[cardsData.length - 1].description}</p>
-          </div>
-        </Link>
-      </div>
+     
     </div>
   );
 };

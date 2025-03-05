@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import logo from "../../assets/logo/logoWrite-re.png";
 import logoBlack from "../../assets/logo/logo2.png";
-import { useLocation, NavLink, Link,Navigate } from "react-router-dom";
+import { useLocation, NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { RxDropdownMenu } from "react-icons/rx";
+import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 
 export default function NavbarProfile() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdowns, setDropdowns] = useState({
     challenges: false,
     resources: false,
@@ -25,25 +25,36 @@ export default function NavbarProfile() {
   const notificationDropdownRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const homeSection = document.getElementById("home-section");
-      if (homeSection) {
-        const homeBottom = homeSection.getBoundingClientRect().bottom;
-        setIsScrolled(homeBottom <= 0);
+    const checkLoginStatus = async () => {
+      const { access_token } = getTokens();
+      
+      if (!access_token) {
+        setIsLoggedIn(false);
+        navigate("/login", { replace: true });
+        return;
+      }
+
+      if (isTokenExpired(access_token)) {
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          setIsLoggedIn(true);
+        } else {
+          handleLogout();
+        }
+      } else {
+        setIsLoggedIn(true);
       }
     };
-    const checkLogin = () => {
-      const token = localStorage.getItem("access_token");
-      setIsLoggedIn(!!token);
-    };
 
-    window.addEventListener("scroll", handleScroll);
-    checkLogin(); // Run on component mount
+    checkLoginStatus();
+    
+    // تجديد التوكن كل 4 دقائق
+    const tokenCheckInterval = setInterval(checkLoginStatus, 240000);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      clearInterval(tokenCheckInterval);
     };
-  }, []); // Empty dependency array ensures this effect runs once on mount
+  }, [navigate]);
 
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
@@ -52,37 +63,38 @@ export default function NavbarProfile() {
       : userRole.is_staff && !userRole.is_judge
       ? "/Dashboard/JudgeEvent"
       : "/Dashboard/User"
-      : "/";
+    : "/";
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
+    clearTokens();
     localStorage.removeItem("user_role");
     sessionStorage.removeItem("hasRefreshed");
     setIsLoggedIn(false);
     navigate("/", { replace: true });
   };
 
-
-
   const handleDropdownToggle = (dropdown) => {
     setDropdowns((prevState) => ({
       ...prevState,
-      // Close all dropdowns first, then toggle the selected one
       challenges: false,
       resources: false,
       notifications: false,
       profile: false,
-      [dropdown]: !prevState[dropdown] // Toggle the selected dropdown
+      [dropdown]: !prevState[dropdown]
     }));
   };
 
+  // إضافة مراقب النقر خارج القوائم المنسدلة
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        profileDropdownRef.current && !profileDropdownRef.current.contains(event.target) &&
-        notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target)
+        profileDropdownRef.current && 
+        !profileDropdownRef.current.contains(event.target) &&
+        notificationDropdownRef.current && 
+        !notificationDropdownRef.current.contains(event.target)
       ) {
         setDropdowns((prevState) => ({
+          ...prevState,
           challenges: false,
           resources: false,
           notifications: false,
@@ -90,9 +102,15 @@ export default function NavbarProfile() {
         }));
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // التحقق من تسجيل الدخول قبل عرض المحتوى
+  if (!isLoggedIn) {
+    return null; // أو يمكنك عرض رسالة تحميل
+  }
 
   return (
     <nav className={`shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
@@ -229,4 +247,3 @@ export default function NavbarProfile() {
     </nav>
   );
 }
-
