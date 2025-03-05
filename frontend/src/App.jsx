@@ -204,7 +204,7 @@ const App = () => {
 
        
         <Route
-          path="/Dashboard/Admin/Competitions/robotics/:event_name"
+          path="/Dashboard/Competitions/robotics/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -214,8 +214,8 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/Admin/Competitions/Robotics"
-          path="/Dashboard/Competitions/:event_name"
+          path="/Dashboard/Competitions/Robotics"
+          
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -235,7 +235,7 @@ const App = () => {
             }
         />
          <Route
-          path="/Dashboard/Admin/Competitions/OpenSource"
+          path="/Dashboard/Competitions/OpenSource"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
