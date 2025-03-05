@@ -58,6 +58,8 @@ import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 import UADashboard from "./pages/Dashboards/UADashboard";
 import EventDash from "./pages/Dashboards/EventsDash";
 import SelectEvent from "./pages/Dashboards/Judge/matches/SelectMatch";
+import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
+import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 
 
 const App = () => {
@@ -192,29 +194,32 @@ const App = () => {
           }
         />
 
-        <Route path="/Dashboard/:role/Teams/:team_name" element={
+        <Route path="/Dashboard/Teams/:team_name" element={
+          
          <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />
           </LayoutDashboard>
           </Layout>} />
-        <Route
-          path="/Dashboard/Admin/CreateEvent"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateEvent />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
 
+       
         <Route
-          path="/Dashboard/Competitions/:event_name"
+          path="/Dashboard/Admin/Competitions/robotics/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
                 <CompetitionEvents />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/Competitions/Robotics"
+          path="/Dashboard/Competitions/:event_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <VexPage />
               </LayoutDashboard>
             </Layout>
           }
@@ -228,6 +233,16 @@ const App = () => {
                   </LayoutDashboard>
             </Layout>
             }
+        />
+         <Route
+          path="/Dashboard/Admin/Competitions/OpenSource"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <SourcePage />
+              </LayoutDashboard>
+            </Layout>
+          }
         />
         <Route
             path="/Dashboard/Admin/CreateStaff"
