@@ -168,7 +168,6 @@ export default function Navbar() {
     <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
       {[
         "Vex IQ",
-        "Vex V5",
         "Web Design",
         "Open Source",
         "Mobile Application",
