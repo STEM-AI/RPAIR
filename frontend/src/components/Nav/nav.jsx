@@ -1,20 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import logo from "../../assets/logo/logoWrite-re.png";
 import logoBlack from "../../assets/logo/logo2.png";
-import { useLocation, NavLink, Link,Navigate } from "react-router-dom";
+import { useLocation, NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
-
-
+import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdowns, setDropdowns] = useState({
     challenges: false,
     resources: false,
@@ -35,18 +34,44 @@ export default function Navbar() {
         setIsScrolled(homeBottom <= 0);
       }
     };
-    const checkLogin = () => {
-      const token = localStorage.getItem("access_token");
-      setIsLoggedIn(!!token);
+
+    const checkLoginStatus = async () => {
+      const { access_token } = getTokens();
+      
+      if (!access_token) {
+        setIsLoggedIn(false);
+        return;
+      }
+
+      if (isTokenExpired(access_token)) {
+        // محاولة تجديد الـ access token باستخدام الـ refresh token
+        const newAccessToken = await refreshAccessToken();
+        
+        if (newAccessToken) {
+          // تم تجديد الـ access token بنجاح
+          setIsLoggedIn(true);
+        } else {
+          // فشل تجديد الـ token، قم بتسجيل الخروج
+          handleLogout();
+        }
+      } else {
+        // الـ access token صالح
+        setIsLoggedIn(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
-    checkLogin(); // Run on component mount
+    checkLoginStatus();
+    
+    // التحقق كل 4 دقائق (240000 مللي ثانية)
+    // نختار 4 دقائق لنضمن تجديد التوكن قبل انتهاء صلاحيته (عادةً 5 دقائق)
+    const tokenCheckInterval = setInterval(checkLoginStatus, 240000);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      clearInterval(tokenCheckInterval);
     };
-  }, []); // Empty dependency array ensures this effect runs once on mount
+  }, []);
 
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
@@ -58,7 +83,7 @@ export default function Navbar() {
     : "/";
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
+    clearTokens();
     localStorage.removeItem("user_role");
     sessionStorage.removeItem("hasRefreshed");
     setIsLoggedIn(false);
@@ -72,12 +97,11 @@ export default function Navbar() {
   const handleDropdownToggle = (dropdown) => {
     setDropdowns((prevState) => ({
       ...prevState,
-      // Close all dropdowns first, then toggle the selected one
       challenges: false,
       resources: false,
       notifications: false,
       profile: false,
-      [dropdown]: !prevState[dropdown] // Toggle the selected dropdown
+      [dropdown]: !prevState[dropdown]
     }));
   };
 
@@ -112,7 +136,7 @@ export default function Navbar() {
           About
         </NavLink>
 
-        <div className="relative group w-full">
+        {/* <div className="relative group w-full">
           <button
             onClick={() => handleDropdownToggle("challenges")}
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
@@ -128,7 +152,43 @@ export default function Navbar() {
               </li>
             ))}
           </ul>)}
-        </div>
+        </div> */}
+
+
+
+
+
+<div className="relative group w-full">
+  <button
+    onClick={() => handleDropdownToggle("challenges")}
+    className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+    Challenges
+  </button>
+  {dropdowns.challenges && (
+    <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
+      {[
+        "Vex IQ",
+        "Vex V5",
+        "Web Design",
+        "Open Source",
+        "Mobile Application",
+        "Programming",
+        "Arduino"
+      ].map((item, index) => (
+        <li key={index} className="hover:bg-cyan-50">
+          <NavLink
+            to={`/competitions`}
+            className="block px-4 py-2 text-cyan-500 hover:text-cyan-950"
+            onClick={() => handleDropdownToggle("challenges")} // يغلق الدروب داون عند النقر
+          >
+            {item}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
         <div className="relative group">
           <button
@@ -212,4 +272,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

@@ -6,7 +6,12 @@ import web from '../../assets/imgs/vexComp/web.jpeg'
 
 const Gallery = () => {
     return (
-      <div className="bg-white h-screen  py-6 sm:py-8 lg:py-12">
+      <div className="bg-white  py-6 sm:py-8 lg:py-12">
+                <div className="text-center mb-10">
+          <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
+           OUR GALLERY
+          </h2>
+        </div>
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
             {[

@@ -26,14 +26,15 @@ import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/Crea
 import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
 import CreateOrganization from "./pages/Dashboards/AdminDashboard/Management/CreateOrg";
 import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
-import ListCompetitions from "./pages/Dashboards/AdminDashboard/Management/ListCompetitions";
-import CompetitionEvents from "./pages/Dashboards/AdminDashboard/Management/CompetitionEvents";
+import ListCompetitions from "./pages/Dashboards/AdminDashboard/ListCompetitions";
+import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEvents";
 
 
 //                          User                   //
 import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
+import GameTimer from "./pages/Dashboards/Judge/Scores/GameTimer";
 
 
 //                          Judge                   //
@@ -46,11 +47,19 @@ import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
-import JTeamList from "./pages/Dashboards/Judge/JTeamList";
 import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
 import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
+import RoboticsPage from "./components/CardSlider/roboticsPage";
+import OpenSourcePage from "./components/CardSlider/openSourcePage";
+import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
+import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
+import UADashboard from "./pages/Dashboards/UADashboard";
+import EventDash from "./pages/Dashboards/EventsDash";
+import SelectEvent from "./pages/Dashboards/Judge/matches/SelectMatch";
+import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
+import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 
 
 const App = () => {
@@ -116,6 +125,22 @@ const App = () => {
             </Layout>
           }
         />
+        <Route
+          path="/Robotics/Vex"
+          element={
+            <Layout>
+              <RoboticsPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/OpenSource/competitions"
+          element={
+            <Layout>
+              <OpenSourcePage />
+            </Layout>
+          }
+        />
 
         {/* Admin Dashboard Routes */}
         <Route
@@ -123,7 +148,27 @@ const App = () => {
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-                <AdminDashboard />
+                <UADashboard />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Event/:competition_name/:event_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <SelectEvent />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Event/:competition_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <EventDash />
               </LayoutDashboard>
             </Layout>
           }
@@ -149,29 +194,32 @@ const App = () => {
           }
         />
 
-        <Route path="/Dashboard/:role/Teams/:team_name" element={
+        <Route path="/Dashboard/Teams/:team_name" element={
+          
          <Layout hideNavbar>
           <LayoutDashboard>
           <TeamDetails />
           </LayoutDashboard>
           </Layout>} />
-        <Route
-          path="/Dashboard/Admin/CreateEvent"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateEvent />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
 
+       
         <Route
-          path="/Dashboard/Admin/Competitions/:event_name"
+          path="/Dashboard/Competitions/robotics/:event_name"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
                 <CompetitionEvents />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Competitions/Robotics"
+          
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <VexPage />
               </LayoutDashboard>
             </Layout>
           }
@@ -185,6 +233,16 @@ const App = () => {
                   </LayoutDashboard>
             </Layout>
             }
+        />
+         <Route
+          path="/Dashboard/Competitions/OpenSource"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <SourcePage />
+              </LayoutDashboard>
+            </Layout>
+          }
         />
         <Route
             path="/Dashboard/Admin/CreateStaff"
@@ -213,11 +271,32 @@ const App = () => {
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
-                <UserDashbord/>
+                <UADashboard/>
                   </LayoutDashboard>
             </Layout>
           }
         />
+                 <Route
+          path="/Dashboard/User/Teams"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyTeams/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/teams/:team_name"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyTeamDetails/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
+
          <Route
           path="/Dashboard/User/CreateTeam"
           element={
@@ -228,6 +307,7 @@ const App = () => {
             </Layout>
           }
         />
+
          <Route
           path="/Dashboard/User/PaymentForm"
           element={
@@ -240,7 +320,7 @@ const App = () => {
         />
         
         <Route
-          path="/Dashboard/Admin/Competitions"
+          path="/Dashboard/Competitions"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -273,6 +353,16 @@ const App = () => {
         {/* JUDGE DASHBOARD */}
       
         <Route
+          path="/Dashboard/Game"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <GameTimer/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
           path="/Dashboard/JudgeEvent/:event_name"
           element={
            <Layout hideNavbar>
@@ -304,7 +394,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/Judge/Matches/teamwork"
+          path="/Dashboard/Judge/matches/teamwork"
           element={
            <Layout hideNavbar>
               <LayoutDashboard>
@@ -335,16 +425,6 @@ const App = () => {
           }
         />
 
-<Route
-          path="/Dashboard/Judge/TeamList"
-          element={
-           <Layout hideNavbar>
-              <LayoutDashboard>
-              <JTeamList/>
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
 
 
            <Route
