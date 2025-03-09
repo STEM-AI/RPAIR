@@ -12,6 +12,8 @@ import Competitions from "./pages/Competitions/Competitions";
 import Login from "./pages/Auth/login";
 import Register from "./pages/Auth/Register";
 import Gallery from "./pages/Gallary/Gallary";
+import PublicRoute from "./components/PublicRoute";
+import ResetPassword from "./pages/Auth/ResetPassword";
 
 //                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
@@ -109,14 +111,25 @@ const App = () => {
             </Layout>
           }
         />
+       
         <Route
-          path="/register"
+          path="/reset-password"
           element={
             <Layout>
-              <Register />
+              <ResetPassword />
             </Layout>
           }
         />
+      <Route
+  path="/register"
+  element={
+    <PublicRoute>
+      <Layout>
+        <Register />
+      </Layout>
+    </PublicRoute>
+  }
+/>
         <Route
           path="/gallery"
           element={
