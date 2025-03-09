@@ -14,6 +14,7 @@ import Register from "./pages/Auth/Register";
 import Gallery from "./pages/Gallary/Gallary";
 import PublicRoute from "./components/PublicRoute";
 import ResetPassword from "./pages/Auth/ResetPassword";
+import VolunteerForm from "./pages/Volunteer/Volunteerform";
 
 //                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
@@ -92,6 +93,14 @@ const App = () => {
           element={
             <Layout>
               <About />
+            </Layout>
+          }
+        />
+                <Route
+          path="resources/volunteering"
+          element={
+            <Layout>
+              <VolunteerForm />
             </Layout>
           }
         />
