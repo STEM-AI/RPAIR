@@ -1,20 +1,13 @@
  import React from "react";
 import img1 from "../../assets/imgs/aboutus/IMG_3964.JPG";
-import img2 from "../../assets/imgs/aboutus/IMG_3937.JPG";
-import img3 from "../../assets/imgs/aboutus/IMG_3888.JPG";
-import img4 from "../../assets/imgs/aboutus/IMG_3929.JPG";
-import img5 from "../../assets/imgs/aboutus/IMG_3876.JPG";
-import img6 from "../../assets/imgs/aboutus/IMG_4353.JPG";
-import img7 from "../../assets/imgs/aboutus/IMG_4344.JPG";
-import img8 from "../../assets/imgs/aboutus/IMG_3929.JPG";
-import img9 from "../../assets/imgs/aboutus/IMG_3929.JPG";
+
 import Rules from "../../components/CometitionsComponent/Rules/Rules";
 import JoinTeams from "../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import AwardsList from "../../components/Awards/awards";
 
 
 const Competitions = () => {
-  const images = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
+  const images = [img1];
 
   return (
     <>
@@ -36,22 +29,18 @@ const Competitions = () => {
         </div>
 
         {/* Gallery Section */}
-        <div className="md:w-3/5 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {images.map((src, index) => (
-            <div
-              key={index}
-              className={`relative overflow-hidden rounded-lg ${
-                index % 2 === 0 ? "row-span-2" : "row-span-1"
-              }`}
-            >
-              <img
-                src={src}
-                alt={`Gallery item ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
+<div className="md:w-3/5 flex justify-center">
+<img
+  src={img1}  // Change this to your desired image
+  alt="VEX IQ Competition"
+  className="w-[800px] h-[400px] object-cover rounded-lg shadow-lg"
+/>
+</div>
+
+
+
+
+
       </div>
     </div>
     <Rules/>
@@ -63,3 +52,4 @@ const Competitions = () => {
 };
 
 export default Competitions;
+

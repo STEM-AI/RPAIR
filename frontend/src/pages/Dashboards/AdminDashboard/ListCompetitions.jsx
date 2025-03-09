@@ -10,7 +10,7 @@ import Web from "../../../assets/imgs/vexComp/web.jpeg";
 import programming from "../../../assets/imgs/vexComp/programming.webp";
 import fablab from "../../../assets/imgs/vexComp/OIP.jpeg";
 import graphic from "../../../assets/imgs/vexComp/graphic.jpeg";
-import math from "../../../assets/imgs/vexComp/ST-math.jpeg";
+import math from "../../../assets/imgs/vexComp/STMATH.png";
 
 const ListCompetitions = () => {
   const navigate = useNavigate();
