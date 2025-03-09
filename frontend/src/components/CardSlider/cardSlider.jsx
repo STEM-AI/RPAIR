@@ -174,7 +174,7 @@ const CardSlider = () => {
     }
     ,
     {
-      image: require('../../assets/imgs/vexComp/ST-math.jpeg'),
+      image: require('../../assets/imgs/vexComp/STMATH.png'),
       title: 'ST egy Math Competitions',
       description: 'the ability to perform mathematical calculations quickly and accurately in the mind without using a calculator or paper. It enhances problem-solving skills, memory, and concentration.',
       link: '/competitions'

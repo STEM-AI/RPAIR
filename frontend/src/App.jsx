@@ -12,6 +12,7 @@ import Competitions from "./pages/Competitions/Competitions";
 import Login from "./pages/Auth/login";
 import Register from "./pages/Auth/Register";
 import Gallery from "./pages/Gallary/Gallary";
+import VolunteerForm from "./pages/Volunteer/Volunteerform";
 
 //                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
@@ -90,6 +91,14 @@ const App = () => {
           element={
             <Layout>
               <About />
+            </Layout>
+          }
+        />
+                <Route
+          path="resources/volunteering"
+          element={
+            <Layout>
+              <VolunteerForm />
             </Layout>
           }
         />
