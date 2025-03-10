@@ -19,8 +19,6 @@ import VolunteerForm from "./pages/Volunteer/Volunteerform";
 //                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 
-
-
 //                          Admin                   //
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
 import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
@@ -32,20 +30,18 @@ import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
 import ListCompetitions from "./pages/Dashboards/AdminDashboard/ListCompetitions";
 import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEvents";
 
-
 //                          User                   //
 import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 import GameTimer from "./pages/Dashboards/Judge/Scores/GameTimer";
 
-
 //                          Judge                   //
 import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
 import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
 import Interview from "./pages/Dashboards/Judge/interview";
 import Inspection from "./pages/Dashboards/Judge/Inspection";
-import Notebook from "./pages/Dashboards/Judge/Notebook"
+import Notebook from "./pages/Dashboards/Judge/Notebook";
 import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
@@ -65,16 +61,17 @@ import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
 import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 import TeamSetting from "./pages/AccountSetting/TeamSetting";
 import JudgeSetting from "./pages/AccountSetting/JudgeSetting";
-
+import VexGOAbout from "./components/Competitions/Robotics/VexGo";
+import Vex123About from "./components/Competitions/Robotics/Vex123";
+import VexV5About from "./components/Competitions/Robotics/VexV5";
+import VexIQAbout from "./components/Competitions/Robotics/VexIQ";
 
 const App = () => {
- const Layout = ({ children, hideNavbar = false }) => (
+  const Layout = ({ children, hideNavbar = false }) => (
     <>
       {!hideNavbar && <Navbar />}
       {children}
-      {!hideNavbar && (
-          <Footer />
-      )}
+      {!hideNavbar && <Footer />}
     </>
   );
 
@@ -98,7 +95,7 @@ const App = () => {
             </Layout>
           }
         />
-                <Route
+        <Route
           path="resources/volunteering"
           element={
             <Layout>
@@ -106,14 +103,14 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
+        {/* <Route
           path="/competitions"
           element={
             <Layout>
               <Competitions />
             </Layout>
           }
-        />
+        /> */}
         <Route
           path="/login"
           element={
@@ -122,7 +119,7 @@ const App = () => {
             </Layout>
           }
         />
-       
+
         <Route
           path="/reset-password"
           element={
@@ -131,16 +128,16 @@ const App = () => {
             </Layout>
           }
         />
-      <Route
-  path="/register"
-  element={
-    <PublicRoute>
-      <Layout>
-        <Register />
-      </Layout>
-    </PublicRoute>
-  }
-/>
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Layout>
+                <Register />
+              </Layout>
+            </PublicRoute>
+          }
+        />
         <Route
           path="/gallery"
           element={
@@ -158,6 +155,39 @@ const App = () => {
           }
         />
         <Route
+          path="/Competitions/Robotics/VexGo"
+          element={
+            <Layout>
+              <VexGOAbout />
+            </Layout>
+          }
+        />
+        <Route
+          path="/Competitions/Robotics/Vex123"
+          element={
+            <Layout>
+              <Vex123About />
+            </Layout>
+          }
+        />
+        <Route
+          path="/Competitions/Robotics/VexIQ"
+          element={
+            <Layout>
+              <VexIQAbout />
+            </Layout>
+          }
+        />
+        <Route
+          path="/Competitions/Robotics/VexV5"
+          element={
+            <Layout>
+              <VexV5About />
+            </Layout>
+          }
+        />
+
+        <Route
           path="/OpenSource/competitions"
           element={
             <Layout>
@@ -170,20 +200,18 @@ const App = () => {
         <Route
           path="/Dashboard/Admin"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <UADashboard />
               </LayoutDashboard>
             </Layout>
           }
         />
-        
-
 
         <Route
           path="/Dashboard/Event/:competition_name/:event_name"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <SelectEvent />
               </LayoutDashboard>
@@ -193,7 +221,7 @@ const App = () => {
         <Route
           path="/Dashboard/Event/:competition_name"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <EventDash />
               </LayoutDashboard>
@@ -203,7 +231,7 @@ const App = () => {
         <Route
           path="/Dashboard/Matchess"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <Matchess />
               </LayoutDashboard>
@@ -213,7 +241,7 @@ const App = () => {
         <Route
           path="/Dashboard/:role/Teams"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <ListTeams />
               </LayoutDashboard>
@@ -221,19 +249,21 @@ const App = () => {
           }
         />
 
-        <Route path="/Dashboard/Teams/:team_name" element={
-          
-         <Layout hideNavbar>
-          <LayoutDashboard>
-          <TeamDetails />
-          </LayoutDashboard>
-          </Layout>} />
+        <Route
+          path="/Dashboard/Teams/:team_name"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <TeamDetails />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
 
-       
         <Route
           path="/Dashboard/Competitions/robotics/:event_name"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <CompetitionEvents />
               </LayoutDashboard>
@@ -242,9 +272,8 @@ const App = () => {
         />
         <Route
           path="/Dashboard/Competitions/Robotics"
-          
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <VexPage />
               </LayoutDashboard>
@@ -252,19 +281,19 @@ const App = () => {
           }
         />
         <Route
-            path="/Dashboard/Admin/CreateEvent"
+          path="/Dashboard/Admin/CreateEvent"
           element={
-           <Layout hideNavbar>
-                  <LayoutDashboard>
-                    <CreateEvent />
-                  </LayoutDashboard>
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CreateEvent />
+              </LayoutDashboard>
             </Layout>
-            }
+          }
         />
-         <Route
+        <Route
           path="/Dashboard/Competitions/OpenSource"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <SourcePage />
               </LayoutDashboard>
@@ -272,95 +301,95 @@ const App = () => {
           }
         />
         <Route
-            path="/Dashboard/Admin/CreateStaff"
+          path="/Dashboard/Admin/CreateStaff"
           element={
-           <Layout hideNavbar>
-                  <LayoutDashboard>
-                    <CreateStaff />
-                  </LayoutDashboard>
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CreateStaff />
+              </LayoutDashboard>
             </Layout>
-            }
+          }
         />
         <Route
-            path="/Dashboard/Admin/CreateCompetition"
+          path="/Dashboard/Admin/CreateCompetition"
           element={
-           <Layout hideNavbar>
-                  <LayoutDashboard>
-                    <CreateCompetition />
-                  </LayoutDashboard>
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CreateCompetition />
+              </LayoutDashboard>
             </Layout>
-            }
+          }
         />
-        
+
         {/* User Dashboard Routes */}
-         <Route
+        <Route
           path="/Dashboard/User"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <UADashboard/>
-                  </LayoutDashboard>
+                <UADashboard />
+              </LayoutDashboard>
             </Layout>
           }
         />
 
-<Route
+        <Route
           path="/Dashboard/Team/AccountSetting"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <TeamSetting/>
-                  </LayoutDashboard>
+                <TeamSetting />
+              </LayoutDashboard>
             </Layout>
           }
         />
-                 <Route
+        <Route
           path="/Dashboard/User/Teams"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <MyTeams/>
-                  </LayoutDashboard>
+                <MyTeams />
+              </LayoutDashboard>
             </Layout>
           }
         />
-         <Route
+        <Route
           path="/Dashboard/teams/:team_name"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <MyTeamDetails/>
-                  </LayoutDashboard>
+                <MyTeamDetails />
+              </LayoutDashboard>
             </Layout>
           }
         />
 
-         <Route
+        <Route
           path="/Dashboard/User/CreateTeam"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <CreateTeam/>
-                  </LayoutDashboard>
+                <CreateTeam />
+              </LayoutDashboard>
             </Layout>
           }
         />
 
-         <Route
+        <Route
           path="/Dashboard/User/PaymentForm"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <PaymentForm/>
-                  </LayoutDashboard>
+                <PaymentForm />
+              </LayoutDashboard>
             </Layout>
           }
         />
-        
+
         <Route
           path="/Dashboard/Competitions"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <ListCompetitions />
               </LayoutDashboard>
@@ -370,7 +399,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/listJudges"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <ListJudges />
               </LayoutDashboard>
@@ -380,7 +409,7 @@ const App = () => {
         <Route
           path="/Dashboard/Admin/CreateOrganization"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateOrganization />
               </LayoutDashboard>
@@ -389,35 +418,34 @@ const App = () => {
         />
 
         {/* JUDGE DASHBOARD */}
-      
+
         <Route
           path="/Dashboard/Game"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <GameTimer/>
+                <GameTimer />
               </LayoutDashboard>
             </Layout>
           }
         />
-                <Route
+        <Route
           path="/Dashboard/Judge/AccountSetting"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <JudgeSetting/>
+                <JudgeSetting />
               </LayoutDashboard>
             </Layout>
           }
         />
-
 
         <Route
           path="/Dashboard/JudgeEvent/:event_name"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <StartMatch/>
+                <StartMatch />
               </LayoutDashboard>
             </Layout>
           }
@@ -425,20 +453,20 @@ const App = () => {
         <Route
           path="/Dashboard/JudgeEvent"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <JudgeEvent/>
+                <JudgeEvent />
               </LayoutDashboard>
             </Layout>
           }
         />
 
-      <Route
+        <Route
           path="/Dashboard/Judge/Matches"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <MatchRounds/>
+                <MatchRounds />
               </LayoutDashboard>
             </Layout>
           }
@@ -446,9 +474,9 @@ const App = () => {
         <Route
           path="/Dashboard/Judge/matches/teamwork"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <Teamwork/>
+                <Teamwork />
               </LayoutDashboard>
             </Layout>
           }
@@ -456,51 +484,48 @@ const App = () => {
         <Route
           path="/Dashboard/Judge/eventDetails"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <EventDetails/>
+                <EventDetails />
               </LayoutDashboard>
             </Layout>
           }
-
         />
         <Route
           path="/Dashboard/Judge/Matches/skills"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-              <Skills/>
+                <Skills />
               </LayoutDashboard>
             </Layout>
           }
         />
 
-
-
-           <Route
+        <Route
           path="/Dashboard/Judge/Interview"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <Interview />
               </LayoutDashboard>
             </Layout>
           }
         />
-         <Route
+        <Route
           path="/Dashboard/Judge/inspection"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <Inspection />
               </LayoutDashboard>
             </Layout>
           }
         />
-         <Route
+        <Route
           path="/Dashboard/Judge/Notebook"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <Notebook />
               </LayoutDashboard>
@@ -510,33 +535,27 @@ const App = () => {
         <Route
           path="/Dashboard/LiveTeam"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
                 <LiveTeam />
               </LayoutDashboard>
             </Layout>
           }
         />
-                <Route
+        <Route
           path="/Dashboard/LiveSkills"
           element={
-           <Layout hideNavbar>
+            <Layout hideNavbar>
               <LayoutDashboard>
-                <LiveSkills/>
+                <LiveSkills />
               </LayoutDashboard>
             </Layout>
           }
         />
-
-
       </Routes>
 
-      
-      
-                {/* <ContactUs /> */}
-
+      {/* <ContactUs /> */}
     </Router>
-  
   );
 };
 
