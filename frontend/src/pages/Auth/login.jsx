@@ -7,12 +7,15 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { saveTokens, getTokens } from './auth';
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [passwordVisible, setPasswordVisible] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,7 +24,9 @@ const Login = () => {
             navigate("/", { replace: true });
         }
     }, [navigate]);
-
+ const handlePasswordVisibility = () => {
+            setPasswordVisible(prevState => !prevState);
+          };
     const signIn = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -123,29 +128,33 @@ const Login = () => {
                                 required
                             />
                         </div>
-                        <div className="mt-4">
-                            <div className="flex justify-between">
+                        <div className="mt-4 relative">
+                            <div className="flex justify-between ">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Password
                                 </label>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/reset-password"
                                     className="text-xs text-cyan-500 hover:underline"
                                     aria-label="Forgot Password"
                                 >
                                     Forgot Password?
-                                </a>
+                                </Link>
                             </div>
                             <input
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                                type="password"
+
+                                type={passwordVisible ? 'text' : 'password'} 
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            <button className="absolute right-4 top-9 text-3xl" type="button" onClick={handlePasswordVisibility}>
+                                            {passwordVisible ? <VscEyeClosed />: <VscEye />}
+                                          </button>
                         </div>
-
+                        
                         <button
                             type="submit"
                             className={`mt-8 font-bold py-2 px-4 w-full rounded ${
