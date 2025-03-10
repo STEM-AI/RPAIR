@@ -63,6 +63,8 @@ import EventDash from "./pages/Dashboards/EventsDash";
 import SelectEvent from "./pages/Dashboards/Judge/matches/SelectMatch";
 import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
 import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
+import TeamSetting from "./pages/AccountSetting/TeamSetting";
+import JudgeSetting from "./pages/AccountSetting/JudgeSetting";
 
 
 const App = () => {
@@ -175,6 +177,9 @@ const App = () => {
             </Layout>
           }
         />
+        
+
+
         <Route
           path="/Dashboard/Event/:competition_name/:event_name"
           element={
@@ -298,6 +303,17 @@ const App = () => {
             </Layout>
           }
         />
+
+<Route
+          path="/Dashboard/Team/AccountSetting"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+                <TeamSetting/>
+                  </LayoutDashboard>
+            </Layout>
+          }
+        />
                  <Route
           path="/Dashboard/User/Teams"
           element={
@@ -384,6 +400,18 @@ const App = () => {
             </Layout>
           }
         />
+                <Route
+          path="/Dashboard/Judge/AccountSetting"
+          element={
+           <Layout hideNavbar>
+              <LayoutDashboard>
+              <JudgeSetting/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+
+
         <Route
           path="/Dashboard/JudgeEvent/:event_name"
           element={

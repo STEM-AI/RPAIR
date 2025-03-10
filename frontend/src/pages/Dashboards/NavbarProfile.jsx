@@ -65,6 +65,16 @@ export default function NavbarProfile() {
       : "/Dashboard/User"
     : "/";
 
+    const userRoleSetting = JSON.parse(localStorage.getItem("user_role"));
+    const UrlSetting = userRoleSetting
+      ? userRole.is_superuser
+        ? "/Dashboard/Team/AccountSetting"
+        : userRole.is_staff && !userRole.is_superuser
+        ? "/Dashboard/Judge/AccountSetting"
+        : "/Dashboard/Team/AccountSetting"
+      : "/";
+  
+
   const handleLogout = () => {
     clearTokens();
     localStorage.removeItem("user_role");
@@ -223,10 +233,10 @@ export default function NavbarProfile() {
                     <BsFillPersonFill className="text-2xl mx-2" />
                     <span className="text-lg">Dashbord</span>
                   </NavLink>
-                  <p className="flex items-center text-gray-600 py-2 px-1">
+                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1">
                     <IoSettingsOutline className="text-2xl mx-2" />
                     <span className="text-lg">Account Settings</span>
-                  </p>
+                  </NavLink>
                   <hr />
                   <div className="flex items-center text-gray-600 py-2 px-1">
                     <CiLogout className="text-2xl mx-2" />
