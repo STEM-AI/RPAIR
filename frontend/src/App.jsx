@@ -63,7 +63,7 @@ import TeamSetting from "./pages/AccountSetting/TeamSetting";
 import JudgeSetting from "./pages/AccountSetting/JudgeSetting";
 import VexGOAbout from "./components/Competitions/Robotics/VexGo";
 import Vex123About from "./components/Competitions/Robotics/Vex123";
-import VexV5About from "./components/Competitions/Robotics/VexV5";
+import VexV5About from "./components/Competitions/Robotics/Vex"; // arg3y hena tany fe moshkelaaaa
 import VexIQAbout from "./components/Competitions/Robotics/VexIQ";
 
 const App = () => {
