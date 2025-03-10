@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -81,6 +82,16 @@ export default function Navbar() {
       ? "/Dashboard/JudgeEvent"
       : "/Dashboard/User"
     : "/";
+
+    const userRoleSetting = JSON.parse(localStorage.getItem("user_role"));
+    const UrlSetting = userRoleSetting
+      ? userRole.is_superuser
+        ? "/Dashboard/Team/AccountSetting"
+        : userRole.is_staff && !userRole.is_superuser
+        ? "/Dashboard/Judge/AccountSetting"
+        : "/Dashboard/Team/AccountSetting"
+      : "/";
+  
 
   const handleLogout = () => {
     clearTokens();
@@ -164,15 +175,18 @@ export default function Navbar() {
     className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
     Challenges
   </button>
-  {dropdowns.challenges && (
+  {/* {dropdowns.challenges && (
     <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
       {[
-        "Vex IQ",
+        "Robotics",
         "Web Design",
         "Open Source",
         "Mobile Application",
         "Programming",
-        "Arduino"
+        "Artificial Intelligence",
+        "Fablab",
+        "ST MAth",
+        "Graphic Design"
       ].map((item, index) => (
         <li key={index} className="hover:bg-cyan-50">
           <NavLink
@@ -185,7 +199,34 @@ export default function Navbar() {
         </li>
       ))}
     </ul>
-  )}
+  )} */}
+
+{dropdowns.challenges && (
+  <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
+    {[
+      { name: "Robotics", link: "/competitions" },
+      { name: "Web Design", link: "/competitions/web-design" },
+      { name: "Open Source", link: "/competitions/open-source" },
+      { name: "Mobile Application", link: "/competitions/mobile-app" },
+      { name: "Programming", link: "/competitions/programming" },
+      { name: "Artificial Intelligence", link: "/competitions/ai" },
+      { name: "Fablab", link: "/competitions/fablab" },
+      { name: "ST Math", link: "/competitions/st-math" },
+      { name: "Graphic Design", link: "/competitions/graphic-design" }
+    ].map((item, index) => (
+      <li key={index} className="hover:bg-cyan-50">
+        <NavLink
+          to={item.link}
+          className="block px-4 py-2 text-cyan-500 hover:text-cyan-950"
+          onClick={() => handleDropdownToggle("challenges")}
+        >
+          {item.name}
+        </NavLink>
+      </li>
+    ))}
+  </ul>
+)}
+
 </div>
 
 
@@ -246,10 +287,11 @@ export default function Navbar() {
                     <BsFillPersonFill className="text-2xl mx-2" />
                     <span className="text-lg">Dashbord</span>
                   </NavLink>
-                  <p className="flex items-center text-gray-600 py-2 px-1">
+                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1">
                     <IoSettingsOutline className="text-2xl mx-2" />
                     <span className="text-lg">Account Settings</span>
-                  </p>
+                  </NavLink>
+
                   <hr />
                   <div className="flex items-center text-gray-600 py-2 px-1">
                     <CiLogout className="text-2xl mx-2" />
