@@ -345,6 +345,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal } from "react-icons/fa";
+import axios from "axios";
+
 
 const LiveSkills = () => {
   const [rankings, setRankings] = useState([]);
@@ -352,10 +354,40 @@ const LiveSkills = () => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState([]);
+  
+    const [showRankings, setShowRankings] = useState(false);
   const [activeRounds, setActiveRounds] = useState([1]); // Start with Round 1 only
   const socketRef = useRef(null);
   const eventName = localStorage.getItem('selected_event_name');
  
+
+  const token = localStorage.getItem("access_token");
+
+  const fetchRankings = async () => {
+    if (!eventName) {
+      console.error("No event name found");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("API Response:", response.data);
+      setRankings(response.data);
+      setShowRankings(true);
+    } catch (error) {
+      console.error("Error fetching rankings:", error);
+      if (error.response) {
+        console.log("Error response data:", error.response.data);
+        console.log("Error response status:", error.response.status);
+      }
+    }
+  };
+
+
   useEffect(() => {
     socketRef.current = new WebSocket(`ws://${process.env.REACT_APP_API_HOST}/ws/competition_event/${eventName}/`);
 
@@ -409,6 +441,17 @@ const LiveSkills = () => {
       }
     };
   }, [eventName, activeRounds]);
+
+   const getMedalIcon = (rank) => {
+      switch (rank) {
+        case 1:
+          return <FaMedal className="text-yellow-400 text-xl" />;
+        case 2:
+          return <FaMedal className="text-gray-400 text-xl" />;          
+        default:
+          return  <FaMedal className="text-yellow-700 text-xl" />;
+      }
+    };
 
   return (
     <div className="p-4 max-w-7xl mx-auto flex flex-col items-center">
@@ -464,6 +507,64 @@ const LiveSkills = () => {
           </div>
         ))}
       </div>
+
+      {/* Show Rankings Button */}
+           
+             <div className="flex justify-center mt-6 mb-4">
+              <button
+                onClick={fetchRankings}
+                className="inline-flex items-center px-4 py-2 text-sm sm:text-base font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors gap-2"
+              >
+                <FaTrophy className="text-lg" /> 
+                <span>View Ranking</span>
+              </button>
+            </div>
+      
+            {/* Rankings Table */}
+            {showRankings && (
+              <div className="mt-8">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-2xl font-bold text-center mb-4 flex items-center justify-center gap-2">
+                    <FaTrophy className="text-yellow-500" />
+                    Team Rankings
+                  </h2>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gray-800 text-white">
+                          <th className="py-3 px-4 text-left rounded-tl-lg">Rank</th>
+                          <th className="py-3 px-4 text-left">Team</th>
+                          <th className="py-3 px-4 text-center rounded-tr-lg">Average Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rankings.map((team, index) => (
+                          <tr
+                            key={team.team}
+                            className={`border-b ${
+                              index === 0
+                                ? "bg-yellow-100"
+                                : index === 1
+                                ? "bg-gray-100"
+                                : index === 2
+                                ? "bg-yellow-50"
+                                : "bg-white"
+                            } hover:bg-gray-50 transition-colors`}
+                          >
+                            <td className="py-3 px-4 flex items-center gap-2">
+                              {getMedalIcon(index + 1)}
+                              {index + 1}
+                            </td>
+                            <td className="py-3 px-4 font-medium">{team.team__name}</td>
+                            <td className="py-3 px-4 text-center font-bold">{team.avg_score.toFixed(2)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
     </div>
   );
 };

@@ -20,7 +20,7 @@ export default function Footer() {
                                 <div className="space-y-1 sm:space-y-3 pl-4 sm:pl-9">
                                     <a href="tel:+201020047147" className="flex items-center group">
                                         <FaPhone className="mr-1 sm:mr-3 text-cyan-200 group-hover:rotate-12 transition-transform text-[8px] sm:text-base" />
-                                        <span className="text-[8px] sm:text-base text-cyan-50 group-hover:text-white transition-colors">+201020047147</span>
+                                        <span className="text-[8px] sm:text-base text-cyan-50 group-hover:text-white transition-colors">+201080481880</span>
                                     </a>
                                     <a href="tel:+201555079339" className="flex items-center group">
                                         <FaPhone className="mr-1 sm:mr-3 text-cyan-200 group-hover:rotate-12 transition-transform text-[8px] sm:text-base" />
