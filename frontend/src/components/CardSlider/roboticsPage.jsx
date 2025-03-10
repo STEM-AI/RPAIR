@@ -18,7 +18,7 @@ const roboticsKits = [
     description: 'A simple and interactive robotics kit for young learners.',
     bgColor: 'bg-vex123',
     textColor: 'text-purple-900',
-    path: '/competitions'
+    path: '/Competitions/Robotics/Vex123'
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const roboticsKits = [
     description: 'An engaging and hands-on robotics system for STEM education.',
     bgColor: 'bg-vexGo',
     textColor: 'text-teal-900',
-    path: '/competitions'
+    path: '/Competitions/Robotics/VexGo'
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const roboticsKits = [
     description: 'A modular robotics platform designed for intermediate students.',
     bgColor: 'bg-vexIq',
     textColor: 'text-blue-900',
-    path: '/competitions'
+    path: '/Competitions/Robotics/VexIQ'
   },
   {
     id: 4,
@@ -48,7 +48,7 @@ const roboticsKits = [
     description: 'A professional-grade robotics system for advanced learners.',
     bgColor: 'bg-vexV5',
     textColor: 'text-red-900',
-    path: '/competitions'
+    path: '/Competitions/Robotics/VexV5'
   },
 ];
 
