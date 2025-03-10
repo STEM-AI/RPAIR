@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -81,6 +82,16 @@ export default function Navbar() {
       ? "/Dashboard/JudgeEvent"
       : "/Dashboard/User"
     : "/";
+
+    const userRoleSetting = JSON.parse(localStorage.getItem("user_role"));
+    const UrlSetting = userRoleSetting
+      ? userRole.is_superuser
+        ? "/Dashboard/Team/AccountSetting"
+        : userRole.is_staff && !userRole.is_superuser
+        ? "/Dashboard/Judge/AccountSetting"
+        : "/Dashboard/Team/AccountSetting"
+      : "/";
+  
 
   const handleLogout = () => {
     clearTokens();
@@ -246,10 +257,11 @@ export default function Navbar() {
                     <BsFillPersonFill className="text-2xl mx-2" />
                     <span className="text-lg">Dashbord</span>
                   </NavLink>
-                  <p className="flex items-center text-gray-600 py-2 px-1">
+                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1">
                     <IoSettingsOutline className="text-2xl mx-2" />
                     <span className="text-lg">Account Settings</span>
-                  </p>
+                  </NavLink>
+
                   <hr />
                   <div className="flex items-center text-gray-600 py-2 px-1">
                     <CiLogout className="text-2xl mx-2" />
