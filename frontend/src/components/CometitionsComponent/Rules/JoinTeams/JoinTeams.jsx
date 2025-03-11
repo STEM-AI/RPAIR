@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import img from '../../../../assets/imgs/aboutus/IMG_4376.jpg';
+// import img from '../../../../assets/imgs/aboutus/IMG_4376.jpg';
 import { Link } from 'react-router-dom';
 
 const JoinTeams = () => {
@@ -12,11 +12,11 @@ const JoinTeams = () => {
 
       {/* Image Column */}
       <div className="w-full h-64 lg:w-1/2 lg:h-auto">
-        <img
+        {/* <img
           className="h-full w-full object-cover"
           src={img}
           alt="Winding mountain road"
-        />
+        /> */}
       </div>
 
       {/* Text Column */}
