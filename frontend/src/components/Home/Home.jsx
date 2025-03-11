@@ -2,6 +2,7 @@ import React, { useEffect }  from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
+import About from "../../pages/About/About";
 
 const Home = () => {
   // useEffect(() => {
@@ -87,7 +88,7 @@ const Home = () => {
         </div>
 
       </div>
-      <CardSlider/>
+      <About/>
 
 
 
