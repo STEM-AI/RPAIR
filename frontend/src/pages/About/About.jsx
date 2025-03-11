@@ -1,9 +1,9 @@
 import React from "react";
 import MissionVision from "../../components/AboutComp/Mission/Mission";
-// import imageSrc2 from '../../assets/imgs/aboutus/IMG_4376.jpg';
-// import imageSrc1 from '../../assets/imgs/aboutus/IMG_3929.jpg';
-// import imageSrc3 from '../../assets/imgs/aboutus/IMG_4396.jpg';
-// import imageSrc4 from '../../assets/imgs/aboutus/IMG_3937.jpg';
+import imageSrc2 from '../../assets/imgs/aboutus/IMG_4376.jpg';
+import imageSrc1 from '../../assets/imgs/aboutus/IMG_3929.jpg';
+import imageSrc3 from '../../assets/imgs/aboutus/IMG_4396.jpg';
+import imageSrc4 from '../../assets/imgs/aboutus/IMG_3937.jpg';
 import bgImage from '../../assets/imgs/aboutus/bgleft.png'; 
 import CardSlider from "../../components/CardSlider/cardSlider";
 
@@ -51,42 +51,42 @@ function About() {
           <div className="grid grid-cols-2 gap-6 mt-8 lg:mt-0">
             {/* Image 1 */}
             <div className="transition-transform transform rotate-3 duration-300 ease-in-out aspect-square hover:scale-105 hover:rotate-0 relative z-10">
-              {/* <img
+              <img
                 className="w-full h-full object-cover rounded-lg shadow-lg"
                 src={imageSrc1}
                 alt="office content 1"
                 loading="lazy"
-              /> */}
+              />
             </div>
 
             {/* Image 2 */}
             <div className="transition-transform transform rotate-3 duration-300 ease-in-out aspect-square hover:scale-105 hover:rotate-0 relative z-10">
-              {/* <img
+              <img
                 className="w-full h-full object-cover rounded-lg shadow-lg"
                 src={imageSrc2}
                 alt="office content 2"
                 loading="lazy"
-              /> */}
+              />
             </div>
 
             {/* Image 3 */}
             <div className="transition-transform transform rotate-3 duration-300 ease-in-out aspect-square hover:scale-105 hover:rotate-0 relative z-10">
-              {/* <img
+              <img
                 className="w-full h-full object-cover rounded-lg shadow-lg"
                 src={imageSrc3}
                 alt="office content 3"
                 loading="lazy"
-              /> */}
+              />
             </div>
 
             {/* Image 4 */}
             <div className="transition-transform transform rotate-3 duration-300 ease-in-out aspect-square hover:scale-105 hover:rotate-0 relative z-10">
-              {/* <img
+              <img
                 className="w-full h-full object-cover rounded-lg shadow-lg"
                 src={imageSrc4}
                 alt="office content 4"
                 loading="lazy"
-              /> */}
+              />
             </div>
           </div>
         </div>

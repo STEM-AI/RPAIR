@@ -1,5 +1,5 @@
 import React from "react";
-// import img1 from "../../../assets/imgs/aboutus/IMG_3964.jpg";
+import img1 from "../../../assets/imgs/aboutus/IMG_3964.jpg";
 
 import Rules from "../../../components/CometitionsComponent/Rules/Rules";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
@@ -7,7 +7,7 @@ import AwardsList from "../../../components/Awards/awards";
 
 
 const VexIQAbout = () => {
-  // const images = [img1];
+  const images = [img1];
 
   return (
     <>
@@ -30,11 +30,11 @@ const VexIQAbout = () => {
 
         {/* Gallery Section */}
 <div className="md:w-3/5 flex justify-center">
-{/* <img
+<img
   src={img1}  // Change this to your desired image
   alt="VEX IQ Competition"
   className="w-[800px] h-[400px] object-cover rounded-lg shadow-lg"
-/> */}
+/>
 </div>
 
 
