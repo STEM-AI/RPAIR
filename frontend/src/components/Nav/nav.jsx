@@ -9,6 +9,8 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
+import { NavHashLink } from 'react-router-hash-link';
+
 
 
 export default function Navbar() {
@@ -116,6 +118,16 @@ export default function Navbar() {
     }));
   };
 
+  const handleItemClick = (link) => {
+    setDropdowns({
+      challenges: false,
+      resources: false,
+      notifications: false,
+      profile: false
+    });
+    navigate(link);
+  };
+
   return (
     <nav className={` z-50 shadow-lg px-5  md:px-10 py-2 flex items-center justify-between 
       ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)] "}
@@ -140,115 +152,65 @@ export default function Navbar() {
 
       <div
         className={`${isMenuOpen ? "block" : "hidden"} md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 mt-1 mr-2 absolute md:static top-full rounded-lg right-0 w-80 md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none transition-all duration-300`}>
-        <NavLink to={"/"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+        <NavHashLink to={"/#home-section"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
           Home
-        </NavLink>
-        <NavLink to={"/about"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
+        </NavHashLink>
+        <NavHashLink to={"/#about"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
           About
-        </NavLink>
+        </NavHashLink>
 
-        {/* <div className="relative group w-full">
+        <div className="relative group w-full">
           <button
             onClick={() => handleDropdownToggle("challenges")}
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
             Challenges
           </button>
-          {dropdowns.challenges && (<ul
-            className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg `}>
-            {["Vex IQ", "Vex V5", "Web Design", "Open Source", "Mobile Application", "Programming", "Arduino"].map((item, index) => (
-              <li key={index} className="hover:bg-cyan-50">
-                <NavLink to={`/competitions`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950">
-                  {item}
-                </NavLink>
-              </li>
-            ))}
-          </ul>)}
-        </div> */}
+          {dropdowns.challenges && (
+            <ul className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 transition-transform duration-300 ease-out origin-top`}>
+              {[
+                { name: "Robotics", link: "/Robotics/Vex" },
+                { name: "Web Design", link: "/competitions/web-design" },
+                { name: "Open Source", link: "/OpenSource/competitions" },
+                { name: "Mobile Application", link: "/competitions/mobile-app" },
+                { name: "Programming", link: "/competitions/programming" },
+                { name: "Artificial Intelligence", link: "/competitions/ai" },
+                { name: "Fablab", link: "/competitions/fablab" },
+                { name: "ST Math", link: "/competitions/st-math" },
+                { name: "Graphic Design", link: "/competitions/graphic-design" }
+              ].map((item, index) => (
+                <li key={index} className="hover:bg-cyan-50 transition-all duration-300">
+                  <div
+                    className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105 cursor-pointer transition-all duration-300"
+                    onClick={() => handleItemClick(item.link)}
+                  >
+                    {item.name}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-
-
-
-
-<div className="relative group w-full">
-  <button
-    onClick={() => handleDropdownToggle("challenges")}
-    className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
-    Challenges
-  </button>
-  {/* {dropdowns.challenges && (
-    <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
-      {[
-        "Robotics",
-        "Web Design",
-        "Open Source",
-        "Mobile Application",
-        "Programming",
-        "Artificial Intelligence",
-        "Fablab",
-        "ST MAth",
-        "Graphic Design"
-      ].map((item, index) => (
-        <li key={index} className="hover:bg-cyan-50">
-          <NavLink
-            to={`/competitions`}
-            className="block px-4 py-2 text-cyan-500 hover:text-cyan-950"
-            onClick={() => handleDropdownToggle("challenges")} // يغلق الدروب داون عند النقر
-          >
-            {item}
-          </NavLink>
-        </li>
-      ))}
-    </ul>
-  )} */}
-
-{dropdowns.challenges && (
-  <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
-    {[
-      { name: "Robotics", link: "/competitions" },
-      { name: "Web Design", link: "/competitions/web-design" },
-      { name: "Open Source", link: "/competitions/open-source" },
-      { name: "Mobile Application", link: "/competitions/mobile-app" },
-      { name: "Programming", link: "/competitions/programming" },
-      { name: "Artificial Intelligence", link: "/competitions/ai" },
-      { name: "Fablab", link: "/competitions/fablab" },
-      { name: "ST Math", link: "/competitions/st-math" },
-      { name: "Graphic Design", link: "/competitions/graphic-design" }
-    ].map((item, index) => (
-      <li key={index} className="hover:bg-cyan-50">
-        <NavLink
-          to={item.link}
-          className="block px-4 py-2 text-cyan-500 hover:text-cyan-950"
-          onClick={() => handleDropdownToggle("challenges")}
-        >
-          {item.name}
-        </NavLink>
-      </li>
-    ))}
-  </ul>
-)}
-
-</div>
-
-
-        <div className="relative group">
+        <div className="relative group w-full">
           <button
             onClick={() => handleDropdownToggle("resources")}
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
             Resources
           </button>
-          {dropdowns.resources &&(
-            <ul
-            className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
-              transition-transform duration-300 ease-out origin-top`}>
-              
-            {["Volunteering", "Event"].map((item, index) => (
-              <li key={index} className="hover:bg-cyan-50">
-                <NavLink to={`/resources/${item.toLowerCase()}`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105">
-                  {item}
-                </NavLink>
-              </li>
-            ))}
-          </ul>)}
+          {dropdowns.resources && (
+            <ul className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 transition-transform duration-300 ease-out origin-top`}>
+              {["Volunteering", "Event"].map((item, index) => (
+                <li key={index} className="hover:bg-cyan-50 transition-all duration-300">
+                  <div
+                    className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105 cursor-pointer transition-all duration-300"
+                    onClick={() => handleItemClick(`/resources/${item.toLowerCase()}`)}
+                  >
+                    {item}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <NavLink to={"/gallery"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
@@ -266,7 +228,7 @@ export default function Navbar() {
                 <IoMdNotificationsOutline className="text-2xl text-cyan-500 font-extrabold hover:text-white transition-all duration-300 transform hover:scale-105" />
               </button>
               {dropdowns.notifications && (
-                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
+                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50 transition-all duration-300">
                   <p className="text-gray-700 font-bold border-b pb-2">Notifications</p>
                   <div className="mt-2">
                     <p className="text-gray-600 text-sm">You have no new notifications.</p>
@@ -282,18 +244,18 @@ export default function Navbar() {
                 <BsFillPersonFill className="text-2xl text-cyan-500 hover:text-white transition-all duration-300 transform hover:scale-105" />
               </button>
               {dropdowns.profile && (
-                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
-                  <NavLink to={Url} className="flex items-center text-gray-600 py-2 px-1">
+                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50 transition-all duration-300">
+                  <NavLink to={Url} className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
                     <BsFillPersonFill className="text-2xl mx-2" />
                     <span className="text-lg">Dashbord</span>
                   </NavLink>
-                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1">
+                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
                     <IoSettingsOutline className="text-2xl mx-2" />
                     <span className="text-lg">Account Settings</span>
                   </NavLink>
 
                   <hr />
-                  <div className="flex items-center text-gray-600 py-2 px-1">
+                  <div className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
                     <CiLogout className="text-2xl mx-2" />
                     <button className="text-lg" onClick={handleLogout}>Log Out</button>
                   </div>
