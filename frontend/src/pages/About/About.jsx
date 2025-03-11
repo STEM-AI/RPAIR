@@ -1,9 +1,9 @@
 import React from "react";
 import MissionVision from "../../components/AboutComp/Mission/Mission";
-import imageSrc1 from '../../assets/imgs/aboutus/IMG_3929.JPG';
-import imageSrc2 from '../../assets/imgs/aboutus/IMG_4376.JPG';
-import imageSrc3 from '../../assets/imgs/aboutus/IMG_4396.JPG';
-import imageSrc4 from '../../assets/imgs/aboutus/IMG_3937.JPG';
+import imageSrc2 from '../../assets/imgs/aboutus/IMG_4376.jpg';
+import imageSrc1 from '../../assets/imgs/aboutus/IMG_3929.jpg';
+import imageSrc3 from '../../assets/imgs/aboutus/IMG_4396.jpg';
+import imageSrc4 from '../../assets/imgs/aboutus/IMG_3937.jpg';
 import bgImage from '../../assets/imgs/aboutus/bgleft.png'; 
 import CardSlider from "../../components/CardSlider/cardSlider";
 
@@ -11,7 +11,7 @@ import CardSlider from "../../components/CardSlider/cardSlider";
 function About() {
   return (
     <>
-      <section className="relative bg-white">
+      <section id="about" className="relative bg-white">
 
         <div
           className="absolute inset-0 z-0"
