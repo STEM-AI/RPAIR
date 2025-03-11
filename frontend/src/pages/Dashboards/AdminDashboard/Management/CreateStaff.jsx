@@ -53,7 +53,7 @@ const CreateStaff = () => {
     try {
       // First, register the judge
       const judgeResponse = await axios.post(
-        `${process.env.REACT_APP_API_URL_AUTH}/judge-register/`,
+        `http://147.93.56.71:8001/api/user/auth/login/`,
         formData,
         {
           headers: {
