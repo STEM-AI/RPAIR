@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import logo from "../../assets/logo/logoWrite-re.png";
-import logoBlack from "../../assets/logo/logo2.png";
+import logo from "../../assets/Static/logoWrite-re.png";
+import logoBlack from "../../assets/Static/logo2.png";
 import { useLocation, NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";

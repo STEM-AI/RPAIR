@@ -130,57 +130,57 @@ import { Link } from 'react-router-dom';
 const CardSlider = () => {
   const cardsData = [
     {
-      image: require('../../assets/imgs/vexComp/AI.jpg'),
+      image: require('../../assets/cards/AI.jpg'),
       title: 'Artificial Intelligence Competitions',
       description: 'Explore the world of AI through exciting challenges that test your ability to develop intelligent systems and machine learning models.',
       link: '/competitions'
     },
     {
-      image: require('../../assets/imgs/vexComp/open.jpg'),
+      image: require('../../assets/cards/open.jpg'),
       title: 'Open Source Competitions',
       description: 'Contribute to open-source projects, showcase your coding skills, and collaborate with developers worldwide to build innovative solutions.',
       link: '/OpenSource/competitions'
     },
     {
-      image: require('../../assets/imgs/vexComp/robot.jpg'),
+      image: require('../../assets/cards/robot.jpg'),
       title: 'Robotics Competitions',
       description: 'Design, build, and program robots to complete tasks and challenges, competing against other teams in innovative robotics events.',
       link: '/Robotics/Vex'
     },
     {
-      image: require('../../assets/imgs/vexComp/mobile.jpg'),
+      image: require('../../assets/cards/mobile.jpg'),
       title: 'Mobile Applications Competitions',
       description: 'Develop cutting-edge mobile applications, enhance user experience, and solve real-world problems using the latest mobile technologies.',
       link: '/competitions'
     },
     {
-      image: require('../../assets/imgs/vexComp/web.jpeg'),
+      image: require('../../assets/cards/web.jpeg'),
       title: 'Website Design Competitions',
       description: 'Showcase your creativity in web design, develop responsive and interactive websites, and compete in front-end and back-end development challenges.',
       link: '/competitions'
     },
 
     {
-      image: require('../../assets/imgs/vexComp/programming.webp'),
+      image: require('../../assets/cards/programming.webp'),
       title: 'Programming Competitions',
       description: 'the ability to perform mathematical calculations quickly and accurately in the mind without using a calculator or paper. It enhances problem-solving skills, memory, and concentration.',
       link: '/competitions'
     },
     {
-      image: require('../../assets/imgs/vexComp/fablab.jpg'),
+      image: require('../../assets/cards/fablab.jpg'),
       title: 'FabLab Competitions',
       description: 'Bring your engineering and fabrication skills to life by designing and prototyping innovative projects using cutting-edge tools and technologies.',
       link: '/competitions'
     }
     ,
     {
-      image: require('../../assets/imgs/vexComp/STMATH.png'),
+      image: require('../../assets/cards/STMATH.png'),
       title: 'ST egy Math Competitions',
       description: 'the ability to perform mathematical calculations quickly and accurately in the mind without using a calculator or paper. It enhances problem-solving skills, memory, and concentration.',
       link: '/competitions'
     },
     {
-      image: require('../../assets/imgs/vexComp/graphic.jpg'),
+      image: require('../../assets/cards/graphic.jpg'),
       title: 'Graphic Design Competitions',
       description: 'Unleash your creativity in graphic design, creating stunning visuals, branding concepts, and digital artwork to impress judges and audiences.',
       link: '/competitions'

@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import img from '../../../../assets/imgs/aboutus/IMG_4376.JPG';
+import img from '../../../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_4376.JPG';
 import { Link } from 'react-router-dom';
 
 const JoinTeams = () => {

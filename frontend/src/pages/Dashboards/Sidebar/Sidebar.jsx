@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../../../assets/logo/logo2.png";
+import Logo from "../../../assets/Static/logo2.png";
 import { MdOutlineDashboard, MdOutlineEventNote } from "react-icons/md";
 import { LiaAngleDoubleDownSolid, LiaAngleDoubleUpSolid } from "react-icons/lia"; 
 import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
