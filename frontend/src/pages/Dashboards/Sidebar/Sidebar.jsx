@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../../../assets/logo/logo2.png";
+import Logo from "../../../assets/Static/logo2.png";
 import { MdOutlineDashboard, MdOutlineEventNote } from "react-icons/md";
 import { LiaAngleDoubleDownSolid, LiaAngleDoubleUpSolid } from "react-icons/lia"; 
 import { RiTeamLine, RiUserSettingsLine } from "react-icons/ri";
@@ -95,6 +95,11 @@ const Sidebar = () => {
                     {/* Management Sub-menu */}
                     {isManagementOpen && (
                       <ul className="pl-6 mt-2">
+                        <Link to="/Dashboard/Admin/CreateCompetition">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Create Competitions
+                          </li>
+                        </Link>
                         <Link to="/Dashboard/Admin/CreateEvent">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Create Event
@@ -128,7 +133,12 @@ const Sidebar = () => {
                             Event Details
                           </li>
                         </Link>
-                        
+                        <Link to="/Dashboard/Judge/VexGoEvent">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <MdOutlineEventNote className="mr-2" />
+                            Vex GO
+                          </li>
+                        </Link>
                         {/* Event */}
                           <li
                             className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"

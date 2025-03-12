@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import logo from "../../assets/logo/logoWrite-re.png";
-import logoBlack from "../../assets/logo/logo2.png";
+import logo from "../../assets/Static/logoWrite-re.png";
+import logoBlack from "../../assets/Static/logo2.png";
 import { useLocation, NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
@@ -28,6 +28,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
+  const challengesDropdownRef = useRef(null);
+  const resourcesDropdownRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,16 +65,45 @@ export default function Navbar() {
       }
     };
 
+    const handleClickOutside = (event) => {
+      if (
+        challengesDropdownRef.current && 
+        !challengesDropdownRef.current.contains(event.target)
+      ) {
+        setDropdowns(prev => ({ ...prev, challenges: false }));
+      }
+      if (
+        resourcesDropdownRef.current && 
+        !resourcesDropdownRef.current.contains(event.target)
+      ) {
+        setDropdowns(prev => ({ ...prev, resources: false }));
+      }
+      if (
+        notificationDropdownRef.current && 
+        !notificationDropdownRef.current.contains(event.target)
+      ) {
+        setDropdowns(prev => ({ ...prev, notifications: false }));
+      }
+      if (
+        profileDropdownRef.current && 
+        !profileDropdownRef.current.contains(event.target)
+      ) {
+        setDropdowns(prev => ({ ...prev, profile: false }));
+      }
+    };
+
     window.addEventListener("scroll", handleScroll);
     checkLoginStatus();
     
     // التحقق كل 4 دقائق (240000 مللي ثانية)
     // نختار 4 دقائق لنضمن تجديد التوكن قبل انتهاء صلاحيته (عادةً 5 دقائق)
     const tokenCheckInterval = setInterval(checkLoginStatus, 240000);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       clearInterval(tokenCheckInterval);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -85,8 +116,7 @@ export default function Navbar() {
       : "/Dashboard/User"
     : "/";
 
-    const userRoleSetting = JSON.parse(localStorage.getItem("user_role"));
-    const UrlSetting = userRoleSetting
+    const UrlSetting = userRole
       ? userRole.is_superuser
         ? "/Dashboard/Team/AccountSetting"
         : userRole.is_staff && !userRole.is_superuser
@@ -159,7 +189,7 @@ export default function Navbar() {
           About
         </NavHashLink>
 
-        <div className="relative group w-full" >
+        <div className="relative group w-full" ref={challengesDropdownRef}>
           <button
             onClick={() => handleDropdownToggle("challenges")}
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
@@ -191,7 +221,7 @@ export default function Navbar() {
           )}
         </div>
 
-        <div className="relative group w-full">
+        <div className="relative group w-full" ref={resourcesDropdownRef}>
           <button
             onClick={() => handleDropdownToggle("resources")}
             className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">

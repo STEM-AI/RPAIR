@@ -1,8 +1,8 @@
 import React from 'react'
-import Vexgo from '../../assets/imgs/vexComp/vexiq.jpg'
-import VexIQ from '../../assets/imgs/vexComp/vexgo.jpg'
-import arduino from '../../assets/imgs/vexComp/arduino.jpg'
-import web from '../../assets/imgs/vexComp/web.jpeg'
+import Vexgo from '../../assets/gallery/Robotics/VexGO/FutureComp/FutureComp-sadat/1W2A9713.jpg'
+import VexIQ from '../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_4376.JPG'
+import arduino from '../../assets/cards/arduino.jpg'
+import web from '../../assets/cards/web.jpeg'
 
 const Gallery = () => {
     return (
@@ -15,8 +15,8 @@ const Gallery = () => {
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
             {[
-              { src: Vexgo, alt: "Photo by Minh Pham", label: "VEX IQ" },
-              { src: VexIQ, alt: "Photo by Magicle", label: "VEX GO", span: "md:col-span-2" },
+              { src: Vexgo, alt: "Photo by Minh Pham", label: "VEX GO" },
+              { src: VexIQ, alt: "Photo by Magicle", label: "VEX IQ", span: "md:col-span-2" },
               { src: arduino, alt: "Photo by Martin Sanchez", label: "ARDUINO", span: "md:col-span-2" },
               { src:web , alt: "Photo by Lorenzo Herrera", label: "wWEB DESIGN" }
             ].map((item, index) => (

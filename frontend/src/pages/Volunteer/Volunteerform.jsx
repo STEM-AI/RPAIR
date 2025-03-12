@@ -178,7 +178,7 @@
 // }
 
 import { useState } from "react";
-import VolunteerImg from '../../assets/imgs/vexComp/volunteer.jpg';
+import VolunteerImg from '../../assets/Forms/volunteer.jpg';
 
 export default function VolunteerForm() {
   const [formData, setFormData] = useState({

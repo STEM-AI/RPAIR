@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import logo from "../../assets/logo/logoWrite-re.png";
-import logoBlack from "../../assets/logo/logo2.png";
+import logo from "../../assets/Static/logoWrite-re.png";
+import logoBlack from "../../assets/Static/logo2.png";
 import { useLocation, NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
@@ -9,6 +9,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { RxDropdownMenu } from "react-icons/rx";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
+import { NavHashLink } from "react-router-hash-link";
 
 export default function NavbarProfile() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,38 +24,75 @@ export default function NavbarProfile() {
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
+  const challengesDropdownRef = useRef(null);
+  const resourcesDropdownRef = useRef(null);
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      const { access_token } = getTokens();
-      
-      if (!access_token) {
-        setIsLoggedIn(false);
-        navigate("/login", { replace: true });
-        return;
-      }
-
-      if (isTokenExpired(access_token)) {
-        const newAccessToken = await refreshAccessToken();
-        if (newAccessToken) {
-          setIsLoggedIn(true);
-        } else {
-          handleLogout();
-        }
-      } else {
-        setIsLoggedIn(true);
-      }
-    };
+      const checkLoginStatus = async () => {
+          const { access_token } = getTokens();
+          
+          if (!access_token) {
+            setIsLoggedIn(false);
+            return;
+          }
+    
+          if (isTokenExpired(access_token)) {
+            // محاولة تجديد الـ access token باستخدام الـ refresh token
+            const newAccessToken = await refreshAccessToken();
+            
+            if (newAccessToken) {
+              // تم تجديد الـ access token بنجاح
+              setIsLoggedIn(true);
+            } else {
+              // فشل تجديد الـ token، قم بتسجيل الخروج
+              handleLogout();
+            }
+          } else {
+            // الـ access token صالح
+            setIsLoggedIn(true);
+          }
+        };
+    
+        const handleClickOutside = (event) => {
+          if (
+            challengesDropdownRef.current && 
+            !challengesDropdownRef.current.contains(event.target)
+          ) {
+            setDropdowns(prev => ({ ...prev, challenges: false }));
+          }
+          if (
+            resourcesDropdownRef.current && 
+            !resourcesDropdownRef.current.contains(event.target)
+          ) {
+            setDropdowns(prev => ({ ...prev, resources: false }));
+          }
+          if (
+            notificationDropdownRef.current && 
+            !notificationDropdownRef.current.contains(event.target)
+          ) {
+            setDropdowns(prev => ({ ...prev, notifications: false }));
+          }
+          if (
+            profileDropdownRef.current && 
+            !profileDropdownRef.current.contains(event.target)
+          ) {
+            setDropdowns(prev => ({ ...prev, profile: false }));
+          }
+        };
 
     checkLoginStatus();
     
     // تجديد التوكن كل 4 دقائق
+    // التحقق كل 4 دقائق (240000 مللي ثانية)
+    // نختار 4 دقائق لنضمن تجديد التوكن قبل انتهاء صلاحيته (عادةً 5 دقائق)
     const tokenCheckInterval = setInterval(checkLoginStatus, 240000);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       clearInterval(tokenCheckInterval);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [navigate]);
+  }, []);
 
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
@@ -65,8 +103,7 @@ export default function NavbarProfile() {
       : "/Dashboard/User"
     : "/";
 
-    const userRoleSetting = JSON.parse(localStorage.getItem("user_role"));
-    const UrlSetting = userRoleSetting
+    const UrlSetting = userRole
       ? userRole.is_superuser
         ? "/Dashboard/Team/AccountSetting"
         : userRole.is_staff && !userRole.is_superuser
@@ -76,12 +113,12 @@ export default function NavbarProfile() {
   
 
   const handleLogout = () => {
-    clearTokens();
-    localStorage.removeItem("user_role");
-    sessionStorage.removeItem("hasRefreshed");
-    setIsLoggedIn(false);
-    navigate("/", { replace: true });
-  };
+     clearTokens();
+     localStorage.removeItem("user_role");
+     sessionStorage.removeItem("hasRefreshed");
+     setIsLoggedIn(false);
+     navigate("/", { replace: true });
+   };
 
   const handleDropdownToggle = (dropdown) => {
     setDropdowns((prevState) => ({
@@ -94,29 +131,24 @@ export default function NavbarProfile() {
     }));
   };
 
-  // إضافة مراقب النقر خارج القوائم المنسدلة
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        profileDropdownRef.current && 
-        !profileDropdownRef.current.contains(event.target) &&
-        notificationDropdownRef.current && 
-        !notificationDropdownRef.current.contains(event.target)
-      ) {
-        setDropdowns((prevState) => ({
-          ...prevState,
-          challenges: false,
-          resources: false,
-          notifications: false,
-          profile: false
-        }));
-      }
-    };
+  const handleItemClick = (link) => {
+    // Close all dropdowns
+    setDropdowns({
+      challenges: false,
+      resources: false,
+      notifications: false,
+      profile: false
+    });
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    // For profile-specific actions
+    if (link === 'logout') {
+      handleLogout();
+      return;
+    }
 
+    // Navigate to the specified link
+    navigate(link);
+  };
   // التحقق من تسجيل الدخول قبل عرض المحتوى
   if (!isLoggedIn) {
     return null; // أو يمكنك عرض رسالة تحميل
@@ -146,51 +178,63 @@ export default function NavbarProfile() {
   >
     Home
   </NavLink>
-  <NavLink
-    to={"/about"}
-    className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300"
-  >
+  <NavHashLink to={"/#about"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
     About
-  </NavLink>
+  </NavHashLink>
 
   {/* Challenges Dropdown */}
-    <div className="relative group w-full">
+    <div className="relative group w-full" ref={challengesDropdownRef}>
             <button
               onClick={() => handleDropdownToggle("challenges")}
               className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
               Challenges
             </button>
-            {dropdowns.challenges && (<ul
-              className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg `}>
-              {["Vex IQ", "Vex V5", "Web Design", "Open Source", "Mobile Application", "Programming", "Arduino"].map((item, index) => (
-                <li key={index} className="hover:bg-cyan-50">
-                  <NavLink to={`/competitions`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950">
-                    {item}
-                  </NavLink>
+             {dropdowns.challenges && (
+            <ul className={`absolute left-0 z-50 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 transition-transform duration-300 ease-out origin-top`}>
+              {[
+                { name: "Robotics", link: "/Robotics/Vex" },
+                { name: "Web Design", link: "/competitions/web-design" },
+                { name: "Open Source", link: "/OpenSource/competitions" },
+                { name: "Mobile Application", link: "/competitions/mobile-app" },
+                { name: "Programming", link: "/competitions/programming" },
+                { name: "Artificial Intelligence", link: "/competitions/ai" },
+                { name: "Fablab", link: "/competitions/fablab" },
+                { name: "ST Math", link: "/competitions/st-math" },
+                { name: "Graphic Design", link: "/competitions/graphic-design" }
+              ].map((item, index) => (
+                <li key={index} className="hover:bg-cyan-50 transition-all duration-300">
+                  <div
+                    className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105 cursor-pointer transition-all duration-300"
+                    onClick={() => handleItemClick(item.link)}
+                  >
+                    {item.name}
+                  </div>
                 </li>
               ))}
-            </ul>)}
+            </ul>
+          )}
           </div>
   
-          <div className="relative group">
+          <div className="relative group" ref={resourcesDropdownRef}>
             <button
               onClick={() => handleDropdownToggle("resources")}
               className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
               Resources
             </button>
-            {dropdowns.resources &&(
-              <ul
-              className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95
-                transition-transform duration-300 ease-out origin-top`}>
-                
+             {dropdowns.resources && (
+            <ul className={`absolute  left-0 z-50 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 transition-transform duration-300 ease-out origin-top`}>
               {["Volunteering", "Event"].map((item, index) => (
-                <li key={index} className="hover:bg-cyan-50">
-                  <NavLink to={`/resources/${item.toLowerCase()}`} className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105">
+                <li key={index} className="hover:bg-cyan-50 transition-all duration-300">
+                  <div
+                    className="block px-4 py-2 text-cyan-500 hover:text-cyan-950 transform hover:scale-105 cursor-pointer transition-all duration-300"
+                    onClick={() => handleItemClick(`/resources/${item.toLowerCase()}`)}
+                  >
                     {item}
-                  </NavLink>
+                  </div>
                 </li>
               ))}
-            </ul>)}
+            </ul>
+          )}
           </div>
 
   <NavLink
@@ -229,18 +273,18 @@ export default function NavbarProfile() {
               </button>
               {dropdowns.profile && (
                 <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
-                  <NavLink to={Url} className="flex items-center text-gray-600 py-2 px-1">
+                  <div onClick={() => handleItemClick(Url)} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                     <BsFillPersonFill className="text-2xl mx-2" />
-                    <span className="text-lg">Dashbord</span>
-                  </NavLink>
-                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1">
+                    <span className="text-lg">Dashboard</span>
+                  </div>
+                  <div onClick={() => handleItemClick(UrlSetting)} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                     <IoSettingsOutline className="text-2xl mx-2" />
                     <span className="text-lg">Account Settings</span>
-                  </NavLink>
+                  </div>
                   <hr />
-                  <div className="flex items-center text-gray-600 py-2 px-1">
+                  <div onClick={() => handleItemClick('logout')} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                     <CiLogout className="text-2xl mx-2" />
-                    <button className="text-lg" onClick={handleLogout}>Log Out</button>
+                    <span className="text-lg">Log Out</span>
                   </div>
                 </div>
               )}

@@ -34,20 +34,22 @@ import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEven
 import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
-import GameTimer from "./pages/Dashboards/Judge/Scores/GameTimer";
+import GameTimer from "./pages/Dashboards/Judge/VexIQ/Scores/GameTimer";
 
 //                          Judge                   //
 import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
-import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
-import Interview from "./pages/Dashboards/Judge/interview";
-import Inspection from "./pages/Dashboards/Judge/Inspection";
-import Notebook from "./pages/Dashboards/Judge/Notebook";
-import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
-import Skills from "./pages/Dashboards/Judge/matches/skills";
-import StartMatch from "./pages/Dashboards/Judge/StartMatch";
+import MatchRounds from "./pages/Dashboards/Judge/VexIQ/matches/matches";
+import Interview from "./pages/Dashboards/Judge/VexIQ/interview";
+import Inspection from "./pages/Dashboards/Judge/VexIQ/Inspection";
+import Notebook from "./pages/Dashboards/Judge/VexIQ/Notebook";
+import Teamwork from "./pages/Dashboards/Judge/VexIQ/matches/teamwork";
+import Skills from "./pages/Dashboards/Judge/VexIQ/matches/skills";
+// import StartMatch from "./pages/Dashboards/Judge/StartMatch";
+
+// import StartMatch from "./pages/Dashboards/Judge/StartMatchIQ";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
-import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
-import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
+import LiveTeam from "./pages/Dashboards/View/LiveTeam";
+import LiveSkills from "./pages/Dashboards/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
 import RoboticsPage from "./components/CardSlider/roboticsPage";
@@ -56,7 +58,7 @@ import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
 import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 import UADashboard from "./pages/Dashboards/UADashboard";
 import EventDash from "./pages/Dashboards/EventsDash";
-import SelectEvent from "./pages/Dashboards/Judge/matches/SelectMatch";
+import SelectEvent from "./pages/Dashboards/Judge/VexIQ/matches/SelectMatch";
 import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
 import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 import TeamSetting from "./pages/AccountSetting/TeamSetting";
@@ -65,6 +67,11 @@ import VexGOAbout from "./components/Competitions/Robotics/VexGo";
 import Vex123About from "./components/Competitions/Robotics/Vex123";
 // import VexV5About from "./components/Competitions/Robotics/Vex"; // arg3y hena tany fe moshkelaaaa
 import VexIQAbout from "./components/Competitions/Robotics/VexIQ";
+import JudgeGo from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/JudgeGo";
+import StartMatchIQ from "./pages/Dashboards/Judge/StartMatchIQ";
+import StartMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO";
+import SelectMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO";
+import COOPMatchesGO from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
 
 const App = () => {
   const Layout = ({ children, hideNavbar = false }) => (
@@ -445,7 +452,7 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <StartMatch />
+                <StartMatchIQ />
               </LayoutDashboard>
             </Layout>
           }
@@ -477,6 +484,36 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <Teamwork />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+                <Route
+          path="/Dashboard/Judge/VexGoEvent"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <StartMatchGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+                        <Route
+          path="/Dashboard/Judge/matchesGO"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <SelectMatchGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+               <Route
+          path="/Dashboard/VexGO/COOPMatches"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <COOPMatchesGO />
               </LayoutDashboard>
             </Layout>
           }
