@@ -34,20 +34,20 @@ import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEven
 import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
-import GameTimer from "./pages/Dashboards/Judge/Scores/GameTimer";
+import GameTimer from "./pages/Dashboards/Judge/VexIQ/Scores/GameTimer";
 
 //                          Judge                   //
 import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
-import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
-import Interview from "./pages/Dashboards/Judge/interview";
-import Inspection from "./pages/Dashboards/Judge/Inspection";
-import Notebook from "./pages/Dashboards/Judge/Notebook";
-import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
-import Skills from "./pages/Dashboards/Judge/matches/skills";
+import MatchRounds from "./pages/Dashboards/Judge/VexIQ/matches/matches";
+import Interview from "./pages/Dashboards/Judge/VexIQ/interview";
+import Inspection from "./pages/Dashboards/Judge/VexIQ/Inspection";
+import Notebook from "./pages/Dashboards/Judge/VexIQ/Notebook";
+import Teamwork from "./pages/Dashboards/Judge/VexIQ/matches/teamwork";
+import Skills from "./pages/Dashboards/Judge/VexIQ/matches/skills";
 import StartMatch from "./pages/Dashboards/Judge/StartMatch";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
-import LiveTeam from "./pages/Dashboards/Judge/matches/View/LiveTeam";
-import LiveSkills from "./pages/Dashboards/Judge/matches/View/LiveSkills";
+import LiveTeam from "./pages/Dashboards/View/LiveTeam";
+import LiveSkills from "./pages/Dashboards/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
 import RoboticsPage from "./components/CardSlider/roboticsPage";
@@ -56,7 +56,7 @@ import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
 import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 import UADashboard from "./pages/Dashboards/UADashboard";
 import EventDash from "./pages/Dashboards/EventsDash";
-import SelectEvent from "./pages/Dashboards/Judge/matches/SelectMatch";
+import SelectEvent from "./pages/Dashboards/Judge/VexIQ/matches/SelectMatch";
 import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
 import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 import TeamSetting from "./pages/AccountSetting/TeamSetting";
