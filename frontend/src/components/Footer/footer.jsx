@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/logo/logo2.png";
+import logo from "../../assets/Static/logo2.png";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function Footer() {

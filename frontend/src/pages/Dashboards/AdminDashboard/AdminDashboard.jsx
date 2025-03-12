@@ -78,10 +78,14 @@
 
 
 import React from 'react';
-import vexGoLogo from '../../../assets/imgs/dashboards/vex-go-logo.webp';
-import vexGo from '../../../assets/imgs/dashboards/vex-go.webp';
-import vexIqLogo from '../../../assets/imgs/dashboards/vex-iq-logo.webp'
-import vexIq from '../../../assets/imgs/dashboards/vexiq.webp';
+import vex123Logo from '../../../assets/cards/vex-123-logo.webp';
+import vex123 from '../../../assets/cards/vex-123.png';
+import vexGoLogo from '../../../assets/cards/vex-go-logo.webp';
+import vexGo from '../../../assets/cards/vex-go.webp';
+import vexIqLogo from '../../../assets/cards/vex-iq-logo.webp';
+import vexIq from '../../../assets/cards/vexiq.webp';
+import vexV5Logo from '../../../assets/cards/vex-v5-logo.webp';
+import vexV5 from '../../../assets/cards/vex-v5.webp';
 import Matches from './Matchess'
 import { Link } from 'react-router-dom';
 

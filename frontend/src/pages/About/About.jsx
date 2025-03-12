@@ -1,10 +1,10 @@
 import React from "react";
 import MissionVision from "../../components/AboutComp/Mission/Mission";
-import imageSrc2 from '../../assets/imgs/aboutus/IMG_4376.JPG';
-import imageSrc1 from '../../assets/imgs/aboutus/IMG_3929.JPG';
-import imageSrc3 from '../../assets/imgs/aboutus/IMG_4396.JPG';
-import imageSrc4 from '../../assets/imgs/aboutus/IMG_3937.JPG';
-import bgImage from '../../assets/imgs/aboutus/bgleft.png'; 
+import imageSrc2 from '../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_4376.JPG';
+import imageSrc1 from '../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_1708.JPG';
+import imageSrc3 from '../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_2006.JPG';
+import imageSrc4 from '../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_1722.JPG';
+import bgImage from '../../assets/Static/bgleft.png'; 
 import CardSlider from "../../components/CardSlider/cardSlider";
 
 
