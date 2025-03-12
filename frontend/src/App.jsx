@@ -44,14 +44,9 @@ import Inspection from "./pages/Dashboards/Judge/VexIQ/Inspection";
 import Notebook from "./pages/Dashboards/Judge/VexIQ/Notebook";
 import Teamwork from "./pages/Dashboards/Judge/VexIQ/matches/teamwork";
 import Skills from "./pages/Dashboards/Judge/VexIQ/matches/skills";
-import StartMatch from "./pages/Dashboards/Judge/StartMatch";
-import MatchRounds from "./pages/Dashboards/Judge/matches/matches";
-import Interview from "./pages/Dashboards/Judge/interview";
-import Inspection from "./pages/Dashboards/Judge/Inspection";
-import Notebook from "./pages/Dashboards/Judge/Notebook";
-import Teamwork from "./pages/Dashboards/Judge/matches/teamwork";
-import Skills from "./pages/Dashboards/Judge/matches/skills";
-import StartMatch from "./pages/Dashboards/Judge/StartMatchIQ";
+// import StartMatch from "./pages/Dashboards/Judge/StartMatch";
+
+// import StartMatch from "./pages/Dashboards/Judge/StartMatchIQ";
 import EventDetails from "./pages/Dashboards/Judge/eventDetails";
 import LiveTeam from "./pages/Dashboards/View/LiveTeam";
 import LiveSkills from "./pages/Dashboards/View/LiveSkills";
