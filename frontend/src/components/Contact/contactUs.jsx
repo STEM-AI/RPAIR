@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import robotImage from '../../assets/imgs/cotantUs/Robot-iStock.jpg';
+import robotImage from '../../assets/Forms/Robot-iStock.jpg';
 import { IoIosCloseCircle } from "react-icons/io";
 import { TbBubbleTextFilled } from "react-icons/tb";
 

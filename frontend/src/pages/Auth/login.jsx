@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from 'jwt-decode'; 
-import logo from "../../assets/logo/logoWrite-re.png";
 import { FcGoogle } from "react-icons/fc";
-import bgimg from "../../assets/imgs/aboutus/bg.png";
+import logo from "../../assets/Static/logoWrite-re.png";
+import bgimg from "../../assets/Static/bg.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

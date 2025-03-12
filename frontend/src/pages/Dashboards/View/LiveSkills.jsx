@@ -389,7 +389,7 @@ const LiveSkills = () => {
 
 
   useEffect(() => {
-    socketRef.current = new WebSocket(`ws://${process.env.REACT_APP_API_HOST}/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");
