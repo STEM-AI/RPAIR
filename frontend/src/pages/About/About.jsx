@@ -11,7 +11,7 @@ import CardSlider from "../../components/CardSlider/cardSlider";
 function About() {
   return (
     <>
-      <section className="relative bg-white">
+      <section id="about" className="relative bg-white">
 
         <div
           className="absolute inset-0 z-0"
