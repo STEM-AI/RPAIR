@@ -2,9 +2,9 @@ import Swal from "sweetalert2";
 import Alert from '@mui/material/Alert';
 import axios from "axios";
 import {React,useState} from "react"; 
-import logo from "../../assets/logo/logoWrite-re.png"
+import logo from "../../assets/Static/logoWrite-re.png"
 import { FcGoogle } from "react-icons/fc";
-import bgimg from "../../assets/imgs/aboutus/bg.png"
+import bgimg from "../../assets/Static/bg.png"
 import { Link, Navigate } from "react-router-dom";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 

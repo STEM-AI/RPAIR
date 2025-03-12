@@ -2,15 +2,15 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import robotics from "../../../assets/imgs/vexComp/robot.jpg";
-import AI from "../../../assets/imgs/vexComp/AI.jpg";
-import mobile from "../../../assets/imgs/vexComp/mobile.jpg";
-import OpenSource from "../../../assets/imgs/vexComp/open.jpg";
-import Web from "../../../assets/imgs/vexComp/web.jpeg";
-import programming from "../../../assets/imgs/vexComp/programming.webp";
-import fablab from "../../../assets/imgs/vexComp/OIP.jpeg";
-import graphic from "../../../assets/imgs/vexComp/graphic.jpeg";
-import math from "../../../assets/imgs/vexComp/STMATH.png";
+import robotics from "../../../assets/cards/robot.jpg";
+import AI from "../../../assets/cards/AI.jpg";
+import mobile from "../../../assets/cards/mobile.jpg";
+import OpenSource from "../../../assets/cards/open.jpg";
+import Web from "../../../assets/cards/web.jpeg";
+import programming from "../../../assets/cards/programming.webp";
+import fablab from "../../../assets/cards/OIP.jpeg";
+import graphic from "../../../assets/cards/graphic.jpeg";
+import math from "../../../assets/cards/STMATH.png";
 
 const ListCompetitions = () => {
   const navigate = useNavigate();

@@ -344,7 +344,7 @@ const ScoreTeams = ({ onCalculate, onClose, gameId }) => {
   // Establish WebSocket connection when the component mounts
   useEffect(() => {
     socketRef.current = new WebSocket(
-      `ws://${process.env.REACT_APP_API_HOST}/ws/competition_event/${eventName}/game/${gameId}/`
+      `wss://rpair.org/ws/competition_event/${eventName}/game/${gameId}/`
     );
 
     socketRef.current.onopen = () => {

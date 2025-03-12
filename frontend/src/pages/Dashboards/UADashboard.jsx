@@ -132,10 +132,10 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import vexGoLogo from '../../assets/imgs/dashboards/vex-go-logo.webp';
-import vexGo from '../../assets/imgs/dashboards/vex-go.webp';
-import vexIqLogo from '../../assets/imgs/dashboards/vex-iq-logo.webp';
-import vexIq from '../../assets/imgs/dashboards/vexiq.webp';
+import vexGoLogo from '../../assets/cards/vex-go-logo.webp';
+import vexGo from '../../assets/cards/vex-go.webp';
+import vexIqLogo from '../../assets/cards/vex-iq-logo.webp';
+import vexIq from '../../assets/cards/vexiq.webp';
 
 const roboticsKits = [
   {
