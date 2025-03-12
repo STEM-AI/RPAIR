@@ -10,14 +10,14 @@ const cards = [
 ];
 
 
-export default function StartMatch() {
+export default function StartMatchIQ() {
   const navigate = useNavigate();
 
   return (
     <div className="mx-auto text-center flex flex-col justify-center items-center">
       <h2 className="mb-10 py-4  bg-clip-text text-blue-950
         text-3xl sm:text-4xl lg:text-5xl font-black">
-        Welcome to VEX IQ Event 27/Feb
+        Welcome to VEX IQ Challenge
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-6 w-full ">
         {cards.map((card, index) => (
