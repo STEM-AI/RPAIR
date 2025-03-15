@@ -28,7 +28,7 @@
     "react-masonry-css": "^1.0.16",
     "react-router-dom": "^7.1.1",
     "react-router-hash-link": "^2.4.3",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.3",
     "slick-carousel": "^1.8.1",
