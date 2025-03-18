@@ -18,6 +18,7 @@ import VolunteerForm from "./pages/Volunteer/Volunteerform";
 
 //                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
+import AddNews from "./pages/Dashboards/AddNews";
 
 //                          Admin                   //
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
@@ -52,8 +53,19 @@ import LiveTeam from "./pages/Dashboards/View/LiveTeam";
 import LiveSkills from "./pages/Dashboards/View/LiveSkills";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
 import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
-import RoboticsPage from "./components/CardSlider/roboticsPage";
-import OpenSourcePage from "./components/CardSlider/openSourcePage";
+//                        start  Competitions                   //
+import ComingSoonPage from "./pages/ComingSoon";
+import RoboticsPage from "./components/Competitions/roboticsPage";
+import OpenSourcePage from "./components/Competitions/openSourcePage";
+import Programming from "./components/Competitions/Programming";
+import WebDesign from "./components/Competitions/WebDesign";
+import AI from "./components/Competitions/AI";
+import GraphicDesign from "./components/Competitions/GraphicDesign";
+import STMATH from "./components/Competitions/STMATH";
+import MobileApp from "./components/Competitions/MobileApp";
+import Fablab from "./components/Competitions/Fablab";
+import Arduino from "./components/Competitions/OpenSource/Arduino";
+//                        end  Competitions                   //
 import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
 import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 import UADashboard from "./pages/Dashboards/UADashboard";
@@ -81,6 +93,12 @@ const App = () => {
       {!hideNavbar && <Footer />}
     </>
   );
+  const LayoutComing = ({ children, hideNavbar = false }) => (
+    <>
+      {!hideNavbar && <Navbar />}
+      {children}
+    </>
+  );
 
   return (
     <Router>
@@ -92,6 +110,14 @@ const App = () => {
             <Layout>
               <Home />
             </Layout>
+          }
+        />
+        <Route
+          path="/competitions/ComingSoon"
+          element={
+            <LayoutComing>
+              <ComingSoonPage />
+            </LayoutComing>
           }
         />
         <Route
@@ -153,6 +179,7 @@ const App = () => {
             </Layout>
           }
         />
+        {/* Start Competitions */}
         <Route
           path="/Robotics/Vex"
           element={
@@ -195,15 +222,41 @@ const App = () => {
         />
 
         <Route
-          path="/OpenSource/competitions"
+          path="/competitions/OpenSource"
           element={
             <Layout>
               <OpenSourcePage />
             </Layout>
           }
         />
-
+        <Route
+          path="/Competitions/OpenSource/Arduino"
+          element={
+            <Layout>
+              <Arduino />
+            </Layout>
+          }
+        />
+        <Route
+          path="/Competitions/WebDesign"
+          element={
+            <Layout>
+              <WebDesign />
+            </Layout>
+          }
+        />
+        {/* end Competitions */}
         {/* Admin Dashboard Routes */}
+        <Route
+          path="/Dashboard/AddNews"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <AddNews />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
         <Route
           path="/Dashboard/Admin"
           element={

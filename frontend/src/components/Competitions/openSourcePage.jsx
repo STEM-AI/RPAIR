@@ -10,7 +10,7 @@ function OpenSourcePage() {
       </h2>
 
       {/* كارد Arduino */}
-      <Link to="/Arduino" className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl w-[420px]">
+      <Link to="/Competitions/OpenSource/Arduino" className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl w-[420px]">
         {/* صورة الكارد */}
         <img 
           src={require('../../assets/cards/arduino.jpg')} 
