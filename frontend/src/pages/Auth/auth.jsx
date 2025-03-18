@@ -47,7 +47,7 @@ export const refreshAccessToken = async () => {
             return null;
         }
 
-        const response = await axios.post('/api/token/refresh/', {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/token/refresh/`, {
             refresh: refresh_token
         });
 

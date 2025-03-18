@@ -133,6 +133,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import vexGoLogo from '../../assets/cards/vex-go-logo.webp';
+import vex123Logo from '../../assets/cards/vex-123-logo.webp';
+import vex123 from '../../assets/cards/vex-123.png';
 import vexGo from '../../assets/cards/vex-go.webp';
 import vexIqLogo from '../../assets/cards/vex-iq-logo.webp';
 import vexIq from '../../assets/cards/vexiq.webp';
@@ -140,6 +142,14 @@ import vexIq from '../../assets/cards/vexiq.webp';
 const roboticsKits = [
   {
     id: 1,
+    name: 'VEX 123',
+    image: vex123,
+    logo: vex123Logo,
+    bgColor: 'bg-vex123',
+    textColor: 'text-purple-900',
+  },
+  {
+    id: 2,
     name: 'VEX GO',
     image: vexGo,
     logo: vexGoLogo,
@@ -147,7 +157,7 @@ const roboticsKits = [
     textColor: 'text-teal-900',
   },
   {
-    id: 2,
+    id: 3,
     name: 'VEX IQ',
     image: vexIq,
     logo: vexIqLogo,
@@ -171,11 +181,11 @@ function UADashboard() {
         Live & Upcoming Competitions
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {roboticsKits.map((kit) => (
           <div 
             key={kit.id} 
-            className={`p-4 w-96 rounded-xl shadow-lg flex flex-col items-center ${kit.bgColor} cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl`}
+            className={`p-4 w-96 rounded-xl shadow-lg flex flex-col items-center ${kit.bgColor} cursor-pointer  transform hover:scale-105 hover:shadow-xl`}
             onClick={() => handleNavigation(kit)}
           >
             <img src={kit.logo} alt={`${kit.name} Logo`} className="mb-3 w-60 h-32 object-contain" />

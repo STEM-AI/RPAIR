@@ -4,6 +4,28 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 
+
+const options = [
+  { value: "vex_iq", label: "VEX IQ" },
+  { value: "vex_123", label: "VEX 123" },
+  {
+    label: "VEX GO",
+    options: [
+      { value: "robotics", label: <> Ocean Science Exploration</> },
+      { value: "vex_go_city", label: <> City Technology Rebuild</> },
+      { value: "vex_go_village", label: <> Village Engineering Construction</> },
+      { value: "vex_go_mars", label: <> Mars Math Expedition</> },
+    ],
+  },
+  { value: "programming", label: "Programming" },
+  { value: "web_design", label: "Web Design" },
+    { value: "open_source", label: "Open Source" },
+    { value: "mobile_application", label: "Mobile Application" },
+    { value: "artificial_intelligence", label: "Artificial Intelligence" },
+    { value: "fablab", label: "Fablab" },
+    { value: "st_math", label: "ST Math" },
+    { value: "graphic_design", label: "Graphic Design" },
+];
 const CreateCompetition = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -113,15 +135,30 @@ const CreateCompetition = () => {
             <label htmlFor="competition_name" className="block text-gray-700 font-bold">
               Competition Name:
             </label>
-            <input
-              type="text"
-              id="competition_name"
-              name="name"
-              placeholder="Enter competition name"
-              value={formData.name}
-              onChange={handleChange}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
-            />
+          <select
+            id="competition_name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+          >
+            {options.map((item) => 
+              item.options ? (
+                <optgroup key={item.label} label={item.label}>
+                  {item.options.map((subItem) => (
+                    <option key={subItem.value} value={subItem.value}>
+                      {subItem.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ) : (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              )
+            )}
+          </select>
+
           </div>
 
          
@@ -129,19 +166,16 @@ const CreateCompetition = () => {
             <label htmlFor="type" className="block text-gray-700 font-bold">
               type:
             </label>
-            <select
-              id="type"
-              name="type"
-              value={formData.type}
+           
+           <input
+              type="text"
+              id="competition_name"
+              name="name"
+              placeholder="Enter competition name"
+              value={formData.name}
               onChange={handleChange}
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
-            >
-              <option value="Mini">Mini</option>
-              <option value="Small">Small</option>
-              <option value="Regional">Regional</option>
-              <option value="National">National</option>
-              <option value="International">International</option>
-            </select>
+          />
           </div>
 
           <div className="p-2">

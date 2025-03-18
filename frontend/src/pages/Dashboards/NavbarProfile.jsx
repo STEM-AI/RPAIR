@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { RxDropdownMenu } from "react-icons/rx";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 import { NavHashLink } from "react-router-hash-link";
+import { BiSolidMessageAdd } from "react-icons/bi";
+
 
 export default function NavbarProfile() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -193,14 +195,14 @@ export default function NavbarProfile() {
             <ul className={`absolute left-0 z-50 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 transition-transform duration-300 ease-out origin-top`}>
               {[
                 { name: "Robotics", link: "/Robotics/Vex" },
-                { name: "Web Design", link: "/competitions/web-design" },
-                { name: "Open Source", link: "/OpenSource/competitions" },
-                { name: "Mobile Application", link: "/competitions/mobile-app" },
-                { name: "Programming", link: "/competitions/programming" },
-                { name: "Artificial Intelligence", link: "/competitions/ai" },
-                { name: "Fablab", link: "/competitions/fablab" },
-                { name: "ST Math", link: "/competitions/st-math" },
-                { name: "Graphic Design", link: "/competitions/graphic-design" }
+                { name: "Web Design", link: "/competitions/ComingSoon" },
+                { name: "Open Source", link: "/competitions/OpenSource" },
+                { name: "Mobile Application", link: "/competitions/ComingSoon" },
+                { name: "Programming", link: "/competitions/ComingSoon" },
+                { name: "Artificial Intelligence", link: "/competitions/ComingSoon" },
+                { name: "Fablab", link: "/competitions/ComingSoon" },
+                { name: "ST Math", link: "/competitions/ComingSoon" },
+                { name: "Graphic Design", link: "/competitions/ComingSoon" }
               ].map((item, index) => (
                 <li key={index} className="hover:bg-cyan-50 transition-all duration-300">
                   <div
@@ -276,6 +278,10 @@ export default function NavbarProfile() {
                   <div onClick={() => handleItemClick(Url)} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                     <BsFillPersonFill className="text-2xl mx-2" />
                     <span className="text-lg">Dashboard</span>
+                  </div>
+                  <div onClick={() => handleItemClick('/Dashboard/AddNews')} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
+                    <BiSolidMessageAdd className="text-2xl mx-2" />
+                    <span className="text-lg">Add News</span>
                   </div>
                   <div onClick={() => handleItemClick(UrlSetting)} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                     <IoSettingsOutline className="text-2xl mx-2" />
