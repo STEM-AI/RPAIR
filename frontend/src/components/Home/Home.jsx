@@ -34,7 +34,7 @@ const Home = () => {
         data-twe-ride="carousel"
       >
         <div className="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
-          <div
+            <div
             className="relative float-left -mr-[100%] w-full !transform-none bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none"
             data-twe-carousel-fade
             data-twe-carousel-item
@@ -77,13 +77,15 @@ const Home = () => {
               role="button"
             >
               Get Started
-            </NavLink>
+                  </NavLink>
+
           </div>
 
 
               
             </div>
-          </div>
+            </div>
+            
         </div>
         </div>
 
