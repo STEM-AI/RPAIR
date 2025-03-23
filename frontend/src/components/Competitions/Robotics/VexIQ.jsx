@@ -1,7 +1,7 @@
 import React from "react";
 import img1 from "../../../assets/gallery/Robotics/VexIQ/FutureComp-sadat/1W2A9814.jpg";
 
-import Rules from "../../../components/CometitionsComponent/Rules/Rules";
+import Rules from "../../../components/CometitionsComponent/Rules/RulesIQ";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import AwardsList from "../../../components/Awards/awards";
 

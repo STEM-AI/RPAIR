@@ -5,13 +5,7 @@ import { NavLink } from "react-router-dom";
 import About from "../../pages/About/About";
 
 const Home = () => {
-  // useEffect(() => {
-  //   // Initialize TW Elements
-  //   initTWE({ Carousel, Ripple });
-    
-  // }, []);
 
-   // Initialize TW Elements immediately
   initTWE({ Carousel, Ripple });
 
   const hasRefreshed = sessionStorage.getItem("hasRefreshed");
@@ -88,7 +82,6 @@ const Home = () => {
             
         </div>
         </div>
-
       </div>
       <About />
 
