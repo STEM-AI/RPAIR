@@ -73,8 +73,7 @@ import EventDash from "./pages/Dashboards/EventsDash";
 import SelectEvent from "./pages/Dashboards/Judge/VexIQ/matches/SelectMatch";
 import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
 import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
-import TeamSetting from "./pages/AccountSetting/TeamSetting";
-import JudgeSetting from "./pages/AccountSetting/JudgeSetting";
+import TeamSetting from "./pages/AccountSetting/AllSetting";
 import VexGOAbout from "./components/Competitions/Robotics/VexGo";
 import Vex123About from "./components/Competitions/Robotics/Vex123";
 // import VexV5About from "./components/Competitions/Robotics/Vex"; // arg3y hena tany fe moshkelaaaa
@@ -84,6 +83,7 @@ import StartMatchIQ from "./pages/Dashboards/Judge/StartMatchIQ";
 import StartMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO";
 import SelectMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO";
 import COOPMatchesGO from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
+import AllSetting from "./pages/AccountSetting/AllSetting";
 
 const App = () => {
   const Layout = ({ children, hideNavbar = false }) => (
@@ -246,6 +246,16 @@ const App = () => {
           }
         />
         {/* end Competitions */}
+         <Route
+          path="/Dashboard/AccountSetting"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <AllSetting />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
         {/* Admin Dashboard Routes */}
         <Route
           path="/Dashboard/AddNews"
@@ -393,16 +403,8 @@ const App = () => {
           }
         />
 
-        <Route
-          path="/Dashboard/Team/AccountSetting"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <TeamSetting />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+       
+       
         <Route
           path="/Dashboard/User/Teams"
           element={
@@ -489,16 +491,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
-          path="/Dashboard/Judge/AccountSetting"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <JudgeSetting />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+       
 
         <Route
           path="/Dashboard/JudgeEvent/:event_name"
