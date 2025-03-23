@@ -84,6 +84,7 @@ import StartMatchIQ from "./pages/Dashboards/Judge/StartMatchIQ";
 import StartMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO";
 import SelectMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO";
 import COOPMatchesGO from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
+import Codingmatches from "./pages/JudgeComp/Robotics/VexGO/matches/Codingmatches";
 
 const App = () => {
   const Layout = ({ children, hideNavbar = false }) => (
@@ -561,12 +562,22 @@ const App = () => {
             </Layout>
           }
         />
-               <Route
+          <Route
           path="/Dashboard/VexGO/COOPMatches"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
                 <COOPMatchesGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/VexGO/Skills"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <Codingmatches />
               </LayoutDashboard>
             </Layout>
           }
