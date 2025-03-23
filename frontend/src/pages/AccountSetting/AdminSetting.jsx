@@ -42,6 +42,7 @@ function AdminSetting() {
           date_of_birth: data.date_of_birth || "",
           address: data.address || "",
         });
+        
         setLoading(false);
       })
       .catch(() => {

@@ -119,14 +119,6 @@ export default function Navbar() {
       : "/Dashboard/User"
     : "/";
 
-    const UrlSetting = userRole
-      ? userRole.is_superuser
-        ? "/Dashboard/Team/AccountSetting"
-        : userRole.is_staff && !userRole.is_superuser
-        ? "/Dashboard/Judge/AccountSetting"
-        : "/Dashboard/Team/AccountSetting"
-      : "/";
-  
 
   const handleLogout = () => {
     clearTokens();
@@ -286,7 +278,7 @@ export default function Navbar() {
                                     <BiSolidMessageAdd className="text-2xl mx-2" />
                                     <span className="text-lg">Add News</span>
                                   </NavLink>
-                                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
+                                  <NavLink to={'/Dashboard/AccountSetting'} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                                     <IoSettingsOutline className="text-2xl mx-2" />
                                     <span className="text-lg">Account Settings</span>
                                   </NavLink>

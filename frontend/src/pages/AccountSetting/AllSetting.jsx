@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-function TeamSetting() {
+function Setting() {
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
@@ -133,4 +133,4 @@ function TeamSetting() {
   );
 }
 
-export default TeamSetting;
+export default Setting;

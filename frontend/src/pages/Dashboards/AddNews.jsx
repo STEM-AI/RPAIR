@@ -94,18 +94,61 @@
 // };
 
 // export default AddNews;
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+
 
 const AddNews = () => {
   const [newsData, setNewsData] = useState({
-    user_username: "neklawi",
+    user_username: "",
     content: ""
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const token = localStorage.getItem("access_token");
 
+  useEffect(() => {
+    if (!token) {
+      setError("Authentication Error: No token found.");
+      setLoading(false);
+      return;
+    }
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/data/profile/`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const data = await response.json();
+        setNewsData(prevState => ({
+          ...prevState,
+          user_username: data.username || "",
+        }));
+      } catch (error) {
+        setError(error.message || "Failed to load user data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [token]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!newsData.content) {
+      setError("Content is required.");
+      return;
+    }
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/user/notification/`, {
@@ -114,19 +157,27 @@ const AddNews = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newsData) // تحويل الكائن إلى JSON
+        body: JSON.stringify(newsData)
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Network response was not ok");
       }
 
       const result = await response.json();
       console.log("News updated successfully:", result);
+      Swal.fire({
+                      icon: "success",
+                      title: "Success",
+                      text: "Registration successful!",
+                      showConfirmButton: false,
+                        });
 
-      // إعادة تعيين الحقل content فقط
       setNewsData({ ...newsData, content: "" });
+      setError(null); // Clear any previous errors
     } catch (error) {
+      setError(error.message || "Error updating news");
       console.error("Error updating news:", error);
     }
   };
@@ -142,18 +193,18 @@ const AddNews = () => {
           New News
         </h1>
 
+        {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
+
         <form onSubmit={handleSubmit}>
-          {/* Textarea for news input */}
           <textarea
             id="newsInput"
             placeholder="Enter news content here..."
             className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
             rows={6}
             value={newsData.content}
-            onChange={handleContentChange} // استخدام الدالة الجديدة لتحديث المحتوى
+            onChange={handleContentChange}
           />
 
-          {/* Update News Button */}
           <button
             type="submit"
             className="mt-8 font-bold py-2 px-4 w-full rounded bg-cyan-800 hover:bg-cyan-600 transition-all duration-700 cursor-pointer text-white"
