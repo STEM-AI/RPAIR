@@ -35,7 +35,7 @@ const SelectMatchGO = () => {
             color: "bg-rose-500", 
             shadow: "shadow-rose-500/40", 
             icon: <BiJoystick className="text-white text-4xl" />, 
-            path: "/Dashboard/LiveSkills",
+            path: "/Dashboard/VexGO/Skills",
             description: "Test your robot's capabilities in both autonomous and driver-controlled modes! Score as many points as possible through precise programming and skilled driving. Master both to dominate the competition!"
           }
         ].map((service, index) => (
