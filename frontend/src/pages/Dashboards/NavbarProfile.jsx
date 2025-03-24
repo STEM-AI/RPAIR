@@ -569,10 +569,13 @@ export default function NavbarProfile() {
                     <BsFillPersonFill className="text-2xl mx-2" />
                     <span className="text-lg">Dashboard</span>
                   </div>
-                  <div onClick={() => handleItemClick('/Dashboard/AddNews')} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
-                    <BiSolidMessageAdd className="text-2xl mx-2" />
-                    <span className="text-lg">Add News</span>
-                  </div>
+                  {userRole.is_superuser &&
+
+                    <div onClick={() => handleItemClick('/Dashboard/AddNews')} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
+                      <BiSolidMessageAdd className="text-2xl mx-2" />
+                      <span className="text-lg">Add News</span>
+                    </div>
+                  }
                   <div onClick={() => handleItemClick('/Dashboard/AccountSetting')} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                     <IoSettingsOutline className="text-2xl mx-2" />
                     <span className="text-lg">Account Settings</span>
