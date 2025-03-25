@@ -179,6 +179,9 @@
 
 import { useState } from "react";
 import VolunteerImg from '../../assets/Forms/volunteer.jpg';
+import { Helmet } from "react-helmet-async";
+import { useLoading } from "../../context/LoadingContext";
+import React ,{ useEffect } from 'react';
 
 export default function VolunteerForm() {
   const [formData, setFormData] = useState({
@@ -200,9 +203,17 @@ export default function VolunteerForm() {
       [name]: type === "file" ? files[0] : value,
     });
   };
+  const { setIsLoading } = useLoading();
+
+  useEffect(() => {
+    setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
+  }, []);
 
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden my-12">
+       <Helmet>
+              <title>Volunteer</title>
+            </Helmet>
       <div className="grid grid-cols-1 md:grid-cols-2">
         
         {/* ✅ Form Section */}

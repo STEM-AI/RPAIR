@@ -1,10 +1,14 @@
-import React, { useEffect }  from "react";
+import React, { useEffect ,useState }  from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
 import About from "../../pages/About/About";
+import NewsTicker from "../News/NewsLive";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
+
+  
 
   initTWE({ Carousel, Ripple });
 
@@ -18,6 +22,9 @@ const Home = () => {
 
   return (
     <>
+       <Helmet>
+        <title>Home</title>
+      </Helmet>
       <div></div>
       <div id="home-section">
         
@@ -82,9 +89,11 @@ const Home = () => {
             
         </div>
         </div>
+               
       </div>
       <About />
 
+ <NewsTicker/>
 
 
     </>

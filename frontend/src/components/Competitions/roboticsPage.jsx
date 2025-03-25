@@ -8,6 +8,8 @@ import vexIqLogo from '../../assets/cards/vex-iq-logo.webp';
 import vexIq from '../../assets/cards/vexiq.webp';
 import vexV5Logo from '../../assets/cards/vex-v5-logo.webp';
 import vexV5 from '../../assets/cards/vex-v5.webp';
+import { Helmet } from "react-helmet-async";
+     
 
 const roboticsKits = [
   {
@@ -57,6 +59,9 @@ function RoboticsPage() {
 
   return (
     <div className="p-6 ">
+      <Helmet>
+        <title>VEX Robotics</title>
+      </Helmet>
       <h2 className="mb-6 pt-4 pb-8 text-center text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500">
         VEX Robotics 
       </h2>

@@ -189,7 +189,7 @@ const CardSlider = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center p-10 md:px-20">
+    <div id='challenges' className=" flex flex-col items-center p-10 md:px-20">
       <div className="mb-8">
         <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black text-center">
           RPAIR CHALLENGES
