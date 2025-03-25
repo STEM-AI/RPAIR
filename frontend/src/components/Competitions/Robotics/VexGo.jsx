@@ -4,12 +4,16 @@ import img1 from "../../../assets/gallery/Robotics/VexGO/FutureComp/FutureComp-s
 import Rules from "../../../components/CometitionsComponent/Rules/RulesVexGo";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import AwardsList from "../../../components/Awards/awards";
+import { Helmet } from "react-helmet-async";
 
 const VexGOAbout = () => {
   const images = [img1];
 
   return (
     <>
+       <Helmet>
+        <title>VEX GO</title>
+      </Helmet>
       <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">
         {/* Section Container */}
         <div className="w-full max-w-7xl flex flex-col md:flex-row items-start gap-8">

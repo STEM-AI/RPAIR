@@ -37,10 +37,16 @@
 // export default ComingSoonPage;
 
 
-import React from 'react';
+import React ,{ useEffect } from 'react';
 import comingSo from '../assets/Static/comingsoon.webp';
-
+import { Helmet } from "react-helmet-async"; 
+import { useLoading } from '../context/LoadingContext';
 const ComingSoonPage = () => {
+  const { setIsLoading } = useLoading();
+
+  useEffect(() => {
+    setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
+  }, []);
   return (
     <div
       className="relative h-screen w-full flex items-center justify-center bg-cover bg-center text-center px-5"
@@ -48,6 +54,9 @@ const ComingSoonPage = () => {
         backgroundImage: `url(${comingSo})`,
       }}
     >
+      <Helmet>
+        <title>Coming Soon</title>
+      </Helmet>
       {/* Overlay with fade-in animation */}
       <div className="absolute top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-75"></div>
 

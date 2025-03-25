@@ -4,13 +4,16 @@ import img1 from "../../../assets/gallery/Robotics/Vex123/FutureComp-sadat/IMG_0
 import Rules from "../../../components/CometitionsComponent/Rules/RulesIQ";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import AwardsList from "../../../components/Awards/awards";
-
+import { Helmet } from "react-helmet-async";
 
 const Vex123About = () => {
   const images = [img1];
 
   return (
     <>
+       <Helmet>
+        <title>VEX 123</title>
+      </Helmet>
     <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">
       {/* Section Container */}
       <div className="w-full max-w-7xl flex flex-col md:flex-row items-start gap-8">

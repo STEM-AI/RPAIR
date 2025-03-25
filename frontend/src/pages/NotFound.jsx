@@ -1,10 +1,19 @@
-import React from "react";
+import React ,{ useEffect } from 'react';
 import { Link } from "react-router-dom"
 import IMG from "../assets/Static/404.png"
-
+import { Helmet } from "react-helmet-async";
+import { useLoading } from "../context/LoadingContext";
 const NotFoundPage = () => {
+  const { setIsLoading } = useLoading();
+
+  useEffect(() => {
+    setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
+  }, []);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+      <Helmet>
+              <title>Not Found</title>
+            </Helmet>
       <div className="text-center animate-fadeIn">
         <img
             src={IMG}
