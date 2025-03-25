@@ -1,4 +1,4 @@
-import React, { useEffect }  from "react";
+import React, { useEffect ,useState }  from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
@@ -6,6 +6,8 @@ import About from "../../pages/About/About";
 import NewsTicker from "../News/NewsLive";
 
 const Home = () => {
+
+  
 
   initTWE({ Carousel, Ripple });
 

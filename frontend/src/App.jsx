@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route ,useLocation } from "react-router-dom";
 import "./App.css";
 
 //                          Home                   //
@@ -85,8 +85,24 @@ import SelectMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchG
 import COOPMatchesGO from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
 import Codingmatches from "./pages/JudgeComp/Robotics/VexGO/matches/Codingmatches";
 import AllSetting from "./pages/AccountSetting/AllSetting";
-
+import NotFoundPage from "./pages/NotFound";
+import LoadingPage from "./components/LoadingPage";
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation(); // 🔹 نراقب تغيّر المسار
+
+  useEffect(() => {
+    setIsLoading(true); // عند تغيير الصفحة، نبدأ التحميل من جديد
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]); // 🔹 يتم التشغيل عند كل تغيير في الصفحة
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
   const Layout = ({ children, hideNavbar = false }) => (
     <>
       {!hideNavbar && <Navbar />}
@@ -100,9 +116,12 @@ const App = () => {
       {children}
     </>
   );
+  
 
   return (
-    <Router>
+<>
+    {/* <Router> */}
+
       <Routes>
         {/* Public Routes */}
         <Route
@@ -121,6 +140,15 @@ const App = () => {
             </LayoutComing>
           }
         />
+        <Route
+          path="*"
+          element={
+            <Layout hideNavbar>
+            <NotFoundPage/>  
+            </Layout>
+          }
+        />
+       
         <Route
           path="/about"
           element={
@@ -648,9 +676,12 @@ const App = () => {
         />
       </Routes>
 
-      {/* <ContactUs /> */}
-    </Router>
+        {/* <ContactUs /> */}
+
+      {/* </Router> */}
+      </>
   );
 };
+
 
 export default App;
