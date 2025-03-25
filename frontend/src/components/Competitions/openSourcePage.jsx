@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import { Helmet } from "react-helmet-async";
 function OpenSourcePage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-10">
+       <Helmet>
+        <title>Open Source</title>
+      </Helmet>
       {/* العنوان الرئيسي */}
       <h2 className="mb-10 text-center text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500">
         Open Source Challenges

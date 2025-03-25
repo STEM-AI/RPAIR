@@ -5,12 +5,15 @@ import img1 from "../../../assets/cards/arduinoCO.webp";
 import Rules from "../../../components/CometitionsComponent/Rules/RulesArduino";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import AwardsList from "../../../components/Awards/awardsArduino";
-
+import { Helmet } from "react-helmet-async";
 const Arduino = () => {
   const images = [img1];
 
   return (
     <>
+       <Helmet>
+        <title>Arduino</title>
+      </Helmet>
       <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">
         {/* Section Container */}
         <div className="w-full max-w-7xl flex flex-col md:flex-row items-start gap-8">

@@ -4,6 +4,7 @@ import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
 import About from "../../pages/About/About";
 import NewsTicker from "../News/NewsLive";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
 
@@ -21,6 +22,9 @@ const Home = () => {
 
   return (
     <>
+       <Helmet>
+        <title>Home</title>
+      </Helmet>
       <div></div>
       <div id="home-section">
         
