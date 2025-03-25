@@ -83,8 +83,10 @@ import StartMatchIQ from "./pages/Dashboards/Judge/StartMatchIQ";
 import StartMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO";
 import SelectMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO";
 import COOPMatchesGO from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
-import Codingmatches from "./pages/JudgeComp/Robotics/VexGO/matches/Codingmatches";
+import COOPMatch from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
 import AllSetting from "./pages/AccountSetting/AllSetting";
+import SheetGO from "./pages/JudgeComp/Robotics/VexGO/matches/SheetGO";
+import SkillsGO from "./pages/JudgeComp/Robotics/VexGO/matches/Solomatches";
 
 const App = () => {
   const Layout = ({ children, hideNavbar = false }) => (
@@ -560,7 +562,7 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <COOPMatchesGO />
+                <COOPMatch />
               </LayoutDashboard>
             </Layout>
           }
@@ -570,11 +572,22 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <Codingmatches />
+                <SkillsGO />
               </LayoutDashboard>
             </Layout>
           }
         />
+                 <Route
+          path="/sheetgo"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <SheetGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        
         <Route
           path="/Dashboard/Judge/eventDetails"
           element={

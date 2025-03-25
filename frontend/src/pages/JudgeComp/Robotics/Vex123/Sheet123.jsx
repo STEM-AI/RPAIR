@@ -1,8 +1,7 @@
 
-
 import { useState, useEffect } from "react";
 import { FaTrophy } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -19,7 +18,7 @@ const tasks = [
   { title: "End with the robot on the green tile", points: 1 },
 ];
 
-export default function Codingmatches() {
+export default function Sheet123() {
   const [scores, setScores] = useState({});
   const [turbines, setTurbines] = useState(0);
   const [teamData, setTeamData] = useState({ teamName: "", teamNumber: "" });
@@ -119,23 +118,34 @@ const handleDownloadPDF = () => {
 
       {/* Team Info */}
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <input
-          type="text"
-          name="teamName"
-          placeholder="Team Name"
-          value={teamData.teamName}
-          onChange={handleInputChange}
-          className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
-        />
-        <input
-          type="text"
-          name="teamNumber"
-          placeholder="Team Number"
-          value={teamData.teamNumber}
-          onChange={handleInputChange}
-          className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
-        />
-      </div>
+  <input
+    type="text"
+    name="teamName1"
+    placeholder="Team Name 1"
+    value={teamData.teamName1}
+    onChange={handleInputChange}
+    className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
+  />
+
+  <input
+    type="text"
+    name="teamName2"
+    placeholder="Team Name 2"
+    value={teamData.teamName2}
+    onChange={handleInputChange}
+    className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
+  />
+
+  <input
+    type="text"
+    name="matchId"
+    placeholder="Match ID"
+    value={teamData.matchId}
+    onChange={handleInputChange}
+    className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400 col-span-2"
+  />
+</div>
+
 
       {/* Score Table */}
       <table className="w-full border-collapse border border-gray-300 rounded-lg shadow-md overflow-hidden">
@@ -143,6 +153,7 @@ const handleDownloadPDF = () => {
           <tr className="bg-indigo-600 text-white">
             <th className="border px-4 py-2">Task</th>
             <th className="border px-4 py-2">Points</th>
+            <th className="border px-4 py-2">Time</th>
             <th className="border px-4 py-2">Completed?</th>
           </tr>
         </thead>
@@ -151,6 +162,8 @@ const handleDownloadPDF = () => {
             <tr key={index} className="bg-white border">
               <td className="px-4 py-3 border">{task.title}</td>
               <td className="px-4 py-3 border">{task.points}</td>
+              <td className="px-4 py-3 border">{task.time}</td> 
+
               <td className="px-4 py-3 border text-center">
                 {task.isDynamic ? (
                   <input
@@ -168,6 +181,7 @@ const handleDownloadPDF = () => {
                   />
                 )}
               </td>
+              
             </tr>
           ))}
         </tbody>
@@ -180,9 +194,12 @@ const handleDownloadPDF = () => {
 
       {/* Buttons */}
       <div className="flex justify-center gap-4">
-        <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition">
-          Submit
-        </button>
+ 
+<Link to="/Dashboard/VexGO/COOPMatches">
+  <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition">
+    Submit
+  </button>
+</Link>
         <button
           onClick={handleDownloadPDF}
           className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition"
@@ -193,43 +210,8 @@ const handleDownloadPDF = () => {
 
       
     </div>
-    <div className="flex justify-center mt-6 mb-4">
-    <button
-      onClick={() => setShowRanking(!showRanking)}
-      className="inline-flex items-center px-4 py-2 text-sm sm:text-base font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors gap-2"
-    >
-      <FaTrophy className="text-lg" /> 
-      <span>View Ranking</span>
-    </button>
-  </div>
 
-  {showRanking && (
-    <div className="overflow-x-auto shadow-xl rounded-lg mt-5 bg-white p-4 border border-gray-300">
-      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-center text-gray-800 mb-4">
-        🏆 Ranking Table
-      </h2>
-      <div className="min-w-full">
-        <table className="min-w-full border border-gray-300 text-center rounded-lg shadow-md">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Team</th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Score</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {rankings.map((team, index) => (
-              <tr key={team.name} className="hover:bg-gray-50">
-                <td className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-900">{index + 1}</td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-900">{team.name}</td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-blue-600">{team.total}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )}
+
 
 </>
   );
