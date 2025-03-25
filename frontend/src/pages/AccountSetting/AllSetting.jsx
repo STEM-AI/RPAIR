@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function Setting() {
   const [userData, setUserData] = useState({
@@ -14,24 +16,25 @@ function Setting() {
     date_of_birth: "",
     address: "",
   });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const token = localStorage.getItem("access_token");
 
   useEffect(() => {
-    if (!token) {
-      setError("Authentication Error");
-      setLoading(false);
-      return;
-    }
-    fetch(`${process.env.REACT_APP_API_URL}/user/data/profile/`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchUserData = async () => {
+      if (!token) {
+        setError("Authentication Error");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/user/data/profile/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         setUserData({
           first_name: data.first_name || "",
           last_name: data.last_name || "",
@@ -42,12 +45,14 @@ function Setting() {
           date_of_birth: data.date_of_birth || "",
           address: data.address || "",
         });
-        setLoading(false);
-      })
-      .catch(() => {
+      } catch {
         setError("Failed to load user data");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchUserData();
   }, [token]);
 
   const handleChange = (e) => {
@@ -70,18 +75,17 @@ function Setting() {
     };
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/user/data/edit-profile/`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedData),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to save changes");
-      }
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/user/data/edit-profile/`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -92,7 +96,7 @@ function Setting() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: error.message,
+        text: error.response?.data?.message || "Failed to save changes",
       });
     } finally {
       setSaving(false);
@@ -104,6 +108,9 @@ function Setting() {
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-gray-200">
+      <Helmet>
+                <title>Account Settings</title>
+            </Helmet>
       <h2 className="text-3xl font-bold text-cyan-600 mb-6 text-center">Account Settings</h2>
       <div className="grid grid-cols-2 gap-6">
         {Object.keys(userData).map((key) => (

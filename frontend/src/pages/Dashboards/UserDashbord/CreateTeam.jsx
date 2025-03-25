@@ -6,6 +6,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 import { IoAddCircle } from "react-icons/io5";
 import { IoIosRemoveCircle } from "react-icons/io";
+import { Helmet } from "react-helmet-async";
 
 const CreateTeam = () => {
   const [formData, setFormData] = useState({
@@ -169,6 +170,10 @@ const CreateTeam = () => {
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+       <Helmet>
+        <title>Create Team</title>
+      </Helmet>
+                
       <h2 className="mb-5 py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-3xl md:text-4xl font-black text-center">
         Create a Team
       </h2>

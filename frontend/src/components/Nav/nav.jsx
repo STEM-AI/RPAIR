@@ -274,14 +274,19 @@ export default function Navbar() {
                                     <BsFillPersonFill className="text-2xl mx-2" />
                                     <span className="text-lg">Dashboard</span>
                                   </NavLink>
+                  {userRole.is_superuser &&
+                  
                                   <NavLink to ={'/Dashboard/AddNews'} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                                     <BiSolidMessageAdd className="text-2xl mx-2" />
                                     <span className="text-lg">Add News</span>
                                   </NavLink>
+                  }
+                  
                                   <NavLink to={'/Dashboard/AccountSetting'} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
                                     <IoSettingsOutline className="text-2xl mx-2" />
                                     <span className="text-lg">Account Settings</span>
                                   </NavLink>
+                  
                                   <hr />
                                    <div className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
                     <CiLogout className="text-2xl mx-2" />

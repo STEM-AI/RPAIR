@@ -130,7 +130,7 @@
 
 // export default UADashboard;
 
-import React from 'react';
+import React ,{ useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import vexGoLogo from '../../assets/cards/vex-go-logo.webp';
 import vex123Logo from '../../assets/cards/vex-123-logo.webp';
@@ -138,6 +138,9 @@ import vex123 from '../../assets/cards/vex-123.png';
 import vexGo from '../../assets/cards/vex-go.webp';
 import vexIqLogo from '../../assets/cards/vex-iq-logo.webp';
 import vexIq from '../../assets/cards/vexiq.webp';
+import { Helmet } from 'react-helmet-async';
+import { useLoading } from '../../context/LoadingContext';
+
 
 const roboticsKits = [
   {
@@ -168,6 +171,11 @@ const roboticsKits = [
 
 function UADashboard() {
   const navigate = useNavigate();
+  const { setIsLoading } = useLoading();
+
+  useEffect(() => {
+    setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
+  }, []);
 
   const handleNavigation = (kit) => {
     const userRole = localStorage.getItem('user_role'); 
@@ -177,6 +185,9 @@ function UADashboard() {
 
   return (
     <div className="p-6 flex flex-col items-center">
+       <Helmet>
+              <title>Dashboard</title>
+            </Helmet>
       <h2 className="mb-6 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-4xl font-extrabold">
         Live & Upcoming Competitions
       </h2>

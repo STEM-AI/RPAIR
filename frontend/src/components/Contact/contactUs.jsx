@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import robotImage from '../../assets/Forms/Robot-iStock.jpg';
 import { IoIosCloseCircle } from "react-icons/io";
 import { TbBubbleTextFilled } from "react-icons/tb";
+import { useLoading } from '../../context/LoadingContext';
 
 export default function ContactUs() {
     const [isOverlayVisible, setIsOverlayVisible] = useState(false); // State for controlling overlay visibility
     
         const handleOverlayDisplay = () => {
             setIsOverlayVisible(!isOverlayVisible);  // Toggle overlay visibility
-        };
+    };
+    const { setIsLoading } = useLoading();
+
+  useEffect(() => {
+    setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
+  }, []);
     
     
 

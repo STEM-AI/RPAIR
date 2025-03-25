@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import bgimg from "../../assets/Static/bg.png"
 import { Link, Navigate } from "react-router-dom";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { Helmet } from "react-helmet-async";
 
 
 
@@ -143,12 +144,14 @@ const Register = () => {
         >
         {/* Overlay to darken background for better readability */}
     <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
-       
+        <Helmet>
+        <title>Registration</title>
+      </Helmet>
             
         <div id="signUpForm" onSubmit={signUp} className="relative flex bg-white rounded-2xl  shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-5xl w-full">
             
             <div className="w-full px-8 py-4 lg:w-3/4 flex flex-col mx-auto">
-                <h2 className="text-3xl  font-bold text-gray-700 text-center">Register</h2>
+                <h2 className="text-3xl  font-bold text-gray-700 text-center">Registration</h2>
                 <a href="#"className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
                     <div className="px-4 py-3">
                     <div className="icon ">
