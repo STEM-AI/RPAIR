@@ -1,410 +1,349 @@
 
 
-// import { useState, useEffect } from "react";
-// import { FaTrophy } from "react-icons/fa";
-
-
-// import { jsPDF } from "jspdf";
-// import "jspdf-autotable";
-
-// const tasks = [
-//   { title: "Move purple sensor to the fish habitat", points: 1 },
-//   { title: "Move blue sensor to the pipeline", points: 1 },
-//   { title: "Move the orange sensor to the volcano tile", points: 1 },
-//   { title: "Orange sensor placed on top of the volcano", points: 2 },
-//   { title: "Align the turbines", points: "1 per turbine", isDynamic: true },
-//   { title: "Open the clam", points: 1 },
-//   { title: "Remove the pearl from the clam", points: 1 },
-//   { title: "Deliver the pearl to the green starting tile", points: 1 },
-//   { title: "End with the robot on the green tile", points: 1 },
-// ];
-
-// export default function VexGoScoreboard() {
-//   const [scores, setScores] = useState({});
-//   const [turbines, setTurbines] = useState(0);
-//   const [teamData, setTeamData] = useState({ teamName: "", teamNumber: "" });
-//   const [timer, setTimer] = useState(0);
-//   const [isRunning, setIsRunning] = useState(false);
-//   const [showRanking, setShowRanking] = useState(false);
-//   const [rankings] = useState([]);
-
-
-//   useEffect(() => {
-//     let interval;
-//     if (isRunning) {
-//       interval = setInterval(() => {
-//         setTimer((prev) => prev + 1);
-//       }, 1000);
-//     }
-//     return () => clearInterval(interval);
-//   }, [isRunning]);
-
-//   const handleCheckboxChange = (index, value) => {
-//     setScores((prev) => ({ ...prev, [index]: value ? tasks[index].points : 0 }));
-//   };
-
-//   const handleTurbineChange = (e) => {
-//     const value = parseInt(e.target.value, 10) || 0;
-//     setTurbines(value);
-//     setScores((prev) => ({ ...prev, 4: value }));
-//   };
-
-//   const handleInputChange = (e) => {
-//     setTeamData({ ...teamData, [e.target.name]: e.target.value });
-//   };
-
-//   const totalScore = Object.values(scores).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
-
-
-// const handleDownloadPDF = () => {
-//   const doc = new jsPDF();
-  
-//   // إعداد العنوان الرئيسي
-//   doc.setFontSize(18);
-//   doc.text("Ocean Science Exploration Competition", 20, 20);
-
-//   // إضافة بيانات الفريق
-//   doc.setFontSize(14);
-//   doc.text(`Team Name: ${teamData.teamName}`, 20, 30);
-//   doc.text(`Team Number: ${teamData.teamNumber}`, 20, 40);
-
-//   // تحضير بيانات الجدول
-//   const tableData = tasks.map((task, index) => [
-//     task.title,                      // اسم المهمة
-//     task.points,                     // النقاط المتاحة
-//     scores[index] ? scores[index] : 0 // النقاط المكتسبة
-//   ]);
-
-//   // إضافة الجدول إلى الـ PDF
-//   doc.autoTable({
-//     startY: 50, // بداية الجدول بعد العنوان
-//     head: [["Task", "Points", "Score"]], // رأس الجدول
-//     body: tableData, // بيانات الجدول
-//     theme: "striped", // تنسيق مخطط
-//     styles: { fontSize: 12, cellPadding: 4 },
-//     headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255] }, // لون الرأس
-//     alternateRowStyles: { fillColor: [240, 240, 240] }, // تلوين الصفوف
-//   });
-
-//   // إضافة المجموع الكلي في النهاية
-//   doc.setFontSize(14);
-//   doc.text(`Total Score: ${totalScore}`, 20, doc.autoTable.previous.finalY + 10);
-
-//   // تحميل ملف الـ PDF
-//   doc.save(`Team_${teamData.teamNumber}_Score.pdf`);
-// };
-
-
-//   return (
-//     <>
-//     <div className="max-w-4xl mx-auto mt-10 p-6 bg-gray-50 shadow-xl rounded-2xl">
-//       <h2 className="text-4xl font-bold text-center mb-6 text-indigo-700">Ocean Science Exploration</h2>
-
-//       {/* Timer */}
-//       <div className="flex justify-center items-center mb-6 space-x-4">
-//         <span className="text-xl font-semibold text-gray-700">Time: {timer}s</span>
-//         <button
-//           onClick={() => setIsRunning(!isRunning)}
-//           className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition"
-//         >
-//           {isRunning ? "Pause" : "Start"}
-//         </button>
-//         <button
-//           onClick={() => { setIsRunning(false); setTimer(0); }}
-//           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition"
-//         >
-//           Reset
-//         </button>
-//       </div>
-
-//       {/* Team Info */}
-//       <div className="grid grid-cols-2 gap-4 mb-6">
-//         <input
-//           type="text"
-//           name="teamName"
-//           placeholder="Team Name"
-//           value={teamData.teamName}
-//           onChange={handleInputChange}
-//           className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
-//         />
-//         <input
-//           type="text"
-//           name="teamNumber"
-//           placeholder="Team Number"
-//           value={teamData.teamNumber}
-//           onChange={handleInputChange}
-//           className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
-//         />
-//       </div>
-
-//       {/* Score Table */}
-//       <table className="w-full border-collapse border border-gray-300 rounded-lg shadow-md overflow-hidden">
-//         <thead>
-//           <tr className="bg-indigo-600 text-white">
-//             <th className="border px-4 py-2">Task</th>
-//             <th className="border px-4 py-2">Points</th>
-//             <th className="border px-4 py-2">Completed?</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {tasks.map((task, index) => (
-//             <tr key={index} className="bg-white border">
-//               <td className="px-4 py-3 border">{task.title}</td>
-//               <td className="px-4 py-3 border">{task.points}</td>
-//               <td className="px-4 py-3 border text-center">
-//                 {task.isDynamic ? (
-//                   <input
-//                     type="number"
-//                     min="0"
-//                     value={turbines}
-//                     onChange={handleTurbineChange}
-//                     className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400"
-//                   />
-//                 ) : (
-//                   <input
-//                     type="checkbox"
-//                     onChange={(e) => handleCheckboxChange(index, e.target.checked)}
-//                     className="w-5 h-5 accent-green-500"
-//                   />
-//                 )}
-//               </td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-
-//       {/* Total Score */}
-//       <div className="text-center mt-6 mb-6 text-2xl font-semibold text-indigo-700">
-//         Total Score: <span className="font-bold">{totalScore}</span>
-//       </div>
-
-//       {/* Buttons */}
-//       <div className="flex justify-center gap-4">
-//         <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition">
-//           Submit
-//         </button>
-//         <button
-//           onClick={handleDownloadPDF}
-//           className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition"
-//         >
-//           Download PDF
-//         </button>
-//       </div>
-
-      
-//     </div>
-//     <div className="flex justify-center mt-6 mb-4">
-//     <button
-//       onClick={() => setShowRanking(!showRanking)}
-//       className="inline-flex items-center px-4 py-2 text-sm sm:text-base font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors gap-2"
-//     >
-//       <FaTrophy className="text-lg" /> 
-//       <span>View Ranking</span>
-//     </button>
-//   </div>
-
-//   {showRanking && (
-//     <div className="overflow-x-auto shadow-xl rounded-lg mt-5 bg-white p-4 border border-gray-300">
-//       <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-center text-gray-800 mb-4">
-//         🏆 Ranking Table
-//       </h2>
-//       <div className="min-w-full">
-//         <table className="min-w-full border border-gray-300 text-center rounded-lg shadow-md">
-//           <thead className="bg-gray-50">
-//             <tr>
-//               <th className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-//               <th className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Team</th>
-//               <th className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Score</th>
-//             </tr>
-//           </thead>
-//           <tbody className="bg-white divide-y divide-gray-200">
-//             {rankings.map((team, index) => (
-//               <tr key={team.name} className="hover:bg-gray-50">
-//                 <td className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-900">{index + 1}</td>
-//                 <td className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-900">{team.name}</td>
-//                 <td className="px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-blue-600">{team.total}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   )}
-
-// </>
-//   );
-// }
-
-
-
-
-
-import { useState } from "react";
-import { FaTrophy, FaCheck } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const SkillsGO = () => {
   const [showRanking, setShowRanking] = useState(false);
-  const [selectedMode, setSelectedMode] = useState({}); // لتخزين المود الخاص بكل مباراة
+  const [activeTab, setActiveTab] = useState('driving'); // 'driving' or 'coding'
   const [scores, setScores] = useState({});
   const [completedMatches, setCompletedMatches] = useState({});
   const [round, setRound] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isRunning, setIsRunning] = useState(false);
   const navigate = useNavigate();
 
-  // قائمة اللاعبين والمباريات لكل جولة
-  const rounds = {
-    1: [{ id: 1, player: "Player 1" }, { id: 2, player: "Player 2" }, { id: 3, player: "Player 3" }],
-    2: [{ id: 4, player: "Player 4" }, { id: 5, player: "Player 5" }, { id: 6, player: "Player 6" }],
-    3: [{ id: 7, player: "Player 7" }, { id: 8, player: "Player 8" }, { id: 9, player: "Player 9" }],
+  // Players and matches for each round and mode
+  const schedule = {
+    driving: {
+      1: [
+        { id: 'd1', player: "Driver 1", team: "Team A" },
+        { id: 'd2', player: "Driver 2", team: "Team B" },
+        { id: 'd3', player: "Driver 3", team: "Team C" }
+      ],
+      2: [
+        { id: 'd4', player: "Driver 4", team: "Team D" },
+        { id: 'd5', player: "Driver 5", team: "Team E" },
+        { id: 'd6', player: "Driver 6", team: "Team F" }
+      ],
+      3: [
+        { id: 'd7', player: "Driver 7", team: "Team G" },
+        { id: 'd8', player: "Driver 8", team: "Team H" },
+        { id: 'd9', player: "Driver 9", team: "Team I" }
+      ],
+    },
+    coding: {
+      1: [
+        { id: 'c1', player: "Coder 1", team: "Team A" },
+        { id: 'c2', player: "Coder 2", team: "Team B" },
+        { id: 'c3', player: "Coder 3", team: "Team C" }
+      ],
+      2: [
+        { id: 'c4', player: "Coder 4", team: "Team D" },
+        { id: 'c5', player: "Coder 5", team: "Team E" },
+        { id: 'c6', player: "Coder 6", team: "Team F" }
+      ],
+      3: [
+        { id: 'c7', player: "Coder 7", team: "Team G" },
+        { id: 'c8', player: "Coder 8", team: "Team H" },
+        { id: 'c9', player: "Coder 9", team: "Team I" }
+      ],
+    }
   };
 
-  const handleSaveScore = (matchId, mode, score) => {
+  // Timer effect
+  useEffect(() => {
+    let interval;
+    if (isRunning && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setIsRunning(false);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, timeLeft]);
+
+  const handleSaveScore = (matchId, score) => {
     setScores((prevScores) => ({
       ...prevScores,
-      [matchId]: {
-        ...prevScores[matchId],
-        [mode]: score, // حفظ السكور بناءً على المود
-      },
+      [matchId]: parseInt(score) || 0,
     }));
   };
 
-  const handleStartMatch = (matchId) => {
+  const handleStartMatch = (match) => {
+    localStorage.setItem('currentSkillsMatch', JSON.stringify({
+      ...match,
+      mode: activeTab,
+      round
+    }));
     navigate("/sheetgo");
   };
 
+  const handleCompleteMatch = (matchId) => {
+    setCompletedMatches((prev) => ({
+      ...prev,
+      [matchId]: true,
+    }));
+    setIsRunning(false);
+    setTimeLeft(60);
+  };
+
   const handleFinishRound = () => {
-    const currentRoundMatches = rounds[round];
+    const currentRoundMatches = schedule[activeTab][round];
     const allMatchesCompleted = currentRoundMatches.every(
       (match) => completedMatches[match.id]
     );
 
-    if (allMatchesCompleted && round < 3) {
-      setRound((prevRound) => prevRound + 1);
+    if (allMatchesCompleted) {
+      if (round < 3) {
+        setRound((prevRound) => prevRound + 1);
+        setCompletedMatches({});
+      } else {
+        alert(`All ${activeTab} rounds completed!`);
+      }
     } else {
       alert("Please complete all matches before finishing the round.");
     }
   };
 
+  const calculateRankings = () => {
+    const allPlayers = [
+      ...Object.values(schedule.driving).flat(),
+      ...Object.values(schedule.coding).flat()
+    ];
+    
+    return allPlayers
+      .map(player => ({
+        ...player,
+        score: scores[player.id] || 0,
+        mode: player.id.startsWith('d') ? 'Driving' : 'Coding'
+      }))
+      .sort((a, b) => b.score - a.score);
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
   return (
-    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
-        Solo Matches - Round {round}
-      </h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-indigo-700 mb-2">🏁 Skills Challenge</h1>
+        
+        {/* Mode Tabs */}
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex rounded-md shadow-sm">
+            <button
+              onClick={() => { setActiveTab('driving'); setRound(1); setCompletedMatches({}); }}
+              className={`px-6 py-2 text-sm font-medium rounded-l-lg ${
+                activeTab === 'driving' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-white text-indigo-600 hover:bg-gray-50'
+              }`}
+            >
+              Driving Challenge
+            </button>
+            <button
+              onClick={() => { setActiveTab('coding'); setRound(1); setCompletedMatches({}); }}
+              className={`px-6 py-2 text-sm font-medium rounded-r-lg ${
+                activeTab === 'coding' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-white text-indigo-600 hover:bg-gray-50'
+              }`}
+            >
+              Coding Challenge
+            </button>
+          </div>
+        </div>
 
-      <div className="overflow-x-auto shadow-lg rounded-lg bg-white">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="px-3 py-3 text-gray-500 uppercase text-center">Match</th>
-              <th className="px-3 py-3 text-gray-500 uppercase text-center">Player</th>
-              <th className="px-3 py-3 text-gray-500 uppercase text-center">Role</th>
-              <th className="px-3 py-3 text-gray-500 uppercase text-center">Coding Score</th>
-              <th className="px-3 py-3 text-gray-500 uppercase text-center">Driving Score</th>
-              <th className="px-3 py-3 text-gray-500 uppercase text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {rounds[round].map((match) => (
-              <tr key={match.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-3 py-2 text-center">{match.id}</td>
-                <td className="px-3 py-2 text-center">{match.player}</td>
-                <td className="px-3 py-2 text-center">
-                  <select
-                    className="border rounded px-2 py-1"
-                    onChange={(e) =>
-                      setSelectedMode((prev) => ({
-                        ...prev,
-                        [match.id]: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="Driving">Driving</option>
-                    <option value="Coding">Coding</option>
-                  </select>
-                </td>
-                <td className="px-3 py-2 text-center">
-                  {selectedMode[match.id] === "Coding" && (
-                    <input
-                      type="number"
-                      className="w-16 text-center border rounded"
-                      value={scores[match.id]?.Coding || ""}
-                      onChange={(e) => handleSaveScore(match.id, "Coding", e.target.value)}
-                    />
-                  )}
-                </td>
-                <td className="px-3 py-2 text-center">
-                  {selectedMode[match.id] === "Driving" && (
-                    <input
-                      type="number"
-                      className="w-16 text-center border rounded"
-                      value={scores[match.id]?.Driving || ""}
-                      onChange={(e) => handleSaveScore(match.id, "Driving", e.target.value)}
-                    />
-                  )}
-                </td>
-                <td className="px-3 py-2 text-center flex justify-center gap-2">
-                  <button
-                    onClick={() => handleStartMatch(match.id)}
-                    className="px-3 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                  >
-                    Start
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Round Navigation */}
+        <div className="flex justify-center items-center gap-4 mt-4">
+          <button
+            onClick={() => setRound(prev => Math.max(1, prev - 1))}
+            disabled={round === 1}
+            className={`p-2 rounded-full ${round === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'}`}
+          >
+            <FaChevronLeft />
+          </button>
+          <span className="text-xl font-semibold bg-indigo-600 text-white px-4 py-2 rounded-full">
+            {activeTab === 'driving' ? 'Driving' : 'Coding'} Round {round}
+          </span>
+          <button
+            onClick={() => setRound(prev => Math.min(3, prev + 1))}
+            disabled={round === 3}
+            className={`p-2 rounded-full ${round === 3 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'}`}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
       </div>
 
-      <div className="flex justify-center mt-6 mb-4">
-        <button
-          onClick={handleFinishRound}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors"
-        >
-          Finish Round
-        </button>
+      {/* Timer */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-gray-100 p-4 rounded-lg flex items-center gap-4">
+          <div className="text-2xl font-mono font-bold">{formatTime(timeLeft)}</div>
+          <button
+            onClick={() => setIsRunning(!isRunning)}
+            className={`px-4 py-2 rounded-lg flex items-center ${
+              isRunning 
+                ? "bg-yellow-500 hover:bg-yellow-600 text-white" 
+                : "bg-green-600 hover:bg-green-700 text-white"
+            }`}
+          >
+            {isRunning ? <FaPause className="mr-2" /> : <FaPlay className="mr-2" />}
+            {isRunning ? "Pause" : "Start"}
+          </button>
+          <button
+            onClick={() => setTimeLeft(60)}
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center"
+          >
+            <FaRedo className="mr-2" /> Reset
+          </button>
+        </div>
       </div>
 
-      <div className="flex justify-center mt-6 mb-4">
-        <button
-          onClick={() => setShowRanking(!showRanking)}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 transition-colors gap-2"
-        >
-          <FaTrophy className="text-lg" />
-          <span>View Ranking</span>
-        </button>
-      </div>
-
-      {showRanking && (
-        <div className="overflow-x-auto shadow-xl rounded-lg mt-5 bg-white p-4 border border-gray-300">
-          <h2 className="text-lg sm:text-xl font-extrabold text-center text-gray-800 mb-4">
-            🏆 Ranking Table
-          </h2>
-          <table className="min-w-full border text-center rounded-lg">
-            <thead className="bg-gray-50">
+      {/* Matches Table */}
+      <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-indigo-600 text-white">
               <tr>
-                <th className="px-3 py-2 text-gray-500 uppercase">Rank</th>
-                <th className="px-3 py-2 text-gray-500 uppercase">Player</th>
-                <th className="px-3 py-2 text-gray-500 uppercase">Score</th>
+                <th className="px-6 py-3 text-left">Match ID</th>
+                <th className="px-6 py-3 text-left">Team</th>
+                <th className="px-6 py-3 text-center">Score</th>
+                <th className="px-6 py-3 text-center">Status</th>
+                <th className="px-6 py-3 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {Object.entries(scores)
-                .sort((a, b) => (b[1]?.Coding || 0) + (b[1]?.Driving || 0) - (a[1]?.Coding || 0) - (a[1]?.Driving || 0)) // ترتيب اللاعبين حسب النقاط
-                .map(([matchId, score], index) => {
-                  const player = Object.values(rounds)
-                    .flat()
-                    .find((match) => match.id == matchId)?.player;
-                  return (
-                    <tr key={matchId}>
-                      <td className="px-3 py-2">{index + 1}</td>
-                      <td className="px-3 py-2">{player}</td>
-                      <td className="px-3 py-2 text-blue-600">{(score?.Coding || 0) + (score?.Driving || 0)}</td>
-                    </tr>
-                  );
-                })}
+            <tbody className="divide-y divide-gray-200">
+              {schedule[activeTab][round].map((match) => (
+                <tr 
+                  key={match.id} 
+                  className={completedMatches[match.id] ? "bg-green-50" : "hover:bg-gray-50"}
+                >
+                  <td className="px-6 py-4 font-medium">{match.id.toUpperCase()}</td>
+                  <td className="px-6 py-4">{match.team}</td>
+                  <td className="px-6 py-4 text-center">
+                    <input
+                      type="number"
+                      min="0"
+                      className="w-20 px-2 py-1 border rounded text-center"
+                      value={scores[match.id] || ""}
+                      onChange={(e) => handleSaveScore(match.id, e.target.value)}
+                    />
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      completedMatches[match.id] 
+                        ? "bg-green-100 text-green-800" 
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}>
+                      {completedMatches[match.id] ? "Completed" : "Pending"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center space-x-2">
+                    <button
+                      onClick={() => handleStartMatch(match)}
+                      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm"
+                    >
+                      <FaPlay className="inline mr-1" /> Start
+                    </button>
+                    <button
+                      onClick={() => handleCompleteMatch(match.id)}
+                      disabled={completedMatches[match.id]}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        completedMatches[match.id]
+                          ? "bg-gray-300 text-gray-600"
+                          : "bg-green-600 hover:bg-green-700 text-white"
+                      }`}
+                    >
+                      <FaCheck className="inline mr-1" /> Complete
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Round Controls */}
+      <div className="flex justify-center gap-4 mb-8">
+        <button
+          onClick={handleFinishRound}
+          disabled={!schedule[activeTab][round].every(match => completedMatches[match.id])}
+          className={`px-6 py-2 rounded-lg flex items-center ${
+            schedule[activeTab][round].every(match => completedMatches[match.id])
+              ? "bg-green-600 hover:bg-green-700 text-white"
+              : "bg-gray-300 text-gray-600 cursor-not-allowed"
+          }`}
+        >
+          <FaFlagCheckered className="mr-2" />
+          {round === 3 ? `Finish ${activeTab === 'driving' ? 'Driving' : 'Coding'}` : "Finish Round"}
+        </button>
+        
+        <button
+          onClick={() => setShowRanking(!showRanking)}
+          className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center"
+        >
+          <FaTrophy className="mr-2" />
+          {showRanking ? "Hide Rankings" : "Show Rankings"}
+        </button>
+      </div>
+
+      {/* Rankings Table */}
+      {showRanking && (
+        <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
+          <div className="px-6 py-4 bg-indigo-600 text-white flex items-center">
+            <FaTrophy className="mr-2" />
+            <h2 className="text-xl font-bold">Overall Rankings</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-indigo-50">
+                <tr>
+                  <th className="px-6 py-3 text-left">Rank</th>
+                  
+                  <th className="px-6 py-3 text-left">Team</th>
+                  <th className="px-6 py-3 text-center">Mode</th>
+                  <th className="px-6 py-3 text-center">Score</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {calculateRankings().map((player, index) => (
+                  <tr key={player.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 font-medium">
+                      {index + 1}
+                      {index < 3 && (
+                        <span className="ml-2">
+                          {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
+                        </span>
+                      )}
+                    </td>
+                    
+                    <td className="px-6 py-4">{player.team}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        player.mode === 'Driving' 
+                          ? 'bg-blue-100 text-blue-800' 
+                          : 'bg-purple-100 text-purple-800'
+                      }`}>
+                        {player.mode}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center font-bold text-indigo-600">
+                      {player.score}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
