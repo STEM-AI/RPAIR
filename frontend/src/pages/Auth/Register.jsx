@@ -171,7 +171,6 @@ const Register = () => {
                 </div>
 
             <form className=" pt-6 pb-8 mb-4 bg-white rounded" >
-              {error && <Alert className="px-5 my-2 " severity="error">{error}</Alert>} 
                 <div className="mb-4 md:flex md:justify-between">
                   <div className="mb-4 md:mr-2 md:mb-0">
                     <label
