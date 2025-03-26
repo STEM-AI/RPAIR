@@ -11,6 +11,7 @@ import PublicRoute from "./components/PublicRoute";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 import { LoadingProvider } from "./context/LoadingContext";
 import LoadingPage from "./components/LoadingPage"
+import VEX123Sheet from "./pages/JudgeComp/Robotics/Vex123/Sheet123";
 
 //                              semple pages & Forms               //
 //                          Common Pages (Lazy Loading)                   //
@@ -97,6 +98,7 @@ const VexV5About = lazy(() => import("./components/Competitions/Robotics/VexV5")
 const VexIQAbout = lazy(() => import("./components/Competitions/Robotics/VexIQ"));
 const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Vex"));
 const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
+const InterviewSheet = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
 
 
 
@@ -606,6 +608,26 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <SheetGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+         <Route
+          path="/Dashboard/Judge/Vex123Event"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <VEX123Sheet />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+      <Route
+          path="/Dashboard/Judge/InterviewGO"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <InterviewSheet />
               </LayoutDashboard>
             </Layout>
           }
