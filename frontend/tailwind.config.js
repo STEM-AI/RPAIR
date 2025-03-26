@@ -11,7 +11,8 @@ export const theme = {
       vex123: "#6D4284",
     },
     animation: {
-      marquee: "marquee 30s linear infinite",
+      marquee: "marquee 60s linear infinite",
+      marqueePaused: "marquee 60s linear infinite paused",
       float: "float 3s ease-in-out infinite",
       fadeIn: "fadeIn 0.6s ease-in forwards",
       fadeInUp: "fadeInUp 0.8s ease-out forwards",
@@ -44,10 +45,11 @@ export const theme = {
         "75%": { clipPath: "inset(0 0 25% 0)", opacity: "0.75" },
         "100%": { clipPath: "inset(0 0 0 0)", opacity: "1" },
       },
-       marquee: {
-        from: { transform: "translateX(0%)" },
-        to: { transform: "translateX(-100%)" }, 
-      },
+        marquee: {
+          from: { transform: "translateX(0)" }, // يبدأ من موضعه الطبيعي، وليس خارج الشاشة
+          to: { transform: "translateX(-100%)" }, // يتحرك حتى يخرج من اليسار بالكامل
+        },
+
       float: {
         "0%": { transform: "translateY(0)" },
         "50%": { transform: "translateY(-10px)" },

@@ -551,8 +551,14 @@ export default function NavbarProfile() {
                 <IoMdNotificationsOutline className="text-2xl text-cyan-500 font-extrabold hover:text-white transition-all duration-300 transform hover:scale-105" />
               </button>
               {dropdowns.notifications && (
-                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50 max-h-96 overflow-y-auto">
-                  <NotificationsPage />
+                // <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50 max-h-96 overflow-y-auto">
+                //   <NotificationsPage />
+                // </div>
+                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50 transition-all duration-300">
+                  <p className="text-gray-700 font-bold border-b pb-2">Notifications</p>
+                  <div className="mt-2">
+                    <p className="text-gray-600 text-sm">You have no new notifications.</p>
+                  </div>
                 </div>
               )}
             </div>
