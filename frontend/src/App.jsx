@@ -64,8 +64,10 @@ const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/Se
 const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/StartMatchIQ"));
 const StartMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
 const SelectMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
-const COOPMatchesGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
-const Codingmatches = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/Codingmatches"));
+const COOPMatch = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
+const SkillsGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/Solomatches"));
+const SheetGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/SheetGO"));
+
 
 //                          Misc (Lazy Loading)                   //
 const AllSetting = lazy(() => import("./pages/AccountSetting/AllSetting"));
@@ -124,7 +126,7 @@ const App = () => {
         {/* <Router> */}
         <LoadingProvider>
 
-       
+
       <Routes>
         {/* Public Routes */}
         <Route
@@ -578,7 +580,7 @@ const App = () => {
             </Layout>
           }
         />
-          <Route
+           <Route
           path="/Dashboard/VexGO/COOPMatches"
           element={
             <Layout hideNavbar>
@@ -588,16 +590,16 @@ const App = () => {
             </Layout>
           }
         />
-         <Route
+          <Route
           path="/Dashboard/VexGO/Skills"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <SkillsGO />
+                < SkillsGO/>
               </LayoutDashboard>
             </Layout>
           }
-        />
+        /> 
                  <Route
           path="/sheetgo"
           element={
@@ -607,7 +609,7 @@ const App = () => {
               </LayoutDashboard>
             </Layout>
           }
-        />
+        /> 
         
         <Route
           path="/Dashboard/Judge/eventDetails"
