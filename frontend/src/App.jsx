@@ -64,8 +64,10 @@ const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/Se
 const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/StartMatchIQ"));
 const StartMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
 const SelectMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
-const COOPMatchesGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
-const Codingmatches = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/Codingmatches"));
+const COOPMatch = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
+const SkillsGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/Solomatches"));
+const SheetGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/SheetGO"));
+
 
 //                          Misc (Lazy Loading)                   //
 const AllSetting = lazy(() => import("./pages/AccountSetting/AllSetting"));
@@ -97,7 +99,6 @@ const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Ve
 const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
 
 
-//                        end  Competitions                   //
 
 
 const App = () => {
@@ -125,7 +126,7 @@ const App = () => {
         {/* <Router> */}
         <LoadingProvider>
 
-       
+
       <Routes>
         {/* Public Routes */}
         <Route
@@ -579,26 +580,37 @@ const App = () => {
             </Layout>
           }
         />
-          <Route
+           <Route
           path="/Dashboard/VexGO/COOPMatches"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <COOPMatchesGO />
+                <COOPMatch />
               </LayoutDashboard>
             </Layout>
           }
         />
-         <Route
+          <Route
           path="/Dashboard/VexGO/Skills"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <Codingmatches />
+                < SkillsGO/>
               </LayoutDashboard>
             </Layout>
           }
-        />
+        /> 
+                 <Route
+          path="/sheetgo"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <SheetGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+        
         <Route
           path="/Dashboard/Judge/eventDetails"
           element={
