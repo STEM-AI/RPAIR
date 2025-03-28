@@ -8,7 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { saveTokens, getTokens } from './auth';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
-
+import { Helmet } from "react-helmet-async";
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -80,6 +80,9 @@ const Login = () => {
                 backgroundPosition: "center",
             }}
         >
+             <Helmet>
+                <title>Login</title>
+            </Helmet>
             <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
             <div id="loginForm" className="relative  flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
                 <div className="hidden lg:block lg:w-1/3 bg-cover bg-gradient-to-br from-cyan-800 to-cyan-400">
@@ -175,7 +178,6 @@ const Login = () => {
 };
 
 export default Login;
-
 /*
 import { useState, useEffect } from "react";
 import { jwtDecode } from 'jwt-decode'; 

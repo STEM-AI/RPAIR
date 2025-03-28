@@ -11,7 +11,7 @@ const CreateStaff = () => {
     first_name: "",
     last_name: "",
     username: "",
-    email: "@rpair.judge.com",
+    email: "",
     password: "",
     country: "",
     address: "",
@@ -46,6 +46,10 @@ const CreateStaff = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+     // استبدال الدومين فقط إذا كان @gmail.com
+  const updatedEmail = formData.email.replace("@gmail.com", "@rpair.judge.com");
+  const updatedFormData = { ...formData, email: updatedEmail };
+  
     setIsSubmitting(true);
     setResponseMessage(null);
     setAlertType("");
@@ -53,8 +57,8 @@ const CreateStaff = () => {
     try {
       // First, register the judge
       const judgeResponse = await axios.post(
-        `http://147.93.56.71:8001/api/user/auth/login/`,
-        formData,
+        `${process.env.REACT_APP_API_URL_AUTH}/judge-register/`,
+        updatedFormData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +82,7 @@ const CreateStaff = () => {
         first_name: "",
         last_name: "",
         username: "",
-        email: "@rpair.judge.com",
+        email: "",
         password: "",
         country: "",
         address: "",
@@ -100,10 +104,10 @@ const CreateStaff = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
-        Create Judge
-      </h2>
-
+   
+        <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl py-2 font-black">
+          Create Judge
+        </h2>
       {responseMessage && (
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity={alertType}>

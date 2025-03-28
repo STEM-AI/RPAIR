@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
+import { Helmet } from "react-helmet-async";
 
 const steps = ["Send Code", "Verify Code", "Reset Password"];
 
@@ -318,6 +319,9 @@ const ResetPassword = () => {
         backgroundPosition: "center",
       }}
     >
+      <Helmet>
+                <title>ResetPassword</title>
+            </Helmet>
       <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
       <div id="loginForm" className="relative flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl border-2 border-cyan-600">
         <div className="hidden lg:block lg:w-1/3 bg-cover bg-gradient-to-br from-cyan-800 to-cyan-400">

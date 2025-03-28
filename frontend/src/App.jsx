@@ -1,79 +1,112 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect , lazy ,Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route ,useLocation } from "react-router-dom";
 import "./App.css";
 
-//                          Home                   //
+
+//                              components              //
 import Navbar from "./components/Nav/nav";
 import Footer from "./components/Footer/footer";
 import ContactUs from "./components/Contact/contactUs";
-import Home from "./components/Home/Home";
-import About from "./pages/About/About";
-import Competitions from "./pages/Competitions/Competitions";
-import Login from "./pages/Auth/login";
-import Register from "./pages/Auth/Register";
-import Gallery from "./pages/Gallary/Gallary";
 import PublicRoute from "./components/PublicRoute";
-import ResetPassword from "./pages/Auth/ResetPassword";
-import VolunteerForm from "./pages/Volunteer/Volunteerform";
-
-//                          LayoutDashboard                   //
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
+import { LoadingProvider } from "./context/LoadingContext";
+import LoadingPage from "./components/LoadingPage"
+import VEX123Sheet from "./pages/JudgeComp/Robotics/Vex123/Sheet123";
 
-//                          Admin                   //
-import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard";
-import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
-import CreateStaff from "./pages/Dashboards/AdminDashboard/Management/CreateStaff";
-import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/CreateCompetition";
-import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
-import CreateOrganization from "./pages/Dashboards/AdminDashboard/Management/CreateOrg";
-import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
-import ListCompetitions from "./pages/Dashboards/AdminDashboard/ListCompetitions";
-import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEvents";
+//                              semple pages & Forms               //
+//                          Common Pages (Lazy Loading)                   //
+const NotFoundPage = lazy(() => import("./pages/NotFound"));
+const Login = lazy(() => import("./pages/Auth/login"));
+const Register = lazy(() => import("./pages/Auth/Register"));
+const ResetPassword = lazy(() => import("./pages/Auth/ResetPassword"));
+const VolunteerForm = lazy(() => import("./pages/Volunteer/Volunteerform"));
+const ComingSoonPage = lazy(() => import("./pages/ComingSoon"));
 
-//                          User                   //
-import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
-import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
-import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
-import GameTimer from "./pages/Dashboards/Judge/VexIQ/Scores/GameTimer";
+//                          Admin Pages (Lazy Loading)                   //
+const AddNews = lazy(() => import("./pages/Dashboards/AddNews"));
+const CreateEvent = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateEvent"));
+const CreateStaff = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateStaff"));
+const CreateCompetition = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateCompetition"));
+const CreateOrganization = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateOrg"));
 
-//                          Judge                   //
-import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
-import MatchRounds from "./pages/Dashboards/Judge/VexIQ/matches/matches";
-import Interview from "./pages/Dashboards/Judge/VexIQ/interview";
-import Inspection from "./pages/Dashboards/Judge/VexIQ/Inspection";
-import Notebook from "./pages/Dashboards/Judge/VexIQ/Notebook";
-import Teamwork from "./pages/Dashboards/Judge/VexIQ/matches/teamwork";
-import Skills from "./pages/Dashboards/Judge/VexIQ/matches/skills";
-// import StartMatch from "./pages/Dashboards/Judge/StartMatch";
+//                          User Pages (Lazy Loading)                   //
+const CreateTeam = lazy(() => import("./pages/Dashboards/UserDashbord/CreateTeam"));
+const PaymentForm = lazy(() => import("./pages/Dashboards/UserDashbord/PayMent"));
 
-// import StartMatch from "./pages/Dashboards/Judge/StartMatchIQ";
-import EventDetails from "./pages/Dashboards/Judge/eventDetails";
-import LiveTeam from "./pages/Dashboards/View/LiveTeam";
-import LiveSkills from "./pages/Dashboards/View/LiveSkills";
-import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
-import Matchess from "./pages/Dashboards/AdminDashboard/Matchess";
-import RoboticsPage from "./components/CardSlider/roboticsPage";
-import OpenSourcePage from "./components/CardSlider/openSourcePage";
-import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
-import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
-import UADashboard from "./pages/Dashboards/UADashboard";
-import EventDash from "./pages/Dashboards/EventsDash";
-import SelectEvent from "./pages/Dashboards/Judge/VexIQ/matches/SelectMatch";
-import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
-import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
-import TeamSetting from "./pages/AccountSetting/TeamSetting";
-import JudgeSetting from "./pages/AccountSetting/JudgeSetting";
-import VexGOAbout from "./components/Competitions/Robotics/VexGo";
-import Vex123About from "./components/Competitions/Robotics/Vex123";
-// import VexV5About from "./components/Competitions/Robotics/Vex"; // arg3y hena tany fe moshkelaaaa
-import VexIQAbout from "./components/Competitions/Robotics/VexIQ";
-import JudgeGo from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/JudgeGo";
-import StartMatchIQ from "./pages/Dashboards/Judge/StartMatchIQ";
-import StartMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO";
-import SelectMatchGO from "./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO";
-import COOPMatchesGO from "./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches";
+//                          Dashboards (Lazy Loading)                   //
+const EventDash = lazy(() => import("./pages/Dashboards/EventsDash"));
+const UADashboard = lazy(() => import("./pages/Dashboards/UADashboard"));
+
+
+// 414
+//                          Admin (Lazy Loading)                   //
+const ListTeams = lazy(() => import("./pages/Dashboards/AdminDashboard/ListTeams"));
+const TeamDetails = lazy(() => import("./pages/Dashboards/AdminDashboard/TeamDetails"));
+const ListCompetitions = lazy(() => import("./pages/Dashboards/AdminDashboard/ListCompetitions"));
+const CompetitionEvents = lazy(() => import("./pages/Dashboards/AdminDashboard/CompetitionEvents"));
+const ListJudges = lazy(() => import("./pages/Dashboards/AdminDashboard/ListJudges"));
+const Matchess = lazy(() => import("./pages/Dashboards/AdminDashboard/Matchess"));
+
+//                          User (Lazy Loading)                   //
+const MyTeams = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeams"));
+const MyTeamDetails = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeamDetails"));
+
+//                          Judge (Lazy Loading)                   //
+const JudgeEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeEvent"));
+const MatchRounds = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/matches"));
+const Interview = lazy(() => import("./pages/Dashboards/Judge/VexIQ/interview"));
+const Inspection = lazy(() => import("./pages/Dashboards/Judge/VexIQ/Inspection"));
+const Notebook = lazy(() => import("./pages/Dashboards/Judge/VexIQ/Notebook"));
+const Teamwork = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/teamwork"));
+const Skills = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/skills"));
+const EventDetails = lazy(() => import("./pages/Dashboards/Judge/eventDetails"));
+
+const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/SelectMatch"));
+const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/StartMatchIQ"));
+const StartMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
+const SelectMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
+const COOPMatch = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
+const SkillsGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/Solomatches"));
+const SheetGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/SheetGO"));
+
+
+//                          Misc (Lazy Loading)                   //
+const AllSetting = lazy(() => import("./pages/AccountSetting/AllSetting"));
+const LiveTeam = lazy(() => import("./pages/Dashboards/View/LiveTeam"));
+const LiveSkills = lazy(() => import("./pages/Dashboards/View/LiveSkills"));
+
+
+//                      Home pages              //
+const About = lazy(() => import("./pages/About/About"));
+const Gallery = lazy(() => import("./pages/Gallary/Gallary"));
+const Home = lazy(() => import("./components/Home/Home"));
+
+//                        start  Competitions (Lazy Loading)                   //
+const RoboticsPage = lazy(() => import("./components/Competitions/roboticsPage"));
+const OpenSourcePage = lazy(() => import("./components/Competitions/openSourcePage"));
+const Programming = lazy(() => import("./components/Competitions/Programming"));
+const WebDesign = lazy(() => import("./components/Competitions/WebDesign"));
+const AI = lazy(() => import("./components/Competitions/AI"));
+const GraphicDesign = lazy(() => import("./components/Competitions/GraphicDesign"));
+const STMATH = lazy(() => import("./components/Competitions/STMATH"));
+const MobileApp = lazy(() => import("./components/Competitions/MobileApp"));
+const Fablab = lazy(() => import("./components/Competitions/Fablab"));
+const Arduino = lazy(() => import("./components/Competitions/OpenSource/Arduino"));
+const VexGOAbout = lazy(() => import("./components/Competitions/Robotics/VexGo"));
+const Vex123About = lazy(() => import("./components/Competitions/Robotics/Vex123"));
+const VexV5About = lazy(() => import("./components/Competitions/Robotics/VexV5"));
+const VexIQAbout = lazy(() => import("./components/Competitions/Robotics/VexIQ"));
+const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Vex"));
+const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
+const InterviewSheet = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
+
+
+
 
 const App = () => {
+  
+  
+  
   const Layout = ({ children, hideNavbar = false }) => (
     <>
       {!hideNavbar && <Navbar />}
@@ -81,9 +114,21 @@ const App = () => {
       {!hideNavbar && <Footer />}
     </>
   );
+  const LayoutComing = ({ children, hideNavbar = false }) => (
+    <>
+      {!hideNavbar && <Navbar />}
+      {children}
+    </>
+  );
+  
 
   return (
-    <Router>
+    <>
+      <Suspense fallback={<LoadingPage/>}>
+        {/* <Router> */}
+        <LoadingProvider>
+
+
       <Routes>
         {/* Public Routes */}
         <Route
@@ -94,6 +139,23 @@ const App = () => {
             </Layout>
           }
         />
+        <Route
+          path="/competitions/ComingSoon"
+          element={
+            <LayoutComing>
+              <ComingSoonPage />
+            </LayoutComing>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Layout hideNavbar>
+            <NotFoundPage/>  
+            </Layout>
+          }
+        />
+       
         <Route
           path="/about"
           element={
@@ -153,6 +215,7 @@ const App = () => {
             </Layout>
           }
         />
+        {/* Start Competitions */}
         <Route
           path="/Robotics/Vex"
           element={
@@ -178,6 +241,14 @@ const App = () => {
           }
         />
         <Route
+          path="/Competitions/Robotics/VexV5"
+          element={
+            <Layout>
+              <VexV5About />
+            </Layout>
+          }
+        />
+        <Route
           path="/Competitions/Robotics/VexIQ"
           element={
             <Layout>
@@ -195,15 +266,44 @@ const App = () => {
         />
 
         <Route
-          path="/OpenSource/competitions"
+          path="/competitions/OpenSource"
           element={
             <Layout>
               <OpenSourcePage />
             </Layout>
           }
         />
-
+        <Route
+          path="/Competitions/OpenSource/Arduino"
+          element={
+            <Layout>
+              <Arduino />
+            </Layout>
+          }
+        />
+       
+        {/* end Competitions */}
+         <Route
+          path="/Dashboard/AccountSetting"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <AllSetting />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
         {/* Admin Dashboard Routes */}
+        <Route
+          path="/Dashboard/AddNews"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <AddNews />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
         <Route
           path="/Dashboard/Admin"
           element={
@@ -340,16 +440,8 @@ const App = () => {
           }
         />
 
-        <Route
-          path="/Dashboard/Team/AccountSetting"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <TeamSetting />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+       
+       
         <Route
           path="/Dashboard/User/Teams"
           element={
@@ -426,26 +518,8 @@ const App = () => {
 
         {/* JUDGE DASHBOARD */}
 
-        <Route
-          path="/Dashboard/Game"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <GameTimer />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Judge/AccountSetting"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <JudgeSetting />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+        
+       
 
         <Route
           path="/Dashboard/JudgeEvent/:event_name"
@@ -508,16 +582,57 @@ const App = () => {
             </Layout>
           }
         />
-               <Route
+           <Route
           path="/Dashboard/VexGO/COOPMatches"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <COOPMatchesGO />
+                <COOPMatch />
               </LayoutDashboard>
             </Layout>
           }
         />
+          <Route
+          path="/Dashboard/VexGO/Skills"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                < SkillsGO/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+                 <Route
+          path="/sheetgo"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <SheetGO />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+         <Route
+          path="/Dashboard/Judge/Vex123Event"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <VEX123Sheet />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+      <Route
+          path="/Dashboard/Judge/InterviewGO"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <InterviewSheet />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+        
         <Route
           path="/Dashboard/Judge/eventDetails"
           element={
@@ -591,9 +706,14 @@ const App = () => {
         />
       </Routes>
 
-      {/* <ContactUs /> */}
-    </Router>
+        {/* <ContactUs /> */}
+
+          {/* </Router> */}
+           </LoadingProvider>
+        </Suspense>
+      </>
   );
 };
+
 
 export default App;

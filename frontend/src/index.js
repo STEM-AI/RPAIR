@@ -1,18 +1,24 @@
 import React from 'react';
 import 'animate.css';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { HelmetProvider } from 'react-helmet-async';
 // import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-  {/* <GoogleOAuthProvider clientId="336324104875-omelmt66ug401gc6csrg74jfuai9k3d1.apps.googleusercontent.com"> */}
+      <HelmetProvider>
+    <BrowserRouter>
       <App />
-    {/* </GoogleOAuthProvider> */}
+    </BrowserRouter>
+
+      </HelmetProvider>
+
   </React.StrictMode>
 );
 

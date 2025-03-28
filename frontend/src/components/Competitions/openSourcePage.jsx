@@ -1,16 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import { Helmet } from "react-helmet-async";
 function OpenSourcePage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-10">
+       <Helmet>
+        <title>Open Source</title>
+      </Helmet>
       {/* العنوان الرئيسي */}
       <h2 className="mb-10 text-center text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500">
         Open Source Challenges
       </h2>
 
       {/* كارد Arduino */}
-      <Link to="/Arduino" className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl w-[420px]">
+      <Link to="/Competitions/OpenSource/Arduino" className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl w-[420px]">
         {/* صورة الكارد */}
         <img 
           src={require('../../assets/cards/arduino.jpg')} 

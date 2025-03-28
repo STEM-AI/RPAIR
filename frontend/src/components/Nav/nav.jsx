@@ -10,6 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 import { NavHashLink } from 'react-router-hash-link';
+import { BiSolidMessageAdd } from "react-icons/bi";
+
+
 
 
 
@@ -116,14 +119,6 @@ export default function Navbar() {
       : "/Dashboard/User"
     : "/";
 
-    const UrlSetting = userRole
-      ? userRole.is_superuser
-        ? "/Dashboard/Team/AccountSetting"
-        : userRole.is_staff && !userRole.is_superuser
-        ? "/Dashboard/Judge/AccountSetting"
-        : "/Dashboard/Team/AccountSetting"
-      : "/";
-  
 
   const handleLogout = () => {
     clearTokens();
@@ -161,12 +156,12 @@ export default function Navbar() {
   return (
     <nav className={` z-50 shadow-lg px-5  md:px-10 py-2 flex items-center justify-between 
       ${isScrolled ? "bg-white" : "bg-[rgba(0,0,0,0.183)] "}
-      ${location.pathname === "/" ? "bg-[rgba(0,0,0,0.183)] fixed left-0 right-0 " :  "sticky top-0 bg-white "}
+      ${location.pathname === "/" || location.pathname === "/competitions/ComingSoon" ? "bg-[rgba(0,0,0,0.183)] fixed left-0 right-0 " :  "sticky top-0 bg-white "}
       transition-colors duration-300`}>
       <div className="flex items-center space-x-3">
         <NavLink to={"/"}>
           <img
-            src={location.pathname === "/" ? (isScrolled ? logoBlack : logo) : logoBlack}
+            src={location.pathname === "/" || location.pathname === "/competitions/ComingSoon" ? (isScrolled ? logoBlack : logo) : logoBlack}
             alt="Rpair-Logo"
             className="h-20 w-auto p-2 rounded-full"
           />
@@ -199,14 +194,14 @@ export default function Navbar() {
             <ul className={`absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg transform scale-95 transition-transform duration-300 ease-out origin-top`}>
               {[
                 { name: "Robotics", link: "/Robotics/Vex" },
-                { name: "Web Design", link: "/competitions/web-design" },
-                { name: "Open Source", link: "/OpenSource/competitions" },
-                { name: "Mobile Application", link: "/competitions/mobile-app" },
-                { name: "Programming", link: "/competitions/programming" },
-                { name: "Artificial Intelligence", link: "/competitions/ai" },
-                { name: "Fablab", link: "/competitions/fablab" },
-                { name: "ST Math", link: "/competitions/st-math" },
-                { name: "Graphic Design", link: "/competitions/graphic-design" }
+                { name: "Web Design", link: "/competitions/ComingSoon" },
+                { name: "Open Source", link: "/competitions/OpenSource" },
+                { name: "Mobile Application", link: "/competitions/ComingSoon" },
+                { name: "Programming", link: "/competitions/ComingSoon" },
+                { name: "Artificial Intelligence", link: "/competitions/ComingSoon" },
+                { name: "Fablab", link: "/competitions/ComingSoon" },
+                { name: "ST Math", link: "/competitions/ComingSoon" },
+                { name: "Graphic Design", link: "/competitions/ComingSoon" }
               ].map((item, index) => (
                 <li key={index} className="hover:bg-cyan-50 transition-all duration-300">
                   <div
@@ -274,22 +269,31 @@ export default function Navbar() {
                 <BsFillPersonFill className="text-2xl text-cyan-500 hover:text-white transition-all duration-300 transform hover:scale-105" />
               </button>
               {dropdowns.profile && (
-                <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50 transition-all duration-300">
-                  <NavLink to={Url} className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
-                    <BsFillPersonFill className="text-2xl mx-2" />
-                    <span className="text-lg">Dashbord</span>
-                  </NavLink>
-                  <NavLink to={UrlSetting} className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
-                    <IoSettingsOutline className="text-2xl mx-2" />
-                    <span className="text-lg">Account Settings</span>
-                  </NavLink>
-
-                  <hr />
-                  <div className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
+                 <div className="absolute bg-white border border-gray-300 shadow-lg rounded-md px-4 py-2 w-80 right-0 mt-2 z-50">
+                                  <NavLink to={Url} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
+                                    <BsFillPersonFill className="text-2xl mx-2" />
+                                    <span className="text-lg">Dashboard</span>
+                                  </NavLink>
+                  {userRole.is_superuser &&
+                  
+                                  <NavLink to ={'/Dashboard/AddNews'} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
+                                    <BiSolidMessageAdd className="text-2xl mx-2" />
+                                    <span className="text-lg">Add News</span>
+                                  </NavLink>
+                  }
+                  
+                                  <NavLink to={'/Dashboard/AccountSetting'} className="flex items-center text-gray-600 py-2 px-1 cursor-pointer hover:bg-gray-100">
+                                    <IoSettingsOutline className="text-2xl mx-2" />
+                                    <span className="text-lg">Account Settings</span>
+                                  </NavLink>
+                  
+                                  <hr />
+                                   <div className="flex items-center text-gray-600 py-2 px-1 transition-all duration-300">
                     <CiLogout className="text-2xl mx-2" />
                     <button className="text-lg" onClick={handleLogout}>Log Out</button>
                   </div>
                 </div>
+                 
               )}
             </div>
           </div>

@@ -1,17 +1,15 @@
-import React, { useEffect }  from "react";
+import React, { useEffect ,useState }  from "react";
 import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
 import About from "../../pages/About/About";
+import NewsTicker from "../News/NewsLive";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
-  // useEffect(() => {
-  //   // Initialize TW Elements
-  //   initTWE({ Carousel, Ripple });
-    
-  // }, []);
 
-   // Initialize TW Elements immediately
+  
+
   initTWE({ Carousel, Ripple });
 
   const hasRefreshed = sessionStorage.getItem("hasRefreshed");
@@ -24,6 +22,9 @@ const Home = () => {
 
   return (
     <>
+       <Helmet>
+        <title>RPAIR</title>
+      </Helmet>
       <div></div>
       <div id="home-section">
         
@@ -34,7 +35,7 @@ const Home = () => {
         data-twe-ride="carousel"
       >
         <div className="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
-          <div
+            <div
             className="relative float-left -mr-[100%] w-full !transform-none bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none"
             data-twe-carousel-fade
             data-twe-carousel-item
@@ -77,19 +78,22 @@ const Home = () => {
               role="button"
             >
               Get Started
-            </NavLink>
+                  </NavLink>
+
           </div>
 
 
               
             </div>
-          </div>
+            </div>
+            
         </div>
         </div>
-
+               
       </div>
       <About />
 
+ <NewsTicker/>
 
 
     </>

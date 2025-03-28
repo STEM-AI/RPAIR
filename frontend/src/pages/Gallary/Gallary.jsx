@@ -3,10 +3,13 @@ import Vexgo from '../../assets/gallery/Robotics/VexGO/FutureComp/FutureComp-sad
 import VexIQ from '../../assets/gallery/Robotics/VexIQ/NationalComp/IMG_4376.JPG'
 import arduino from '../../assets/cards/arduino.jpg'
 import web from '../../assets/cards/web.jpeg'
-
+import { Helmet } from 'react-helmet-async'
 const Gallery = () => {
     return (
       <div className="bg-white  py-6 sm:py-8 lg:py-12">
+         <Helmet>
+        <title>Gallary</title>
+      </Helmet>
                 <div className="text-center mb-10">
           <h2 className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
            OUR GALLERY
@@ -18,7 +21,7 @@ const Gallery = () => {
               { src: Vexgo, alt: "Photo by Minh Pham", label: "VEX GO" },
               { src: VexIQ, alt: "Photo by Magicle", label: "VEX IQ", span: "md:col-span-2" },
               { src: arduino, alt: "Photo by Martin Sanchez", label: "ARDUINO", span: "md:col-span-2" },
-              { src:web , alt: "Photo by Lorenzo Herrera", label: "wWEB DESIGN" }
+              { src:web , alt: "Photo by Lorenzo Herrera", label: "WEB DESIGN" }
             ].map((item, index) => (
               <a key={index} href="#" className={`group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80 ${item.span || ''}`}>
                 <img src={item.src} loading="lazy" alt={item.alt} className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />

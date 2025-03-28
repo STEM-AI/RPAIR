@@ -45,7 +45,7 @@
 
 //     try {
 //       await axios.post(
-//         `${process.env.REACT_APP_API_URL}/admin/event/`,
+//         `${process.env.REACT_APP_API_URL}/api/admin/event/`,
 //         formData,
 //         {
 //           headers: {
@@ -242,6 +242,7 @@
 // export default CreateEvent;
 
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
@@ -299,6 +300,12 @@ const CreateEvent = () => {
       );
 
       setAlertType("success");
+       Swal.fire({
+                      icon: "success",
+                      title: "Success",
+                      text: "Registration successful!",
+                      showConfirmButton: false,
+                        });
       setResponseMessage("Event created successfully!");
       setFormData({
         name : "",
@@ -306,9 +313,9 @@ const CreateEvent = () => {
         start_date: "",
         end_date: "",
         location: "",
-        category: "Mini",
+        category: "",
         fees: 200,
-        age: "00-00",
+        age: "",
       });
     } catch (err) {
       console.error("Error Response:", err.response); 
@@ -320,6 +327,22 @@ const CreateEvent = () => {
       setIsSubmitting(false);
     }
   };
+
+  const options = [
+  
+    { value: "vex_iq", label: "VEX IQ" },
+  { value: "vex_123", label: "VEX 123" },
+    { value: "robotics", label: "Vex GO" },
+    { value: "web_design", label: "Web Design" },
+    { value: "open_source", label: "Open Source" },
+    { value: "mobile_application", label: "Mobile Application" },
+    { value: "programming", label: "Programming" },
+    { value: "artificial_intelligence", label: "Artificial Intelligence" },
+    { value: "fablab", label: "Fablab" },
+    { value: "st_math", label: "ST Math" },
+    { value: "graphic_design", label: "Graphic Design" },
+
+  ];
 
   return (
     <div className="container px-4">
@@ -358,15 +381,21 @@ const CreateEvent = () => {
             <label htmlFor="competition_name" className="block text-gray-700 font-bold">
               Competition Name:
             </label>
-            <input
-              type="text"
+            <select
               id="competition_name"
               name="competition_name"
-              placeholder="Enter competition name"
               value={formData.competition_name}
               onChange={handleChange}
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
-            />
+              required
+            >
+              <option value="">Select Competition</option>
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
 
 
