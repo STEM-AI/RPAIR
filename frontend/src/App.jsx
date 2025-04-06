@@ -13,8 +13,8 @@ import { LoadingProvider } from "./context/LoadingContext";
 import LoadingPage from "./components/LoadingPage"
 import VEX123Sheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 import SheetSolo from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetSolo";
-import SelectMatch123 from "./pages/JudgeComp/Robotics/Vex123/SelectMatch123";
-import Interview123 from "./pages/JudgeComp/Robotics/Vex123/Interview123";
+import SelectMatch123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/SelectMatch123";
+import Interview123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Interview123";
 
 
 
