@@ -34,8 +34,11 @@ const ListCompetitions = () => {
 
     return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <h2 className="mb-6 pt-4 pb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-3xl sm:text-4xl md:text-5xl font-black">
-        ALL COMPETITIONS
+     
+          <h2 className="mb-12 text-center">
+        <span className="text-5xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+          ALL COMPETITIONS
+        </span>
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
