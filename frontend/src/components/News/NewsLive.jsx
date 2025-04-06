@@ -92,7 +92,7 @@ const NewsTicker = () => {
     let reconnectInterval = 5000;
 
     const connectWebSocket = () => {
-      socket = new WebSocket(`wss://147.93.56.71:8001/ws/news/?token=${token}`);
+      socket = new WebSocket(`wss://147.93.56.71:8001/ws/news/`);
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
