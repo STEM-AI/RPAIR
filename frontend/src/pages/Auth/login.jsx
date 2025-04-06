@@ -97,8 +97,9 @@ const Login = () => {
                     </div>
                 </div>
                 <div className="w-full p-8 lg:w-1/2 flex flex-col mx-auto">
-                    <h2 className="text-3xl font-bold text-gray-700 text-center">Login</h2>
-                    <a
+                    <h2 className="text-3xl font-bold text-gray-700 text-center pb-4">Login</h2>
+                    <span className="border-b w-full "></span>
+                    {/* <a
                         href="#"
                         className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100 transition-all duration-700 cursor-pointer"
                     >
@@ -112,10 +113,10 @@ const Login = () => {
                     <div className="mt-4 flex items-center justify-between">
                         <span className="border-b w-1/5 lg:w-1/4"></span>
                         <a href="#" className="text-xs text-center text-gray-500 uppercase">
-                            or login with email
+                            login with email
                         </a>
                         <span className="border-b w-1/5 lg:w-1/4"></span>
-                    </div>
+                    </div> */}
 
                     <form className="mt-6" onSubmit={signIn}>
                         {error && <div className="mt-4 text-sm text-red-600">{error}</div>}

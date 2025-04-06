@@ -11,7 +11,8 @@ import PublicRoute from "./components/PublicRoute";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 import { LoadingProvider } from "./context/LoadingContext";
 import LoadingPage from "./components/LoadingPage"
-import VEX123Sheet from "./pages/JudgeComp/Robotics/Vex123/Sheet123";
+import VEX123Sheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
+import SheetSolo from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetSolo";
 
 //                              semple pages & Forms               //
 //                          Common Pages (Lazy Loading)                   //
@@ -53,21 +54,21 @@ const MyTeamDetails = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeamD
 
 //                          Judge (Lazy Loading)                   //
 const JudgeEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeEvent"));
-const MatchRounds = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/matches"));
-const Interview = lazy(() => import("./pages/Dashboards/Judge/VexIQ/interview"));
-const Inspection = lazy(() => import("./pages/Dashboards/Judge/VexIQ/Inspection"));
-const Notebook = lazy(() => import("./pages/Dashboards/Judge/VexIQ/Notebook"));
-const Teamwork = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/teamwork"));
-const Skills = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/skills"));
+const MatchRounds = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/matches"));
+const Interview = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/interview"));
+const Inspection = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Inspection"));
+const Notebook = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Notebook"));
+const Teamwork = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/teamwork"));
+const Skills = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/skills"));
 const EventDetails = lazy(() => import("./pages/Dashboards/Judge/eventDetails"));
 
-const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/VexIQ/matches/SelectMatch"));
-const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/StartMatchIQ"));
-const StartMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
-const SelectMatchGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
-const COOPMatch = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
-const SkillsGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/Solomatches"));
-const SheetGO = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/matches/SheetGO"));
+const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/SelectMatch"));
+const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/StartMatchIQ"));
+const StartMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
+const SelectMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
+const COOPMatch = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
+const SkillsGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches"));
+const SheetCoop = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop"));
 
 
 //                          Misc (Lazy Loading)                   //
@@ -98,7 +99,7 @@ const VexV5About = lazy(() => import("./components/Competitions/Robotics/VexV5")
 const VexIQAbout = lazy(() => import("./components/Competitions/Robotics/VexIQ"));
 const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Vex"));
 const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
-const InterviewSheet = lazy(() => import("./pages/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
+const InterviewSheet = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
 
 
 
@@ -602,12 +603,22 @@ const App = () => {
             </Layout>
           }
         /> 
-                 <Route
-          path="/sheetgo"
+        <Route
+          path="/SheetCoop"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <SheetGO />
+                <SheetCoop />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+        <Route
+          path="/SheetSolo"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <SheetSolo />
               </LayoutDashboard>
             </Layout>
           }

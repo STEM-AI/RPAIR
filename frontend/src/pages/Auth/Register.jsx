@@ -151,8 +151,9 @@ const Register = () => {
         <div id="signUpForm" onSubmit={signUp} className="relative flex bg-white rounded-2xl  shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-5xl w-full">
             
             <div className="w-full px-8 py-4 lg:w-3/4 flex flex-col mx-auto">
-                <h2 className="text-3xl  font-bold text-gray-700 text-center">Registration</h2>
-                <a href="#"className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
+            <h2 className="text-3xl  font-bold text-gray-700 text-center pb-4">Registration</h2>
+                                <span className="border-b w-full "></span>
+                {/* <a href="#"className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
                     <div className="px-4 py-3">
                     <div className="icon ">
                     <FcGoogle className="text-2xl"/>
@@ -168,7 +169,7 @@ const Register = () => {
                     or register with email
                     </a>
                     <span className="border-b w-1/5 lg:w-1/4"></span>
-                </div>
+                </div> */}
 
             <form className=" pt-6 pb-8 mb-4 bg-white rounded" >
                 <div className="mb-4 md:flex md:justify-between">

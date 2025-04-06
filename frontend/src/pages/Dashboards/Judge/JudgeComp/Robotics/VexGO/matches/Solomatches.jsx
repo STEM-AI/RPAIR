@@ -78,7 +78,7 @@ const SkillsGO = () => {
       mode: activeTab,
       round
     }));
-    navigate("/sheetgo");
+    navigate("/SheetSolo");
   };
 
   const handleCompleteMatch = (matchId) => {
