@@ -100,7 +100,6 @@ import { Helmet } from "react-helmet-async";
 
 const AddNews = () => {
   const [newsData, setNewsData] = useState({
-    user_username: "",
     content: ""
   });
   const [loading, setLoading] = useState(true);
@@ -108,39 +107,7 @@ const AddNews = () => {
 
   const token = localStorage.getItem("access_token");
 
-  useEffect(() => {
-    if (!token) {
-      setError("Authentication Error: No token found.");
-      setLoading(false);
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/data/profile/`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-
-        const data = await response.json();
-        setNewsData(prevState => ({
-          ...prevState,
-          user_username: data.username || "",
-        }));
-      } catch (error) {
-        setError(error.message || "Failed to load user data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [token]);
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -151,7 +118,7 @@ const AddNews = () => {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/user/notification/`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/news/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

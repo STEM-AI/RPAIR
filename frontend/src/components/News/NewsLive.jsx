@@ -80,19 +80,15 @@ import { NavHashLink } from "react-router-hash-link";
 
 const NewsTicker = () => {
   const [news, setNews] = useState("Loading news...");
-  const token = localStorage.getItem("access_token");
 
   useEffect(() => {
-    if (!token) {
-      setNews("No token available.");
-      return;
-    }
+   
 
     let socket;
     let reconnectInterval = 5000;
 
     const connectWebSocket = () => {
-      socket = new WebSocket(`wss://147.93.56.71:8001/ws/news/`);
+      socket = new WebSocket(`wss://147.93.56.71:8001/ws/news`);
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
@@ -116,19 +112,17 @@ const NewsTicker = () => {
         socket.close();
       }
     };
-  }, [token]);
+  });
 
   useEffect(() => {
     const fetchLatestNews = async () => {
-      if (!token) return;
 
       try {
         const response = await fetch(
-          "http://147.93.56.71:8001/api/user/notification/",
+          "http://147.93.56.71:8001/api/admin/news/",
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -142,35 +136,49 @@ const NewsTicker = () => {
     };
 
     fetchLatestNews();
-  }, [token]);
+  });
 
   return (
     news !== "No news available." &&
     news !== "Failed to load news." &&
-    news !== "No token available." && (
+     (
       <div className="w-full backdrop-blur-sm bg-black/40 text-white flex items-center z-50 fixed bottom-0 overflow-hidden">
-        <div className="px-4 py-2 font-bold text-black bg-cyan-500">News</div>
+        <div className="px-4 py-2 font-bold text-black bg-cyan-500 z-30">News</div>
 
-        <div className="w-full flex overflow-hidden whitespace-nowrap">
-          <div className="flex animate-marquee">
-            {[...Array(2)].map((_, index) => (
-              <NavHashLink key={index} to={'/#challenges'} className="flex-shrink-0">
-                <span className="mx-4">
-                  🔥 Exciting News! A brand-new competition is here!{" "}
-                  <span className="font-bold text-xl text-red-600 uppercase">
-                    #{news}
-                  </span>{" "}
-                  🏆 Test your skills, challenge yourself, and stand a chance to
-                  win amazing prizes. Stay tuned for more details! 🚀{" "}
-                  <span className="font-bold text-xl text-red-600 uppercase">
-                    #{news}
-                  </span>{" "}
-                  #ChallengeYourself
-                </span>
-              </NavHashLink>
-            ))}
+        <div className="w-full flex overflow-hidden whitespace-nowrap group">
+          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+            {[...Array(4)].map((_, index) => ( 
+      <NavHashLink key={index} to="/#challenges" className="flex-shrink-0">
+        <span className="mx-4">
+          🔥 Exciting News! A Rpair New competition is here!{" "}
+          <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
+          🏆 Test your skills, challenge yourself, and stand a chance to win amazing prizes.
+          Stay tuned for more details! 🚀{" "}
+          <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
+          #ChallengeYourself
+        </span>
+      </NavHashLink>
+    ))}
           </div>
         </div>
+
+        {/* <div className="w-full flex overflow-hidden whitespace-nowrap group">
+  <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+    {[...Array(4)].map((_, index) => (
+      <NavHashLink key={index} to="/#challenges" className="flex-shrink-0">
+        <span className="mx-4">
+          🔥 Exciting News! A brand-new competition is here!{" "}
+          <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
+          🏆 Test your skills, challenge yourself, and stand a chance to win amazing prizes.
+          Stay tuned for more details! 🚀{" "}
+          <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
+          #ChallengeYourself
+        </span>
+      </NavHashLink>
+    ))}
+  </div>
+</div> */}
+
       </div>
     )
   );

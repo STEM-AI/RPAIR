@@ -188,10 +188,12 @@ function UADashboard() {
        <Helmet>
               <title>Dashboard</title>
             </Helmet>
-      <h2 className="mb-6 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-4xl font-extrabold">
-        Live & Upcoming Competitions
-      </h2>
       
+       <h2 className="mb-12 text-center">
+        <span className="text-5xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+          Live & Upcoming Competitions
+        </span>
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {roboticsKits.map((kit) => (
           <div 
