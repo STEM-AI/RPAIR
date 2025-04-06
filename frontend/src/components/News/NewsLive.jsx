@@ -88,7 +88,7 @@ const NewsTicker = () => {
     let reconnectInterval = 5000;
 
     const connectWebSocket = () => {
-      socket = new WebSocket(`wss://147.93.56.71:8001/ws/news`);
+      socket = new WebSocket(`wss://rpair.org/ws/news/`);
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
@@ -119,7 +119,7 @@ const NewsTicker = () => {
 
       try {
         const response = await fetch(
-          "http://147.93.56.71:8001/api/admin/news/",
+          `${process.env.REACT_APP_API_URL}/admin/news/`,
           {
             headers: {
               "Content-Type": "application/json",
