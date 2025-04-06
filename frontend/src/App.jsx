@@ -12,6 +12,10 @@ import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard"
 import { LoadingProvider } from "./context/LoadingContext";
 import LoadingPage from "./components/LoadingPage"
 import VEX123Sheet from "./pages/JudgeComp/Robotics/Vex123/Sheet123";
+import SelectMatch123 from "./pages/JudgeComp/Robotics/Vex123/SelectMatch123";
+import Interview123 from "./pages/JudgeComp/Robotics/Vex123/Interview123";
+
+
 
 //                              semple pages & Forms               //
 //                          Common Pages (Lazy Loading)                   //
@@ -612,8 +616,21 @@ const App = () => {
             </Layout>
           }
         /> 
+
+
+
          <Route
           path="/Dashboard/Judge/Vex123Event"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <SelectMatch123 />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+                 <Route
+          path="/Dashboard/Judge/matches123"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -622,6 +639,25 @@ const App = () => {
             </Layout>
           }
         /> 
+                         <Route
+          path="/Dashboard/Judge/interview123"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <Interview123/>
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
+
+
+
+
+
+
+
+
+
       <Route
           path="/Dashboard/Judge/InterviewGO"
           element={
