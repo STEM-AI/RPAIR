@@ -16,7 +16,7 @@ const tasks = [
   { title: "End with the robot on the green tile", points: 1 },
 ];
 
-export default function SheetGO() {
+export default function SheetCoop() {
   const [scores, setScores] = useState({});
   const [taskTimes, setTaskTimes] = useState({}); // New state for task times
   const [turbines, setTurbines] = useState(0);
@@ -91,38 +91,42 @@ export default function SheetGO() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.setTextColor(79, 70, 229);
-    doc.text("Ocean Science Exploration", 105, 20, { align: "center" });
-    
+   const handleDownloadPDF = () => {
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.setTextColor(79, 70, 229);
+      doc.text("Ocean Science Exploration", 105, 20, { align: "center" });
+      // Add subtitle
     doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Match ID: ${matchData.matchId}`, 20, 30);
-    doc.text(`Teams: ${matchData.team1} & ${matchData.team2}`, 20, 40);
-    doc.text(`Total Time: ${formatTime(timer)}`, 20, 50);
-
-    const tableData = tasks.map((task, index) => [
-      task.title,
-      task.points,
-      scores[index] || 0,
-      taskTimes[index] ? formatTime(taskTimes[index]) : "N/A" // Add time column
-    ]);
-
-    doc.autoTable({
-      startY: 60,
-      head: [["Task", "Points", "Score", "Time"]], // Updated header
-      body: tableData,
-      theme: "striped",
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255] },
-      alternateRowStyles: { fillColor: [240, 240, 255] }
-    });
-
-    doc.text(`Total Score: ${totalScore}`, 20, doc.autoTable.previous.finalY + 10);
-    doc.save(`Match_${matchData.matchId}_Score.pdf`);
-  };
+    doc.setTextColor(79, 70, 229); // black
+    doc.text("Coop Match Score Sheet", 105, 30, { align: "center" });
+      
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Match ID: ${matchData.matchId}`, 20, 40);
+      doc.text(`Teams: ${matchData.team1}`, 20, 50);
+      doc.text(`Total Time: ${formatTime(timer)}`, 20, 60);
+  
+      const tableData = tasks.map((task, index) => [
+        task.title,
+        task.points,
+        scores[index] || 0,
+        taskTimes[index] ? formatTime(taskTimes[index]) : "N/A" // Add time column
+      ]);
+  
+      doc.autoTable({
+        startY: 70,
+        head: [["Task", "Points", "Score", "Time"]], // Updated header
+        body: tableData,
+        theme: "striped",
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [240, 240, 255] }
+      });
+  
+      doc.text(`Total Score: ${totalScore}`, 20, doc.autoTable.previous.finalY + 10);
+      doc.save(`Match_${matchData.matchId}_Score.pdf`);
+    };
 
   return (
     <div className="max-w-5xl mx-auto mt-8 p-6 bg-white shadow-xl rounded-xl">
