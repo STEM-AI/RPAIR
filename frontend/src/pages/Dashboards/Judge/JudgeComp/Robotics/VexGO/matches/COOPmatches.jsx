@@ -169,7 +169,7 @@ const COOPMatch = () => {
 
   // Navigate to SheetGO
   const handleStartMatch = (matchId) => {
-    navigate(`/sheetgo`);
+    navigate(`/SheetCoop`);
   };
 
   // Mark match as completed
@@ -242,6 +242,7 @@ const COOPMatch = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Team 1</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Team 2</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Score</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Time</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Actions</th>
               </tr>
@@ -252,6 +253,16 @@ const COOPMatch = () => {
                   <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{match.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <input
+                      type="number"
+                      min="0"
+                      className="w-20 px-3 py-2 border border-gray-300 rounded-md text-center focus:ring-indigo-500 focus:border-indigo-500"
+                      value={scores[match.id] || ""}
+                      onChange={(e) => handleSaveScore(match.id, e.target.value)}
+                      disabled={completedMatches[match.id]}
+                    />
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <input
                       type="number"

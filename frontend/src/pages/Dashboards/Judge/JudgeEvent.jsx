@@ -4,7 +4,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { MdEvent, MdAccessTime, MdLocationOn, MdInfo, MdRefresh, MdError, MdPlayArrow, MdLock, MdDone } from 'react-icons/md';
 import { Link } from "react-router-dom";
-
+import {authAxios ,getTokens} from "../../Auth/auth"
 
 
 export default function JudgeEvent() {
@@ -63,29 +63,33 @@ export default function JudgeEvent() {
   };
 
   const fetchJudgeEvent = async () => {
-    if (!token) {
-      setError("Authentication Error");
-      setResponseMessage("You are not authorized. Please log in.");
-      setAlertType("error");
-      setLoading(false);
-      return;
-    }
+      const { access_token } = getTokens();
 
-    const myURL = `${process.env.REACT_APP_API_URL}/event/judge-event-list/`;
+   if (!access_token) {
+    setError("Authentication Error");
+    setResponseMessage("You are not authorized. Please log in.");
+    setAlertType("error");
+    setLoading(false);
+    return;
+  }
+
+  const myURL = `${process.env.REACT_APP_API_URL}/event/judge-event-list/`;
+  
+  try {
+    setLoading(true);
+    setError(null);
+    setResponseMessage(null);
     
-    try {
-      setLoading(true);
-      setError(null);
-      setResponseMessage(null);
-      
-      const response = await axios.get(myURL, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000 // 10 second timeout
-      });
-      
-      setEvents(response.data);
-      setLoading(false);
-    } catch (err) {
+    const response = await authAxios.get(myURL, {
+      headers: { Authorization: `Bearer ${access_token}` },
+      timeout: 10000
+    });
+    
+    setEvents(response.data);
+    console.log(response.data);
+    
+    setLoading(false);
+  }catch (err) {
       setLoading(false);
       setError(err.message);
 
