@@ -15,6 +15,8 @@ import VEX123Sheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Shee
 import SheetSolo from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetSolo";
 import SelectMatch123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/SelectMatch123";
 import Interview123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Interview123";
+import MainProg from "./pages/Competitions/Programming/main/ProgWelcome";
+import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
 
 
 
@@ -660,6 +662,18 @@ const App = () => {
             </Layout>
           }
         /> 
+
+        {/* PROGRAMMING */}
+        <Route
+          path="/Programming"
+          element={
+            <Layout hideNavbar>
+              {/* <LayoutDashboard> */}
+              <ProgWelcome/>
+              {/* </LayoutDashboard> */}
+            </Layout>
+          }
+          />
 
 
 
