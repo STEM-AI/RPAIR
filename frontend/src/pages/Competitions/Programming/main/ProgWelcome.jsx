@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,7 +55,7 @@ const ProgWelcome = () => {
 
   const handleContinue = () => {
     if (selectedTopic) {
-      navigate(`/competition/${selectedTopic.toLowerCase()}`);
+      navigate(`/Competition-start/${selectedTopic.toLowerCase()}`);
     }
   };
 
@@ -110,7 +109,6 @@ const ProgWelcome = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-
             <motion.div 
               className="absolute inset-0 rounded-full bg-cyan-500 opacity-0 -z-10"
               animate={{
@@ -124,73 +122,50 @@ const ProgWelcome = () => {
               }}
             />
           </motion.div>
-          
-          {/* <motion.h1 
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-cyan-50 to-cyan-100 bg-clip-text text-transparent mb-3 pb-3"
-            variants={itemVariants}
+
+          <motion.div 
+            className="flex items-center justify-center gap-4 mb-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            Welcome to <span>
-              
-              
-            <motion.img 
-              src={logo} 
-              alt="RPAIR Logo" 
-              className="w-28 sm:w-32 mx-auto mb-6 drop-shadow-lg"
-              initial={{ scale: 0.8, rotate: -5 }}
-              animate={{ 
-                scale: 1, 
-                rotate: 0,
-                transition: { type: 'spring', stiffness: 300 }
-              }}
-            />
-              </span> Programming Competition
-          </motion.h1> */}
-
-
-<motion.div 
-  className="flex items-center justify-center gap-4 mb-6"
-  variants={containerVariants}
-  initial="hidden"
-  animate="visible"
->
-  <motion.h1 
-    className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-50 to-gray-100 bg-clip-text text-transparent flex items-center"
-    variants={itemVariants}
-  >
-    Welcome to 
-    <motion.span 
-      className="relative mx-2"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <motion.img 
-        src={logo} 
-        alt="RPAIR Logo" 
-        className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-lg inline-block align-middle"
-        initial={{ scale: 0.8, rotate: -5 }}
-        animate={{ 
-          scale: 1, 
-          rotate: 0,
-          transition: { type: 'spring', stiffness: 300 }
-        }}
-      />
-      <motion.div 
-        className="absolute inset-0 rounded-full bg-cyan-500 opacity-0 -z-10"
-        animate={{
-          opacity: [0, 0.1, 0],
-          scale: [1, 1.5, 1]
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          repeatDelay: 3
-        }}
-      />
-    </motion.span>
-    Programming Competition
-  </motion.h1>
-</motion.div>
-        
+            <motion.h1 
+              className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-50 to-gray-100 bg-clip-text text-transparent flex items-center"
+              variants={itemVariants}
+            >
+              Welcome to 
+              <motion.span 
+                className="relative mx-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.img 
+                  src={logo} 
+                  alt="RPAIR Logo" 
+                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-lg inline-block align-middle"
+                  initial={{ scale: 0.8, rotate: -5 }}
+                  animate={{ 
+                    scale: 1, 
+                    rotate: 0,
+                    transition: { type: 'spring', stiffness: 300 }
+                  }}
+                />
+                <motion.div 
+                  className="absolute inset-0 rounded-full bg-cyan-500 opacity-0 -z-10"
+                  animate={{
+                    opacity: [0, 0.1, 0],
+                    scale: [1, 1.5, 1]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 3
+                  }}
+                />
+              </motion.span>
+              Programming Competition
+            </motion.h1>
+          </motion.div>
         </motion.div>
 
         {/* Topic Cards */}
@@ -359,7 +334,7 @@ const ProgWelcome = () => {
           initial="hidden"
           animate="visible"
         >
-          {/* <motion.button
+          <motion.button
             onClick={handleContinue}
             disabled={!selectedTopic}
             whileHover={selectedTopic ? { 
@@ -395,56 +370,10 @@ const ProgWelcome = () => {
               />
             )}
           </motion.button>
-           */}
-
-
-<motion.button
-  onClick={() => {
-    if (selectedTopic === 'Python') {
-      navigate('/python-competition'); // Your Python competition route
-    } else if (selectedTopic === 'Tynker') {
-      navigate('/tynker-competition'); // Your Tynker competition route
-    }
-  }}
-  disabled={!selectedTopic}
-  whileHover={selectedTopic ? { 
-    scale: 1.05,
-    boxShadow: "0 15px 30px -10px rgba(6, 182, 212, 0.4)"
-  } : {}}
-  whileTap={selectedTopic ? { scale: 0.98 } : {}}
-  className={`relative px-10 sm:px-12 py-3 sm:py-4 rounded-xl font-bold text-lg sm:text-xl shadow-md transition-all ${selectedTopic ? 'bg-gradient-to-r from-cyan-500 to-cyan-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
->
-  {selectedTopic ? (
-    <>
-      <span>Start {selectedTopic} Competition</span>
-      <motion.span
-        className="absolute -right-2 -top-2 bg-yellow-400 text-gray-900 text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 500 }}
-      >
-        GO!
-      </motion.span>
-    </>
-  ) : (
-    'Select a Topic'
-  )}
-  {selectedTopic && (
-    <motion.div
-      className="absolute inset-0 rounded-xl bg-white opacity-0"
-      animate={{
-        opacity: [0, 0.2, 0],
-        scale: [1, 1.05, 1.1]
-      }}
-      transition={{ duration: 1.5, repeat: Infinity }}
-    />
-  )}
-</motion.button>
-
         </motion.div>
       </div>
     </motion.div>
   );
 };
 
-export default ProgWelcome
+export default ProgWelcome;

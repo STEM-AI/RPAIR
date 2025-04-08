@@ -17,6 +17,8 @@ import SelectMatch123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/S
 import Interview123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Interview123";
 import MainProg from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
+import ProgInfo from "./pages/Competitions/Programming/main/ProgInfo";
+import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
 
 
 
@@ -675,13 +677,29 @@ const App = () => {
           }
           />
 
+<Route
+          path="/Competition-start/:competition"
+          element={
+            <Layout hideNavbar>
+              {/* <LayoutDashboard> */}
+              <ProgInfo/>
+              {/* </LayoutDashboard> */}
+            </Layout>
+          }
+          />
 
 
 
+<Route
+          path="/competition/:competition"
+          element={
+            <Layout hideNavbar>
 
+                <CompetitionQuestions />
 
-
-
+            </Layout>
+          }
+        /> 
 
       <Route
           path="/Dashboard/Judge/InterviewGO"
