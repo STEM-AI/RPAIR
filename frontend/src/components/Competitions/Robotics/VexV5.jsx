@@ -1,7 +1,7 @@
 import React from "react";
 import img1 from "../../../assets/gallery/Robotics/VexIQ/MiniEvent-DSA/IMG_1974.JPG";
 
-import Rules from "../../../components/CometitionsComponent/Rules/RulesIQ";
+import Rules from "../../../components/CometitionsComponent/Rules/RulesVexV5";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import AwardsList from "../../../components/Awards/awards";
 import { Helmet } from "react-helmet-async";
