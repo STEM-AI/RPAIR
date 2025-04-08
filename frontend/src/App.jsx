@@ -4,6 +4,7 @@ import "./App.css";
 
 
 //                              components              //
+import { MatchProvider } from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/MatchContext";
 import Navbar from "./components/Nav/nav";
 import Footer from "./components/Footer/footer";
 import ContactUs from "./components/Contact/contactUs";
@@ -133,7 +134,7 @@ const App = () => {
         {/* <Router> */}
         <LoadingProvider>
 
-
+<MatchProvider>
       <Routes>
         {/* Public Routes */}
         <Route
@@ -751,7 +752,8 @@ const App = () => {
             </Layout>
           }
         />
-      </Routes>
+            </Routes>
+            </MatchProvider>
 
         {/* <ContactUs /> */}
 
