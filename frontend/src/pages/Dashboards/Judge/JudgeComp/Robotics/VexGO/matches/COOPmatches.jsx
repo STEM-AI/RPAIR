@@ -143,8 +143,10 @@
 import { useState } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import { useMatchContext } from "./MatchContext";
 const COOPMatch = () => {
+    const { matches, setCurrentMatch } = useMatchContext(); // Now this exists
+
   const [showRanking, setShowRanking] = useState(false);
   const [scores, setScores] = useState({});
   const [completedMatches, setCompletedMatches] = useState({});
@@ -168,9 +170,14 @@ const COOPMatch = () => {
   };
 
   // Navigate to SheetGO
-  const handleStartMatch = (matchId) => {
-    navigate(`/SheetCoop`);
-  };
+   const handleStartMatch = (match) => { // ✅ تمرير كائن المباراة
+  setCurrentMatch({
+    ...match,
+    type: 'coop', // إضافة النوع
+    mode: 'coop'
+  });
+  navigate("/SheetCoop");
+};
 
   // Mark match as completed
   const handleMarkAsDone = (matchId) => {
@@ -181,25 +188,27 @@ const COOPMatch = () => {
   };
 
   // Calculate rankings
-  const calculateRankings = () => {
-    const teamScores = {};
+  // دالة حساب النقاط المعدلة للفريقين
+const calculateRankings = () => {
+  const teamScores = {};
+  
+  schedule.forEach(match => {
+    const score = parseInt(scores[match.id]) || 0;
+    const teamScore = score / 2;
     
-    schedule.forEach(match => {
-      const score = parseInt(scores[match.id]) || 0;
-      
-      // Split score between both teams in COOP match
-      const teamScore = score / 2;
-      
-      if (!teamScores[match.team1]) teamScores[match.team1] = 0;
-      if (!teamScores[match.team2]) teamScores[match.team2] = 0;
-      
-      teamScores[match.team1] += teamScore;
-      teamScores[match.team2] += teamScore;
-    });
-    
-    return Object.entries(teamScores)
-      .map(([team, score]) => ({ team, score }))
-      .sort((a, b) => b.score - a.score);
+    // توزيع النقاط على الفريقين
+    teamScores[match.team1] = (teamScores[match.team1] || 0) + teamScore;
+    teamScores[match.team2] = (teamScores[match.team2] || 0) + teamScore;
+  });
+  
+  return Object.entries(teamScores)
+    .map(([team, score]) => ({ team, score }))
+    .sort((a, b) => b.score - a.score);
+  };
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
@@ -253,26 +262,12 @@ const COOPMatch = () => {
                   <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{match.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <input
-                      type="number"
-                      min="0"
-                      className="w-20 px-3 py-2 border border-gray-300 rounded-md text-center focus:ring-indigo-500 focus:border-indigo-500"
-                      value={scores[match.id] || ""}
-                      onChange={(e) => handleSaveScore(match.id, e.target.value)}
-                      disabled={completedMatches[match.id]}
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <input
-                      type="number"
-                      min="0"
-                      className="w-20 px-3 py-2 border border-gray-300 rounded-md text-center focus:ring-indigo-500 focus:border-indigo-500"
-                      value={scores[match.id] || ""}
-                      onChange={(e) => handleSaveScore(match.id, e.target.value)}
-                      disabled={completedMatches[match.id]}
-                    />
-                  </td>
+                 <td className="px-6 py-4 text-center">
+          {matches[match.id]?.score || 0}
+        </td>
+        <td className="px-6 py-4 text-center">
+          {matches[match.id]?.totalTime ? formatTime(matches[match.id].totalTime) : '-'}
+        </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       completedMatches[match.id] 
@@ -284,7 +279,7 @@ const COOPMatch = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center space-x-2">
                     <button
-                      onClick={() => handleStartMatch(match.id)}
+                     onClick={() => handleStartMatch(match)}
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       <FaPlay className="mr-1" /> Start

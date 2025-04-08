@@ -1,0 +1,48 @@
+import Swal from 'sweetalert2';
+
+const Aleart = {
+  confirm: ({ 
+    title = 'Are you sure?',
+    html = 'This action cannot be undone!',
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
+    onConfirm,
+    onCancel
+  }) => {
+    Swal.fire({
+      title,
+      html,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#4f46e5',
+      cancelButtonColor: '#d33',
+      confirmButtonText: confirmText,
+      cancelButtonText: cancelText,
+      customClass: {
+        popup: 'rounded-xl',
+        confirmButton: '!bg-indigo-600 hover:!bg-indigo-700 !text-white !px-4 !py-2 !rounded-lg',
+        cancelButton: '!bg-red-600 hover:!bg-red-700 !text-white !px-4 !py-2 !rounded-lg'
+      }
+    }).then((result) => {
+      if (result.isConfirmed && onConfirm) {
+        onConfirm();
+      } else if (onCancel) {
+        onCancel();
+      }
+    });
+  },
+
+  success: ({ title = 'Success!', text = '' }) => {
+    Swal.fire({
+      title,
+      text,
+      icon: 'success',
+      confirmButtonColor: '#4f46e5',
+      customClass: {
+        confirmButton: '!bg-green-600 hover:!bg-green-700 !text-white !px-4 !py-2 !rounded-lg'
+      }
+    });
+  }
+};
+
+export default Aleart;

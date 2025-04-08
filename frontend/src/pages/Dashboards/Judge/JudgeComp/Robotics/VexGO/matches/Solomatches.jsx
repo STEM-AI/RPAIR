@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useMatchContext } from './MatchContext';
+
 
 const SkillsGO = () => {
+  const { matches, setCurrentMatch } = useMatchContext(); // Now this exists
   const [showRanking, setShowRanking] = useState(false);
   const [activeTab, setActiveTab] = useState('driving'); // 'driving' or 'coding'
   const [scores, setScores] = useState({});
@@ -72,14 +75,21 @@ const SkillsGO = () => {
     }));
   };
 
+   // Keep the existing handleStartMatch implementation
   const handleStartMatch = (match) => {
-    localStorage.setItem('currentSkillsMatch', JSON.stringify({
-      ...match,
-      mode: activeTab,
-      round
-    }));
-    navigate("/SheetSolo");
-  };
+  setCurrentMatch({
+    id: match.id, 
+    type: 'solo', 
+    team: match.team,
+    challengeType: activeTab === 'driving' ? 'Driving Challenge' : 'Coding Challenge',
+    mode: activeTab,
+    round: round,
+  });
+  navigate("/SheetSolo");
+};
+
+  
+
 
   const handleCompleteMatch = (matchId) => {
     setCompletedMatches((prev) => ({
@@ -216,6 +226,7 @@ const SkillsGO = () => {
                 <th className="px-6 py-3 text-left">Match ID</th>
                 <th className="px-6 py-3 text-left">Team</th>
                 <th className="px-6 py-3 text-center">Score</th>
+                <th className="px-6 py-3 text-center">Time</th>
                 <th className="px-6 py-3 text-center">Status</th>
                 <th className="px-6 py-3 text-center">Actions</th>
               </tr>
@@ -229,14 +240,11 @@ const SkillsGO = () => {
                   <td className="px-6 py-4 font-medium">{match.id.toUpperCase()}</td>
                   <td className="px-6 py-4">{match.team}</td>
                   <td className="px-6 py-4 text-center">
-                    <input
-                      type="number"
-                      min="0"
-                      className="w-20 px-2 py-1 border rounded text-center"
-                      value={scores[match.id] || ""}
-                      onChange={(e) => handleSaveScore(match.id, e.target.value)}
-                    />
-                  </td>
+          {matches[match.id]?.score || 0}
+        </td>
+        <td className="px-6 py-4 text-center">
+          {matches[match.id]?.totalTime ? formatTime(matches[match.id].totalTime) : '-'}
+        </td>
                   <td className="px-6 py-4 text-center">
                     <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       completedMatches[match.id] 
