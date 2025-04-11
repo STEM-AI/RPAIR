@@ -176,7 +176,7 @@ const MyTeams = () => {
     const fetchUserRole = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/${team_name}/team-profile/`, 
+          `${process.env.REACT_APP_API_URL}/team/user/${team_name}`, 
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -310,7 +310,7 @@ const MyTeams = () => {
 
 
               <Link
-                to={`/Dashboard/Teams/${team.name ? team.name : ''}`}
+                to={`/Dashboard/Teams/User/${team.name ? team.name : ''}`}
                 className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
               >
                 View Details

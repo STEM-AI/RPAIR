@@ -20,8 +20,13 @@ export const theme = {
       progressBar: "progressBar 1.5s ease-in-out forwards",
       revealFade: "revealFade 3s ease-in-out forwards",
       progress: "progress 2s ease-in-out forwards",
+      fadeInDown: 'fadeInDown 0.5s ease-out',
     },
     keyframes: {
+       fadeInDown: {
+          '0%': { opacity: '0', transform: 'translateY(-20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       fadeInUp: {
         "0%": { opacity: "0", transform: "translateY(20px)" },
         "100%": { opacity: "1", transform: "translateY(0)" },

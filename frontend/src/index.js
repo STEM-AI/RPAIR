@@ -7,17 +7,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { HelmetProvider } from 'react-helmet-async';
 // import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Suspense } from 'react';
+import LoadingPage from './components/LoadingPage';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <HelmetProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-
-      </HelmetProvider>
+    <HelmetProvider>
+      <Suspense fallback={<LoadingPage/>}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+      </Suspense>
+    </HelmetProvider>
 
   </React.StrictMode>
 );

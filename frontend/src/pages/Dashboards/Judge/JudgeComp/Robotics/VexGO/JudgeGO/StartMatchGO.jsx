@@ -40,6 +40,8 @@
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaMicrophone } from "react-icons/fa";
 import { motion } from "framer-motion";
+import Back from "../../../../../../../components/Back/Back"
+
 
 const cards = [
   {
@@ -61,6 +63,7 @@ export default function StartMatchGO() {
 
   return (
     <div className="mx-auto text-center flex flex-col items-center min-h-screen bg-gray-100">
+      <Back/>
       <h2 className="mb-10 py-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-700 text-4xl sm:text-5xl lg:text-6xl font-black">
         Welcome to VEX GO Challenge
       </h2>

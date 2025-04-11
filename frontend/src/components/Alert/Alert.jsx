@@ -12,15 +12,15 @@ const Aleart = {
     Swal.fire({
       title,
       html,
-      icon: 'warning',
+      icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#4f46e5',
+      confirmButtonColor: '#4f4',
       cancelButtonColor: '#d33',
       confirmButtonText: confirmText,
       cancelButtonText: cancelText,
       customClass: {
         popup: 'rounded-xl',
-        confirmButton: '!bg-indigo-600 hover:!bg-indigo-700 !text-white !px-4 !py-2 !rounded-lg',
+        confirmButton: '!bg-green-600 hover:!bg-green-700 !text-white !px-4 !py-2 !rounded-lg',
         cancelButton: '!bg-red-600 hover:!bg-red-700 !text-white !px-4 !py-2 !rounded-lg'
       }
     }).then((result) => {
@@ -37,7 +37,7 @@ const Aleart = {
       title,
       text,
       icon: 'success',
-      confirmButtonColor: '#4f46e5',
+      confirmButtonColor: '#4f4',
       customClass: {
         confirmButton: '!bg-green-600 hover:!bg-green-700 !text-white !px-4 !py-2 !rounded-lg'
       }

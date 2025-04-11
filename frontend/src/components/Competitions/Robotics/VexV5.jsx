@@ -1,5 +1,5 @@
 import React from "react";
-import img1 from "../../../assets/gallery/Robotics/VexIQ/MiniEvent-DSA/IMG_1974.JPG";
+import img1 from "../../../assets/gallery/Robotics/VexIQ/MiniEvent-DSA/8.JPG";
 
 import Rules from "../../../components/CometitionsComponent/Rules/RulesVexV5";
 import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/JoinTeams";
