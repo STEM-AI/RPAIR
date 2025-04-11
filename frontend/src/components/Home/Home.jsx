@@ -43,14 +43,15 @@ const Home = () => {
           >
 
       <video
-            className="h-screen w-full object-cover"
+          className="h-screen w-full object-cover"
             playsInline
             autoPlay
             muted
             loop
+            preload="metadata" 
           >
-            <source
-              src={"https://rpair.org/media/videos/MVI_0285.mp4"}
+             <source
+              src="https://rpair.org/media/videos/MVI_0285.mp4"
               type="video/mp4"
             />
         </video>

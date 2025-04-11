@@ -144,6 +144,8 @@ import { useState } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
+import Back from "../../../../../../../components/Back/Back"
+
 const COOPMatch = () => {
     const { matches, setCurrentMatch } = useMatchContext(); // Now this exists
 
@@ -213,6 +215,7 @@ const calculateRankings = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <Back />
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-indigo-700 mb-2 flex items-center justify-center gap-2">
@@ -279,10 +282,15 @@ const calculateRankings = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center space-x-2">
                     <button
-                     onClick={() => handleStartMatch(match)}
-                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      onClick={() => handleStartMatch(match)}
+                      disabled={completedMatches[match.id]}
+                      className={`px-3 py-1 ${
+                        completedMatches[match.id] 
+                          ? "bg-gray-300 text-gray-600 cursor-not-allowed" 
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      } rounded-md text-sm`}
                     >
-                      <FaPlay className="mr-1" /> Start
+                      <FaPlay className="inline mr-1" /> Start
                     </button>
                     <button
                       onClick={() => handleMarkAsDone(match.id)}

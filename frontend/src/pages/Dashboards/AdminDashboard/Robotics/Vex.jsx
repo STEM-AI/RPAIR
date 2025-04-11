@@ -59,8 +59,7 @@ function VexPage() {
     const navigate = useNavigate();
     
      const handleCompetitionClick = (apiName) => {
-    console.log("Navigating to:", `/Dashboard/Robotics/${apiName}`);
-    navigate(`/Dashboard/Competitions/robotics/${apiName}`);
+    navigate(`/Dashboard/Competitions/${apiName}`);
   };
 
   return (

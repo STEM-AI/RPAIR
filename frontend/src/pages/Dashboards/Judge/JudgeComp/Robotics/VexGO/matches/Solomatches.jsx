@@ -1,9 +1,9 @@
-
-
+import Alert from "../../../../../../../components/Alert/Alert";
 import { useState, useEffect } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMatchContext } from './MatchContext';
+import Back from "../../../../../../../components/Back/Back";
 
 
 const SkillsGO = () => {
@@ -91,11 +91,24 @@ const SkillsGO = () => {
   
 
 
-  const handleCompleteMatch = (matchId) => {
+ const handleCompleteMatch = (matchId) => {
     setCompletedMatches((prev) => ({
       ...prev,
       [matchId]: true,
     }));
+       
+    Alert.confirm({
+      title: 'Submit Final Score?',
+      html: `<p>You're about to submit your final score of <strong>${scores[matchId] || 0}</strong> points.</p>`,
+      confirmText: 'Confirm Submission',
+      cancelText: 'Cancel',
+      onConfirm: () => {
+        Alert.success({
+          title: 'Score Submitted!',
+          text: 'Your results have been successfully recorded'
+        });
+      }
+    });
     setIsRunning(false);
     setTimeLeft(60);
   };
@@ -142,6 +155,7 @@ const SkillsGO = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Header */}
+      <Back />
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-indigo-700 mb-2">🏁 Skills Challenge</h1>
         
@@ -193,7 +207,7 @@ const SkillsGO = () => {
         </div>
       </div>
 
-      {/* Timer */}
+      {/* Timer
       <div className="flex justify-center mb-6">
         <div className="bg-gray-100 p-4 rounded-lg flex items-center gap-4">
           <div className="text-2xl font-mono font-bold">{formatTime(timeLeft)}</div>
@@ -215,7 +229,7 @@ const SkillsGO = () => {
             <FaRedo className="mr-2" /> Reset
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Matches Table */}
       <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
@@ -255,9 +269,14 @@ const SkillsGO = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center space-x-2">
-                    <button
+                   <button
                       onClick={() => handleStartMatch(match)}
-                      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm"
+                      disabled={completedMatches[match.id]}
+                      className={`px-3 py-1 ${
+                        completedMatches[match.id] 
+                          ? "bg-gray-300 text-gray-600 cursor-not-allowed" 
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      } rounded-md text-sm`}
                     >
                       <FaPlay className="inline mr-1" /> Start
                     </button>

@@ -20,7 +20,7 @@ import MainProg from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgInfo from "./pages/Competitions/Programming/main/ProgInfo";
 import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
-
+import Home from "./components/Home/Home";
 
 
 //                              semple pages & Forms               //
@@ -89,7 +89,7 @@ const LiveSkills = lazy(() => import("./pages/Dashboards/View/LiveSkills"));
 //                      Home pages              //
 const About = lazy(() => import("./pages/About/About"));
 const Gallery = lazy(() => import("./pages/Gallary/Gallary"));
-const Home = lazy(() => import("./components/Home/Home"));
+const GalleryRobotics = lazy(() => import("./pages/Gallary/Robotics/Robotics"));
 
 //                        start  Competitions (Lazy Loading)                   //
 const RoboticsPage = lazy(() => import("./components/Competitions/roboticsPage"));
@@ -134,18 +134,20 @@ const App = () => {
 
   return (
     <>
-      <Suspense fallback={<LoadingPage/>}>
         {/* <Router> */}
         <LoadingProvider>
 
-<MatchProvider>
+        <MatchProvider>
+          
       <Routes>
         {/* Public Routes */}
         <Route
           path="/"
           element={
             <Layout>
+              <Suspense fallback={<LoadingPage />}>
               <Home />
+              </Suspense>
             </Layout>
           }
         />
@@ -166,14 +168,6 @@ const App = () => {
           }
         />
        
-        <Route
-          path="/about"
-          element={
-            <Layout>
-              <About />
-            </Layout>
-          }
-        />
         <Route
           path="resources/volunteering"
           element={
@@ -221,7 +215,19 @@ const App = () => {
           path="/gallery"
           element={
             <Layout>
-              <Gallery />
+              <Suspense fallback={<LoadingPage/>}>
+                <Gallery />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/gallery/Robotics"
+          element={
+            <Layout>
+              <Suspense fallback={<LoadingPage/>}>
+                <GalleryRobotics />
+              </Suspense>
             </Layout>
           }
         />
@@ -230,7 +236,9 @@ const App = () => {
           path="/Robotics/Vex"
           element={
             <Layout>
-              <RoboticsPage />
+              <Suspense fallback={<LoadingPage/>}>
+                <RoboticsPage />
+                </Suspense>
             </Layout>
           }
         />
@@ -238,7 +246,9 @@ const App = () => {
           path="/Competitions/Robotics/VexGo"
           element={
             <Layout>
+              <Suspense fallback={<LoadingPage />}>
               <VexGOAbout />
+              </Suspense>
             </Layout>
           }
         />
@@ -246,7 +256,9 @@ const App = () => {
           path="/Competitions/Robotics/Vex123"
           element={
             <Layout>
-              <Vex123About />
+            <Suspense fallback={<LoadingPage/>}>
+                <Vex123About />
+              </Suspense>
             </Layout>
           }
         />
@@ -378,7 +390,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Competitions/robotics/:event_name"
+          path="/Dashboard/Competitions/:event_name"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -463,7 +475,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/teams/:team_name"
+          path="/Dashboard/teams/User/:team_name"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -791,7 +803,6 @@ const App = () => {
 
           {/* </Router> */}
            </LoadingProvider>
-        </Suspense>
       </>
   );
 };

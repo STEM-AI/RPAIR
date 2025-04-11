@@ -4,6 +4,8 @@ import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { FaDownload, FaCheckCircle } from "react-icons/fa";
+import Back from "../../../../../../components/Back/Back";
+
 
 const questions = [
   "1 - Presentation Skills",
@@ -69,6 +71,7 @@ export default function InterviewSheet() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-2xl border border-gray-200">
+      <Back />
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-indigo-600 mb-2">🧩 VEX123 Interview</h2>
         <p className="text-lg text-gray-600">Score Sheet for Young Innovators</p>
