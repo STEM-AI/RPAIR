@@ -21,6 +21,10 @@ import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgInfo from "./pages/Competitions/Programming/main/ProgInfo";
 import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
 import Home from "./components/Home/Home";
+import {ResultProvider } from "../src/context/CompetitionContext" ; 
+import CompetitionResult from "./pages/Competitions/Programming/main/CompetitionResult";
+
+
 
 
 //                              semple pages & Forms               //
@@ -135,10 +139,11 @@ const App = () => {
   return (
     <>
         {/* <Router> */}
-        <LoadingProvider>
+         <LoadingProvider>
 
-        <MatchProvider>
-          
+<MatchProvider>
+<ResultProvider>
+
       <Routes>
         {/* Public Routes */}
         <Route
@@ -679,6 +684,7 @@ const App = () => {
         /> 
 
         {/* PROGRAMMING */}
+
         <Route
           path="/Programming"
           element={
@@ -703,6 +709,8 @@ const App = () => {
 
 
 
+
+
 <Route
           path="/competition/:competition"
           element={
@@ -713,6 +721,19 @@ const App = () => {
             </Layout>
           }
         /> 
+
+<Route
+          path="/competition/:competition/results"
+          element={
+            <Layout hideNavbar>
+
+                <CompetitionResult/>
+
+            </Layout>
+          }
+        /> 
+                
+
 
       <Route
           path="/Dashboard/Judge/InterviewGO"
@@ -795,8 +816,9 @@ const App = () => {
               </LayoutDashboard>
             </Layout>
           }
-        />
+            />
             </Routes>
+            </ResultProvider>
             </MatchProvider>
 
         {/* <ContactUs /> */}

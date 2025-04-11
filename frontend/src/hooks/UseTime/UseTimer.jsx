@@ -1,40 +1,30 @@
-import { useState, useEffect } from 'react';
 
-const useTimer = (initialTime, onTimeEnd) => {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
-  const [isRunning, setIsRunning] = useState(true);
+
+import { useState, useEffect } from "react";
+
+const useTimer = (durationInSeconds, onEnd) => {
+  const [seconds, setSeconds] = useState(durationInSeconds);
 
   useEffect(() => {
-    if (!isRunning) return;
+    if (seconds <= 0) {
+      onEnd();
+      return;
+    }
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          onTimeEnd();
-          return 0;
-        }
-        return prev - 1;
-      });
+    const interval = setInterval(() => {
+      setSeconds(prev => prev - 1);
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [isRunning, onTimeEnd]);
+    return () => clearInterval(interval);
+  }, [seconds, onEnd]);
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const formattedTime = `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 
-  const pause = () => setIsRunning(false);
-  const resume = () => setIsRunning(true);
-  const reset = (newTime) => {
-    setIsRunning(false);
-    setTimeLeft(newTime || initialTime);
-  };
+  const percentage = ((durationInSeconds - seconds) / durationInSeconds) * 100;
 
-  return { timeLeft, formattedTime: formatTime(timeLeft), pause, resume, reset };
+  return { seconds, formattedTime, percentage };
 };
 
 export default useTimer;
