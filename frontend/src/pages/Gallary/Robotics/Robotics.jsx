@@ -1,254 +1,111 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { HashLink } from 'react-router-hash-link';
-import {useLoading} from '../../../context/LoadingContext';
+import React from 'react'; 
+import { useNavigate } from 'react-router-dom';
+import vex123Logo from '../../../assets/cards/vex-123-logo.webp';
+import vex123 from '../../../assets/gallery/Robotics/Vex123/FutureComp-sadat/3.jpg';
+import vexGoLogo from '../../../assets/cards/vex-go-logo.webp';
+import vexGo from '../../../assets/gallery/Robotics/VexGO/FutureComp-sadat/2.jpg';
+import vexIqLogo from '../../../assets/cards/vex-iq-logo.webp';
+import vexIq from '../../../assets/gallery/Robotics/VexIQ/NationalComp/2.JPG';
+import vexV5Logo from '../../../assets/cards/vex-v5-logo.webp';
+import vexV5 from '../../../assets/cards/vex-v5.webp';
+import { Helmet } from "react-helmet-async";
+import { Link } from 'react-router-dom';
+import { MdNavigateNext } from "react-icons/md";
 
-const Robotics = () => {
-  const { setIsLoading } = useLoading();
-  const [expandedFolders, setExpandedFolders] = useState({});
-  const [activeFolder, setActiveFolder] = useState(null);
-  const [selectedImage, setSelectedImage] = useState({
-    src: null,
-    index: null,
-    folder: null
-  });
 
-  const events = [
-    {
-      title: "Vex IQ Robotics Championship",
-      year: "2024",
-      subEvents: [
-        { folder: "FutureComp-sadat" },
-        { folder: "MiniEvent-DSA" },
-        { folder: "NationalComp" }
-      ]
-    }
-  ];
 
-  const imageContext = useMemo(() => 
-    require.context('../../../assets/gallery/Robotics/VexIQ/', true, /\.(jpe?g|png|JPG|PNG)$/i),
-    []
-  );
+    
 
-    const getEventImages = useCallback((folderName) => {
-    setIsLoading(true); // بدء التحميل
-    try {
-      const images = imageContext.keys()
-        .filter(path => path.split('/')[1] === folderName)
-        .sort((a, b) => {
-          const getNum = str => parseInt(str.match(/(\d+)\./)[1], 10);
-          return getNum(a) - getNum(b);
-        })
-        .map(imageContext);
-      setIsLoading(false); // إيقاف التحميل عند النجاح
-      return images;
-    } catch (error) {
-      console.error('Error loading images:', error);
-      setIsLoading(false); // إيقاف التحميل في حالة الخطأ
-      return [];
-    }
-  }, [imageContext, setIsLoading]);
+const roboticsVex = [
+  {
+    id: 1,
+    name: 'VEX 123',
+    image: vex123,
+    logo: vex123Logo,
+    bgColor: 'bg-vex123',
+    textColor: 'text-purple-900',
+    path: '/gallery/Robotics/Vex123'
+  },
+  {
+    id: 2,
+    name: 'VEX GO',
+    image: vexGo,
+    logo: vexGoLogo,
+    bgColor: 'bg-vexGo',
+    textColor: 'text-teal-900',
+    path: '/gallery/Robotics/VexGo'
+  },
+  {
+    id: 3,
+    name: 'VEX IQ',
+    image: vexIq,
+    logo: vexIqLogo,
+    bgColor: 'bg-vexIq',
+    textColor: 'text-blue-900',
+    path: '/gallery/Robotics/VexIQ'
+  },
+  {
+    id: 4,
+    name: 'VEX V5',
+    image: vexV5,
+    logo: vexV5Logo,
+    bgColor: 'bg-vexV5',
+    textColor: 'text-red-900',
+    path: '/gallery/Robotics/VexV5'
+  },
+];
 
-  const toggleFolderExpansion = (folderName) => {
-    setExpandedFolders(prev => ({
-      ...prev,
-      [folderName]: !prev[folderName]
-    }));
-  };
 
-  useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    const targetFolder = events[0].subEvents.find(
-      sub => sub.folder.toLowerCase() === hash.toLowerCase()
-    );
-    if (targetFolder) {
-      setActiveFolder(hash);
-      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (selectedImage.src) {
-        if (e.key === 'Escape') {
-          setSelectedImage({ src: null, index: null, folder: null });
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImage.src]);
-
-  const ImageCard = ({ img, folderName, index }) => (
-    <div 
-      className="group relative bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden hover:-translate-y-2 cursor-pointer"
-      onClick={() => setSelectedImage({ src: img, index, folder: folderName })}
-    >
-      <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
-        <img
-          src={img}
-          alt={`${folderName} competition - ${index + 1}`}
-          className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="text-white">
-          <h3 className="font-semibold text-lg mb-2">{folderName}</h3>
-          <p className="text-sm opacity-90">Photo #{index + 1}</p>
-        </div>
-      </div>
-    </div>
-  );
-
-  const EventNavigation = ({ subEvents }) => (
-    <div className="flex flex-wrap gap-3 mb-8">
-      {subEvents.map((subEvent) => (
-        <HashLink
-          key={subEvent.folder}
-          to={`#${subEvent.folder}`}
-          smooth
-          className={`px-6 py-3 rounded-xl transition-all duration-300 ${
-            activeFolder === subEvent.folder 
-              ? 'bg-gradient-to-br from-blue-700 to-cyan-500 text-white shadow-lg'
-              : 'bg-white border-2 border-gray-200 hover:border-cyan-300 hover:shadow-md'
-          }`}
-          onClick={() => setActiveFolder(subEvent.folder)}
-        >
-          <span className="font-medium text-sm md:text-base">
-            {subEvent.folder}
-          </span>
-        </HashLink>
-      ))}
-    </div>
-  );
+function Robotics() {
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 sm:py-12 lg:py-16">
+    <div className="p-6 mx-auto">
       <Helmet>
-        <title>Robotics Competition Gallery</title>
+        <title>Gallary-Robotics</title>
       </Helmet>
+      <h2 className="mb-6 pt-4 pb-8 text-center text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-cyan-300">
+        VEX Robotics
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {roboticsVex.map((Vex) => (
+          <article 
+            key={Vex.id}
+            role="button"
+            tabIndex="0"
+            onClick={() => navigate(Vex.path)}
+            onKeyDown={(e) => e.key === 'Enter' && navigate(Vex.path)}
+            className={`group relative p-8 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer transition-all duration-300 hover:z-10 ${Vex.bgColor} hover:shadow-2xl hover:-translate-y-2 focus:outline-none focus:ring-4 focus:ring-white/30`}
+          >
+            {/* Card Content */}
+            <div className=" w-full flex-1 flex flex-col items-center">
+              <img 
+                src={Vex.logo} 
+                alt={`${Vex.name} Logo`} 
+                className="mb-6 h-16 w-auto object-contain opacity-90" 
+              />
+               <img src={Vex.image} alt={Vex.name} className="w-full h-80 object-cover rounded mb-4" />
 
-      {/* Lightbox Modal */}
-      {selectedImage.src && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setSelectedImage({ src: null, index: null, folder: null })}
-        >
-          <div className="relative max-w-6xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="absolute -top-8 right-0 text-white hover:text-cyan-400 transition-colors z-50"
-              onClick={() => setSelectedImage({ src: null, index: null, folder: null })}
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
             
-            <img
-              src={selectedImage.src}
-              alt="Enlarged view"
-              className="max-w-full max-h-[80vh] object-contain rounded-lg"
-            />
-            
-            <div className="absolute bottom-4 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-lg">
-              {selectedImage.src.split('/').pop()}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <header className="text-center mb-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-cyan-400 mb-4 animate-fade-in-down">
-            ROBOTICS CHALLENGE
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 font-medium max-w-3xl mx-auto">
-            Witness Innovation in Motion - Where Future Engineers Shine
-          </p>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-7xl px-4 md:px-8">
-        {events.map((event) => (
-          <section key={event.title} className="mb-20 last:mb-0">
-            <div className="flex flex-col md:flex-row justify-between items-start mb-12">
-              <div className="mb-4 md:mb-0">
-                <h2 className="text-3xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                  {event.title}
-                </h2>
-                <p className="text-gray-500 mt-2 font-semibold">{event.year} Season</p>
-              </div>
             </div>
 
-            <EventNavigation subEvents={event.subEvents} />
-
-            {event.subEvents.map((subEvent) => {
-              const images = getEventImages(subEvent.folder);
-              return (
-                <div 
-                  key={subEvent.folder}
-                  id={subEvent.folder}
-                  className="mb-16 scroll-mt-24"
-                >
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
-                    <div className="flex items-center gap-3">
-                      <div className="h-1 w-8 bg-cyan-500 rounded-full" />
-                      <h3 className="text-2xl font-bold text-gray-900">
-                        {subEvent.folder}
-                      </h3>
-                    </div>
-                    <span className="text-gray-500 font-medium">
-                      {images.length} Captured Moments
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {images
-                      .slice(0, expandedFolders[subEvent.folder] ? images.length : 3)
-                      .map((img, idx) => (
-                        <ImageCard 
-                          key={idx}
-                          img={img}
-                          folderName={subEvent.folder}
-                          index={idx}
-                        />
-                      ))}
-                  </div>
-
-                  {images.length > 3 && (
-                    <div className="mt-10 text-center">
-                      <button 
-                        onClick={() => toggleFolderExpansion(subEvent.folder)}
-                        className="px-8 py-3 bg-gradient-to-br from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
-                      >
-                        {expandedFolders[subEvent.folder] ? (
-                          <>
-                            <span>Show Less</span>
-                            <svg className="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <span>View Full Gallery</span>
-                            <svg className="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </section>
+            {/* CTA Button */}
+          <div className="mt-4 w-full flex justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
+              <Link
+                to={Vex.path}
+                className="flex items-center space-x-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors font-medium"
+              >
+                View Gallery <MdNavigateNext />
+              </Link>
+            </div>
+          </article>
         ))}
-      </main>
+      </div>
     </div>
   );
-};
+}
 
 export default Robotics;
+
+

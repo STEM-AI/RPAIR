@@ -23,6 +23,8 @@ import CompetitionQuestions from "./pages/Competitions/Programming/main/Competit
 import Home from "./components/Home/Home";
 import {ResultProvider } from "../src/context/CompetitionContext" ; 
 import CompetitionResult from "./pages/Competitions/Programming/main/CompetitionResult";
+import Robotics from "./pages/Gallary/Robotics/Robotics";
+
 
 
 
@@ -89,11 +91,10 @@ const AllSetting = lazy(() => import("./pages/AccountSetting/AllSetting"));
 const LiveTeam = lazy(() => import("./pages/Dashboards/View/LiveTeam"));
 const LiveSkills = lazy(() => import("./pages/Dashboards/View/LiveSkills"));
 
-
 //                      Home pages              //
 const About = lazy(() => import("./pages/About/About"));
 const Gallery = lazy(() => import("./pages/Gallary/Gallary"));
-const GalleryRobotics = lazy(() => import("./pages/Gallary/Robotics/Robotics"));
+const RoboticsGallery = lazy(() => import("./pages/Gallary/Robotics/RoboticsGallery"));
 
 //                        start  Competitions (Lazy Loading)                   //
 const RoboticsPage = lazy(() => import("./components/Competitions/roboticsPage"));
@@ -231,7 +232,17 @@ const App = () => {
           element={
             <Layout>
               <Suspense fallback={<LoadingPage/>}>
-                <GalleryRobotics />
+                <Robotics />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/gallery/Robotics/:VexType"
+          element={
+            <Layout>
+              <Suspense fallback={<LoadingPage/>}>
+                <RoboticsGallery />
               </Suspense>
             </Layout>
           }
