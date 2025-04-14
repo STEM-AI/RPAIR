@@ -28,7 +28,7 @@ const roboticsKits = [
     description: 'An engaging and hands-on robotics system for STEM education.',
     bgColor: 'bg-vexGo',
     textColor: 'text-teal-900',
-    apiName: 'robotics'
+    apiName: 'vex_go'
     },
   
   {
