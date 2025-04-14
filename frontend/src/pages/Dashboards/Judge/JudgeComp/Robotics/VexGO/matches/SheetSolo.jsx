@@ -5,7 +5,8 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { sortBy } from 'lodash';
 import { useMatchContext } from './MatchContext';
-import Alert from "../../../../../../../components/Alert/Alert";
+import Back from "../../../../../../../components/Back/Back"
+
 
 const tasks = [
   { title: "Move purple sensor to the fish habitat", points: 1 },
@@ -101,30 +102,8 @@ const { updateMatch, currentMatch } = useMatchContext();
       })), 
       totalTime: timer
     });
-    
- Alert.confirm({
-    title: 'Submit Final Score?',
-    html: `<p>You're about to submit your final score of <strong>${totalScore}</strong> points.</p>`,
-    confirmText: 'Confirm Submission',
-    cancelText: 'Cancel',
-    onConfirm: () => {
-      updateMatch(currentMatch.id, {
-        score: totalScore,
-        taskTimes: completedOrder.reduce((acc, { index, time }) => ({
-          ...acc,
-          [index]: time
-        })), 
-        totalTime: timer
-      });
-      
-      Alert.success({
-        title: 'Score Submitted!',
-        text: 'Your results have been successfully recorded'
-      });
-      
-      navigate('/Dashboard/VexGO/Skills');
-    }
- });
+ 
+  navigate('/Dashboard/VexGO/Skills');
    };
 
   const formatTime = (seconds) => {
@@ -177,7 +156,8 @@ const { updateMatch, currentMatch } = useMatchContext();
 
   return (
     <div className="max-w-5xl mx-auto mt-8 p-6 bg-white shadow-xl rounded-xl">
-     <div className="text-center mb-8">
+      <div className="text-center mb-8">
+        <Back />
       <h1 className="text-3xl font-bold text-indigo-700 mb-2">
         🌊 {currentMatch?.challengeType || 'Solo Challenge'}
       </h1>

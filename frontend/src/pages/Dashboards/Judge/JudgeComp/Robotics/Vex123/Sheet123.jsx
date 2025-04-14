@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { FaClock, FaPlay, FaPause, FaRedo, FaDownload, FaCheckCircle } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import Back from "../../../../../../components/Back/Back";
 import Alert from "../../../../../../components/Alert/Alert";
 
 
@@ -64,7 +65,21 @@ const [taskStartTime, setTaskStartTime] = useState(0);
     });
     return initialData;
   });
+useEffect(() => {
+  const newAllData = { ...allData };
+  
+  GAME_MODES.forEach(mode => {
+    const modeKey = getModeKey(mode.name);
+    const modeCompleted = completedOrder
+      .filter(item => item.modeKey === modeKey)
+      .sort((a, b) => a.time - b.time);
 
+    // حساب الفروق الزمنية وتخزينها
+    newAllData[modeKey].timeDiffs = calculateTimeDiffs(modeCompleted);
+  });
+
+  setAllData(newAllData);
+}, [completedOrder]); // سيتم تحديث timeDiffs عند أي تغيير في completedOrder
   // Derived state
   const currentModeKey = currentMode ? getModeKey(currentMode.name) : null;
   const currentModeData = currentModeKey ? allData[currentModeKey] : null;
@@ -85,14 +100,28 @@ const [taskStartTime, setTaskStartTime] = useState(0);
   }, [isRunning, timer]);
 
   // Calculate scores
-  const { totalScore, totalPossible } = useMemo(() => {
-    let totalScore = 0;
-    let totalPossible = 0;
+const { totalScore, totalPossible, totalTime } = useMemo(() => {
+  let totalScore = 0;
+  let totalPossible = 0;
+  let totalTime = 0;
 
-    GAME_MODES.forEach(mode => {
-      const modeKey = getModeKey(mode.name);
-      const modeData = allData[modeKey] || { done: {} };
+  GAME_MODES.forEach(mode => {
+    const modeKey = getModeKey(mode.name);
+    const modeData = allData[modeKey] || { done: {}, times: {} };
+
+   const modeCompleted = completedOrder
+      .filter(item => item.modeKey === modeKey)
+      .sort((a, b) => a.time - b.time);
+    
+    if (modeCompleted.length > 0) {
+      // الوقت الأول: من بداية الوضع إلى أول مهمة
+      totalTime += modeCompleted[0].time;
       
+      // الفروق بين المهام اللاحقة
+      for (let i = 1; i < modeCompleted.length; i++) {
+        totalTime += (modeCompleted[i].time - modeCompleted[i-1].time);
+      }
+    }   
       const modeScore = mode.missions.reduce((sum, mission, index) => {
         return sum + (modeData.done[index] ? mission.points : 0);
       }, 0);
@@ -101,9 +130,20 @@ const [taskStartTime, setTaskStartTime] = useState(0);
       totalPossible += mode.missions.reduce((sum, m) => sum + m.points, 0);
     });
 
-    return { totalScore, totalPossible };
-  }, [allData]);
+   return { totalScore, totalPossible, totalTime };
+}, [allData, completedOrder]); // أضف completedOrder كـ dependency
 
+  const calculateTimeDiffs = (modeCompleted) => {
+  const diffs = {};
+  modeCompleted.forEach((task, idx) => {
+    if (idx === 0) {
+      diffs[task.taskIndex] = task.time; // الوقت من البداية
+    } else {
+      diffs[task.taskIndex] = task.time - modeCompleted[idx - 1].time;
+    }
+  });
+  return diffs;
+};
   // Handlers
     const handleGameModeSelect = useCallback((mode) => {
       // إعادة تعيين المؤقت لـ 5 دقائق عند تغيير الوضع
@@ -169,24 +209,26 @@ const [taskStartTime, setTaskStartTime] = useState(0);
 const getTimeDifference = (index) => {
   if (!currentModeKey) return '-';
   
-  // احصل على بيانات المهمات المكتملة لهذا الوضع فقط
+  // الحصول على جميع المهام المكتملة لهذا الوضع مرتبة زمنيًا
   const modeCompleted = completedOrder.filter(
     item => item.modeKey === currentModeKey
-  );
+  ).sort((a, b) => a.time - b.time);
   
-  const sortedCompleted = [...modeCompleted].sort((a, b) => a.time - b.time);
-  const task = sortedCompleted.find(t => t.taskIndex === index);
+  // البحث عن الوقت الحالي للمهمة
+  const currentTask = modeCompleted.find(t => t.taskIndex === index);
+  if (!currentTask) return '-';
   
-  if (!task) return '-';
+  // إيجاد الفهرس الحالي في المصفوفة المرتبة
+  const taskIndex = modeCompleted.findIndex(t => t.taskIndex === index);
   
-  const taskIndex = sortedCompleted.findIndex(t => t.taskIndex === index);
-  
+  // إذا كانت المهمة الأولى: الوقت منذ بداية الوضع
   if (taskIndex === 0) {
-    return `${formatTime(task.time)} `;
+    return formatTime(currentTask.time);
   }
   
-  const prevTime = sortedCompleted[taskIndex - 1].time;
-  return `${formatTime(task.time - prevTime)} `;
+  // حساب الفرق عن المهمة السابقة
+  const prevTime = modeCompleted[taskIndex - 1].time;
+  return formatTime(currentTask.time - prevTime);
 };
   
 
@@ -219,87 +261,92 @@ const getTimeDifference = (index) => {
     prev.filter(item => item.modeKey !== modeKey)
   );
 }, [currentMode]); // إضافة currentMode ك dependency
-  
-  const handleDownloadPDF = useCallback(() => {
-    const doc = new jsPDF();
-    
-    // Header
-    doc.setFontSize(18);
-    doc.setTextColor(79, 70, 229);
-    doc.setFont("helvetica", "bold");
-    doc.text("VEX123 Competition Score Sheet", 105, 20, { align: "center" });
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Team: ${teamName}`, 20, 30);
-    doc.text(`Time Remaining: ${formatTime(timer)}`, 20, 40);
-    
-    let finalY = 50;
-    
-    // Generate tables for each game mode
-    GAME_MODES.forEach(mode => {
-      const modeKey = getModeKey(mode.name);
-      const modeData = allData[modeKey] || { times: {}, notes: {}, done: {}, timeDiffs: {} };
-      
-      doc.setFontSize(14);
-      doc.setFont("helvetica", "bold");
-      doc.text(`${mode.name} Mode`, 20, finalY);
-      finalY += 10;
-      
-     const tableData = mode.missions.map((mission, index) => [
-  mission.step,
-  mission.description,
-  mission.points,
-  modeData.timeDiffs[index] ? `${modeData.timeDiffs[index]}s` : "N/A",
-  modeData.notes[index] || "N/A",
-  modeData.done[index] ? "✔️" : "❌",
-]);
 
-      doc.autoTable({
-        startY: finalY,
-        head: [["Step", "Description", "Points", "Time", "Notes", "Completed"]],
-        body: tableData,
-        theme: "striped",
-        styles: { 
-          fontSize: 10, 
-          cellPadding: 3,
-          overflow: "linebreak",
-          lineWidth: 0.1
-        },
-        headStyles: { 
-          fillColor: [79, 70, 229], 
-          textColor: [255, 255, 255],
-          fontStyle: "bold"
-        },
-        alternateRowStyles: {
-          fillColor: [240, 240, 255]
-        },
-        margin: { left: 10, right: 10 }
-      });
-      
-      // Calculate score for this mode
-      const modeScore = mode.missions.reduce((sum, mission, index) => {
-        return sum + (modeData.done[index] ? mission.points : 0);
-      }, 0);
-      
-      const totalPossible = mode.missions.reduce((sum, m) => sum + m.points, 0);
-      
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text(`${mode.name} Score: ${modeScore}/${totalPossible}`, 
-        20, doc.autoTable.previous.finalY + 10);
-      
-      finalY = doc.autoTable.previous.finalY + 20;
+  const handleDownloadPDF = useCallback(() => {
+  const doc = new jsPDF();
+  
+  // Header
+  doc.setFontSize(18);
+  doc.setTextColor(79, 70, 229);
+  doc.setFont("helvetica", "bold");
+  doc.text("VEX123 Competition Score Sheet", 105, 20, { align: "center" });
+  doc.setFontSize(14);
+  doc.setTextColor(0, 0, 0);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Team: ${teamName}`, 20, 30); 
+  doc.text(`Time Remaining: ${formatTime(totalTime)}`, 20, 40);
+
+  // Rest of the PDF content remains unchanged...
+  let finalY = 50;
+ let totalMissionTime = 0;
+  GAME_MODES.forEach(mode => {
+    const modeKey = getModeKey(mode.name);
+    const modeData = allData[modeKey] || { timeDiffs: {} };
+    const missionDiffs = Object.values(modeData.timeDiffs);
+    totalMissionTime += missionDiffs.reduce((sum, diff) => sum + diff, 0);
+  });
+  GAME_MODES.forEach(mode => {
+    const modeKey = getModeKey(mode.name);
+    const modeData = allData[modeKey] || { times: {}, notes: {}, done: {}, timeDiffs: {} };
+    
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${mode.name} Mode`, 20, finalY);
+    finalY += 10;
+    
+    const tableData = mode.missions.map((mission, index) => [
+      mission.step,
+      mission.description,
+      mission.points,
+      modeData.timeDiffs && modeData.timeDiffs[index] !== undefined ? 
+      `${formatTime(modeData.timeDiffs[index])}` : "N/A",
+      modeData.notes[index] || "N/A",
+      modeData.done[index] ? "✔️" : "❌",
+    ]);
+
+    doc.autoTable({
+      startY: finalY,
+      head: [["Step", "Description", "Points", "Time", "Notes", "Completed"]],
+      body: tableData,
+      theme: "striped",
+      styles: { 
+        fontSize: 10, 
+        cellPadding: 3,
+        overflow: "linebreak",
+        lineWidth: 0.1
+      },
+      headStyles: { 
+        fillColor: [79, 70, 229], 
+        textColor: [255, 255, 255],
+        fontStyle: "bold"
+      },
+      alternateRowStyles: {
+        fillColor: [240, 240, 255]
+      },
+      margin: { left: 10, right: 10 }
     });
     
-    // Total score
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text(`Final Score: ${totalScore}/${totalPossible}`, 20, finalY);
+    const modeScore = mode.missions.reduce((sum, mission, index) => {
+      return sum + (modeData.done[index] ? mission.points : 0);
+    }, 0);
     
-    doc.save(`Team_${teamName}_Score_Sheet.pdf`);
-  }, [teamName, timer, allData, totalScore, totalPossible]);
-
+    const totalPossible = mode.missions.reduce((sum, m) => sum + m.points, 0);
+    
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${mode.name} Score: ${modeScore}/${totalPossible}`, 
+      20, doc.autoTable.previous.finalY + 10);
+    
+    finalY = doc.autoTable.previous.finalY + 20;
+  });
+  
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Final Score: ${totalScore}/${totalPossible}`, 20, finalY);
+  
+  doc.save(`Team_${teamName}_Score_Sheet.pdf`);
+}, [teamName, allData, totalScore, totalPossible]);
+  
   const handleNotesChange = useCallback((index, value) => {
     if (!currentModeKey) return;
     
@@ -318,11 +365,11 @@ const getTimeDifference = (index) => {
   return (
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 bg-white shadow-xl rounded-xl border border-gray-200">
       {/* Header */}
+      <Back />
       <div className="text-center mb-4 sm:mb-6">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">🤖 VEX123 Robotics</h1>
         <p className="text-sm sm:text-base md:text-xl text-gray-600">Performance Score Sheet</p>
       </div>
-
       {/* Team Info */}
       <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <div className="bg-indigo-50 p-2 sm:p-3 rounded-lg">
@@ -481,13 +528,20 @@ const getTimeDifference = (index) => {
 
       {/* Summary and Actions */}
       <div className="bg-indigo-50 p-2 sm:p-3 rounded-lg">
-        <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row justify-between items-center">
-          <div className="text-center sm:text-left">
-            <h3 className="text-sm sm:text-base font-semibold text-indigo-700">Total Score</h3>
-            <p className="text-xl sm:text-2xl font-bold">
-              {totalScore} / {totalPossible} points
-            </p>
+  <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row justify-between items-center">
+    <div className="text-center sm:text-left">
+      <h3 className="text-sm sm:text-base font-semibold text-indigo-700">Total Score</h3>
+      <p className="text-xl sm:text-2xl font-bold">
+        {totalScore} / {totalPossible} points
+      </p>
           </div>
+          <div className="text-center sm:text-left">
+      <h3 className="text-sm sm:text-base font-semibold text-indigo-700">Total Time</h3>
+      <p className="text-xl sm:text-2xl font-bold">
+        {formatTime(totalTime)}
+      </p>
+    </div>
+      
           <button 
             onClick={handleDownloadPDF} 
             className="w-full sm:w-auto px-3 py-1 sm:px-4 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold rounded-lg flex items-center justify-center transition-colors shadow-md"

@@ -5,6 +5,8 @@ import { BiJoystick } from "react-icons/bi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
+import Back from "../../../../../../../components/Back/Back"
+
 
 const JudgeGo = () => {
   const navigate = useNavigate();
@@ -20,7 +22,9 @@ const JudgeGo = () => {
 
   return (
     <div className=" w-full flex  p-8">
+      <Back/> 
       <div className="grid gap-12 md:grid-cols-2 md:gap-8">
+
         {[ 
           { 
             title: "Teamwork Matches", 

@@ -28,7 +28,7 @@ const roboticsKits = [
     description: 'An engaging and hands-on robotics system for STEM education.',
     bgColor: 'bg-vexGo',
     textColor: 'text-teal-900',
-    apiName: 'robotics'
+    apiName: 'vex_go'
     },
   
   {
@@ -59,8 +59,7 @@ function VexPage() {
     const navigate = useNavigate();
     
      const handleCompetitionClick = (apiName) => {
-    console.log("Navigating to:", `/Dashboard/Robotics/${apiName}`);
-    navigate(`/Dashboard/Competitions/robotics/${apiName}`);
+    navigate(`/Dashboard/Competitions/${apiName}`);
   };
 
   return (
