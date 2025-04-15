@@ -144,7 +144,7 @@ import { useState } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
-import Back from "../../../../../../../components/Back/Back"
+import Alert from "../../../../../../../components/Alert/Alert";
 
 const COOPMatch = () => {
     const { matches, setCurrentMatch } = useMatchContext(); // Now this exists
@@ -183,10 +183,23 @@ const COOPMatch = () => {
 
   // Mark match as completed
   const handleMarkAsDone = (matchId) => {
-    setCompletedMatches((prev) => ({
-      ...prev,
-      [matchId]: true,
-    }));
+  Alert.confirm({
+    title: 'Submit Final Score?',
+    html: `<p>You're about to submit your final score of <strong>${scores[matchId] || 0}</strong> points.</p>`,
+    confirmText: 'Confirm Submission',
+    cancelText: 'Cancel',
+    onConfirm: () => {
+      // نقل عملية التحديث هنا لتتم فقط عند التأكيد
+      setCompletedMatches((prev) => ({
+        ...prev,
+        [matchId]: true,
+      }));
+      Alert.success({
+        title: 'Score Submitted!',
+        text: 'Your results have been successfully recorded'
+      });
+    },
+    });
   };
 
   // Calculate rankings
@@ -215,7 +228,6 @@ const calculateRankings = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <Back />
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-indigo-700 mb-2 flex items-center justify-center gap-2">

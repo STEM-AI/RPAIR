@@ -92,17 +92,18 @@ const SkillsGO = () => {
 
 
  const handleCompleteMatch = (matchId) => {
-    setCompletedMatches((prev) => ({
-      ...prev,
-      [matchId]: true,
-    }));
+    const currentScore = matches[matchId]?.score || 0;
        
     Alert.confirm({
       title: 'Submit Final Score?',
-      html: `<p>You're about to submit your final score of <strong>${scores[matchId] || 0}</strong> points.</p>`,
+      html: `<p>You're about to submit your final score of <strong>${currentScore}</strong> points.</p>`,
       confirmText: 'Confirm Submission',
       cancelText: 'Cancel',
       onConfirm: () => {
+         setCompletedMatches((prev) => ({
+      ...prev,
+      [matchId]: true,
+    }));
         Alert.success({
           title: 'Score Submitted!',
           text: 'Your results have been successfully recorded'

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaMicrophone } from "react-icons/fa";
 import { motion } from "framer-motion";
-import Back from "../../../../../../components/Back/Back";
 
 
 const cards = [
@@ -9,13 +8,13 @@ const cards = [
     title: "Matches",
     icon: <FaUsers size={50} />,
     route: "/Dashboard/Judge/matches123",
-    bg: "from-purple-500 to-indigo-600",
+    bg: "from-green-400 to-blue-600",
   },
   {
     title: "Interview",
     icon: <FaMicrophone size={50} />,
     route: "/Dashboard/Judge/interview123",
-    bg: "from-teal-400 to-cyan-600",  
+    bg: "from-pink-400 to-yellow-600",  
   },
 ];
 
@@ -24,8 +23,7 @@ export default function SelectMatch123() {
 
   return (
     <div className="mx-auto text-center flex flex-col items-center min-h-screen bg-gray-100">
-      <Back />
-      <h2 className="mb-10 py-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-800 to-indigo-800 text-4xl sm:text-5xl lg:text-6xl font-black">
+      <h2 className="mb-10 py-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-700 text-4xl sm:text-5xl lg:text-6xl font-black">
         Welcome to VEX123 Challenge
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full px-8">
@@ -39,13 +37,9 @@ export default function SelectMatch123() {
           >
             <div className="mb-4">{card.icon}</div>
             <div className="text-2xl font-bold">{card.title}</div>
-            <motion.button
+             <motion.button
               whileHover={{ scale: 1.1 }}
-              className={`mt-6 px-6 py-3 bg-white font-bold rounded-full transition-all ${
-                card.title === "Interview" 
-                  ? "text-cyan-700 hover:bg-cyan-100" 
-                  : "text-purple-800 hover:bg-purple-100"
-              }`}
+              className="mt-6 px-6 py-3 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-300 transition-all"
             >
               Get Started
             </motion.button>

@@ -15,11 +15,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <HelmetProvider>
-      <Suspense fallback={<LoadingPage/>}>
           <BrowserRouter>
             <App />
           </BrowserRouter>
-      </Suspense>
     </HelmetProvider>
 
   </React.StrictMode>
