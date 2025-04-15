@@ -71,7 +71,6 @@ export default function InterviewSheet() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-2xl border border-gray-200">
-      <Back />
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-indigo-600 mb-2">🧩 VEX123 Interview</h2>
         <p className="text-lg text-gray-600">Score Sheet for Young Innovators</p>
@@ -153,6 +152,7 @@ export default function InterviewSheet() {
           <FaDownload className="mr-2" /> Download Score Sheet
         </button>
         <button 
+          type="submit"
           className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors shadow-md hover:shadow-lg"
         >
           <FaCheckCircle className="mr-2" /> Submit Evaluation
