@@ -241,6 +241,13 @@ export default function Navbar() {
         <NavLink to={"/gallery"} className="block text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300">
           Gallery
         </NavLink>
+
+        <NavLink 
+  to={"/live-events"} 
+  className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300"
+>
+  Live 
+</NavLink>
       </div>
 
       <div className="md:flex items-center flex-row space-x-4">

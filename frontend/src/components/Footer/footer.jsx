@@ -69,10 +69,9 @@ export default function Footer() {
                 <div className="border-t border-white/20 mt-4 sm:mt-10 pt-4 sm:pt-8">
                     <div className="flex justify-center space-x-3 sm:space-x-6">
                         {[
-                            { icon: FaFacebookF, link: "https://facebook.com", label: "Facebook" },
+                            { icon: FaFacebookF, link: "https://www.facebook.com/profile.php?id=61569309222509", label: "Facebook" },
                             { icon: FaInstagram, link: "https://instagram.com", label: "Instagram" },
                             { icon: FaLinkedinIn, link: "https://linkedin.com", label: "LinkedIn" },
-                            { icon: FaTwitter, link: "https://twitter.com", label: "Twitter" }
                         ].map(({ icon: Icon, link, label }, index) => (
                             <a 
                                 key={index} 
