@@ -26,7 +26,7 @@ const ListCompetitions = () => {
   ];
 
   const handleCompetitionClick = (apiName) => {
-    console.log("Navigating to:", `/Dashboard/Competitions/${apiName}`);
+    // console.log("Navigating to:", `/Dashboard/Competitions/${apiName}`);
     navigate(`/Dashboard/Competitions/${apiName}`);
   };
 
