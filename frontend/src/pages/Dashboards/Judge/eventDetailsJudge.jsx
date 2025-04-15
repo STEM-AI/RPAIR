@@ -1,6 +1,6 @@
 import React from 'react'
 
-function eventDetails() {
+function eventDetailsJudge() {
   return (
     <div>
       working on it 
@@ -8,4 +8,4 @@ function eventDetails() {
   )
 }
 
-export default eventDetails
+export default eventDetailsJudge

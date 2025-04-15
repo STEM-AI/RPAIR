@@ -127,7 +127,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                           </li>
                         </Link>
                        
-                        <Link to="/Dashboard/Judge/eventDetails">
+                        <Link to="/Dashboard/Judge/eventDetailsJudge">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Event Details

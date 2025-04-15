@@ -53,6 +53,7 @@ export const refreshAccessToken = async () => {
 
         if (response.data.access) {
             localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, response.data.access);
+            localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, response.data.refresh);
             return response.data.access;
         }
         
