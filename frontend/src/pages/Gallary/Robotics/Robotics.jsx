@@ -7,7 +7,7 @@ import vexGo from '../../../assets/gallery/Robotics/VexGO/FutureComp-sadat/2.jpg
 import vexIqLogo from '../../../assets/cards/vex-iq-logo.webp';
 import vexIq from '../../../assets/gallery/Robotics/VexIQ/NationalComp/2.JPG';
 import vexV5Logo from '../../../assets/cards/vex-v5-logo.webp';
-import vexV5 from '../../../assets/cards/vex-v5.webp';
+import vexV5 from '../../../assets/gallery/Robotics/VexV5/vexV.jpg';
 import { Helmet } from "react-helmet-async";
 import { Link } from 'react-router-dom';
 import { MdNavigateNext } from "react-icons/md";
