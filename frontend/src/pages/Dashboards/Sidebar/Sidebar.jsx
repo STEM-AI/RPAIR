@@ -12,8 +12,8 @@ import { FaPeopleGroup } from "react-icons/fa6";
 
 
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Sidebar = ({isOpen, setIsOpen}) => {
+  // const [isOpen, setIsOpen] = useState(false);
   const [isManagementOpen, setIsManagementOpen] = useState(false);
   const [isMainNavOpen, setIsMainNavOpen] = useState(false);
   const [isEventOpen, setIsEventOpen] = useState(false);
@@ -235,7 +235,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="relative top-0 left-0 h-full">
+    <div className="relative top-0 left-0 h-100">
           {/* Hamburger button to toggle sidebar visibility */}
           <button
             className="lg:hidden fixed top-9 left-4 z-50"
@@ -269,11 +269,9 @@ const Sidebar = () => {
             } lg:w-64 lg:block lg:static`}
           >
             {/* Logo */}
-            <NavLink to={"/"}>
               <div className="w-full h-32 flex justify-center items-center py-4">
                 <img src={Logo} alt="Logo" className="max-w-full max-h-full object-contain" />
               </div>
-            </NavLink>
             
     
 

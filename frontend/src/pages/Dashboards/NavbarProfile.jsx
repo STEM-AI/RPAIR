@@ -14,7 +14,7 @@ import { NavHashLink } from "react-router-hash-link";
 import { BiSolidMessageAdd } from "react-icons/bi";
 import NotificationsPage from "./Notifications";
 
-export default function NavbarProfile() {
+export default function NavbarProfile({isSidebarOpen}) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdowns, setDropdowns] = useState({
     challenges: false,
@@ -143,7 +143,9 @@ export default function NavbarProfile() {
   return (
     <nav className={`shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
       transition-colors duration-300 bg-white `}>
-      <div className="flex items-center space-x-3 ml-1 lg:hidden">
+       <div className={`flex items-center space-x-3 ml-1 lg:hidden ${
+        isSidebarOpen ? 'invisible' : 'visible'
+      }`}>
         <NavLink to={"/"}>
           <img
             src={logoBlack}

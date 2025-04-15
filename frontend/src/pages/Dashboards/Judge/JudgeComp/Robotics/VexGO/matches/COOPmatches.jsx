@@ -228,7 +228,7 @@ import { useState } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
-import Back from "../../../../../../../components/Back/Back";
+import Alert from "../../../../../../../components/Alert/Alert";
 
 const COOPMatch = () => {
   const { matches, setCurrentMatch } = useMatchContext();
@@ -266,10 +266,23 @@ const COOPMatch = () => {
 
   // Mark match as completed
   const handleMarkAsDone = (matchId) => {
-    setCompletedMatches((prev) => ({
-      ...prev,
-      [matchId]: true,
-    }));
+  Alert.confirm({
+    title: 'Submit Final Score?',
+    html: `<p>You're about to submit your final score of <strong>${scores[matchId] || 0}</strong> points.</p>`,
+    confirmText: 'Confirm Submission',
+    cancelText: 'Cancel',
+    onConfirm: () => {
+      // نقل عملية التحديث هنا لتتم فقط عند التأكيد
+      setCompletedMatches((prev) => ({
+        ...prev,
+        [matchId]: true,
+      }));
+      Alert.success({
+        title: 'Score Submitted!',
+        text: 'Your results have been successfully recorded'
+      });
+    },
+    });
   };
 
   // Calculate rankings
@@ -297,7 +310,6 @@ const COOPMatch = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6">
-      <Back />
       
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8">
