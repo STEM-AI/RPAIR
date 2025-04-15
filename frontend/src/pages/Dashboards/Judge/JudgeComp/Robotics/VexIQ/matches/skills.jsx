@@ -1,288 +1,8 @@
-// import { useState, useEffect } from "react";
-// import { FaChevronDown, FaCheck, FaTrophy } from "react-icons/fa";
-// import { AiOutlineCalculator } from "react-icons/ai";
-// import CalculatorSkills from "../Scores/ScoresSkills";
-
-// const Skills = () => {
-//   const [expandedRounds, setExpandedRounds] = useState({ 1: true, 2: false, 3: false });
-//   const [scores, setScores] = useState({});
-//   const [confirmed, setConfirmed] = useState({});
-//   const [showCalculator, setShowCalculator] = useState(false);
-//   const [selectedTeam, setSelectedTeam] = useState(null);
-//   const [selectedRound, setSelectedRound] = useState(null);
-//   const [scoreType, setScoreType] = useState(null);
-//   const [showRanking, setShowRanking] = useState(false);
-
-//   const teams = [
-//     { id: 1, name: "FutureAlex", matchCode: "FA123" },
-//     { id: 2, name: "Monsters", matchCode: "M456" },
-//     { id: 3, name: "Osiris", matchCode: "O789" },
-//   ];
-
-//   useEffect(() => {
-//     const savedScores = JSON.parse(localStorage.getItem("skillsScores")) || {};
-//     const savedConfirmed = JSON.parse(localStorage.getItem("skillsConfirmed")) || {};
-//     const savedExpanded = JSON.parse(localStorage.getItem("skillsExpandedRounds")) || { 1: true, 2: false, 3: false };
-    
-//     setScores(savedScores);
-//     setConfirmed(savedConfirmed);
-//     setExpandedRounds(savedExpanded);
-//   }, []);
-
-//   useEffect(() => {
-//     localStorage.setItem("skillsScores", JSON.stringify(scores));
-//     updateAndStoreRankings();
-//   }, [scores]);
-
-//   useEffect(() => {
-//     localStorage.setItem("skillsConfirmed", JSON.stringify(confirmed));
-//   }, [confirmed]);
-
-//   useEffect(() => {
-//     localStorage.setItem("skillsExpandedRounds", JSON.stringify(expandedRounds));
-//   }, [expandedRounds]);
-
-//   useEffect(() => {
-//     const savedRankings = JSON.parse(localStorage.getItem("skillsRankingTable")) || [];
-//     if (savedRankings.length > 0) {
-//       setShowRanking(true); // Optionally show rankings if they exist
-//     }
-//   }, []);
-
-//   const isRoundCompleted = (round) => {
-//     return teams.every(
-//       (team) => confirmed[round]?.[team.id] === true
-//     );
-//   };
-
-//   const confirmScores = (round, teamId) => {
-//     setConfirmed((prev) => ({
-//       ...prev,
-//       [round]: { ...prev[round], [teamId]: true },
-//     }));
-
-//     if (round < 3 && isRoundCompleted(round)) {
-//       setExpandedRounds((prev) => ({ ...prev, [round + 1]: true }));
-//     }
-//   };
-
-//   const openCalculator = (team, round, type) => {
-//     if (confirmed[round]?.[team.id]) return;
-
-//     setSelectedTeam(team);
-//     setSelectedRound(round);
-//     setScoreType(type);
-//     setShowCalculator(true);
-
-//     setScores((prev) => {
-//       const newScores = { ...prev };
-//       if (!newScores[round]) newScores[round] = {};
-//       if (!newScores[round][team.id]) {
-//         newScores[round][team.id] = { auto: 0, driver: 0 };
-//       }
-//       return newScores;
-//     });
-//   };
-
-//   const handleScoreCalculated = (calculatedScore) => {
-//     if (!selectedTeam || !selectedRound || !scoreType) return;
-
-//     setScores((prev) => {
-//       const newScores = { ...prev };
-//       if (!newScores[selectedRound]) newScores[selectedRound] = {};
-//       if (!newScores[selectedRound][selectedTeam.id]) {
-//         newScores[selectedRound][selectedTeam.id] = { auto: 0, driver: 0 };
-//       }
-
-//       newScores[selectedRound][selectedTeam.id][scoreType] = calculatedScore ?? 0;
-//       return newScores;
-//     });
-
-//     setShowCalculator(false);
-//   };
-
-//   const calculateRankings = () => {
-//     let teamAverages = teams.map((team) => {
-//       let autoSum = 0,
-//         driverSum = 0,
-//         count = 0;
-
-//       Object.values(scores).forEach((round) => {
-//         if (round[team.id]) {
-//           autoSum += round[team.id].auto || 0;
-//           driverSum += round[team.id].driver || 0;
-//           count++;
-//         }
-//       });
-
-//       return {
-//         id: team.id,
-//         name: team.name,
-//         matchCode: team.matchCode,
-//         autoAvg: count > 0 ? (autoSum / count).toFixed(2) : "0.00",
-//         driverAvg: count > 0 ? (driverSum / count).toFixed(2) : "0.00",
-//         total: count > 0 ? ((autoSum + driverSum) / count).toFixed(2) : "0.00",
-//         autoSum,
-//         driverSum,
-//         matchesPlayed: count
-//       };
-//     });
-
-//     return teamAverages.sort((a, b) => b.total - a.total);
-//   };
-
-//   const updateAndStoreRankings = () => {
-//     const rankings = calculateRankings().map((team, index) => ({
-//       ...team,
-//       rank: index + 1,
-//       style: index === 0 
-//         ? "gold" 
-//         : index === 1 
-//         ? "silver" 
-//         : index === 2 
-//         ? "bronze" 
-//         : "normal"
-//     }));
-    
-//     localStorage.setItem("skillsRankingTable", JSON.stringify(rankings));
-//     return rankings;
-//   };
-
-//   return (
-//     <div className="mx-4 md:mx-10 p-4">
-//       <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">Skills Matches</h1>
-
-//       {[1, 2, 3].map((round) => (
-//         <div key={round} className="mb-6">
-//           <div
-//             className={`flex justify-between items-center px-6 py-3 rounded-lg ${
-//               expandedRounds[round]
-//                 ? "bg-green-200"
-//                 : "bg-gray-200 opacity-50 cursor-not-allowed"
-//             }`}
-//           >
-//             <h1 className="text-xl font-bold text-gray-700">{`Round ${round}`}</h1>
-//             <FaChevronDown className="text-gray-600" />
-//           </div>
-
-//           {expandedRounds[round] && (
-//             <div className="overflow-x-auto shadow-lg rounded-lg mt-3">
-//               <table className="w-full table-auto border border-gray-200 text-center rounded-lg">
-//                 <thead>
-//                   <tr className="bg-gray-100">
-//                     <th>Team Name</th>
-//                     <th>Match Code</th>
-//                     <th>Driver Score</th>
-//                     <th>Auto Score</th>
-//                     <th>Confirm</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {teams.map((team) => (
-//                     <tr key={team.id} className="border-b border-gray-200">
-//                       <td>{team.name}</td>
-//                       <td>{team.matchCode}</td>
-//                       <td>
-//                         {scores[round]?.[team.id]?.driver ?? 0}
-//                         {!confirmed[round]?.[team.id] && (
-//                           <button
-//                             onClick={() => openCalculator(team, round, "driver")}
-//                             className="bg-green-500 text-white px-2 py-1 ml-2 rounded-lg hover:bg-green-600"
-//                           >
-//                             <AiOutlineCalculator />
-//                           </button>
-//                         )}
-//                       </td>
-//                       <td>
-//                         {scores[round]?.[team.id]?.auto ?? 0}
-//                         {!confirmed[round]?.[team.id] && (
-//                           <button
-//                             onClick={() => openCalculator(team, round, "auto")}
-//                             className="bg-blue-500 text-white px-2 py-1 ml-2 rounded-lg hover:bg-blue-600"
-//                           >
-//                             <AiOutlineCalculator />
-//                           </button>
-//                         )}
-//                       </td>
-//                       <td>
-//                         <button
-//                           onClick={() => confirmScores(round, team.id)}
-//                           disabled={confirmed[round]?.[team.id]}
-//                           className={`px-3 py-1 rounded-lg transition ${
-//                             confirmed[round]?.[team.id] ? "bg-green-500 text-white" : "bg-gray-500 text-white hover:bg-gray-600"
-//                           }`}
-//                         >
-//                           <FaCheck />
-//                         </button>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           )}
-//         </div>
-//       ))}
-
-//       {showCalculator && selectedTeam && selectedRound && (
-//         <CalculatorSkills onCalculate={handleScoreCalculated} onClose={() => setShowCalculator(false)} />
-//       )}
-
-//       <button
-//         onClick={() => setShowRanking(!showRanking)}
-//         className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto mb-4"
-//       >
-//         <FaTrophy /> View Ranking
-//       </button>
-
-//       {showRanking && (
-//         <div className="overflow-x-auto shadow-xl rounded-lg mt-5 bg-white p-4 border border-gray-300">
-//           <h2 className="text-2xl font-extrabold text-center text-gray-800 mb-4">🏆 Skills Ranking</h2>
-//           <table className="w-full border border-gray-300 text-center rounded-lg shadow-md">
-//             <thead>
-//               <tr className="bg-gray-800 text-white text-lg">
-//                 <th className="py-3 px-4 rounded-tl-lg">Rank</th>
-//                 <th className="py-3 px-4">Team Name</th>
-//                 <th className="py-3 px-4">Avg Auto</th>
-//                 <th className="py-3 px-4">Avg Driver</th>
-//                 <th className="py-3 px-4 rounded-tr-lg">Total</th>
-//               </tr>
-//             </thead>
-//             <tbody className="text-gray-900 text-lg">
-//               {updateAndStoreRankings().map((team) => (
-//                 <tr
-//                   key={team.id}
-//                   className={`border-b border-gray-300 text-lg ${
-//                     team.style === "gold"
-//                       ? "bg-yellow-300 text-black font-bold"
-//                       : team.style === "silver"
-//                       ? "bg-gray-300"
-//                       : team.style === "bronze"
-//                       ? "bg-yellow-100"
-//                       : "bg-white"
-//                   }`}
-//                 >
-//                   <td className="py-3 px-4">{team.rank}</td>
-//                   <td className="py-3 px-4">{team.name}</td>
-//                   <td className="py-3 px-4">{team.autoAvg}</td>
-//                   <td className="py-3 px-4">{team.driverAvg}</td>
-//                   <td className="py-3 px-4 font-bold">{team.total}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Skills;
 
 
 
 import { useState, useEffect } from "react";
-import { FaChevronDown, FaCheck, FaTrophy } from "react-icons/fa";
+import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo, FaChevronDown } from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import CalculatorSkills from "../Scores/ScoresSkills";
 import axios from "axios";
@@ -299,8 +19,15 @@ const Skills = () => {
   const [showRanking, setShowRanking] = useState(false);
   const [schedule, setSchedule] = useState([]);
   const [gameTime, setGameTime] = useState("");
+    const [activeTab, setActiveTab] = useState('driver');
+
 const event_name = localStorage.getItem("selected_event_name");
   const token = localStorage.getItem("access_token");
+
+   const tabs = [
+    { id: 'driver', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
+    { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
+  ];
   const handleSubmit = async (event) => {
   event.preventDefault();
   try {
@@ -420,7 +147,33 @@ const event_name = localStorage.getItem("selected_event_name");
   };
 
 
-  const calculateRankings = () => {
+  // const calculateRankings = () => {
+  //   return schedule
+  //     .map((team) => {
+  //       let autoSum = 0,
+  //         driverSum = 0,
+  //         count = 0;
+
+  //       Object.values(scores).forEach((round) => {
+  //         if (round[team.id]) {
+  //           autoSum += round[team.id].auto || 0;
+  //           driverSum += round[team.id].driver || 0;
+  //           count++;
+  //         }
+  //       });
+
+  //       return {
+  //         id: team.id,
+  //         name: team.team1,
+  //         autoAvg: count > 0 ? (autoSum / count).toFixed(2) : "0.00",
+  //         driverAvg: count > 0 ? (driverSum / count).toFixed(2) : "0.00",
+  //         total: count > 0 ? ((autoSum + driverSum) / count).toFixed(2) : "0.00",
+  //       };
+  //     })
+  //     .sort((a, b) => b.total - a.total)
+  //     .map((team, index) => ({ ...team, rank: index + 1 }));
+  // };
+const calculateRankings = () => {
     return schedule
       .map((team) => {
         let autoSum = 0,
@@ -445,134 +198,207 @@ const event_name = localStorage.getItem("selected_event_name");
       })
       .sort((a, b) => b.total - a.total)
       .map((team, index) => ({ ...team, rank: index + 1 }));
-  };
+};
+  const Th = ({ children, className }) => (
+  <th className={`px-2.5 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider text-center ${className}`}>
+    {children}
+  </th>
+);
+
+const Td = ({ children, className }) => (
+  <td className={`px-2.5 py-2 sm:px-4 sm:py-3 text-sm text-gray-900 text-center ${className}`}>
+    {children}
+  </td>
+);
 
   return (
-    <div className="mx-4 md:mx-10 p-4">
-      <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">Skills Matches</h1>
-      <div className="flex justify-center mb-6">
-        <form onSubmit={handleSubmit} className="flex gap-4 items-cente p-4 justify-center w-full max-w-2xl">
-          <input
-            type="time"
-            value={gameTime}
-            onChange={(e) => setGameTime(e.target.value)}
-            className="px-4 py-2.5 rounded-md border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-700 text-lg min-w-[150px]"
-          />
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-black mb-5 ">🏆 Skills Challenge</h1>
+
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex rounded-md shadow-sm">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-2 text-sm font-medium flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? `bg-black text-white`
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                } ${tab.id === 'driver' ? 'rounded-l-lg' : 'rounded-r-lg'}`}
+              >
+                <span className="text-xl">{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Schedule Input */}
+        <div className="flex justify-center mb-6">
+          <form onSubmit={handleSubmit} className="flex gap-4 items-center">
+            <input
+              type="time"
+              value={gameTime}
+              onChange={(e) => setGameTime(e.target.value)}
+              className="px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-white text-lg"
+            />
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition-all"
+            >
+              View Schedule
+            </button>
+          </form>
+        </div>
+
+        {/* Round Navigation */}
+        <div className="flex justify-center items-center gap-4 mt-4">
           <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-md transition-all duration-200 shadow-sm hover:shadow-md flex-shrink-0"
+            onClick={() => setSelectedRound(prev => Math.max(1, prev - 1))}
+            disabled={selectedRound === 1}
+            className={`p-2 rounded-full ${selectedRound === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-100 text-black hover:bg-indigo-200'}`}
           >
-            View Schedule
+            <FaChevronLeft />
           </button>
-        </form>
+          <span className="text-xl font-semibold bg-slate-900 text-white px-4 py-2 rounded-full">
+            Round {selectedRound}
+          </span>
+          <button
+            onClick={() => setSelectedRound(prev => Math.min(3, prev + 1))}
+            disabled={selectedRound === 3}
+            className={`p-2 rounded-full ${selectedRound === 3 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-100 text-black hover:bg-indigo-200'}`}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
       </div>
 
-      {[1, 2, 3].map((round) => (
-        <div key={round} className="mb-6">
-          <div
-            className={`flex justify-between items-center px-6 py-3 rounded-lg ${
-              expandedRounds[round]
-                ? "bg-green-200"
-                : "bg-gray-200 opacity-50 cursor-not-allowed"
-            }`}
-          >
-            <h1 className="text-xl font-bold text-gray-700">{`Round ${round}`}</h1>
-            <FaChevronDown className="text-gray-600" />
-          </div>
-
-          {expandedRounds[round] && (
-            <div className="overflow-x-auto shadow-lg rounded-lg mt-3">
-              <table className="w-full table-auto border border-gray-200 text-center rounded-lg">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th>Team Name</th>
-                    <th>Match Code</th>
-                    <th>Driver Score</th>
-                    <th>Auto Score</th>
-                    <th>Confirm</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {schedule.map((team) => (
-                    <tr key={team.id} className="border-b border-gray-200">
-                      <td>{team.team1}</td>
-                      <td>{team.id}</td>
-                      <td>
-                        {scores[round]?.[team.id]?.driver ?? 0}
-                        {!confirmed[round]?.[team.id] && (
-                          <button
-                            onClick={() => openCalculator(team, round, "driver")}
-                            className="bg-green-500 text-white px-2 py-1 ml-2 rounded-lg hover:bg-green-600"
-                          >
-                            <AiOutlineCalculator />
-                          </button>
-                        )}
-                      </td>
-                      <td>
-                        {scores[round]?.[team.id]?.auto ?? 0}
-                        {!confirmed[round]?.[team.id] && (
-                          <button
-                            onClick={() => openCalculator(team, round, "auto")}
-                            className="bg-blue-500 text-white px-2 py-1 ml-2 rounded-lg hover:bg-blue-600"
-                          >
-                            <AiOutlineCalculator />
-                          </button>
-                        )}
-                      </td>
-                      <td>
+      {/* Matches Table */}
+       <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+                <tr>
+                  <Th>Team</Th>
+                  <Th >Match Code</Th>
+                  <Th >
+                    {activeTab === 'driver' ? 'Driver Score' : 'Auto Score'}
+                  </Th>
+                  <Th>Status</Th>
+                  <Th>Actions</Th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {schedule.map((team) => (
+                  <tr 
+                    key={team.id} 
+                    className={confirmed[selectedRound]?.[team.id] ? "bg-green-50" : "hover:bg-gray-50"}
+                  >
+                    <Td >{team.team1}</Td>
+                    <Td >{team.id}</Td>
+                    <Td >
+                      {activeTab === 'driver' 
+                        ? scores[selectedRound]?.[team.id]?.driver ?? 0
+                        : scores[selectedRound]?.[team.id]?.auto ?? 0}
+                      {!confirmed[selectedRound]?.[team.id] && (
                         <button
-                          onClick={() => confirmScores(round, team.id)}
-                          disabled={confirmed[round]?.[team.id]}
-                          className={`px-3 py-1 rounded-lg transition ${
-                            confirmed[round]?.[team.id] ? "bg-green-500 text-white" : "bg-gray-500 text-white hover:bg-gray-600"
-                          }`}
+                          onClick={() => openCalculator(team, selectedRound, activeTab)}
+                          className="ml-2 text-green-600 hover:text-green-800"
                         >
-                          <FaCheck />
+                          <AiOutlineCalculator className="inline" />
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                      )}
+                    </Td>
+                    <Td >
+                      <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        confirmed[selectedRound]?.[team.id] 
+                          ? "bg-green-100 text-green-800" 
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}>
+                        {confirmed[selectedRound]?.[team.id] ? "Confirmed" : "Pending"}
+                      </span>
+                    </Td>
+                    <Td>
+                      <button
+                        onClick={() => confirmScores(selectedRound, team.id)}
+                        disabled={confirmed[selectedRound]?.[team.id]}
+                        className={`px-3 py-1 rounded-md text-sm ${
+                          confirmed[selectedRound]?.[team.id]
+                            ? "bg-gray-300 text-gray-600"
+                            : "bg-green-600 hover:bg-green-700 text-white"
+                        }`}
+                      >
+                        <FaCheck className="inline mr-1" /> Confirm
+                      </button>
+                    </Td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
         </div>
-      ))}
+      </div>
+
+      {/* Ranking Section */}
+      <div className="flex justify-center gap-4 mb-8">
+        <button
+          onClick={() => setShowRanking(!showRanking)}
+          className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center"
+          
+        >
+          <FaTrophy className="mr-2" />
+          {showRanking ? "Hide Rankings" : "View Rankings"}
+        </button>
+      </div>
+
+      {showRanking && (
+        <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
+          <div className="px-6 py-4 bg-white text-black flex items-center">
+            <FaTrophy className="mr-2" />
+            <h2 className="text-xl font-bold">Overall Rankings</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-100">
+                <tr>
+                  <Th className="px-6 py-3 text-left">Rank</Th>
+                  <Th className="px-6 py-3 text-left">Team</Th>
+                  <Th className="px-6 py-3 text-center">Avg Auto</Th>
+                  <Th className="px-6 py-3 text-center">Avg Driver</Th>
+                  <Th className="px-6 py-3 text-center">Total</Th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {calculateRankings().map((team, index) => (
+                  <tr key={team.id} className="hover:bg-gray-50">
+                    <Th className="px-6 py-4 font-medium">
+                      {index + 1}
+                      {index < 3 && (
+                        <span className="ml-2">
+                          {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
+                        </span>
+                      )}
+                    </Th>
+                    <Th className="px-6 py-4">{team.name}</Th>
+                    <Th className="px-6 py-4 text-center">{team.autoAvg}</Th>
+                    <Th className="px-6 py-4 text-center">{team.driverAvg}</Th>
+                    <Th className="px-6 py-4 text-center font-bold text-indigo-600">
+                      {team.total}
+                    </Th>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {showCalculator && selectedTeam && selectedRound && (
-        <CalculatorSkills onCalculate={handleScoreCalculated}
+        <CalculatorSkills 
+          onCalculate={handleScoreCalculated}
           onClose={() => setShowCalculator(false)}
-          gameId={selectedTeam.id}  />
-      )}
-      <button onClick={() => setShowRanking(!showRanking)} className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto mb-4">
-        <FaTrophy /> View Ranking
-      </button>
-      {showRanking && (
-        <div className="overflow-x-auto shadow-xl rounded-lg mt-5 bg-white p-4 border border-gray-300">
-          <h2 className="text-2xl font-extrabold text-center text-gray-800 mb-4">🏆 Skills Ranking</h2>
-          <table className="w-full border border-gray-300 text-center rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-gray-800 text-white text-lg">
-                <th className="py-3 px-4 rounded-tl-lg">Rank</th>
-                <th className="py-3 px-4">Team Name</th>
-                <th className="py-3 px-4">Avg Auto</th>
-                <th className="py-3 px-4">Avg Driver</th>
-                <th className="py-3 px-4 rounded-tr-lg">Total</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-900 text-lg">
-              {calculateRankings().map((team) => (
-                <tr key={team.id} className="border-b border-gray-300 text-lg">
-                  <td className="py-3 px-4">{team.rank}</td>
-                  <td className="py-3 px-4">{team.name}</td>
-                  <td className="py-3 px-4">{team.autoAvg}</td>
-                  <td className="py-3 px-4">{team.driverAvg}</td>
-                  <td className="py-3 px-4 font-bold">{team.total}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          gameId={selectedTeam.id}  
+        />
       )}
     </div>
   );
