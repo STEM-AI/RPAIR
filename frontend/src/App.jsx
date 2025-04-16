@@ -25,6 +25,14 @@ import {ResultProvider } from "../src/context/CompetitionContext" ;
 import CompetitionResult from "./pages/Competitions/Programming/main/CompetitionResult";
 import Robotics from "./pages/Gallary/Robotics/Robotics";
 import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
+import LiveEvents from "./pages/LiveEvents/introEvents";
+import IntroVexIQ from "./pages/Dashboards/AdminDashboard/IntroVexIQ";
+import IntroVexGO from "./pages/LiveEvents/introVexGo";
+import LiveTeamIQ from "./pages/Dashboards/View/LiveTeam";
+import LiveProgramming from "./pages/LiveEvents/LiveMatches/LiveProgramming";
+import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
+import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveSkills";
+import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveTeam";
 
 
 
@@ -62,7 +70,7 @@ const TeamDetails = lazy(() => import("./pages/Dashboards/AdminDashboard/TeamDet
 const ListCompetitions = lazy(() => import("./pages/Dashboards/AdminDashboard/ListCompetitions"));
 const CompetitionEvents = lazy(() => import("./pages/Dashboards/AdminDashboard/CompetitionEvents"));
 const ListJudges = lazy(() => import("./pages/Dashboards/AdminDashboard/ListJudges"));
-const Matchess = lazy(() => import("./pages/Dashboards/AdminDashboard/Matchess"));
+const Matchess = lazy(() => import("./pages/Dashboards/AdminDashboard/IntroVexIQ"));
 
 //                          User (Lazy Loading)                   //
 const MyTeams = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeams"));
@@ -374,16 +382,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
-          path="/Dashboard/Matchess"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Matchess />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+
         <Route
           path="/Dashboard/:role/Teams"
           element={
@@ -820,23 +819,63 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/LiveTeam"
+          path="/live-events"
           element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <LiveTeam />
-              </LayoutDashboard>
+            <Layout>
+              <LiveEvents />
             </Layout>
           }
         />
-        <Route
-          path="/Dashboard/LiveSkills"
+                <Route
+          path="/LiveMatch/VexIq"
           element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <LiveSkills />
-              </LayoutDashboard>
+            <Layout>
+                <IntroVexIQ />
             </Layout>
+          }
+        />
+          <Route
+          path="/LiveMatch/Vexgo"
+          element={
+            <Layout>
+                <IntroVexGO />
+            </Layout>
+          }
+        />
+                  <Route
+          path="/LiveMatch/Skills"
+          element={
+            <Layout>
+                <LiveSkillsVex/>
+            </Layout>
+          }
+        />
+                  <Route
+          path="/LiveMatch/Teamwork"
+          element={
+            <Layout>
+                <LiveTeamVex />
+            </Layout>
+          }
+        />
+
+          <Route
+          path="/LiveProgramming"
+          element={
+            <Layout >
+                <LiveProgramming/>
+            </Layout>
+            
+          }
+            />
+
+<Route
+          path="/LiveVex123"
+          element={
+            <Layout >
+                <LiveVex123/>
+            </Layout>
+            
           }
             />
             </Routes>

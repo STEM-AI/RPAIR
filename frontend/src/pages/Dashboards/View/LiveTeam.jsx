@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal } from "react-icons/fa";
 import axios from "axios";
 
-const LiveTeam = () => {
+const LiveTeamIQ = () => {
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState([]);
   const [rankings, setRankings] = useState([]);
@@ -238,4 +238,4 @@ const LiveTeam = () => {
   );
 };
 
-export default LiveTeam;
+export default LiveTeamIQ;

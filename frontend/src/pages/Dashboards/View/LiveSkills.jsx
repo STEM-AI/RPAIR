@@ -348,7 +348,7 @@ import { FaTrophy, FaMedal } from "react-icons/fa";
 import axios from "axios";
 
 
-const LiveSkills = () => {
+const LiveSkillsIQ = () => {
   const [rankings, setRankings] = useState([]);
   const [scores, setScores] = useState({});
   const [lastUpdate, setLastUpdate] = useState(new Date());
@@ -569,7 +569,7 @@ const LiveSkills = () => {
   );
 };
 
-export default LiveSkills;
+export default LiveSkillsIQ;
 
 
 
