@@ -24,6 +24,7 @@ import Home from "./components/Home/Home";
 import {ResultProvider } from "../src/context/CompetitionContext" ; 
 import CompetitionResult from "./pages/Competitions/Programming/main/CompetitionResult";
 import Robotics from "./pages/Gallary/Robotics/Robotics";
+import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
 import LiveEvents from "./pages/LiveEvents/introEvents";
 import IntroVexIQ from "./pages/Dashboards/AdminDashboard/IntroVexIQ";
 import IntroVexGO from "./pages/LiveEvents/introVexGo";
@@ -83,7 +84,7 @@ const Inspection = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotic
 const Notebook = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Notebook"));
 const Teamwork = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/teamwork"));
 const Skills = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/skills"));
-const EventDetails = lazy(() => import("./pages/Dashboards/Judge/eventDetails"));
+const EventDetailsJudge = lazy(() => import("./pages/Dashboards/Judge/eventDetailsJudge"));
 
 const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/SelectMatch"));
 const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/StartMatchIQ"));
@@ -405,11 +406,21 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Competitions/:event_name"
+          path="/Dashboard/Competitions/:competition_name"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
                 <CompetitionEvents />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Competitions/:competition_name/:event_name"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+              <EventDetails/>
               </LayoutDashboard>
             </Layout>
           }
@@ -757,11 +768,11 @@ const App = () => {
         /> 
         
         <Route
-          path="/Dashboard/Judge/eventDetails"
+          path="/Dashboard/Judge/eventDetailsJudge"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <EventDetails />
+                <eventDetailsJudge />
               </LayoutDashboard>
             </Layout>
           }

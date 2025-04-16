@@ -102,12 +102,13 @@ export default function NavbarProfile({isSidebarOpen}) {
 
 
   const handleLogout = () => {
-    clearTokens();
-    localStorage.removeItem("user_role");
-    sessionStorage.removeItem("hasRefreshed");
-    setIsLoggedIn(false);
-    navigate("/", { replace: true });
-  };
+     clearTokens();
+     localStorage.removeItem("user_role");
+     sessionStorage.removeItem("hasRefreshed");
+     setIsLoggedIn(false);
+     navigate("/", { replace: true });
+   };
+  
 
   const handleDropdownToggle = (dropdown) => {
     setDropdowns((prevState) => ({
