@@ -1,5 +1,8 @@
+
+
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt, FaRobot, FaCar } from "react-icons/fa";
+import { BiSolidJoystick } from "react-icons/bi";
 import axios from "axios";
 
 const LiveSkillsVex = () => {
@@ -110,7 +113,7 @@ const LiveSkillsVex = () => {
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-           Skills Challenge
+          Skills Challenge
         </h1>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
           <FaSyncAlt className="animate-spin" />
@@ -118,75 +121,90 @@ const LiveSkillsVex = () => {
         </div>
       </div>
 
-      {/* Rounds Section */}
-      <div className="grid grid-cols-1 gap-8 w-full">
-        {activeRounds.map((round) => (
-          <div key={round} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-            <div className="bg-gradient-to-r from-blue-600 to-teal-500 p-4">
-              <h3 className="text-xl font-bold text-white text-center">Round {round}</h3>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <div className="flex items-center justify-center gap-1">
-                        <FaRobot /> Auto
-                      </div>
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <div className="flex items-center justify-center gap-1">
-                        <FaCar /> Driver
-                      </div>
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {matches.filter(team => team.round === round).map((team) => (
-                    <tr key={team.code} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        {team.score.autonomous > 0 ? (
-                          <span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-medium">
-                            {team.score.autonomous}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        {team.score.driver > 0 ? (
-                          <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-800 font-medium">
-                            {team.score.driver}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
-                        {team.score.autonomous + team.score.driver > 0 ? (
-                          <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-blue-100 to-teal-100 text-blue-800">
-                            {team.score.autonomous + team.score.driver}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {/* Rounds Section - Now with two tables side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+
+
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+          <div className="bg-gradient-to-r from-teal-600 to-teal-800 p-4">
+            <h3 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
+              <BiSolidJoystick /> Driver Rounds
+            </h3>
           </div>
-        ))}
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {matches.filter(team => team.round === 2).map((team) => (
+                  <tr key={`driver-${team.code}`} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      {team.score.driver > 0 ? (
+                        <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
+                          {team.score.driver}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        {/* Auto Rounds Table */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4">
+            <h3 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
+              <FaRobot /> Auto Rounds
+            </h3>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {matches.filter(team => team.round === 1).map((team) => (
+                  <tr key={`auto-${team.code}`} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      {team.score.autonomous > 0 ? (
+                        <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium">
+                          {team.score.autonomous}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
       </div>
 
-      {/* Rankings Section */}
+      {/* Rankings Section - Unchanged */}
       <div className="flex justify-center my-8">
         <button
           onClick={fetchRankings}
@@ -219,7 +237,7 @@ const LiveSkillsVex = () => {
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Average Score</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Highest Score</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
