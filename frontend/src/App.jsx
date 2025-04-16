@@ -33,6 +33,7 @@ import LiveProgramming from "./pages/LiveEvents/LiveMatches/LiveProgramming";
 import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
 import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveSkills";
 import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveTeam";
+import ProgrammingComp from "./components/Competitions/Programming";
 
 
 
@@ -204,6 +205,14 @@ const App = () => {
           element={
             <Layout>
               <Login />
+            </Layout>
+          }
+        />
+                <Route
+          path="/ProgrammingCompetitions"
+          element={
+            <Layout>
+              <ProgrammingComp />
             </Layout>
           }
         />
