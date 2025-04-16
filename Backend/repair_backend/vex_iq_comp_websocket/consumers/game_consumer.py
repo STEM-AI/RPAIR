@@ -41,7 +41,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             try:
                 game = await sync_to_async(EventGame.objects.get)(id=self.game_id)
             except EventGame.DoesNotExist:
-                await self.send(json.dumps({"error": f"Game with ID {self.game_id} not found"}))
+                await self.send(json.dumps({"error": f"Game ID {self.game_id} not found"}))
                 return
 
             if data["action"] == "start_game": 

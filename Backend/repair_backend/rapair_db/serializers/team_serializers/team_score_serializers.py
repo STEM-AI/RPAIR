@@ -18,6 +18,15 @@ class TeamScoreSerializer(serializers.Serializer):
     class Meta:
         fields = ['team','team_name','avg_score']
 
+
+class SkillsRankSerializer(serializers.Serializer):
+    team__name = serializers.CharField()
+    team = serializers.IntegerField()
+    total_score = serializers.IntegerField()
+
+    class Meta:
+        fields = ['team','team_name','total_score']
+
 class TeamInterviewScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team

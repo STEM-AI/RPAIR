@@ -2,21 +2,18 @@ from django.db import models
 
 class Competition(models.Model):
     id = models.AutoField(primary_key=True)
-    VEX_IQ = 'vex_iq'
-    ROV = 'rov'
-    ROBOCUP = 'robocup'
-    ROBOTICS = 'robotics'
+
     COMPETITION_CHOICES = [
-        (VEX_IQ, 'VEX IQ'),
-        (ROV, 'ROV'),
-        (ROBOCUP, 'ROBOCUP'),
-        (ROBOTICS, 'Robotics')  
+        ('vex_iq', 'VEX IQ'),
+        ('vex_go', 'VEX GO'),
+        ('vex_123', 'VEX_123'),
+        ('programming', 'Programming')  
     ]
     name = models.CharField(
         max_length=255,
         unique=True , 
         choices= COMPETITION_CHOICES , 
-        default = VEX_IQ
+        default = 'vex_iq'
         )
     type = models.CharField(max_length=255)
     description = models.TextField()
@@ -86,6 +83,7 @@ class EventGame(models.Model):
     team2 = models.ForeignKey('Team' , on_delete=models.SET_NULL , related_name='team2' , null=True , blank=True) 
     score = models.IntegerField(null=True, blank=True , default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    time_taken = models.FloatField(default=0)
     completed = models.BooleanField(default=False)
     time = models.TimeField()
     is_active = models.BooleanField(default=False)
@@ -93,11 +91,19 @@ class EventGame(models.Model):
     paused_time = models.FloatField(default=15)
 
     TEAMWORK = 'teamwork'
-    SKILLS = 'skills'
+    DRIVER_IQ = 'driver_iq'
+    DRIVER_GO = 'driver_go'
+    AUTO = 'auto'
+    CODING = 'coding'
+    TEAMWORK_COOP = 'coop'
     TEAMWORK_FINAL = 'final'
     STAGE_CHOICES = (
         (TEAMWORK, 'Teamwork'),
-        (SKILLS, 'Skills'),
+        (DRIVER_IQ, 'Driver IQ'),
+        (DRIVER_GO, 'Driver Go'),
+        (AUTO,'Auto'),
+        (TEAMWORK_COOP, 'Teamwork Coop'),
+        (CODING, 'Coding'),
         (TEAMWORK_FINAL, 'Teamwork Final'),
     )
     stage = models.CharField(

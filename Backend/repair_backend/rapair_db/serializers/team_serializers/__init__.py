@@ -4,4 +4,4 @@ from .team_prev_comp_serializers import TeamPreviousCompetitionSerializer
 from .team_sponsor_serializers import TeamSponsorSerializer
 from .team_data_serializers import TeamSerializer ,TeamGamesSerializer
 from .team_member_serializers import TeamMemberSerializer
-from .team_score_serializers import SkillsTeamScoreSerializer , TeamScoreSerializer , TeamInterviewScoreSerializer , TeamEngNotebookScoreSerializer
+from .team_score_serializers import SkillsTeamScoreSerializer , TeamScoreSerializer , TeamInterviewScoreSerializer , TeamEngNotebookScoreSerializer,SkillsRankSerializer

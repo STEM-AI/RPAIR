@@ -26,10 +26,7 @@ urlpatterns = [
     path('docs/', SpectacularAPIView.as_view(), name='api-docs'),
     path('redoc/', SpectacularRedocView.as_view(url_name='api-docs'), name='redoc'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='api-docs'), name='swagger-ui'),
-
-    
-    
-    
+    path('vex-go/', include('vex_go.urls')),
 ]
 
 if settings.DEBUG:

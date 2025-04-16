@@ -1,6 +1,6 @@
 from ..models import Competition , CompetitionEvent
 from datetime import datetime, timedelta
-from ..models import EventGame , TeamworkTeamScore , Team
+from ..models import EventGame, Team
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Avg
@@ -24,30 +24,40 @@ def teamwork_schedule( event ,event_teams , game_time , stage):
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
-            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage))
-            game_time += timedelta(minutes=1, seconds=30)   
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage,paused_time=60))
+            game_time += timedelta(minutes=5)   
 
     return games
 
 def skills_schedule(event , game_time , stage):
+    print("create skills")
     event_teams = event.teams.order_by('?')
+    print("event teams" ,event_teams)
     games = []
-    for i in range(len(event_teams)):
-        games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage))
-        game_time += timedelta(minutes=1, seconds=30)
+    if stage == 'driver_go':
+        for i in range(len(event_teams)):
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage,paused_time=120))
+            game_time += timedelta(minutes=5)
+    elif stage in ['driver_iq','coding']:
+        print("driver go or coding")
+        for i in range(len(event_teams)):
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage ,paused_time=60))
+            game_time += timedelta(minutes=5)
     
     return games
         
 
 def create_schedule(event, stage=None , time=None):
     game_time = time
+    print("game_time",game_time)
     try:
         game_time = datetime.strptime(game_time, "%H:%M")
     except ValueError:
         return Response({"error": "Invalid time format. Please use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        if stage in ('skills'):
+        if stage in ['driver_iq','driver_go','auto','coding']:
+            print("driver , auto")
             games = skills_schedule(event, game_time, stage)
 
         elif stage == 'final':
@@ -63,9 +73,11 @@ def create_schedule(event, stage=None , time=None):
             games = teamwork_schedule(event, teams, game_time, stage)
             
 
-        elif stage == 'teamwork':
+        elif stage in ['teamwork','coop']:
+            print("teamwork , coop")
             teams = event.teams.all()
             games = teamwork_schedule(event, teams, game_time, stage)
+            print("games", games)
 
         else:
             return Response({"error": "Invalid stage provided."}, status=status.HTTP_400_BAD_REQUEST)

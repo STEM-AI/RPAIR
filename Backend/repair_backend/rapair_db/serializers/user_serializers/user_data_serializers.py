@@ -74,3 +74,19 @@ class UserEditProfileSerializer(serializers.ModelSerializer):
 
         # Continue normal processing if no extra fields
         return super().to_internal_value(data)
+    
+# Serializer for the request body
+class UserLoginRequestSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+# Serializer for the response
+class TokenResponseSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    access = serializers.CharField()
+
+class ErrorResponseSerializer(serializers.Serializer):
+    errors = serializers.DictField(
+        child=serializers.CharField(), 
+        help_text="A dictionary where keys are field names and values are error messages."
+    )

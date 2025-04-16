@@ -7,8 +7,8 @@ from ...models import EventGame , Team ,  TeamworkTeamScore , SkillsTeamScore
 from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
 from django.db import IntegrityError
-from django.db.models import Avg
-from ...serializers import TeamScoreSerializer , TeamInterviewScoreSerializer , TeamEngNotebookScoreSerializer
+from django.db.models import Avg,Max
+from ...serializers import TeamScoreSerializer,TeamInterviewScoreSerializer,TeamEngNotebookScoreSerializer,SkillsRankSerializer
 from rest_framework.generics import ListAPIView 
 
 
@@ -111,22 +111,25 @@ class TeamsEngNotebookScoreRank(ListAPIView):
                 )
     
 class SkillsRankView(ListAPIView):
-    '''Rank teams based on Average of thier Skills Score For Event'''
+    '''Rank teams based on the sum of the highest autonomous_score and highest driver_score for each team'''
     permission_classes = [IsJudgeUser]
-    serializer_class = TeamScoreSerializer
+    serializer_class = SkillsRankSerializer
+
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
         if not event_name:
             return SkillsTeamScore.objects.none()
         return (
-                SkillsTeamScore.objects
-                .filter(team__competition_event__name=event_name)  # Filter by event name
-                .select_related('team')  # Fetch the related Team model
-                .values('team', 'team__name')  # Include team name directly
-                .annotate(avg_score=Avg('autonomous_score') + Avg('driver_score'))
-                .order_by('-avg_score')
-                )
-    
+            SkillsTeamScore.objects
+            .filter(team__competition_event__name=event_name)  # Filter by event name
+            .select_related('team')  # Fetch the related Team model
+            .values('team', 'team__name')  # Include team name directly
+            .annotate(
+                total_score=Max('autonomous_score') + Max('driver_score')
+            )
+            .order_by('-total_score')
+        )
+
     def list(self, request, *args, **kwargs):
         # Get the queryset
         queryset = self.get_queryset()
@@ -134,6 +137,7 @@ class SkillsRankView(ListAPIView):
         # Serialize the data
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
+
         # Save the rank to the Team model
         for index, item in enumerate(data):
             team = Team.objects.get(id=item['team'])

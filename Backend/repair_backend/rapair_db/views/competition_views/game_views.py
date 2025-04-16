@@ -7,7 +7,7 @@ from ...models import EventGame
 
 
 
-class SetGameScoreView(APIView):
+class GameScoreView(APIView):
     permission_classes = [IsJudgeUser]
     def post(self, request , game_id):
         event_name = request.data.get('event_name', None)
@@ -30,14 +30,18 @@ class SetGameScoreView(APIView):
         if score is None:
             return Response({"error": "Score is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        
+        game.score = int(score)
         if game.stage == 'teamwork':
-            game.score = int(score)
+            print("teamwork score")
             game.operation = "set_teamwork_game_score"
-        elif game.stage == 'skills':
-            game.score = int(score['driver']) + int(score['autonomous'])
-            game.driver_score = int(score['driver'])
-            game.autonomous_score = int(score['autonomous'])
+        elif game.stage == 'driver':
+            print("driver score")
+            game.driver_score = game.score
+            game.operation = "set_skills_game_score"
+        elif game.stage == 'auto':
+            print("autonomous score")
+            game.autonomous_score = game.score
             game.operation = "set_skills_game_score"
         game.save()
         return Response({"Game Score Set"}, status=status.HTTP_200_OK)
+    

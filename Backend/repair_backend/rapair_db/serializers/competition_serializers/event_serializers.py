@@ -23,8 +23,8 @@ class EventSerializer(serializers.ModelSerializer):
         }
 
 class EventGameSerializer(serializers.ModelSerializer):
-    team1_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all() , source='team1.id')
-    team2_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all() , source='team2.id')
+    team1_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), source='team1.id', allow_null=True, required=False)
+    team2_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), source='team2.id', allow_null=True, required=False)
     team1 = serializers.StringRelatedField()
     team2 = serializers.StringRelatedField()
 
@@ -39,9 +39,10 @@ class EventGameSerializer(serializers.ModelSerializer):
 
 class EventListSerializer(serializers.ModelSerializer):
     top3_teams = serializers.SerializerMethodField(read_only = True)
+    competition_name = serializers.CharField(source='competition.name')
     class Meta:
         model = CompetitionEvent
-        fields = ['id' ,'name', 'start_date', 'end_date', 'location' , 'top3_teams']
+        fields = ['id' ,'name', 'start_date', 'end_date', 'location' , 'top3_teams','competition_name']
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_top3_teams(self, obj):

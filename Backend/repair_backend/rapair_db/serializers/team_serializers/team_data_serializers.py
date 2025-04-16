@@ -24,7 +24,7 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = [
             'name','robot_name','user_id','type','organization_info','team_leader_name','team_leader_email',
             'team_leader_phone_number','organization','competition' ,'sponsors', 'coach', 'social_media',
-            'previous_competition' , 'members' , 'competition_event'
+            'previous_competition' , 'members' , 'competition_event','id'
             ]
 
         extra_kwargs = {
@@ -32,10 +32,10 @@ class TeamSerializer(serializers.ModelSerializer):
             'organization_id': {'required': False},
             'organization': {'required': False},
             'competition': {'required': False},
-            'sponsors': {'required': True},
+            'sponsors': {'required': False},
             'coach': {'required': True},
             'social_media': {'required': True},
-            'previous_competition': {'required': True},
+            'previous_competition': {'required': False},
             'members': {'required': True},
             'competition_event' :{'required' : False }
         }
@@ -68,7 +68,7 @@ class TeamSerializer(serializers.ModelSerializer):
     
     def get_competition_event(self,obj):
         if obj.competition_event:
-            return obj.competition_event.competition.name
+            return obj.competition_event.name
         return None
     
 

@@ -3,7 +3,6 @@ from django.dispatch import receiver
 from ..models import (
     Team , Organization , OrganizationContact , TeamSponsor , TeamCoach , 
     TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame,
-    SkillsTeamScore , TeamworkTeamScore
     )
 
 @receiver(pre_save , sender=Team)
@@ -87,15 +86,44 @@ def add_team_members(sender, instance, created, **kwargs):
 
 @receiver(post_save , sender=EventGame)
 def add_team_score(sender, instance, created, **kwargs):
+    print("event game signalss")
+    print("created" , created)
+    print("")
     if created :
         return
     if hasattr(instance, 'operation') and instance.operation == 'set_teamwork_game_score':
-        instance.team1.teamwork_scores.create(score = instance.score)
-        instance.team2.teamwork_scores.create(score = instance.score)
+        instance.team1.teamwork_scores.create(score = instance.score,game=instance)
+        instance.team2.teamwork_scores.create(score = instance.score,game=instance)
 
     if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
-        instance.team1.skills_scores.create(
-            driver_score = instance.driver_score,
-            autonomous_score = instance.autonomous_score
+        print("setting team skills score sginals")
+        if instance.stage in ['driver_iq','driver_go']:
+            print("Setting driver scores")
+            skills_score, created = instance.team1.skills_scores.get_or_create(
+                team=instance.team1,
+                defaults={
+                    'driver_score': instance.driver_score,
+                    'autonomous_score': 0
+                }
             )
+            if not created:
+                print("updating driver scores")
+                skills_score.driver_score = instance.driver_score
+                print("autonomous_score", skills_score.autonomous_score)
+                skills_score.save()
+        elif instance.stage in ['auto','coding']:
+            print("instance.team1" , instance.team1)
+            print("Setting autonomous scores")
+            skills_score, created = instance.team1.skills_scores.get_or_create(
+                team=instance.team1,
+                defaults={
+                    'autonomous_score': instance.autonomous_score,
+                    'driver_score': 0
+                }
+            )
+            if not created:
+                print("updating autonomous scores")
+                skills_score.autonomous_score = instance.autonomous_score
+                print("driver_score", skills_score.driver_score)
+                skills_score.save()
 

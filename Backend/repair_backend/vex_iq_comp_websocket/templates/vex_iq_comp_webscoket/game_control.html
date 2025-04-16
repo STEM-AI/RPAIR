@@ -175,14 +175,14 @@
         function submitScore() {
             const scoreInput = document.getElementById("scoreInput");
             const score = scoreInput.value;
-            const authToken = 'your-auth-token-here';
+            const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNzYzMzU5LCJpYXQiOjE3NDM3NTk3NTksImp0aSI6ImM5NjVhZjhmYTJmZjRiNTg5Zjc3YjMxZjhlY2FjOWVjIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJuZWtsYXdpIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZX0.Y9qhlpoMyZRdJim3HZYiCZonRdYWsBzuLbfSmdyvG-c';
 
             if (!score) {
                 alert("Please enter a valid score.");
                 return;
             }
 
-            fetch(`/api/game/set-game-score/${gameId}/`, {
+            fetch(`/api/game/${gameId}/set-game-score/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

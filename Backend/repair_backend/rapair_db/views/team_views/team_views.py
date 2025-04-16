@@ -8,11 +8,17 @@ from ...models import Team ,EventGame
 from rest_framework.generics import RetrieveAPIView , ListAPIView 
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
-class ListTeamsView(ListAPIView):
+
+class TeamListView(ListAPIView):
     permission_classes = [IsJudgeUser]
     serializer_class = TeamSerializer
     queryset = Team.objects.all()
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['competition_event__name','grade_level']
+    search_fields = ['name'] 
         
 
 class TeamProfileView(RetrieveAPIView):
