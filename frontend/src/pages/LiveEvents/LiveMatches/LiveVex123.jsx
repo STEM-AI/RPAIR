@@ -133,7 +133,7 @@ const LiveVex123 = () => {
       {/* Combined Matches and Rankings Table */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 mb-8">
         <div className="bg-gradient-to-r from-blue-600 to-teal-500 p-4">
-          <h2 className="text-xl font-bold text-white text-center">Live Skills Matches & Rankings</h2>
+          <h2 className="text-xl font-bold text-white text-center">Live Matches</h2>
         </div>
         
         <div className="overflow-x-auto">
@@ -145,11 +145,7 @@ const LiveVex123 = () => {
 
 
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <div className="flex items-center justify-center gap-1">
-                    <FaListOl /> Rank
-                  </div>
-                </th>
+
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">

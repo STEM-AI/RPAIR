@@ -126,7 +126,7 @@ const LiveProgramming = () => {
         <div className="bg-gradient-to-r from-purple-600 to-blue-500 p-4">
           <h2 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
             <FaUserGraduate />
-            Live Student Matches
+            Live Student Competition
           </h2>
         </div>
         
@@ -137,7 +137,6 @@ const LiveProgramming = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Score</th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -198,9 +197,9 @@ const LiveProgramming = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Average Score</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
