@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 const IntroVexGO = () => {
   const navigate = useNavigate();
@@ -36,6 +37,9 @@ const IntroVexGO = () => {
 
   return (
     <div className="w-full p-8 md:p-12 bg-gradient-to-b from-gray-50 to-gray-100">
+       <Helmet>
+                  <title>Live-vexGo</title>
+            </Helmet>
       <motion.div 
         className="max-w-6xl mx-auto"
         initial={{ opacity: 0 }}

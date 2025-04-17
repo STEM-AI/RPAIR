@@ -109,8 +109,8 @@ function Setting() {
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-gray-200">
       <Helmet>
-                <title>Account Settings</title>
-            </Helmet>
+          <title>Account Settings</title>
+      </Helmet>
       <h2 className="text-3xl font-bold text-cyan-600 mb-6 text-center">Account Settings</h2>
       <div className="grid grid-cols-2 gap-6">
         {Object.keys(userData).map((key) => (

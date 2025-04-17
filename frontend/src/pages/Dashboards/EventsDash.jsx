@@ -110,15 +110,14 @@ export default function EventDash() {
       return;
     }
 
-    const myURL = `${process.env.REACT_APP_API_URL}/admin/${competition_name}/event-list/`;
+      const apiUrl = `${process.env.REACT_APP_API_URL}/competition/${competition_name}/event/`;
     
     try {
       setLoading(true);
       setError(null);
       setResponseMessage(null);
       
-      const response = await axios.get(myURL, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get(apiUrl, {
         timeout: 10000 // 10 second timeout
       });
       
@@ -159,7 +158,7 @@ export default function EventDash() {
 
   useEffect(() => {
     fetchEventDash();
-  }, [token]); // Added token as dependency
+  }, [competition_name]);
 
   const handleRetry = () => {
     fetchEventDash();

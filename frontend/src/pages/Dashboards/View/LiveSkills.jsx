@@ -346,6 +346,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal } from "react-icons/fa";
 import axios from "axios";
+import { Helmet } from 'react-helmet-async';
 
 
 const LiveSkillsIQ = () => {
@@ -455,6 +456,9 @@ const LiveSkillsIQ = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto flex flex-col items-center">
+ <Helmet>
+              <title>Live Skills Matches</title>
+            </Helmet>                 
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Live Skills Matches</h1>
         <p className="text-sm text-gray-600">Last updated: {lastUpdate.toLocaleTimeString()}</p>

@@ -311,7 +311,13 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Gallery
                           </li>
-                        </Link>
+                  </Link>
+                   <NavLink 
+                    to={"/live-events"} 
+                    className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                  
+                    Live 
+                  </NavLink>
                         
                       </ul>
                     )}

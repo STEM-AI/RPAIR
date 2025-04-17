@@ -12,6 +12,7 @@ import vex123 from '../../assets/cards/vex-123.png';
 import vex123Logo from '../../assets/cards/vex-123-logo.webp';
 import programmingImg from '../../../src/assets/gallery/Programming/logos/image.png';
 import programmingLogo from '../../../src/assets/gallery/Programming/logos/programming-logo.png'; 
+import { Helmet } from 'react-helmet-async';
 
 function LiveEvents() {
   const competitions = [
@@ -71,6 +72,9 @@ function LiveEvents() {
 
   return (
     <div className="px-6 py-16 bg-gradient-to-b from-gray-50 to-gray-100">
+       <Helmet>
+                  <title>Live-Competitions</title>
+            </Helmet>
       <motion.h2 
         className="mb-12 text-center text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600"
         initial={{ opacity: 0, y: -20 }}

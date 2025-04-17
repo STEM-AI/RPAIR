@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaListAlt ,FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+
 const CompetitionEvents = () => {
   const { competition_name } = useParams() || {};
   const formattedEventName = competition_name ? competition_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
@@ -30,10 +31,9 @@ const CompetitionEvents = () => {
   
   useEffect(() => {
     const fetchEvents = async () => {
-      const apiUrl = `${process.env.REACT_APP_API_URL}/admin/${competition_name}/event-list/`;
+      const apiUrl = `${process.env.REACT_APP_API_URL}/competition/${competition_name}/event/`;
       try {
         const response = await axios.get(apiUrl, {
-          headers: { Authorization: `Bearer ${token}` },
         });
         setEvents(response.data);
         setLoading(false);
@@ -44,7 +44,7 @@ const CompetitionEvents = () => {
     };
 
     fetchEvents();
-  }, [competition_name, token]);
+  }, [competition_name]);
 
   if (loading) {
     return (

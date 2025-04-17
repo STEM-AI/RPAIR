@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt, FaUserGraduate } from "react-icons/fa";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 const LiveProgramming = () => {
   const [rankings, setRankings] = useState([]);
@@ -107,6 +108,9 @@ const LiveProgramming = () => {
   return (
     <div className="p-4 max-w-7xl mx-auto">
       {/* Header Section */}
+       <Helmet>
+                  <title>Live-Programming</title>
+            </Helmet>
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
           Programming Competition
