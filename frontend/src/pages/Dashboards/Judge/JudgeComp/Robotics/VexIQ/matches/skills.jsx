@@ -19,13 +19,13 @@ const Skills = () => {
   const [showRanking, setShowRanking] = useState(false);
   const [schedule, setSchedule] = useState([]);
   const [gameTime, setGameTime] = useState("");
-    const [activeTab, setActiveTab] = useState('driver');
+    const [activeTab, setActiveTab] = useState('driver_iq');
 
 const event_name = localStorage.getItem("selected_event_name");
   const token = localStorage.getItem("access_token");
 
    const tabs = [
-    { id: 'driver', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
+    { id: 'driver_iq', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
     { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
   ];
   const handleSubmit = async (event) => {
@@ -33,7 +33,7 @@ const event_name = localStorage.getItem("selected_event_name");
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/event/${event_name}/games-schedule/`,
-      { stage: "skills", time: gameTime }, // Inline data ensures up-to-date values
+      { stage:activeTab , time: gameTime }, // Inline data ensures up-to-date values
       {
         headers: {
           "Content-Type": "application/json",
@@ -77,10 +77,8 @@ const event_name = localStorage.getItem("selected_event_name");
   // تجهيز البيانات للإرسال
   const data = {
     event_name: event_name,
-    score: {
-      driver: scores[round]?.[teamId]?.driver ?? "0",
-      autonomous: scores[round]?.[teamId]?.auto ?? "0",
-    },
+    score: scores[round]?.[teamId]?.activeTab ?? "0",
+    
   };
 
   try {
@@ -147,32 +145,7 @@ const event_name = localStorage.getItem("selected_event_name");
   };
 
 
-  // const calculateRankings = () => {
-  //   return schedule
-  //     .map((team) => {
-  //       let autoSum = 0,
-  //         driverSum = 0,
-  //         count = 0;
 
-  //       Object.values(scores).forEach((round) => {
-  //         if (round[team.id]) {
-  //           autoSum += round[team.id].auto || 0;
-  //           driverSum += round[team.id].driver || 0;
-  //           count++;
-  //         }
-  //       });
-
-  //       return {
-  //         id: team.id,
-  //         name: team.team1,
-  //         autoAvg: count > 0 ? (autoSum / count).toFixed(2) : "0.00",
-  //         driverAvg: count > 0 ? (driverSum / count).toFixed(2) : "0.00",
-  //         total: count > 0 ? ((autoSum + driverSum) / count).toFixed(2) : "0.00",
-  //       };
-  //     })
-  //     .sort((a, b) => b.total - a.total)
-  //     .map((team, index) => ({ ...team, rank: index + 1 }));
-  // };
 const calculateRankings = () => {
     return schedule
       .map((team) => {
@@ -295,7 +268,7 @@ const Td = ({ children, className }) => (
                     key={team.id} 
                     className={confirmed[selectedRound]?.[team.id] ? "bg-green-50" : "hover:bg-gray-50"}
                   >
-                    <Td >{team.team1}</Td>
+                    <Td >{team.team1} </Td>
                     <Td >{team.id}</Td>
                     <Td >
                       {activeTab === 'driver' 
@@ -338,7 +311,11 @@ const Td = ({ children, className }) => (
             </table>
         </div>
       </div>
-
+ {showCalculator && selectedTeam && selectedRound && (
+        <CalculatorSkills onCalculate={handleScoreCalculated}
+          onClose={() => setShowCalculator(false)}
+          gameId={selectedTeam.id}  />
+      )}
       {/* Ranking Section */}
       <div className="flex justify-center gap-4 mb-8">
         <button
