@@ -144,7 +144,7 @@ const imageContext = useMemo(() => contextMap[VexType], [VexType]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 sm:py-12 lg:py-16">
       <Helmet>
-        <title>Robotics Competition Gallery</title>
+        <title>Gallary-Robotics</title>
       </Helmet>
 
       {/* Lightbox Modal */}

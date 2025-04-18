@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 const LiveTeamVex = () => {
   const [matches, setMatches] = useState([]);
@@ -102,6 +103,9 @@ const LiveTeamVex = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
+            <Helmet>
+                          <title>Live-Team</title>
+                        </Helmet>  
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
