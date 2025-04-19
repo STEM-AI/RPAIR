@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react';
-import pdfFile from '../../../assets/PDFS/vex123-rules.pdf'; 
+import pdfFile from '../../../assets/PDFS/ProgrammingComp.pdf';
 
 const RulesProgramming = () => {
   const [showFullText, setShowFullText] = useState(false);
@@ -23,11 +23,11 @@ const RulesProgramming = () => {
                 </h3>
                 <p className="text-gray-700 text-base font-normal leading-relaxed lg:text-start text-center">
                   {showFullText
-                    ? `The VEX Robotics Competition attracts thousands of students from around the world, providing hands-on experience in STEM fields. With over 25,000 teams participating annually, the event serves as a hub of innovation and collaboration. Teams compete in various events, showcasing their robots' capabilities in different challenges.
-                    VEX Robotics holds the distinction of being the largest robotics competition globally, as recognized by the Guinness Book of World Records. Organized by the Foundation for Robotics Education and Competition, this program challenges student teams to design and build robots to compete against one another in an engineering-based game.
-                    
-                    VEX Robotics World Championship, which was held by the Northrop Grumman Foundation in Dallas, Texas, from April 25 to May 3 last year. It is the largest event of the robotics season and contains the best robotics teams led by students from all over the world to celebrate their achievements and compete. More than 2,200 teams from more than 50 countries competed.`
-                    : `The VEX Robotics Competition attracts thousands of students from around the world, providing hands-on experience in STEM fields. With over 25,000 teams participating annually...`}
+                    ? `This coding competition tests your programming skills under time pressure. You'll solve multiple technical problems within a fixed time limit, showing how well you can think logically and solve challenges quickly. The contest evaluates both your knowledge and your ability to work efficiently when time matters most.
+
+                   Each question checks different programming skills, from basic concepts to more advanced problem-solving. Since time is limited, you'll need to think carefully but also work fast - just like real-world coding situations where speed and accuracy are both important.
+`
+                    : `This coding competition tests your programming skills under time pressure. You'll solve multiple technical problems within a fixed time limit, showing how well you can think logically and solve challenges quickly. The contest evaluates both your knowledge and your ability to work efficiently when time matters most....`}
                 </p>
               </div>
             </div>

@@ -208,7 +208,7 @@ export default function Navbar() {
                 { name: "Web Design", link: "/competitions/ComingSoon" },
                 { name: "Open Source", link: "/competitions/OpenSource" },
                 { name: "Mobile Application", link: "/competitions/ComingSoon" },
-                { name: "Programming", link: "/competitions/ComingSoon" },
+                { name: "Programming", link: "/ProgrammingCompetitions" },
                 { name: "Artificial Intelligence", link: "/competitions/ComingSoon" },
                 { name: "Fablab", link: "/competitions/ComingSoon" },
                 { name: "ST Math", link: "/competitions/ComingSoon" },

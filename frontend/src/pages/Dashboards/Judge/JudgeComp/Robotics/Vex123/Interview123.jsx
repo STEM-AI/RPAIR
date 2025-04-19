@@ -1,28 +1,133 @@
 
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { FaDownload, FaCheckCircle } from "react-icons/fa";
-import Back from "../../../../../../components/Back/Back";
-
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const questions = [
   "1 - Presentation Skills",
   "2 - Poster",
   "3 - Creativity",
-  "4 - Team Work"
+  "4 - Team Work",
 ];
 
 const scoreOptions = [1, 2, 3, 4, 5];
 
 export default function InterviewSheet() {
-  const [team, setTeam] = useState("");
   const [judge, setJudge] = useState("");
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("access_token");
+  const [teams, setTeams] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [teamData, setTeamData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [rankings, setRankings] = useState([]);
+
+  useEffect(() => {
+    const fetchJudge = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/data/profile/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setJudge(`${res.data.first_name} ${res.data.last_name}`);
+      } catch {
+        setError("Failed to load judge data");
+      }
+    };
+
+    fetchJudge();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/team/list/`,
+          {
+            params: { competition_event__name: "vex_123" },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setTeams(res.data);
+      } catch (err) {
+        setError("Failed to fetch teams");
+      }
+    };
+
+    fetchTeams();
+  }, [token]);
+
+  const fetchTeamData = (teamId) => {
+    const team = teams.find((t) => t.id === parseInt(teamId));
+    setSelectedTeam(teamId);
+    setTeamData(team);
+  };
+
+  const handleSubmit = async () => {
+    if (!teamData?.id) {
+      return Swal.fire("Error", "Please select a team first!", "error");
+    }
+
+    const totalScore = scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0);
+
+    try {
+      setLoading(true);
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/vex-123/team/${teamData.id}/interview/`,
+        { interview_score: totalScore },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      Swal.fire("Success", "Scores submitted successfully!", "success");
+      setScores(Array(questions.length).fill(""));
+      setNotes("");
+      setSelectedTeam("");
+      setTeamData(null);
+    } catch (err) {
+      Swal.fire("Error", "Submission failed", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRankings = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/vex-123/vex_123/team/interview/rank/`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Create mapping from team ID to name
+      const idToName = {};
+      teams.forEach((team) => (idToName[team.id] = team.name));
+
+      const displayRankings = res.data.map((item, index) => ({
+        rank: index + 1,
+        teamName: idToName[item.id] || "Unknown",
+        score: item.interview_score,
+      }));
+
+      setRankings(displayRankings);
+    } catch (err) {
+      Swal.fire("Error", "Failed to fetch rankings", "error");
+    }
+  };
 
   const handleDownloadPDF = () => {
+    if (!teamData) {
+      return Swal.fire("Error", "Please select a team first!", "error");
+    }
+
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.setTextColor(79, 70, 229);
@@ -31,138 +136,119 @@ export default function InterviewSheet() {
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
     doc.setFont("helvetica", "normal");
-    doc.text(`Team: ${team}`, 20, 30);
+    doc.text(`Team: ${teamData.name}`, 20, 30);
     doc.text(`Judge: ${judge}`, 20, 40);
 
-    const tableData = questions.map((question, index) => [
-      question,
-      scores[index] || "N/A",
-    ]);
+    const tableData = questions.map((q, i) => [q, scores[i] || "N/A"]);
 
     doc.autoTable({
       startY: 50,
-      head: [["Category", "Score (out of 5)"]],
+      head: [["Category", "Score (1-5)"]],
       body: tableData,
-      theme: "striped",
-      styles: { 
-        fontSize: 10, 
-        cellPadding: 3,
-        overflow: "linebreak",
-        lineWidth: 0.1
-      },
-      headStyles: { 
-        fillColor: [79, 70, 229], 
-        textColor: [255, 255, 255],
-        fontStyle: "bold"
-      },
-      alternateRowStyles: {
-        fillColor: [240, 240, 255]
-      },
-      margin: { left: 10, right: 10 }
     });
 
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text(`Total Score: ${scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)}/20`, 20, doc.autoTable.previous.finalY + 10);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Notes: ${notes}`, 20, doc.autoTable.previous.finalY + 20);
-    doc.save(`Team_${team}_Interview_Score.pdf`);
+    doc.text(`Total Score: ${scores.reduce((sum, v) => sum + (parseInt(v) || 0), 0)}/20`, 20, doc.lastAutoTable.finalY + 10);
+    doc.text(`Notes: ${notes}`, 20, doc.lastAutoTable.finalY + 20);
+    doc.save(`Team_${teamData.name}_Interview_Score.pdf`);
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-2xl border border-gray-200">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-indigo-600 mb-2">🧩 VEX123 Interview</h2>
-        <p className="text-lg text-gray-600">Score Sheet for Young Innovators</p>
-      </div>
+    <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-2xl">
+      <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">🧩 VEX123 Interview</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-indigo-50 p-4 rounded-xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium text-indigo-700 mb-1">Team Number</label>
-          <input
-            type="text"
-            placeholder="Team #"
-            value={team}
-            onChange={(e) => setTeam(e.target.value)}
-            className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400 bg-white"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-indigo-700 mb-1">Judge Name</label>
-          <input
-            type="text"
-            placeholder="Your Name"
-            value={judge}
-            onChange={(e) => setJudge(e.target.value)}
-            className="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-400 bg-white"
-          />
-        </div>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse rounded-xl overflow-hidden shadow-md">
-          <thead>
-            <tr className="bg-indigo-600 text-white">
-              <th className="border px-4 py-3 text-left">Category</th>
-              <th className="border px-4 py-3 w-32">Score (1-5)</th> {/* Changed from w-24 to w-32 */}
-            </tr>
-          </thead>
-          <tbody>
-            {questions.map((question, index) => (
-              <tr key={index} className={`border ${index % 2 === 0 ? 'bg-white' : 'bg-indigo-50'}`}>
-                <td className="px-4 py-3 border text-gray-700">{question}</td>
-                <td className="px-4 py-3 border text-center">
-                  <select
-                    value={scores[index] || ""}
-                    onChange={(e) => {
-                      const newScores = [...scores];
-                      newScores[index] = e.target.value;
-                      setScores(newScores);
-                    }}
-                    className="w-full px-3 py-2 border rounded text-center focus:ring-2 focus:ring-indigo-400 bg-white" 
-                  >
-                    <option value="">Select</option> {/* Added "Score" to label */}
-                    {scoreOptions.map((score) => (
-                      <option key={score} value={score}>{score}</option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
+          <label className="block text-sm font-medium text-indigo-700">Team Name</label>
+          <select
+            value={selectedTeam}
+            onChange={(e) => fetchTeamData(e.target.value)}
+            className="w-full p-3 border rounded"
+          >
+            <option value="">Select Team</option>
+            {teams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
             ))}
-          </tbody>
-        </table>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-indigo-700">Judge</label>
+          <div className="p-3 border rounded bg-gray-50">{judge || "Loading..."}</div>
+        </div>
       </div>
 
-      <div className="mt-8 bg-indigo-50 p-4 rounded-xl">
-        <label className="block text-lg font-semibold mb-2 text-indigo-700">Notes & Observations:</label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 bg-white"
-          rows="4"
-          placeholder="Write your observations about the team's performance..."
-        />
+      <table className="w-full border mb-6">
+        <thead className="bg-indigo-600 text-white">
+          <tr>
+            <th className="p-3">Category</th>
+            <th className="p-3">Score (1-5)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {questions.map((q, i) => (
+            <tr key={i} className="border-t">
+              <td className="p-3">{q}</td>
+              <td className="p-3">
+                <select
+                  value={scores[i]}
+                  onChange={(e) => {
+                    const newScores = [...scores];
+                    newScores[i] = e.target.value;
+                    setScores(newScores);
+                  }}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select</option>
+                  {scoreOptions.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <textarea
+        placeholder="Notes..."
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        rows="4"
+        className="w-full p-3 border rounded mb-6"
+      />
+
+      <div className="flex flex-wrap gap-4 justify-center mb-6">
+        <button onClick={handleDownloadPDF} className="bg-indigo-600 text-white px-5 py-3 rounded">
+          <FaDownload className="inline mr-2" /> Download PDF
+        </button>
+        <button onClick={handleSubmit} className="bg-green-600 text-white px-5 py-3 rounded">
+          <FaCheckCircle className="inline mr-2" /> Submit Evaluation
+        </button>
+        <button onClick={fetchRankings} className="bg-yellow-500 text-white px-5 py-3 rounded">
+          🏆 Show Rankings
+        </button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
-        <button 
-          onClick={handleDownloadPDF} 
-          className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors shadow-md hover:shadow-lg"
-        >
-          <FaDownload className="mr-2" /> Download Score Sheet
-        </button>
-        <button 
-          type="submit"
-          className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors shadow-md hover:shadow-lg"
-        >
-          <FaCheckCircle className="mr-2" /> Submit Evaluation
-        </button>
+      <div className="text-center text-gray-600">
+        <p>Total Score: {scores.reduce((sum, v) => sum + (parseInt(v) || 0), 0)} / 20</p>
       </div>
-      
-      <div className="mt-6 text-center text-sm text-gray-500">
-        <p>Total Possible Score: 20 points</p>
-        <p className="mt-2">Current Total: {scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)} points</p>
-      </div>
+
+      {rankings.length > 0 && (
+        <div className="mt-8">
+          <h3 className="text-xl font-bold text-center text-indigo-700 mb-4">Team Rankings</h3>
+          <ul className="space-y-2">
+            {rankings.map((team) => (
+              <li key={team.rank} className="text-center">
+                {team.rank}. {team.teamName} — {team.score} pts
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

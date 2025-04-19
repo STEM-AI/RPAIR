@@ -34,6 +34,7 @@ import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
 import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveSkills";
 import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
+import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/123Components/CompetitionSheetContainer";
 
 
 
@@ -692,7 +693,7 @@ const App = () => {
             </Layout>
           }
         /> 
-                 <Route
+                 {/* <Route
           path="/Dashboard/Judge/matches123"
           element={
             <Layout hideNavbar>
@@ -701,7 +702,9 @@ const App = () => {
               </LayoutDashboard>
             </Layout>
           }
-        /> 
+        />  */}
+
+
                          <Route
           path="/Dashboard/Judge/interview123"
           element={
@@ -712,11 +715,21 @@ const App = () => {
             </Layout>
           }
         /> 
+                 <Route
+          path="/Dashboard/Judge/matches123"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CompetitionSheetContainer />
+              </LayoutDashboard>
+            </Layout>
+          }
+        /> 
 
         {/* PROGRAMMING */}
 
         <Route
-          path="/Programming"
+          path="/ProgrammingCompetitions"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}

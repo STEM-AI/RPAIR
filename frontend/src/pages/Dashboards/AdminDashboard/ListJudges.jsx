@@ -410,6 +410,8 @@ export default function ListJudges() {
                                         <option value="">Select an Competition</option>
                                         <option value="vex_iq">Vex IQ</option>
                                         <option value="vex_go">Vex GO</option>
+                                        <option value="vex_123">Vex 123</option>
+
                                         
 
                                     </select>
