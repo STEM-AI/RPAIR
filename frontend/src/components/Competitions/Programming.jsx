@@ -1,10 +1,11 @@
 import React from "react";
-// import img1 from "../../../assets/gallery/Robotics/VexGO/FutureComp-sadat/5.jpg";
+import img1 from "../../assets/cards/programmingCover.webp";
 
-// import Rules from "../../../components/CometitionsComponent/Rules/RulesProgramming";
-// import JoinTeams from "../../components/";
-// import AwardsList from "../Awards/awards";
+import JoinTeams from "../CometitionsComponent/Rules/JoinTeams/JoinTeams";
+import Rules from "../CometitionsComponent/Rules/RulesProgramming";
+
 import { Helmet } from "react-helmet-async";
+import AwardsList from "../../components/Awards/awards";
 
 const ProgrammingComp = () => {
   // const images = [img1];
@@ -33,16 +34,16 @@ Each question checks different programming skills, from basic concepts to more a
           {/* Gallery Section */}
           <div className="md:w-3/5 flex justify-center">
             <img
-              src={"img1"} // Change this to your desired image
+              src={img1} // Change this to your desired image
               alt="Programming Competition"
               className="w-[800px] h-[400px] object-cover rounded-lg shadow-lg"
             />
           </div>
         </div>
       </div>
-      {/* <Rules /> */}
-      {/* <AwardsList /> */}
-      {/* <JoinTeams /> */}
+      <Rules />
+      <AwardsList />
+       <JoinTeams />
     </>
   );
 };
