@@ -1,12 +1,11 @@
-
-
-
 import { useState, useEffect } from "react";
-import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo, FaChevronDown } from "react-icons/fa";
+import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo, FaChevronDown, FaTimes } from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import CalculatorSkills from "../Scores/ScoresSkills";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Alert from "../../../../../../../components/Alert/Alert";
+
 
 const Skills = () => {
   const [expandedRounds, setExpandedRounds] = useState({ 1: true, 2: false, 3: false });
@@ -14,102 +13,116 @@ const Skills = () => {
   const [confirmed, setConfirmed] = useState({});
   const [showCalculator, setShowCalculator] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [selectedRound, setSelectedRound] = useState(null);
+  const [selectedRound, setSelectedRound] = useState(1);
   const [scoreType, setScoreType] = useState(null);
   const [showRanking, setShowRanking] = useState(false);
   const [schedule, setSchedule] = useState([]);
   const [gameTime, setGameTime] = useState("");
-    const [activeTab, setActiveTab] = useState('driver_iq');
+  const [activeTab, setActiveTab] = useState('driver_iq');
 
-const event_name = localStorage.getItem("selected_event_name");
+  const event_name = localStorage.getItem("selected_event_name");
   const token = localStorage.getItem("access_token");
 
-   const tabs = [
+  const tabs = [
     { id: 'driver_iq', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
     { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
   ];
+
+  // Fetch schedule
   const handleSubmit = async (event) => {
-  event.preventDefault();
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/event/${event_name}/games-schedule/`,
-      { stage:activeTab , time: gameTime }, // Inline data ensures up-to-date values
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/event/${event_name}/games-schedule/`,
+        { stage: activeTab, time: gameTime },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSchedule(response.data);
+    } catch (err) {
+      console.error("Error posting schedule:", err);
+    }
+  };
 
-    console.log("Schedule posted successfully:", response.data);
-    
-    setSchedule(response.data);
-  } catch (err) {
-    console.error("Error posting schedule:", err);
-  }
-};
-
-  const isRoundCompleted = (round) => {
+    const isRoundCompleted = (round) => {
     return schedule.every(
       (team) => confirmed[round]?.[team.id] === true
     );
   };
+  // Score confirmation logic
+  // const confirmScores = async (round, teamId) => {
+  //   const team = schedule.find(t => t.id === teamId);
+  //   if (!team) return;
 
+  //   setConfirmed(prev => ({ ...prev, [round]: { ...prev[round], [teamId]: true } }));
 
-  
-  const confirmScores = async (round, teamId) => {
+  //   if (round < 3 && isRoundCompleted(round)) {
+  //     setExpandedRounds(prev => ({ ...prev, [round + 1]: true }));
+  //   }
+
+  //   try {
+  //     await axios.post(
+  //       `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
+  //       {
+  //         event_name: event_name,
+  //         score: scores[round]?.[teamId]?.[activeTab === 'driver_iq' ? 'driver_iq' : 'auto'] || 0
+  //       },
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+  //     Swal.fire("Success", "Score submitted!", "success");
+  //   } catch (error) {
+  //     console.error("Submission error:", error);
+  //     Swal.fire("Error", "Submission failed!", "error");
+  //   }
+  // };
+// داخل مكون Skills (استبدال دالة confirmScores الحالية)
+const confirmScores = async (round, teamId) => {
   const team = schedule.find(t => t.id === teamId);
   if (!team) return;
 
-  setConfirmed(prev => ({
-    ...prev,
-    [round]: { ...prev[round], [teamId]: true },
-  }));
+  // الحصول على النتيجة الحالية
+  const currentScore = scores[round]?.[teamId]?.[activeTab === 'driver_iq' ? 'driver' : 'auto'] || 0;
 
-  if (round < 3 && isRoundCompleted(round)) {
-    setExpandedRounds(prev => ({
-      ...prev,
-      [round + 1]: true,
-    }));
-  }
+  // عرض نافذة التأكيد
+  Alert.confirm({
+    title: 'Submit Final Score?',
+    html: `<p>You're about to submit your final score of <strong>${currentScore}</strong> points.</p>`,
+    confirmText: 'Confirm Submission',
+    cancelText: 'Cancel',
+    onConfirm: async () => {
+      try {
+        // تحديث حالة التأكيد
+        setConfirmed(prev => ({ ...prev, [round]: { ...prev[round], [teamId]: true } }));
 
-  // تجهيز البيانات للإرسال
-  const data = {
-    event_name: event_name,
-    score: scores[round]?.[teamId]?.activeTab ?? "0",
-    
-  };
+        // إرسال النتيجة للخادم
+        await axios.post(
+          `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
+          {
+            event_name: event_name,
+            score: currentScore
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, 
-        },
+        // إذا اكتملت الجولة، فتح الجولة التالية
+        if (round < 3 && isRoundCompleted(round)) {
+          setExpandedRounds(prev => ({ ...prev, [round + 1]: true }));
+        }
+
+        Swal.fire("Success", "Score submitted!", "success");
+      } catch (error) {
+        console.error("Submission error:", error);
+        Swal.fire("Error", "Submission failed!", "error");
       }
-    );
-
-    console.log("Score submitted successfully:", response.data);
-    Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Score submitted successfully!",
-                showConfirmButton: true,
-                confirmButtonColor: "#28a745" 
-              });
-  } catch (error) {
-    console.error("Error submitting score:", error);
-  }
+    }
+  });
 };
-
-
-
-
-    const openCalculator = (team, round, type) => {
+  // Unified calculator handler
+  const openCalculator = (team, round, type) => {
     if (confirmed[round]?.[team.id]) return;
 
     setSelectedTeam(team);
@@ -117,264 +130,194 @@ const event_name = localStorage.getItem("selected_event_name");
     setScoreType(type);
     setShowCalculator(true);
 
-    setScores((prev) => {
-      const newScores = { ...prev };
-      if (!newScores[round]) newScores[round] = {};
-      if (!newScores[round][team.id]) {
-        newScores[round][team.id] = { auto: 0, driver: 0 };
+    setScores(prev => ({
+      ...prev,
+      [round]: {
+        ...prev[round],
+        [team.id]: {
+          ...prev[round]?.[team.id],
+          [type]: prev[round]?.[team.id]?.[type] || 0
+        }
       }
-      return newScores;
-    });
+    }));
   };
 
+  // Score calculation handler
   const handleScoreCalculated = (calculatedScore) => {
     if (!selectedTeam || !selectedRound || !scoreType) return;
 
-    setScores((prev) => {
-      const newScores = { ...prev };
-      if (!newScores[selectedRound]) newScores[selectedRound] = {};
-      if (!newScores[selectedRound][selectedTeam.id]) {
-        newScores[selectedRound][selectedTeam.id] = { auto: 0, driver: 0 };
+    setScores(prev => ({
+      ...prev,
+      [selectedRound]: {
+        ...prev[selectedRound],
+        [selectedTeam.id]: {
+          ...prev[selectedRound]?.[selectedTeam.id],
+          [scoreType]: calculatedScore || 0
+        }
       }
-
-      newScores[selectedRound][selectedTeam.id][scoreType] = calculatedScore ?? 0;
-      return newScores;
-    });
-
+    }));
     setShowCalculator(false);
   };
 
+  // Ranking calculation
+  const calculateRankings = () => {
+    return schedule.map(team => {
+      let autoSum = 0, driverSum = 0, count = 0;
+      
+      Object.values(scores).forEach(round => {
+        if (round[team.id]) {
+          autoSum += round[team.id].auto || 0;
+          driverSum += round[team.id].driver || 0;
+          count++;
+        }
+      });
 
-
-const calculateRankings = () => {
-    return schedule
-      .map((team) => {
-        let autoSum = 0,
-          driverSum = 0,
-          count = 0;
-
-        Object.values(scores).forEach((round) => {
-          if (round[team.id]) {
-            autoSum += round[team.id].auto || 0;
-            driverSum += round[team.id].driver || 0;
-            count++;
-          }
-        });
-
-        return {
-          id: team.id,
-          name: team.team1,
-          autoAvg: count > 0 ? (autoSum / count).toFixed(2) : "0.00",
-          driverAvg: count > 0 ? (driverSum / count).toFixed(2) : "0.00",
-          total: count > 0 ? ((autoSum + driverSum) / count).toFixed(2) : "0.00",
-        };
-      })
-      .sort((a, b) => b.total - a.total)
-      .map((team, index) => ({ ...team, rank: index + 1 }));
-};
-  const Th = ({ children, className }) => (
-  <th className={`px-2.5 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider text-center ${className}`}>
-    {children}
-  </th>
-);
-
-const Td = ({ children, className }) => (
-  <td className={`px-2.5 py-2 sm:px-4 sm:py-3 text-sm text-gray-900 text-center ${className}`}>
-    {children}
-  </td>
-);
+      return {
+        id: team.id,
+        name: team.team1,
+        autoAvg: (autoSum / (count || 1)).toFixed(2),
+        driverAvg: (driverSum / (count || 1)).toFixed(2),
+        total: ((autoSum + driverSum) / (count || 1)).toFixed(2),
+      };
+    }).sort((a, b) => b.total - a.total);
+  };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      {/* Header and Tabs */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-black mb-5 ">🏆 Skills Challenge</h1>
-
-        <div className="flex justify-center mb-6">
-          <div className="inline-flex rounded-md shadow-sm">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-2 text-sm font-medium flex items-center gap-2 ${
-                  activeTab === tab.id
-                    ? `bg-black text-white`
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                } ${tab.id === 'driver' ? 'rounded-l-lg' : 'rounded-r-lg'}`}
-              >
-                <span className="text-xl">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* Schedule Input */}
-        <div className="flex justify-center mb-6">
-          <form onSubmit={handleSubmit} className="flex gap-4 items-center">
-            <input
-              type="time"
-              value={gameTime}
-              onChange={(e) => setGameTime(e.target.value)}
-              className="px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-white text-lg"
-            />
+        <h1 className="text-3xl font-bold mb-4">🏆 Skills Challenge</h1>
+        
+        <div className="flex justify-center gap-4 mb-6">
+          {tabs.map(tab => (
             <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition-all"
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-2 rounded-lg flex items-center gap-2 ${
+                activeTab === tab.id ? 'bg-black text-white' : 'bg-gray-200'
+              }`}
             >
-              View Schedule
+              <span className="text-xl">{tab.icon}</span>
+              {tab.label}
             </button>
-          </form>
+          ))}
         </div>
 
-        {/* Round Navigation */}
-        <div className="flex justify-center items-center gap-4 mt-4">
-          <button
-            onClick={() => setSelectedRound(prev => Math.max(1, prev - 1))}
-            disabled={selectedRound === 1}
-            className={`p-2 rounded-full ${selectedRound === 1 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-100 text-black hover:bg-indigo-200'}`}
-          >
-            <FaChevronLeft />
+        {/* Schedule Input */}
+        <form onSubmit={handleSubmit} className="flex justify-center gap-4 mb-8">
+          <input
+            type="time"
+            value={gameTime}
+            onChange={(e) => setGameTime(e.target.value)}
+            className="px-4 py-2 border rounded-lg"
+          />
+          <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded-lg">
+            View Schedule
           </button>
-          <span className="text-xl font-semibold bg-slate-900 text-white px-4 py-2 rounded-full">
-            Round {selectedRound}
-          </span>
-          <button
-            onClick={() => setSelectedRound(prev => Math.min(3, prev + 1))}
-            disabled={selectedRound === 3}
-            className={`p-2 rounded-full ${selectedRound === 3 ? 'bg-gray-200 text-gray-400' : 'bg-indigo-100 text-black hover:bg-indigo-200'}`}
-          >
-            <FaChevronRight />
-          </button>
-        </div>
+        </form>
       </div>
 
       {/* Matches Table */}
-       <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-                <tr>
-                  <Th>Team</Th>
-                  <Th >Match Code</Th>
-                  <Th >
-                    {activeTab === 'driver' ? 'Driver Score' : 'Auto Score'}
-                  </Th>
-                  <Th>Status</Th>
-                  <Th>Actions</Th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {schedule.map((team) => (
-                  <tr 
-                    key={team.id} 
-                    className={confirmed[selectedRound]?.[team.id] ? "bg-green-50" : "hover:bg-gray-50"}
+      <div className="bg-white rounded-xl shadow-lg mb-8">
+        <table className="w-full">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-4">Team</th>
+              <th className="p-4">Match Code</th>
+              <th className="p-4">{activeTab === 'driver_iq' ? 'Driver Score' : 'Auto Score'}</th>
+              <th className="p-4">Status</th>
+              <th className="p-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {schedule.map(team => (
+              <tr key={team.id} className="border-t">
+                <td className="p-4 text-center">{team.team1}</td>
+                <td className="p-4 text-center">{team.id}</td>
+                <td className="p-4 text-center">
+                  {scores[selectedRound]?.[team.id]?.[activeTab === 'driver_iq' ? 'driver' : 'auto'] || 0}
+                  {!confirmed[selectedRound]?.[team.id] && (
+                    <button
+                      onClick={() => openCalculator(team, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
+                      className="ml-2 text-blue-600"
+                    >
+                     <AiOutlineCalculator />
+                    </button>
+                  )}
+                </td>
+                <td className="p-4 text-center">
+                  <span className={`px-2 py-1 rounded-full ${
+                    confirmed[selectedRound]?.[team.id] 
+                      ? "bg-green-100 text-green-800" 
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}>
+                    {confirmed[selectedRound]?.[team.id] ? "Confirmed" : "Pending"}
+                  </span>
+                </td>
+                <td className="p-4 text-center">
+                  <button
+                    onClick={() => confirmScores(selectedRound, team.id)}
+                    disabled={confirmed[selectedRound]?.[team.id]}
+                    className={`px-4 py-2 rounded-lg ${
+                      confirmed[selectedRound]?.[team.id] 
+                        ? "bg-gray-300" 
+                        : "bg-green-600 hover:bg-green-700 text-white"
+                    }`}
                   >
-                    <Td >{team.team1} </Td>
-                    <Td >{team.id}</Td>
-                    <Td >
-                      {activeTab === 'driver' 
-                        ? scores[selectedRound]?.[team.id]?.driver ?? 0
-                        : scores[selectedRound]?.[team.id]?.auto ?? 0}
-                      {!confirmed[selectedRound]?.[team.id] && (
-                        <button
-                          onClick={() => openCalculator(team, selectedRound, activeTab)}
-                          className="ml-2 text-green-600 hover:text-green-800"
-                        >
-                          <AiOutlineCalculator className="inline" />
-                        </button>
-                      )}
-                    </Td>
-                    <Td >
-                      <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        confirmed[selectedRound]?.[team.id] 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}>
-                        {confirmed[selectedRound]?.[team.id] ? "Confirmed" : "Pending"}
-                      </span>
-                    </Td>
-                    <Td>
-                      <button
-                        onClick={() => confirmScores(selectedRound, team.id)}
-                        disabled={confirmed[selectedRound]?.[team.id]}
-                        className={`px-3 py-1 rounded-md text-sm ${
-                          confirmed[selectedRound]?.[team.id]
-                            ? "bg-gray-300 text-gray-600"
-                            : "bg-green-600 hover:bg-green-700 text-white"
-                        }`}
-                      >
-                        <FaCheck className="inline mr-1" /> Confirm
-                      </button>
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-        </div>
+                    <FaCheck />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
- {showCalculator && selectedTeam && selectedRound && (
-        <CalculatorSkills onCalculate={handleScoreCalculated}
-          onClose={() => setShowCalculator(false)}
-          gameId={selectedTeam.id}  />
-      )}
+
       {/* Ranking Section */}
-      <div className="flex justify-center gap-4 mb-8">
+      <div className="text-center">
         <button
           onClick={() => setShowRanking(!showRanking)}
-          className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center"
-          
+          className="bg-yellow-500 text-white px-6 py-2 rounded-lg mb-4"
         >
-          <FaTrophy className="mr-2" />
-          {showRanking ? "Hide Rankings" : "View Rankings"}
+          <FaTrophy className="inline mr-2" />
+          {showRanking ? "Hide Rankings" : "Show Rankings"}
         </button>
-      </div>
 
-      {showRanking && (
-        <div className="bg-white shadow-xl rounded-xl overflow-hidden mb-8">
-          <div className="px-6 py-4 bg-white text-black flex items-center">
-            <FaTrophy className="mr-2" />
-            <h2 className="text-xl font-bold">Overall Rankings</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-100">
+        {showRanking && (
+          <div className="bg-white rounded-xl shadow-lg p-4">
+            <h2 className="text-2xl font-bold mb-4">🏆 Rankings</h2>
+            <table className="w-full">
+              <thead className="bg-gray-800 text-white">
                 <tr>
-                  <Th className="px-6 py-3 text-left">Rank</Th>
-                  <Th className="px-6 py-3 text-left">Team</Th>
-                  <Th className="px-6 py-3 text-center">Avg Auto</Th>
-                  <Th className="px-6 py-3 text-center">Avg Driver</Th>
-                  <Th className="px-6 py-3 text-center">Total</Th>
+                  <th className="p-3">Rank</th>
+                  <th className="p-3">Team</th>
+                  <th className="p-3">Auto Avg</th>
+                  <th className="p-3">Driver Avg</th>
+                  <th className="p-3">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody>
                 {calculateRankings().map((team, index) => (
-                  <tr key={team.id} className="hover:bg-gray-50">
-                    <Th className="px-6 py-4 font-medium">
-                      {index + 1}
-                      {index < 3 && (
-                        <span className="ml-2">
-                          {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
-                        </span>
-                      )}
-                    </Th>
-                    <Th className="px-6 py-4">{team.name}</Th>
-                    <Th className="px-6 py-4 text-center">{team.autoAvg}</Th>
-                    <Th className="px-6 py-4 text-center">{team.driverAvg}</Th>
-                    <Th className="px-6 py-4 text-center font-bold text-indigo-600">
-                      {team.total}
-                    </Th>
+                  <tr key={team.id} className="border-t">
+                    <td className="p-3 text-center">{index + 1}</td>
+                    <td className="p-3 text-center">{team.name}</td>
+                    <td className="p-3 text-center">{team.autoAvg}</td>
+                    <td className="p-3 text-center">{team.driverAvg}</td>
+                    <td className="p-3 text-center font-bold">{team.total}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {showCalculator && selectedTeam && selectedRound && (
-        <CalculatorSkills 
+      {showCalculator && selectedTeam && (
+        <CalculatorSkills
           onCalculate={handleScoreCalculated}
           onClose={() => setShowCalculator(false)}
-          gameId={selectedTeam.id}  
+          mode={activeTab}
+          gameId={selectedTeam.id}
         />
       )}
     </div>
