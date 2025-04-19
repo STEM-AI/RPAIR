@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkforntend=self.webpackChunkforntend||[]).push([[7570],{7570:(e,n,r)=>{r.r(n),r.d(n,{default:()=>t});r(2791);var i=r(3050),s=r(184);function t(){return(0,s.jsx)("div",{children:(0,s.jsx)(i.ql,{children:(0,s.jsx)("title",{children:"Graphic Design"})})})}}}]);
+//# sourceMappingURL=7570.96842f8e.chunk.js.map
