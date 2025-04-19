@@ -314,10 +314,10 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId }) => {
         <div className="p-4 border-t border-gray-200">
           <button
             onClick={handleCalculate}
-            disabled={gameActive || !timeUp} // Disable if the game is active or time is not up
+            // disabled={gameActive || !timeUp} // Disable if the game is active or time is not up
             className="w-full bg-green-500 text-white py-2 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {timeUp ? "Calculate & Submit Score" : "Submit Score (Time's Up)"}
+            Calculate & Submit Score
           </button>
         </div>
       </div>
