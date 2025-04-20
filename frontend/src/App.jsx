@@ -719,7 +719,7 @@ const App = () => {
         {/* PROGRAMMING */}
 
         <Route
-          path="/ProgrammingCompetitions"
+          path="/Programming"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}

@@ -15,6 +15,7 @@ import GameModeNavigation from "./GameModeNavigation";
 import MissionTable from "./MissionTable";
 import SummarySection from "./SummarySection";
 import SetSchedule from "./SetSchedule";
+import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
 
 export default function CompetitionSheetContainer() {
   // State
@@ -25,6 +26,8 @@ export default function CompetitionSheetContainer() {
   const [isRunning, setIsRunning] = useState(false);
   const [currentMode, setCurrentMode] = useState(null);
   const [completedModes, setCompletedModes] = useState([]);
+  const token = localStorage.getItem("access_token");
+
   
   // Data structure for all modes
   const [allData, setAllData] = useState(() => {
@@ -307,7 +310,12 @@ export default function CompetitionSheetContainer() {
   return (
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 bg-white shadow-xl rounded-xl border border-gray-200">
       <Header />
-      <SetSchedule event_name="vex_123" />
+      <GameScheduleForm
+  event_name="vex_123"
+  token={token}
+  onSuccess={(data) => console.log("Success!", data)}
+/>
+
 
       
       <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4 sm:mb-6">

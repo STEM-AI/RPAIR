@@ -224,7 +224,7 @@ const CreateTeam = () => {
                 value={formData.organization_info.name}
                 onChange={(e) => handleChange(e, "organization_info", null, "name")}
                 className="bg-gray-200 border rounded py-2 px-4 w-full"
-                required
+               
               />
             </div>
             <div className="md:mr-2">
@@ -234,7 +234,7 @@ const CreateTeam = () => {
                 value={formData.organization_info.address}
                 onChange={(e) => handleChange(e, "organization_info", null, "address")}
                 className="bg-gray-200 border rounded py-2 px-4 w-full"
-                required
+                
               />
             </div>
             <div className="md:mr-2">
@@ -392,7 +392,7 @@ const CreateTeam = () => {
                   value={sponsor.name}
                   onChange={(e) => handleChange(e, "sponsors", index, "name")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
-                  required
+                  
                 />
               </div>
               <div className="w-full md:w-1/2">
@@ -402,7 +402,7 @@ const CreateTeam = () => {
                   value={sponsor.email}
                   onChange={(e) => handleChange(e, "sponsors", index, "email")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
-                  required
+                  
                 />
               </div>
               {index >= 1 && (
@@ -438,7 +438,7 @@ const CreateTeam = () => {
                   value={competition.name}
                   onChange={(e) => handleChange(e, "previous_competition", index, "name")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
-                  required
+                  
                 />
               </div>
               <div className="w-full md:w-1/2">
@@ -448,7 +448,7 @@ const CreateTeam = () => {
                   value={competition.year}
                   onChange={(e) => handleChange(e, "previous_competition", index, "year")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
-                  required
+                  
                 />
               </div>
               {index >= 1 && (
@@ -621,7 +621,7 @@ const CreateTeam = () => {
                   value={competition.platform}
                   onChange={(e) => handleChange(e, "social_media", index, "platform")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
-                  required
+                  
                 />
               </div>
               <div className="w-full md:w-1/2">
@@ -631,7 +631,7 @@ const CreateTeam = () => {
                   value={competition.url}
                   onChange={(e) => handleChange(e, "social_media", index, "url")}
                   className="bg-gray-200 border rounded py-2 px-4 w-full"
-                  required
+                  
                 />
               </div>
               {index >= 1 && (
