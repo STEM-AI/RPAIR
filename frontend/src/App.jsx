@@ -36,6 +36,7 @@ import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
 import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/123Components/CompetitionSheetContainer";
 
+import { EventNameProvider } from './context/EventName';
 
 
 
@@ -152,10 +153,9 @@ const App = () => {
     <>
         {/* <Router> */}
          <LoadingProvider>
-
-<MatchProvider>
-<ResultProvider>
-
+        <MatchProvider>
+        <ResultProvider>
+        <EventNameProvider>
       <Routes>
         {/* Public Routes */}
         <Route
@@ -580,7 +580,7 @@ const App = () => {
        
 
         <Route
-          path="/Dashboard/JudgeEvent/:event_name"
+          path="/Dashboard/JudgeEvent/vex_iq"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -621,7 +621,7 @@ const App = () => {
           }
         />
                 <Route
-          path="/Dashboard/Judge/VexGoEvent"
+          path="/Dashboard/JudgeEvent/vex_go"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -684,7 +684,7 @@ const App = () => {
 
 
          <Route
-          path="/Dashboard/Judge/Vex123Event"
+          path="/Dashboard/JudgeEvent/vex_123"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -693,16 +693,6 @@ const App = () => {
             </Layout>
           }
         /> 
-                 {/* <Route
-          path="/Dashboard/Judge/matches123"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <VEX123Sheet />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />  */}
 
 
                          <Route
@@ -901,13 +891,13 @@ const App = () => {
           }
             />
             </Routes>
+            </EventNameProvider>
             </ResultProvider>
             </MatchProvider>
-
         {/* <ContactUs /> */}
 
           {/* </Router> */}
-           </LoadingProvider>
+      </LoadingProvider>
       </>
   );
 };

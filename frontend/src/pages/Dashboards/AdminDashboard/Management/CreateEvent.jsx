@@ -249,9 +249,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 
 const CreateEvent = () => {
+  const [competition_name, setCompetitionName] = useState("");
   const [formData, setFormData] = useState({
     name: "",
-    competition_name: "",
     start_date: "",
     end_date: "",
     location: "",
@@ -289,7 +289,7 @@ const CreateEvent = () => {
 
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/admin/event/`,
+        `${process.env.REACT_APP_API_URL}/admin/${competition_name}/event/`,
         formData,
         {
           headers: {
@@ -318,7 +318,8 @@ const CreateEvent = () => {
         age: "",
       });
     } catch (err) {
-      console.error("Error Response:", err.response); 
+      console.error("Error Response:", err.response);
+      console.error("Error :", err);
       setAlertType("error");
       setResponseMessage(
         err.response?.data?.detail || "Failed to create the event. Please try again."
@@ -332,7 +333,7 @@ const CreateEvent = () => {
   
     { value: "vex_iq", label: "VEX IQ" },
   { value: "vex_123", label: "VEX 123" },
-    { value: "robotics", label: "Vex GO" },
+    { value: "vex_go", label: "Vex GO" },
     { value: "web_design", label: "Web Design" },
     { value: "open_source", label: "Open Source" },
     { value: "mobile_application", label: "Mobile Application" },
@@ -359,7 +360,29 @@ const CreateEvent = () => {
           </Stack>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
+          <div className="p-2">
+            <label htmlFor="competition_name" className="block text-gray-700 font-bold">
+              Competition Name:
+            </label>
+            <select
+              id="competition_name"
+              name="competition_name"
+              value={competition_name}
+              onChange={(e) => setCompetitionName(e.target.value)}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+              required
+            >
+              <option value="">Select Competition</option>
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+        </div>
+        
+
           <div className="p-2">
             <label htmlFor="name" className="block text-gray-700 font-bold">
               Event Name:
@@ -374,33 +397,6 @@ const CreateEvent = () => {
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
             />
           </div>
-
-
-
-          <div className="p-2">
-            <label htmlFor="competition_name" className="block text-gray-700 font-bold">
-              Competition Name:
-            </label>
-            <select
-              id="competition_name"
-              name="competition_name"
-              value={formData.competition_name}
-              onChange={handleChange}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
-              required
-            >
-              <option value="">Select Competition</option>
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-
-
-
 
 
           <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-6">

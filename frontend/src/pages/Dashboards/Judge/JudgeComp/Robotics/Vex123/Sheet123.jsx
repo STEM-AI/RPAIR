@@ -6,6 +6,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Back from "../../../../../../components/Back/Back";
 import Alert from "../../../../../../components/Alert/Alert";
+import { useEventNameContext } from "../../../../../../context/EventName";
 
 // Constants
 const INITIAL_TIME = 5 * 60; // 5 minutes in seconds
@@ -44,6 +45,7 @@ const formatTime = (seconds) => {
 
 export default function CompetitionSheet() {
   // State
+    const { currentCompetition } = useEventNameContext();
   const [completedOrder, setCompletedOrder] = useState([]);
   const [taskStartTime, setTaskStartTime] = useState(0);
   const [teamName, setTeamName] = useState("");
