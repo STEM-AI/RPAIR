@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import {useEventNameContext} from "../../../../../../../context/EventName"
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { FaDownload, FaCheckCircle } from "react-icons/fa";
@@ -34,12 +35,12 @@ const gradeLevels = [
 
 export default function InterviewSheet() {
   const [judge, setJudge] = useState("");
+  const { currentCompetition } = useEventNameContext();
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const token = localStorage.getItem("access_token");
   const [teams, setTeams] = useState([]);
-
   const [selectedTeam, setSelectedTeam] = useState('');
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -77,7 +78,7 @@ useEffect(() => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/team/list/`, 
         {
-          params: { competition_event__name: 'stem' },
+          params: { competition_event__name: currentCompetition },
           headers: { Authorization: `Bearer ${token}` }
         }
       );
@@ -101,7 +102,7 @@ const fetchTeamData = async (teamName) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/team/list/`, {
       params: {
-        competition_event_name: 'stem', // Changed to single underscore
+        competition_event_name: currentCompetition, 
         search: teamName
       },
       headers: { Authorization: `Bearer ${token}` }

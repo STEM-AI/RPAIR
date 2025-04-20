@@ -6,21 +6,13 @@ import Stack from "@mui/material/Stack";
 
 
 const options = [
-  { value: "vex_iq", label: "VEX IQ" },
+ { value: "vex_iq", label: "VEX IQ" },
   { value: "vex_123", label: "VEX 123" },
-  {
-    label: "VEX GO",
-    options: [
-      { value: "robotics", label: <> Ocean Science Exploration</> },
-      { value: "vex_go_city", label: <> City Technology Rebuild</> },
-      { value: "vex_go_village", label: <> Village Engineering Construction</> },
-      { value: "vex_go_mars", label: <> Mars Math Expedition</> },
-    ],
-  },
-  { value: "programming", label: "Programming" },
-  { value: "web_design", label: "Web Design" },
+    { value: "vex_go", label: "Vex GO" },
+    { value: "web_design", label: "Web Design" },
     { value: "open_source", label: "Open Source" },
     { value: "mobile_application", label: "Mobile Application" },
+    { value: "programming", label: "Programming" },
     { value: "artificial_intelligence", label: "Artificial Intelligence" },
     { value: "fablab", label: "Fablab" },
     { value: "st_math", label: "ST Math" },
@@ -170,10 +162,10 @@ const CreateCompetition = () => {
            
            <input
               type="text"
-              id="competition_name"
-              name="name"
-              placeholder="Enter competition name"
-              value={formData.name}
+              id="type"
+              name="type"
+              placeholder="Enter competition type"
+              value={formData.type}
               onChange={handleChange}
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
           />

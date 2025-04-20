@@ -46,7 +46,6 @@ const CreateStaff = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-     // استبدال الدومين فقط إذا كان @gmail.com
   const updatedEmail = formData.email.replace("@gmail.com", "@rpair.judge.com");
   const updatedFormData = { ...formData, email: updatedEmail };
   
@@ -93,10 +92,39 @@ const CreateStaff = () => {
       
     } catch (err) {
       console.error("Error Response:", err.response);
+      
+      let errorMessage = "Failed to create the judge. Please try again.";
+      
+      if (err.response?.data) {
+        // Handle field-specific errors
+        const errors = err.response.data;
+        
+        if (errors.detail) {
+          // Handle non-field errors
+          errorMessage = errors.detail;
+        } else {
+          // Collect all validation errors
+          const messages = [];
+          for (const key in errors) {
+            if (Array.isArray(errors[key])) {
+              messages.push(...errors[key]);
+            } else {
+              messages.push(errors[key]);
+            }
+          }
+          errorMessage = messages.join(' ');
+        }
+      }
+
       setAlertType("error");
-      setResponseMessage(
-        err.response?.data?.detail || "Failed to create the judge. Please try again."
-      );
+      setResponseMessage(errorMessage);
+      
+      // Show error alert
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }

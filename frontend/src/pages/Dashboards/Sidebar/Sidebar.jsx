@@ -127,13 +127,13 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                           </li>
                         </Link>
                        
-                        <Link to="/Dashboard/Judge/eventDetailsJudge">
+                        <Link to="/Dashboard/JudgeEvent/eventDetailsJudge">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Event Details
                           </li>
                         </Link>
-                        <Link to="/Dashboard/Judge/VexGoEvent">
+                        <Link to="/Dashboard/JudgeEvent/vex_go">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Vex GO
@@ -141,7 +141,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                           
                         </Link>
 
-                        <Link to="/Dashboard/Judge/Vex123Event">
+                        <Link to="/Dashboard/JudgeEvent/vex_123">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Vex 123
