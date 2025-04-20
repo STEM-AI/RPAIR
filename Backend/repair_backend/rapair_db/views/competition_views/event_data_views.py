@@ -1,29 +1,27 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.permissions import AllowAny
 from ...serializers import EventSerializer , EventListSerializer
 from ...permissions import IsSuperUser 
-from ...utils import event_utils
-from ...models import CompetitionEvent 
-from rest_framework.generics import ListAPIView , RetrieveAPIView 
+from ...models import CompetitionEvent,Competition 
+from rest_framework.generics import ListAPIView,RetrieveAPIView,CreateAPIView
+from rest_framework import serializers
 
-class EventCreateView(APIView):
+
+class EventCreateView(CreateAPIView):
     permission_classes = [IsSuperUser]
     serializer_class = EventSerializer
-    def post(self, request):
-        competition = event_utils.get_object(request.data.get('competition_name'))
-        if competition is None:
-            return Response({"error": "Competition not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = EventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(competition=competition)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = CompetitionEvent.objects.all()
 
+    def perform_create(self, serializer):
+        competition_name = self.kwargs.get('competition_name')
+        try:
+            competition = Competition.objects.get(name=competition_name)
+        except Competition.DoesNotExist:
+            raise serializers.ValidationError({"competition_name": "Competition not found."})
+        
+        serializer.save(competition=competition)
         
 class EventsListWithTop3TeamsView(ListAPIView):
-    permission_classes = [IsSuperUser]
+    permission_classes = [AllowAny]
     serializer_class = EventListSerializer
 
     def get_queryset(self):

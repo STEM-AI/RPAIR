@@ -8,33 +8,23 @@ class JudgeForCompetitionEventSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(),
         slug_field='username'
     )
-    competition_event = serializers.SlugRelatedField(
-        queryset=CompetitionEvent.objects.all(),
-        slug_field='name',
-    )
 
     class Meta:
         model = JudgeForCompetitionEvent
-        fields = ['user', 'competition_event']
+        fields = ['user']
 
     def validate(self, data):
         user = data['user']
         if not user.is_staff:
             raise serializers.ValidationError("User must be a judge.")
         return data
-
-    def create(self, validated_data):
-        user = validated_data['user']
-        competition_event = validated_data['competition_event']
-        judge_event = JudgeForCompetitionEvent.objects.create(user=user, competition_event=competition_event)
-        return judge_event  # Return the created instance
-    
+   
 
 class CompetitionEventSerializer(serializers.ModelSerializer):
-
+    competition_name = serializers.CharField(source='competition.name')
     class Meta:
         model = CompetitionEvent
-        fields = ['name', 'start_date', 'end_date', 'location']
+        fields = ['name', 'start_date', 'end_date', 'location','competition_name']
 
 
 class JudgeEventListSerializer(serializers.ModelSerializer):

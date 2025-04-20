@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from ..tasks import update_remaining_time  # Import the Celery task
+from core.tasks import update_remaining_time  # Import the Celery task
 from rapair_db.models import EventGame
 from asgiref.sync import sync_to_async
 
@@ -42,10 +42,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                 # YOU CAN PASS THE GAME ISNTANCE INSTEAD OF THE ID 
                 game = await sync_to_async(EventGame.objects.get)(id=self.game_id)
             except EventGame.DoesNotExist:
-                await self.send(json.dumps({"error": f"Game with ID {self.game_id} not found"}))
+                await self.send(json.dumps({"error": f"Game ID {self.game_id} not found"}))
                 return
 
-            if data["action"] == "start_game":   
+            if data["action"] == "start_game": 
+                print("Game started")  
 
                 if not self.game_id:
                     await self.send(json.dumps({"error": "Game ID is required"}))
@@ -74,6 +75,12 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await sync_to_async(game.save)()
                 update_remaining_time.delay(self.event_name, self.game_id)
                 await self.send(json.dumps({ "status": "resumed" }))
+
+            elif data["action"] == "restart_game":
+                game.paused_time = 15
+                await sync_to_async(game.save)()
+                update_remaining_time.delay(self.event_name, self.game_id)
+                await self.send(json.dumps({"message": "Game timer restarted"}))
 
         except json.JSONDecodeError as e:
             await self.send(json.dumps({"error": "Invalid JSON data"}))

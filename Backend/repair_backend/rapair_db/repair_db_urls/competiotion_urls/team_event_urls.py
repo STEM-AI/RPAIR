@@ -1,10 +1,11 @@
 from django.urls import path
 
 from ...views.competition_views.team_event_views import(
-    SetTeamScoresFieldsView,
+    SetTeamScoresFieldsView,TeamNonTechScoreUpdateView
 )
 
 urlpatterns = [
     # Competition Team Event APIs
-    path('set-team-extra-scores-fields/', SetTeamScoresFieldsView.as_view(), name='set-team-extra-scores-fields'),
+    path('<str:event_name>/non-tech-score/<int:id>/', TeamNonTechScoreUpdateView.as_view(), name='set-team-extra-scores-fields'),
+
 ]

@@ -1,7 +1,8 @@
 from django.db import models
 from .organization_models import Organization
-from .competitions_models import CompetitionEvent
+from .competitions_models import CompetitionEvent,EventGame
 from ..validators import phone_validator
+
 
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
@@ -47,6 +48,8 @@ class TeamworkTeamScore(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="teamwork_scores")
     score = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    game = models.ForeignKey(EventGame, on_delete=models.CASCADE , related_name="teamwork_scores", blank=True, null=True,default=None)
+
 
     def __str__(self):
         return f"{self.team.name}"
@@ -57,6 +60,7 @@ class SkillsTeamScore(models.Model):
     autonomous_score = models.IntegerField(default=0)
     driver_score = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    game = models.ForeignKey(EventGame, on_delete=models.CASCADE , related_name="skills_scores", blank=True, null=True,default=None)
 
     
     def __str__(self):

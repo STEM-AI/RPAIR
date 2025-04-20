@@ -1,22 +1,19 @@
 from django.db import models
-
+from core.models import Schedule
 class Competition(models.Model):
     id = models.AutoField(primary_key=True)
-    VEX_IQ = 'vex_iq'
-    ROV = 'rov'
-    ROBOCUP = 'robocup'
-    ROBOTICS = 'robotics'
+
     COMPETITION_CHOICES = [
-        (VEX_IQ, 'VEX IQ'),
-        (ROV, 'ROV'),
-        (ROBOCUP, 'ROBOCUP'),
-        (ROBOTICS, 'Robotics')  
+        ('vex_iq', 'VEX IQ'),
+        ('vex_go', 'VEX GO'),
+        ('vex_123', 'VEX_123'),
+        ('programming', 'Programming')  
     ]
     name = models.CharField(
         max_length=255,
         unique=True , 
         choices= COMPETITION_CHOICES , 
-        default = VEX_IQ
+        default = 'vex_iq'
         )
     type = models.CharField(max_length=255)
     description = models.TextField()
@@ -86,24 +83,29 @@ class EventGame(models.Model):
     team2 = models.ForeignKey('Team' , on_delete=models.SET_NULL , related_name='team2' , null=True , blank=True) 
     score = models.IntegerField(null=True, blank=True , default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    time_taken = models.FloatField(default=0)
     completed = models.BooleanField(default=False)
     time = models.TimeField()
     is_active = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)
     paused_time = models.FloatField(default=15)
+    tick_count = models.IntegerField(default=0)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE , null=True , blank=True)
 
-    TEAMWORK = 'teamwork'
-    SKILLS = 'skills'
-    TEAMWORK_FINAL = 'final'
     STAGE_CHOICES = (
-        (TEAMWORK, 'Teamwork'),
-        (SKILLS, 'Skills'),
-        (TEAMWORK_FINAL, 'Teamwork Final'),
+        ('teamwork', 'Teamwork'),
+        ('driver_iq', 'Driver IQ'),
+        ('driver_go', 'Driver Go'),
+        ('auto','Auto'),
+        ('coop', 'Teamwork Coop'),
+        ('coding', 'Coding'),
+        ('final', 'Teamwork Final'),
+        ('vex_123', 'VEX 123'),
     )
     stage = models.CharField(
         max_length=10 ,
         choices= STAGE_CHOICES , 
-        default=TEAMWORK)
+        default='teamwork')
     
 
     class Meta:
@@ -132,6 +134,8 @@ class JudgeForCompetitionEvent(models.Model):
         unique_together = ('user', 'competition_event')
     def __str__(self):
         return f"{self.user.username} - {self.competition_event.name}"
+
+    
 
 
     

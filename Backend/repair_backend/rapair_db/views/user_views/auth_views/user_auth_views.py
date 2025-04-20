@@ -2,10 +2,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from ....serializers.tokens_serializers import MyTokenObtainPairSerializer 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ....serializers import UserSerializer 
+from ....serializers import UserSerializer,UserLoginRequestSerializer,TokenResponseSerializer,ErrorResponseSerializer
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-from ....utils.user_auth_utlis import UserLogin
+from core.utils import UserLogin
+from drf_spectacular.utils import extend_schema, OpenApiExample
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -14,7 +15,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class UserResgisterView(APIView):
 
     permission_classes = [AllowAny]
-
+    
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -24,10 +25,40 @@ class UserResgisterView(APIView):
             return Response(f"message': 'User registered successfully User :{serializer.data} ", status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
 class UserLoginView(APIView):
     permission_classes = [AllowAny]
-            
+
+    @extend_schema(
+        operation_id='user_login',
+        description='User login',
+        request=UserLoginRequestSerializer,  # Define request body schema
+        responses={
+            200: TokenResponseSerializer,  # Define success response schema
+            400: ErrorResponseSerializer  # Define error response schema
+        },
+        examples=[
+        OpenApiExample(
+            name="Login admin",
+            value={
+                "username": "neklawi",
+                "password": "ff15",
+            },
+            request_only=True,  # Applies only to request body
+            response_only=False,
+        ),
+        OpenApiExample(
+            name="Login judge",
+            value={
+                "username": "neklawiJudge",
+                "password": "ff15",
+            },
+            request_only=True,  # Applies only to request body
+            response_only=False,
+        )
+    ]
+    )        
     def post(self, request):
 
         username = request.data.get('username')

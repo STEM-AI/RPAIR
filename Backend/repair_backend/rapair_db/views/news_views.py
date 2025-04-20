@@ -4,12 +4,12 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from ..models import News
 from ..serializers import NewsSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 class NewsListCreateView(generics.ListCreateAPIView):
     """
     List all news items or create a new news item.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = News.objects.all().order_by('-created_at')
     serializer_class = NewsSerializer
 

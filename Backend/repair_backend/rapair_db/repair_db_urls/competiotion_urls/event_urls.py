@@ -17,9 +17,7 @@ from ...views.competition_views.judge_event_views import(
 )
 
 urlpatterns =[
-    path('<str:event_name>/games-schedule/', CreateScheduleEventGameView.as_view(), name='schedule-game'),
     path('<str:event_name>/profile/', EventProfileView.as_view(), name='event-profile'),  # Get event details API  # TODO: Add validation and permissions for viewing event details.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add
-    path('<str:event_name>/schedule/', GetEventSchedule.as_view(), name='schedule-game'),
     path('<str:event_name>/teamwork-rank/', TeamWorkRankView.as_view(), name='teamwork-rank'),  # Get teamwork rank API  # TODO: Add validation and permissions for viewing teamwork rank.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add
     path('<str:event_name>/teams-interview-rank/', TeamsInterviewScoreRankView.as_view(), name='team-interview-rank'),  # Get team interview score rank API  # TODO: Add validation and permissions for viewing team interview score rank.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO:
     path('<str:event_name>/teams-eng-notebook-rank/', TeamsEngNotebookScoreRank.as_view(), name='team-eng-notebook-rank'),  # Get team eng notebook score rank API  # TODO: Add validation and permissions for viewing team eng notebook score rank.   # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO

@@ -1,11 +1,36 @@
 from rest_framework.views import APIView
+from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from ...permissions import  IsJudgeUser
-from ...utils import event_utils
-from ...utils.team_event_utils import set_team_score
+from core.utils import event_utils,set_team_score
+from rapair_db.serializers import TeamNonTechScoreSerializer
+from rapair_db.models import Team,CompetitionEvent
+from rest_framework.exceptions import ValidationError
 
+class TeamNonTechScoreUpdateView(UpdateAPIView):
+    '''Set Inspction , Interview , Engineering Notebook Scores Field'''
+    permission_classes=[IsJudgeUser]
+    serializer_class = TeamNonTechScoreSerializer
+    queryset = Team.objects.all()
 
+    def get_object(self):
+        event_name = self.kwargs.get("event_name")
+        team_id = self.kwargs.get("id")
+
+        # Ensure event exists
+        try:
+            event = CompetitionEvent.objects.get(name=event_name)
+        except CompetitionEvent.DoesNotExist:
+            raise ValidationError({"event_name": "Event not found."})
+
+        # Ensure team exists and belongs to the event
+        try:
+            team = Team.objects.get(id=team_id, competition_event=event)
+        except Team.DoesNotExist:
+            raise ValidationError({"team": "Team not found for this event."})
+
+        return team
 
 class SetTeamScoresFieldsView(APIView):
     '''Set Inspction , Interview , Engineering Notebook Scores Field'''

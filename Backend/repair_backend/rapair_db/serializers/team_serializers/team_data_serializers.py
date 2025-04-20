@@ -24,7 +24,7 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = [
             'name','robot_name','user_id','type','organization_info','team_leader_name','team_leader_email',
             'team_leader_phone_number','organization','competition' ,'sponsors', 'coach', 'social_media',
-            'previous_competition' , 'members' 
+            'previous_competition' , 'members' , 'competition_event','id'
             ]
 
         extra_kwargs = {
@@ -32,10 +32,10 @@ class TeamSerializer(serializers.ModelSerializer):
             'organization_id': {'required': False},
             'organization': {'required': False},
             'competition': {'required': False},
-            'sponsors': {'required': True},
+            'sponsors': {'required': False},
             'coach': {'required': True},
             'social_media': {'required': True},
-            'previous_competition': {'required': True},
+            'previous_competition': {'required': False},
             'members': {'required': True},
         }
 
@@ -73,9 +73,8 @@ class TeamSerializer(serializers.ModelSerializer):
         except Exception as e:
             return str(e)
 
-class TeamGamesSerializer(serializers.ModelSerializer):
-    team = serializers.CharField()
-    score = serializers.IntegerField()
-    
+
+class TeamListSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ['team' , 'score']
+        model = Team
+        fields = ['id','name']
