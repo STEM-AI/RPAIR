@@ -14,7 +14,7 @@ class UserCreateTeamView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        event = event_utils.get_object(request.data.get('event_name'))
+        event = event_utils.get_object(event_name =request.data.get('event_name'))
         serializer = TeamSerializer(data = request.data , context = {'event':event})
         if serializer.is_valid():
             serializer.save(user_id=request.user.id)
