@@ -5,7 +5,7 @@ import JoinTeams from "../CometitionsComponent/Rules/JoinTeams/JoinTeams";
 import Rules from "../CometitionsComponent/Rules/RulesProgramming";
 
 import { Helmet } from "react-helmet-async";
-import AwardsList from "../../components/Awards/awards";
+import ProgrammingAwardsList from "../../components/Awards/programmingAwards";
 
 const ProgrammingComp = () => {
   // const images = [img1];
@@ -42,7 +42,7 @@ Each question checks different programming skills, from basic concepts to more a
         </div>
       </div>
       <Rules />
-      <AwardsList />
+      <ProgrammingAwardsList />
        <JoinTeams />
     </>
   );
