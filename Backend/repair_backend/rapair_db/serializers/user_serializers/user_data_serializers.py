@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from ...models import User
 from django.contrib.auth.password_validation import validate_password
-
+from ..competition_serializers.judge_event_serializers import JudgeEventListSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,3 +90,12 @@ class ErrorResponseSerializer(serializers.Serializer):
         child=serializers.CharField(), 
         help_text="A dictionary where keys are field names and values are error messages."
     )
+    
+    
+
+class JudgeListSerializer(serializers.ModelSerializer):
+    judging_events = JudgeEventListSerializer(source='judgeforcompetitionevent_set', many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'judging_events']

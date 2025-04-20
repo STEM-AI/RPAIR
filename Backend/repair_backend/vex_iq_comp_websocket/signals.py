@@ -28,7 +28,7 @@ def broadcast_game_score(sender,created, instance, **kwargs):
     
     if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
         channel_layer = get_channel_layer()
-        if instance.stage in ['driver_iq','driver_go']:
+        if instance.stage in ['driver_iq','driver_go','vex_123']:
             data = {
                 "game_id" : instance.id,
                 "team1_name": instance.team1.name,

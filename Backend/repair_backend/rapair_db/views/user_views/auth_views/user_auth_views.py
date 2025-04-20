@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from ....serializers import UserSerializer,UserLoginRequestSerializer,TokenResponseSerializer,ErrorResponseSerializer
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-from ....utils.user_auth_utlis import UserLogin
-from drf_spectacular.utils import extend_schema
+from core.utils import UserLogin
+from drf_spectacular.utils import extend_schema, OpenApiExample
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -25,7 +25,8 @@ class UserResgisterView(APIView):
             return Response(f"message': 'User registered successfully User :{serializer.data} ", status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
 class UserLoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -36,7 +37,27 @@ class UserLoginView(APIView):
         responses={
             200: TokenResponseSerializer,  # Define success response schema
             400: ErrorResponseSerializer  # Define error response schema
-        }
+        },
+        examples=[
+        OpenApiExample(
+            name="Login admin",
+            value={
+                "username": "neklawi",
+                "password": "ff15",
+            },
+            request_only=True,  # Applies only to request body
+            response_only=False,
+        ),
+        OpenApiExample(
+            name="Login judge",
+            value={
+                "username": "neklawiJudge",
+                "password": "ff15",
+            },
+            request_only=True,  # Applies only to request body
+            response_only=False,
+        )
+    ]
     )        
     def post(self, request):
 

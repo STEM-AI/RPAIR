@@ -44,15 +44,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'social_django',
+    'django_filters',
 
     'drf_spectacular',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'django_filters',
     "corsheaders",
 
     'rapair_db.apps.RapairDbConfig',
+    'vex_go',
+    'core.apps.CoreConfig',
+    'vex_123',
     'vex_iq_comp_websocket.apps.VexIqCompWebsocketConfig',
 
     'django_celery_beat',

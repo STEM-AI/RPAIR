@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from ...permissions import IsJudgeUser
-from ...utils import event_utils
+from core.utils import event_utils
 from ...models import EventGame
 
 
@@ -34,7 +34,7 @@ class GameScoreView(APIView):
         if game.stage == 'teamwork':
             print("teamwork score")
             game.operation = "set_teamwork_game_score"
-        elif game.stage == 'driver':
+        elif game.stage == 'driver_iq':
             print("driver score")
             game.driver_score = game.score
             game.operation = "set_skills_game_score"

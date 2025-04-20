@@ -3,8 +3,7 @@ from rest_framework.response import Response
 from ...serializers.user_serializers.user_data_serializers import UserSerializer 
 from ...models import VerificationCode , User
 from rest_framework import status
-from ...utils.forget_password_utils import generate_verification_code , send_verification_code_email , verify
-from ...utils.user_auth_utlis import UserLogin
+from core.utils import generate_verification_code , send_verification_code_email , verify,UserLogin
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny
 

@@ -13,14 +13,10 @@ class TeamCompetitionProfileSerializer(serializers.ModelSerializer):
         fields = ['name','robot_name','type','members' , 'team_leader_name' ]
 
 class EventSerializer(serializers.ModelSerializer):
-    teams = TeamCompetitionProfileSerializer(many=True , required=False)
+    teams = TeamCompetitionProfileSerializer(many=True , required=False,read_only=True)
     class Meta:
         model = CompetitionEvent
-        fields = ['start_date', 'end_date', 'location' , 'teams'  , 'fees' , 'age' , 'category']
-
-        extra_kwargs = {
-            'teams': {'read_only': True},
-        }
+        fields = ['name','start_date', 'end_date', 'location' , 'teams'  , 'fees' , 'age' , 'category']
 
 class EventGameSerializer(serializers.ModelSerializer):
     team1_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), source='team1.id', allow_null=True, required=False)

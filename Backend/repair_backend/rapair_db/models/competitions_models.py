@@ -1,5 +1,5 @@
 from django.db import models
-
+from core.models import Schedule
 class Competition(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -89,27 +89,23 @@ class EventGame(models.Model):
     is_active = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)
     paused_time = models.FloatField(default=15)
+    tick_count = models.IntegerField(default=0)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE , null=True , blank=True)
 
-    TEAMWORK = 'teamwork'
-    DRIVER_IQ = 'driver_iq'
-    DRIVER_GO = 'driver_go'
-    AUTO = 'auto'
-    CODING = 'coding'
-    TEAMWORK_COOP = 'coop'
-    TEAMWORK_FINAL = 'final'
     STAGE_CHOICES = (
-        (TEAMWORK, 'Teamwork'),
-        (DRIVER_IQ, 'Driver IQ'),
-        (DRIVER_GO, 'Driver Go'),
-        (AUTO,'Auto'),
-        (TEAMWORK_COOP, 'Teamwork Coop'),
-        (CODING, 'Coding'),
-        (TEAMWORK_FINAL, 'Teamwork Final'),
+        ('teamwork', 'Teamwork'),
+        ('driver_iq', 'Driver IQ'),
+        ('driver_go', 'Driver Go'),
+        ('auto','Auto'),
+        ('coop', 'Teamwork Coop'),
+        ('coding', 'Coding'),
+        ('final', 'Teamwork Final'),
+        ('vex_123', 'VEX 123'),
     )
     stage = models.CharField(
         max_length=10 ,
         choices= STAGE_CHOICES , 
-        default=TEAMWORK)
+        default='teamwork')
     
 
     class Meta:
@@ -122,7 +118,22 @@ class EventGame(models.Model):
 
     def __str__(self):
         return f"{self.team1} vs {self.team2} at {self.time}"
-    
+
+class JudgeForCompetitionEvent(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        # Ensure the user is a staff member
+        if not self.user.is_staff:
+            raise ValueError("Must be a Judge member")
+
+        super().save(*args, **kwargs)  # Call the parent save method
+
+    class Meta:
+        unique_together = ('user', 'competition_event')
+    def __str__(self):
+        return f"{self.user.username} - {self.competition_event.name}"
 
     
 

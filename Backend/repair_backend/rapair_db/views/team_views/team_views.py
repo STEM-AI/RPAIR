@@ -1,10 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from ...permissions import IsJudgeUser , IsSuperUser
+from rapair_db.permissions import IsJudgeUser , IsSuperUser
 from rest_framework import status
-from ...serializers.team_serializers.team_data_serializers import TeamSerializer , TeamGamesSerializer
-from ...serializers.competition_serializers.event_serializers import EventGameSerializer
-from ...models import Team ,EventGame
+from rapair_db.serializers import TeamSerializer,TeamListSerializer,EventGameSerializer
+from rapair_db.models import Team ,EventGame
 from rest_framework.generics import RetrieveAPIView , ListAPIView 
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
@@ -14,11 +13,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 class TeamListView(ListAPIView):
     permission_classes = [IsJudgeUser]
-    serializer_class = TeamSerializer
+    serializer_class = TeamListSerializer
     queryset = Team.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['competition_event__name','grade_level']
-    search_fields = ['name'] 
+    search_fields = ['name']
         
 
 class TeamProfileView(RetrieveAPIView):

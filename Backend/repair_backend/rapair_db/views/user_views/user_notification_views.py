@@ -3,7 +3,7 @@ from rest_framework import generics
 from ...models import Notification
 from ...serializers import NotificationSerializer
 from rest_framework.permissions import IsAuthenticated
-from ...utils.user_auth_utlis import UserLogin
+from core.utils import UserLogin
 
 class NotificationListCreateView(generics.ListCreateAPIView):
     """

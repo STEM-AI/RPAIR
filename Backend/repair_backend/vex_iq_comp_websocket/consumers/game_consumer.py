@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from ..tasks import update_remaining_time  # Import the Celery task
+from core.tasks import update_remaining_time  # Import the Celery task
 from rapair_db.models import EventGame
 from asgiref.sync import sync_to_async
 
@@ -39,6 +39,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.event_name = data.get("event_name")
             self.game_id = data.get("game_id")
             try:
+                # YOU CAN PASS THE GAME ISNTANCE INSTEAD OF THE ID 
                 game = await sync_to_async(EventGame.objects.get)(id=self.game_id)
             except EventGame.DoesNotExist:
                 await self.send(json.dumps({"error": f"Game ID {self.game_id} not found"}))

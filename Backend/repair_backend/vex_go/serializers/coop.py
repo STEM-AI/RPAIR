@@ -1,4 +1,4 @@
-from vex_go.serializers.base import GamesSerializer
+from core.serializers import GamesSerializer
 from rest_framework import serializers
 class GameCoopSerializer(GamesSerializer):
     """

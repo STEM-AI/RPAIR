@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from ...permissions import IsJudgeUser
-from ...utils import event_utils
+from core.utils import event_utils
 from ...models import EventGame , Team ,  TeamworkTeamScore , SkillsTeamScore
 from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
@@ -10,6 +10,7 @@ from django.db import IntegrityError
 from django.db.models import Avg,Max
 from ...serializers import TeamScoreSerializer,TeamInterviewScoreSerializer,TeamEngNotebookScoreSerializer,SkillsRankSerializer
 from rest_framework.generics import ListAPIView 
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CreateScheduleEventGameView(APIView):
@@ -41,6 +42,9 @@ class CreateScheduleEventGameView(APIView):
 class GetEventSchedule(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = EventGameSerializer
+    queryset =  EventGame.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['stage']
 
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')

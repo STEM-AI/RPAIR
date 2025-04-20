@@ -20,8 +20,8 @@ class Team(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='team_organization')
     competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
     note = models.CharField(max_length=255 , null=True, blank=True , default='')
-    teamwork_rank = models.IntegerField(null=True, blank=True)  # New field to store the rank
-    skills_rank = models.IntegerField(null=True, blank=True)  # New field to store the rank
+    teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
+    skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
 
     HIGH_SCHOOL = 'HS'
     ELEMENTARY_SCHOOL = 'ES'
@@ -71,7 +71,7 @@ class TeamSponsor(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="sponsors")
     name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255 , unique=True )
+    email = models.EmailField(max_length=255)
 
     class Meta:
         constraints = [
@@ -119,9 +119,9 @@ class TeamSocialMedia(models.Model):
 class TeamPreviousCompetition(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE,related_name="previous_competition")
-    VEX_IQ = "VEX_IQ"
-    ROV = "ROV"
-    ROBOCUP = "ROBOCUP"
+    VEX_IQ = "vex_iq"
+    ROV = "rov"
+    ROBOCUP = "robocup"
     COMPETITION_CHOICES = [
         (VEX_IQ, "VEX_IQ"),
         (ROV, "ROV"),

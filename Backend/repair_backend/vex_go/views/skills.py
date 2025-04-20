@@ -1,6 +1,7 @@
 from rest_framework.generics import UpdateAPIView,ListAPIView
 from rapair_db.models import EventGame,SkillsTeamScore
-from vex_go.serializers import GameSkillsSerializer,SkillsTeamRankSerializer
+from vex_go.serializers import GameSkillsSerializer
+from core.serializers import SkillsTeamRankSerializer
 from rapair_db.permissions import IsJudgeUser
 from django.db.models import Max, Subquery, OuterRef, FloatField,Sum
 from rest_framework.response import Response
