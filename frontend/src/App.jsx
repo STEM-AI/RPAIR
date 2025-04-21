@@ -885,7 +885,7 @@ const App = () => {
           path="/LiveVex123"
           element={
             <Layout >
-                <LiveVex123/>
+                <LiveVex123 />
             </Layout>
             
           }
