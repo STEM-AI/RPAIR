@@ -1,28 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { ImSpinner8 } from "react-icons/im";
+import { FiAlertCircle } from "react-icons/fi";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaRegCheckCircle } from "react-icons/fa";
-
+import { fetchJudgeData, fetchTeams, submitScore } from "../../../../../../components/IntervIQNotbookIQInspection/ApiService";
+import { inspectionChecklist } from "../../../../../../components/IntervIQNotbookIQInspection/InspectionCategories"
+import axios from "axios";
+import { useEventNameContext } from "../../../../../../context/EventName";
+import Swal from "sweetalert2";
 export default function Inspection() {
-  const inspectionChecklist = [
-    { title: "Team Robot Compliance", description: "Team is only competing with ONE robot. They have no spare or replacement robots.", rule: "<R1>" },
-    { title: "Student Work Verification", description: "Team testifies that the designing, building, and programming of the robot was done only by the students on the team.", rule: "<R2>" },
-    { title: "License Plate Requirement", description: "Robot displays at least one (1) easily visible VEX IQ Competition license plate.", rule: "<R4>" },
-    { title: "Size Compliance", description: "The Robot fits within the starting size of 11” x 19” x 15”.", rule: "<R5>, <R6>" },
-    { title: "Official Components Usage", description: "Robot is constructed ONLY from official robot components from the VEX IQ product line.", rule: "<R7>, <R8>" },
-    { title: "Nonfunctional Decorations", description: "Any robot decorations are nonfunctional and do not affect performance.", rule: "<R8>" },
-    { title: "Controller Connectivity", description: "Robot installed VEX IQ Brain can communicate with the VEX IQ Controller.", rule: "<R9>" },
-    { title: "Motor Limit", description: "Robot uses no more than (6) VEX IQ Smart Motors.", rule: "<R10>" },
-    { title: "Battery Compliance", description: "Robot uses no more than (1) single VEX IQ battery pack or (6) AA batteries.", rule: "<R11>" },
-    { title: "Firmware Up-to-Date", description: "VEX IQ firmware (VEXos) is up to date.", rule: "<R12>" },
-    { title: "Parts Modification", description: "No Robot parts have been modified except for cutting metal shafts.", rule: "<R13>" },
-    { title: "Safety and Attachment Compliance", description: "Robot does not have detachable components posing safety risks.", rule: "<R14>, <G10>, <G11>" },
-  ];
-
+  const { currentCompetition } = useEventNameContext();
   const [checkedItems, setCheckedItems] = useState(new Array(inspectionChecklist.length).fill(false));
-  const [teamNumber, setTeamNumber] = useState("");
   const [division, setDivision] = useState("");
   const [score, setScore] = useState("");
+   const [loading, setLoading] = useState(false);
+    const token = localStorage.getItem("access_token");
+  const [activeAlerts, setActiveAlerts] = useState({});
+  const [teams, setTeams] = useState([]);
+    const [judge, setJudge] = useState("");
+    const [selectedTeam, setSelectedTeam] = useState("");
+  const [teamData, setTeamData] = useState({ id: null });  // Initialize with id property
+
+ 
+  useEffect(() => {
+    const loadData = async () => {
+      if (token) {
+        const judgeName = await fetchJudgeData(token);
+        setJudge(judgeName);
+        
+        const teamsData = await fetchTeams(token, currentCompetition);
+        setTeams(teamsData);
+      }
+    };
+    loadData();
+  }, [token, currentCompetition]);
+  
+
 
   const handleCheckboxChange = (index) => {
     const newCheckedItems = [...checkedItems];
@@ -33,7 +47,7 @@ export default function Inspection() {
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text("Robot Inspection Checklist", 14, 10);
-    doc.text(`Team Number: ${teamNumber}`, 14, 20);
+    doc.text(`Team name: ${teamData?.name || ""}`, 14, 20);
     doc.text(`Division: ${division}`, 14, 30);
     doc.text(`Final Inspection Score: ${score}/10`, 14, 40);
 
@@ -58,7 +72,20 @@ export default function Inspection() {
 
     doc.save("Robot_Inspection_Checklist.pdf");
   };
-
+  const totalScore = score
+  const apiScoreField = "inspection_score";
+  const postScore = async () => {
+      if (!teamData?.id) {
+     Swal.fire({
+       icon: "error",
+       title: "Error",
+       text: "Please select a team first!",
+     });
+     return;
+   }
+     await submitScore(token, currentCompetition, teamData.id, apiScoreField, totalScore);
+  };
+  
   return (
     <div className="p-4 flex flex-col max-w-7xl mx-auto">
       <div className="text-center mb-6">
@@ -66,32 +93,66 @@ export default function Inspection() {
           Robot Inspection Checklist
         </h2>
       </div>
+    
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 bg-white/50 rounded-xl p-6 shadow-lg backdrop-blur-sm">
+  {/* Team Select Field */}
+  <div className="space-y-3">
+    <label 
+      htmlFor="teamName" 
+      className="text-cyan-700 text-base font-semibold whitespace-nowrap"
+    >
+      Team Name:
+    </label>
+    <select
+      id="teamName"
+      value={selectedTeam}
+      onChange={(e) => {
+        const selectedId = e.target.value;
+        setSelectedTeam(selectedId);
+        const selectedTeamData = teams.find(team => team.id.toString() === selectedId);
+        setTeamData(selectedTeamData || null);
+      }}
+      className="w-full px-4 py-3 rounded-lg border-2 border-cyan-200 bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all"
+    >
+      <option value="">Select Team</option>
+      {teams.map((team) => (
+        <option key={team.id} value={team.id}>
+          {team.name}
+        </option>
+      ))}
+    </select>
+  </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-          <label htmlFor="teamNumber" className="text-cyan-600 text-base sm:text-lg font-bold whitespace-nowrap">Team Number:</label>
-          <input 
-            type="text" 
-            id="teamNumber" 
-            value={teamNumber} 
-            onChange={(e) => setTeamNumber(e.target.value)}
-            className="border-b-2 border-cyan-400 bg-transparent outline-none w-full sm:w-40 px-2" 
-          />
-        </div>
+  {/* Judge Display Field */}
+  <div className="space-y-3">
+    <span className="text-cyan-700 text-base font-semibold whitespace-nowrap">
+      Judge:
+    </span>
+    <div className="w-full px-4 py-3 rounded-lg border-2 border-cyan-200 bg-gray-50">
+      <p className="text-gray-700">{judge || "Not assigned"}</p>
+    </div>
+  </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-          <label htmlFor="division" className="text-cyan-600 text-base sm:text-lg font-bold whitespace-nowrap">Division:</label>
-          <input 
-            type="text" 
-            id="division" 
-            value={division} 
-            onChange={(e) => setDivision(e.target.value)}
-            className="border-b-2 border-cyan-400 bg-transparent outline-none w-full sm:w-40 px-2" 
-          />
-        </div>
-      </div>
+  {/* Division Input Field */}
+  <div className="space-y-3">
+    <label 
+      htmlFor="division" 
+      className="text-cyan-700 text-base font-semibold whitespace-nowrap"
+    >
+      Division:
+    </label>
+    <input 
+      type="text" 
+      id="division" 
+      value={division} 
+      onChange={(e) => setDivision(e.target.value)}
+      className="w-full px-4 py-3 rounded-lg border-2 border-cyan-200 bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 placeholder-gray-400 transition-all"
+      placeholder="Enter division"
+    />
+  </div>
+</div>
+      
 
-      {/* Mobile View */}
       <div className="block md:hidden">
         <div className="space-y-4">
           {inspectionChecklist.map((item, index) => (
@@ -134,7 +195,6 @@ export default function Inspection() {
         </div>
       </div>
 
-      {/* Desktop View */}
       <div className="hidden md:block">
         <div className="overflow-x-auto rounded-xl border border-gray-300">
           <table className="min-w-full bg-white shadow-sm">
@@ -182,21 +242,24 @@ export default function Inspection() {
           </table>
         </div>
       </div>
-
-      <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-3 mt-6">
-        <button
-          onClick={generatePDF}
-          className="bg-green-700 hover:bg-green-800 text-white px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
-        >
-          <FaRegCheckCircle /> Download PDF
-        </button>
-        
-        <button
-          className="bg-green-700 hover:bg-green-800 text-white px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
-        >
-          <FaRegCheckCircle /> Done
-        </button>
+      <div className="md:flex flex-col">              
+            <div className="scoreInput flex flex-col sm:flex-row justify-between items-center p-4 gap-3 sm:gap-0">
+                  <div className="flex ">
+                                 <h3 className="text-xl font-bold">Total Score: {totalScore}/10</h3>
+                          <button className="ml-3 rounded-2xl w-32  sm:w-auto  bg-green-700 p-2 text-white flex items-center justify-center"
+                          onClick={postScore}>
+                          <FaRegCheckCircle /> Done
+                        </button> 
+                        </div>
+                     <button
+                          className="bg-green-700 text-white px-4 py-2 rounded-xl flex items-center w-full sm:w-auto justify-center"
+                           onClick={generatePDF}>
+                    <FaRegCheckCircle /> Download PDF
+                  </button>
+            </div>
       </div>
     </div>
   );
+ 
+
 }

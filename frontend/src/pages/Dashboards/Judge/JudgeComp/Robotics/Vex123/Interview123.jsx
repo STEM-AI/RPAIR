@@ -55,6 +55,8 @@ export default function InterviewSheet() {
           }
         );
         setTeams(res.data);
+        console.log("Teams:", res.data);
+        
       } catch (err) {
         setError("Failed to fetch teams");
       }
