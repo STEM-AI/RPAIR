@@ -14,7 +14,6 @@ import TimerControls from "./TimerControls";
 import GameModeNavigation from "./GameModeNavigation";
 import MissionTable from "./MissionTable";
 import SummarySection from "./SummarySection";
-import SetSchedule from "./SetSchedule";
 import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
 
 export default function CompetitionSheetContainer() {
