@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
 import Alert from "../../../../../../../components/Alert/Alert";
 import axios from "axios";
+import { useEventNameContext } from "../../../../../../../context/EventName";
+import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
+
 
 const COOPMatch = () => {
+    const { currentCompetition } = useEventNameContext();
   const { matches, setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [scores, setScores] = useState({});
@@ -19,7 +23,7 @@ const COOPMatch = () => {
 
 
 
-  const event_name = 'vex_go'
+  const event_name = currentCompetition
 
 
       const formData = {
@@ -150,6 +154,7 @@ const COOPMatch = () => {
     <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6">
       
       {/* Header */}
+      <GameScheduleForm event_name={event_name} token={token} />
       <div className="text-center mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2 flex items-center justify-center gap-2">
           <FaUsers className="text-3xl sm:text-4xl" /> COOP Matches
