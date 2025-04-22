@@ -149,7 +149,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                         </Link>
 
                         {/* Event */}
-                          <li
+                          {/* <li
                             className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
                             onClick={() => setIsEventOpen(!isEventOpen)} // Toggle the management sub-menu
                           >
@@ -160,9 +160,9 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             ) : (
                               <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
                             )}
-                          </li>
+                          </li> */}
                           {/* Management Sub-menu */}
-                          {isEventOpen && (
+                          {/* {isEventOpen && (
                             <ul className="pl-6 mt-2">
                               <Link to="/Dashboard/Judge/inspection">
                                 <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
@@ -186,7 +186,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                               </Link>
                               
                             </ul>
-                          )}
+                          )} */}
           </>
         );
 
