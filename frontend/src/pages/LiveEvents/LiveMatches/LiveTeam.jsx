@@ -12,7 +12,7 @@ const LiveTeamVex = () => {
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
   const event_Name = localStorage.getItem('selected_event_name');
-  const eventName = localStorage.getItem("event_name");
+  const eventName = "El sadat vexGo"
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -39,7 +39,8 @@ const LiveTeamVex = () => {
   };
 
   useEffect(() => {
-    socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
+    // socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");
