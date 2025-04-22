@@ -37,6 +37,9 @@ import ProgrammingComp from "./components/Competitions/Programming";
 import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/123Components/CompetitionSheetContainer";
 
 import { EventNameProvider } from './context/EventName';
+import OurEvents from "./pages/EventsResources/OurEvents";
+import AllEventDetails from "./pages/EventsResources/AllEventDetails";
+import CompEvents from "./pages/EventsResources/CompEvents";
 
 
 
@@ -266,6 +269,33 @@ const App = () => {
             </Layout>
           }
         />
+        {/* EVENTS */}
+        <Route
+          path="/resources/event"
+          element={
+            <Layout>
+                <OurEvents/>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Competitions/:competition_name"
+          element={
+            <Layout>
+                <CompEvents/>
+            </Layout>
+          }
+        />
+
+<Route
+          path="/Competitions/:competition_name/:event_name"
+          element={
+            <Layout>
+              <AllEventDetails/>
+            </Layout>
+          }
+        />
+
         {/* Start Competitions */}
         <Route
           path="/Robotics/Vex"
