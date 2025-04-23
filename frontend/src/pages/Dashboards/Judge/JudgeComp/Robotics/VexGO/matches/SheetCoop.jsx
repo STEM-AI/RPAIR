@@ -9,6 +9,8 @@ import Back from "../../../../../../../components/Back/Back";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { BsSkipStartFill } from "react-icons/bs";
+import Alert from "../../../../../../../components/Alert/Alert";
+
 
 const tasks = [
   { title: "Move purple sensor to the fish habitat", points: 1 },
@@ -22,7 +24,8 @@ const tasks = [
   { title: "End with the robot on the green tile", points: 1 },
 ];
 
-export default function SheetCoop() {
+export default function SheetCoop({ eventName, onClose }) {
+
   const { currentMatch, updateMatch } = useMatchContext();
   const [scores, setScores] = useState({});
   const [taskTimes, setTaskTimes] = useState({});
@@ -35,9 +38,13 @@ export default function SheetCoop() {
   const [completedOrder, setCompletedOrder] = useState([]);
   const token = localStorage.getItem("access_token");
   const socketRef = useRef(null);
-
+ 
+  const [socketStatus, setSocketStatus] = useState('disconnected'); // 'connecting', 'connected', 'error'
+  const reconnectTimer = useRef(null);
   const [timeUp, setTimeUp] = useState(false);
   const [showControls, setShowControls] = useState(false);
+
+
 
   useEffect(() => {
     if (currentMatch?.type === 'coop') {
@@ -49,48 +56,94 @@ export default function SheetCoop() {
     }
   }, [currentMatch]);
 
-  // WebSocket connection
-  useEffect(() => {
-    const gameId = currentMatch?.id;
-    const eventName = "vex_go";
-    
-    if (!gameId) return;
-
-    socketRef.current = new WebSocket(
-      `ws://192.168.1.25:8000/ws/competition_event/${eventName}/game/${gameId}/`
-    );
-
-    socketRef.current.onopen = () => {
-      console.log("WebSocket connection established");
-    };
-
-    socketRef.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.status === "paused") {
-        setGamePaused(true);
-        return;
-      }
-      if (data.status === "resume") {
-        setGamePaused(false);
-        return;
-      }
-      if (data.remaining_time !== undefined) {
-        const newRemaining = Math.round(data.remaining_time);
-        setRemainingTime(newRemaining);
-        if (newRemaining <= 0) {
-          setGameActive(false);
-          setTimeUp(true);
+  const gameId = currentMatch.id
+ useEffect(() => {
+      socketRef.current = new WebSocket(
+        `ws://147.93.56.71:8001/ws/competition_event/${eventName}/game/${gameId}/`
+      );
+  
+      socketRef.current.onopen = () => {
+        console.log("WebSocket connection established");
+      };
+  
+      socketRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.status === "paused") {
+          setGamePaused(true);
+          return;
         }
+        if (data.status === "resume") {
+          setGamePaused(false);
+          return;
+        }
+        if (data.remaining_time !== undefined) {
+          setRemainingTime(Math.round(data.remaining_time));
+          if (data.remaining_time <= 0) {
+            setGameActive(false);
+            setTimeUp(true);
+          }
+        }
+      };
+  
+      // Cleanup WebSocket connection when the component unmounts
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.close();
+          console.log("WebSocket connection closed");
+        }
+      };
+    }, [eventName, gameId]);
+  
+    const startGame = () => {
+      setGameActive(true);
+      setGamePaused(false);
+      setShowControls(true);
+      setTimeUp(false);
+  
+      // Send a message to start the game via WebSocket
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "start_game", event_name: eventName, game_id: gameId })
+        );
       }
+    };
+  
+    const pauseGame = () => {
+      if (!gameActive || gamePaused) return;
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "pause_game", event_name: eventName, game_id: gameId })
+        );
+      }
+      setGamePaused(true);
+    };
+  
+    const resumeGame = () => {
+      if (!gameActive || !gamePaused) return;
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "resume_game", event_name: eventName, game_id: gameId })
+        );
+      }
+      setGamePaused(false);
+    };
+  
+    const restartGame = () => {
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "restart_game", event_name: eventName, game_id: gameId })
+        );
+      }
+      setRemainingTime(60);
+    setGameActive(false);
+    setGamePaused(false);
+    setTimeUp(false);
+    setScores({});
+    setTurbines(0);
+    setCompletedOrder([]);
     };
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-        console.log("WebSocket connection closed");
-      }
-    };
-  }, [currentMatch?.id]);
+
 
   const handleCheckboxChange = (index, value) => {
     const elapsedTime = 60 - remainingTime;
@@ -146,90 +199,95 @@ export default function SheetCoop() {
 
   const totalScore = Object.values(scores).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
 
-  const handleSubmit = async () => {
-    if (!totalScore) {
-      alert("Please enter a valid score.");
-      return;
-    }
 
-    try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_API_URL}/vex-go/game/${matchData.matchId}/coop/`,
-        { score: totalScore },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+//   const handleSubmit = async () => {
+//   if (!totalScore) {
+//     Alert.error("Submission Failed", "Please enter a valid score.");
+//     return;
+//   }
 
-      if (response.status === 200 || response.status === 201) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Score submitted successfully!",
-          confirmButtonColor: "#28a745"
-        });
+//   Alert.confirm({
+//     title: 'Confirm Score Submission',
+//     html: `<p>You're about to submit a total score of <strong>${totalScore}</strong> points.</p>
+//           <p class="text-sm text-gray-600">This action cannot be undone.</p>`,
+//     confirmText: 'Submit Anyway',
+//     cancelText: 'Review Again',
+//     onConfirm: async () => {
+//       try {
+//         const response = await axios.patch(
+//           `${process.env.REACT_APP_API_URL}/vex-go/game/${matchData.matchId}/coop/`,
+//           { score: totalScore, task_times: taskTimes },
+//           { headers: { Authorization: `Bearer ${token}` } }
+//         );
+
+//         if (response.status === 200) {
+//           Alert.success({
+//             title: 'Success!',
+//             text: 'Score has been recorded',
+//             onClose: () => {
+//               updateMatch(currentMatch.id, {
+//                 ...currentMatch,
+//                 score: totalScore,
+//                 taskTimes,
+//                 totalTime: 60 - remainingTime
+//               });
+//               onClose();
+//             }
+//           });
+//         }
+//       } catch (error) {
+//         Alert.error('Submission Error', 'Failed to submit score. Please check your connection.');
+//       }
+//     }
+//   });
+// };
+ 
+const handleSubmit = async () => {
+  if (!currentMatch) return;
+  const timeTaken = 60 - remainingTime; // Calculate total time taken
+
+  Alert.confirm({
+    title: 'Submit Final Score?',
+    html: `<p>You're about to submit your final score of <strong>${totalScore}</strong> points.</p>`,
+    confirmText: 'Confirm Submission',
+    cancelText: 'Cancel',
+    onConfirm: async () => {
+      try {
+        await axios.patch(
+          `${process.env.REACT_APP_API_URL}/vex-go/game/${currentMatch.id}/coop/`,
+          {
+            score: totalScore,
+            task_times: taskTimes // Send task times data
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
         updateMatch(currentMatch.id, {
-          ...currentMatch,
           score: totalScore,
-          taskTimes,
-          totalTime: 60 - remainingTime
+          taskTimes: taskTimes, // Use existing taskTimes state
+          totalTime: timeTaken // Include calculated total time
         });
-        navigate('/Dashboard/VexGO/COOPMatches');
+
+        Swal.fire("Success", "Score submitted successfully!", "success");
+        onClose();
+      } catch (error) {
+        console.error("Submission error:", error);
+        Swal.fire("Error", "Failed to submit score", "error");
       }
-    } catch (error) {
-      console.error("Error submitting score:", error);
-      Swal.fire({ icon: "error", title: "Error", text: "Failed to submit score." });
+    },
+    onCancel: () => {
+      Swal.fire('Cancelled', 'Submission was cancelled', 'info');
     }
-  };
+  });
+};
+  
+const formatTime = (seconds) => {
+  const safeSeconds = Math.max(0, seconds);
+  const mins = Math.floor(safeSeconds / 60);
+  const secs = safeSeconds % 60;
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+};
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const startGame = () => {
-    if (!socketRef.current) return;
-    socketRef.current.send(JSON.stringify({
-      action: "start_game",
-      event_name: "vex_go",
-      game_id: currentMatch.id
-    }));
-    setGameActive(true);
-    setShowControls(true);
-    setTimeUp(false);
-  };
-
-  const pauseGame = () => {
-    if (!gameActive || gamePaused) return;
-    socketRef.current.send(JSON.stringify({
-      action: "pause_game",
-      event_name: "vex_go",
-      game_id: currentMatch.id
-    }));
-    setGamePaused(true);
-  };
-
-  const resumeGame = () => {
-    if (!gameActive || !gamePaused) return;
-    socketRef.current.send(JSON.stringify({
-      action: "resume_game",
-      event_name: "vex_go",
-      game_id: currentMatch.id
-    }));
-    setGamePaused(false);
-  };
-
-  const restartGame = () => {
-    socketRef.current.send(JSON.stringify({
-      action: "restart_game",
-      event_name: "vex_go",
-      game_id: currentMatch.id
-    }));
-    setRemainingTime(60);
-    setGameActive(false);
-    setGamePaused(false);
-    setTimeUp(false);
-    setShowControls(false);
-  };
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
@@ -267,7 +325,7 @@ export default function SheetCoop() {
 
   return (
     <div className="max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
-      <Back />
+      
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">🌊 Ocean Science Exploration</h1>
         <p className="text-sm sm:text-lg text-gray-600">Coop Match Score Sheet</p>
@@ -288,39 +346,64 @@ export default function SheetCoop() {
           <p className="text-base sm:text-xl font-bold">{currentMatch?.team2_name || 'N/A'}</p>
         </div>
       </div>
+     
+
       <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-100 p-2 sm:p-4 rounded-lg mb-4 sm:mb-6">
         <div className="flex items-center mb-2 sm:mb-0">
           <FaClock className="text-indigo-600 mr-2 text-lg sm:text-xl" />
-          <span className="text-lg sm:text-xl font-semibold">{formatTime(remainingTime)}</span>
+          <span className="text-lg sm:text-xl font-semibold">
+            {gamePaused
+                ? "Game Paused"
+                : timeUp
+                ? "Time's Up!"
+                : `${remainingTime} seconds`}
+          </span>
         </div>
-        <div className="flex gap-1 sm:gap-2 w-full sm:w-auto">
-          {!showControls && (
-            <button onClick={startGame}
-               className={`flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center justify-center text-sm sm:text-base bg-green-600 hover:bg-green-700 text-white`}
-            >
-              <FaPlay className="mr-1 sm:mr-2" />
-              Start
-            </button>
-          )}
-          {showControls && (
-            <>
-              <button onClick={pauseGame} disabled={!gameActive || gamePaused}
-          className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center justify-center text-sm sm:text-base bg-yellow-500 hover:bg-yellow-600 text-white"
-              >
-                <FaPause className="mr-1 sm:mr-2" /> Pause
-              </button>
-              {/* <button onClick={resumeGame} disabled={!gamePaused} className="bg-green-500 text-white p-3 rounded-full shadow-md hover:bg-green-600">
-                <BsSkipStartFill size={18} />
-              </button> */}
-              <button onClick={restartGame}
-                 className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
-              >
-                <FaRedo className="mr-1 sm:mr-2" />
-                Reset
-              </button>
-            </>
-          )}
-        </div>
+
+          <div className="flex gap-1 sm:gap-2 w-full sm:w-auto">
+                              {!showControls && (
+                                <button
+                                  onClick={startGame}
+                                  disabled={gameActive}
+                                 className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
+                                >
+                                  <FaPlay className="mr-1 sm:mr-2" /> Start
+                                </button>
+                              )}
+                  
+                              {showControls && (
+                                <>
+                                  <button
+                                    onClick={pauseGame}
+                                    disabled={!gameActive || gamePaused}
+                                                 className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
+
+                                  >
+                                    <FaPause className="mr-1 sm:mr-2"  />Pause
+                                  </button>
+                                  <button
+                                    onClick={resumeGame}
+                                    disabled={!gamePaused}
+                                      className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
+
+                                  >
+                                    <BsSkipStartFill size={18} />
+                                  </button>
+                                  <button
+                                    onClick={restartGame}
+                                    disabled={!gameActive}
+                                                      className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
+
+                                  >
+                                  <FaRedo className="mr-1 sm:mr-2" /> Restart
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                  
+                       
+
+
       </div>
 
       {/* Score Table */}
@@ -345,7 +428,9 @@ export default function SheetCoop() {
                     value={turbines}
                     onChange={handleTurbineChange}
                     className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-sm"
+                    // disabled={!gameActive || gamePaused || timeUp}
                     disabled={!gameActive || gamePaused || timeUp}
+
                   />
                 ) : (
                   <input
@@ -353,7 +438,8 @@ export default function SheetCoop() {
                     checked={!!scores[index]}
                     onChange={(e) => handleCheckboxChange(index, e.target.checked)}
                     className="w-5 h-5 accent-green-500 cursor-pointer"
-                    disabled={!gameActive || gamePaused || timeUp}
+                      disabled={!gameActive || gamePaused || timeUp}
+
                   />
                 )}
               </td>
@@ -371,6 +457,7 @@ export default function SheetCoop() {
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <button
             onClick={handleSubmit}
+
             className="px-5 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center shadow-md hover:shadow-lg"
           >
             <FaCheckCircle className="mr-2" /> Submit Score
@@ -385,4 +472,7 @@ export default function SheetCoop() {
       </div>
     </div>
   );
+
 }
+
+

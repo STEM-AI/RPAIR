@@ -351,7 +351,6 @@ export default function CompetitionSheet() {
   return (
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 bg-white shadow-xl rounded-xl border border-gray-200">
       {/* Header */}
-      <Back />
       <div className="text-center mb-4 sm:mb-6">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">🤖 VEX123 Robotics</h1>
         <p className="text-sm sm:text-base md:text-xl text-gray-600">Performance Score Sheet</p>

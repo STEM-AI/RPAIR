@@ -1,7 +1,4 @@
-
-
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaClock, FaPlay, FaPause, FaRedo, FaDownload, FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
@@ -9,6 +6,10 @@ import "jspdf-autotable";
 import { sortBy } from 'lodash';
 import { useMatchContext } from './MatchContext';
 import Back from "../../../../../../../components/Back/Back";
+import Swal from "sweetalert2";
+import axios from "axios";
+import Alert from "../../../../../../../components/Alert/Alert";
+
 
 const tasks = [
   { title: "Move purple sensor to the fish habitat", points: 1 },
@@ -22,21 +23,73 @@ const tasks = [
   { title: "End with the robot on the green tile", points: 1 },
 ];
 
-export default function SheetSolo() {
+export default function SheetSolo({ selectedMatch, onClose, eventName }) {
   const { updateMatch, currentMatch } = useMatchContext();
   const [scores, setScores] = useState({});
   const [turbines, setTurbines] = useState(0);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const navigate = useNavigate();
   const [completedOrder, setCompletedOrder] = useState([]);
+  const [socketStatus, setSocketStatus] = useState('disconnected');
+  const socketRef = useRef(null);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("access_token");
+
+  // WebSocket connection management
+  useEffect(() => {
+    if (!currentMatch?.id) return;
+
+    const connectWebSocket = () => {
+      setSocketStatus('connecting');
+      const wsUrl = `ws://147.93.56.71:8001/ws/competition_event/${eventName}/game/${currentMatch.id}/`;
+      socketRef.current = new WebSocket(wsUrl);
+
+      socketRef.current.onopen = () => {
+        console.log("WebSocket connection established");
+        setSocketStatus('connected');
+      };
+
+      socketRef.current.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.remaining_time !== undefined) {
+            const elapsedTime = 120 - Math.round(data.remaining_time);
+            setTimer(elapsedTime);
+            if (data.remaining_time <= 0) {
+              setIsRunning(false);
+            }
+          }
+        } catch (error) {
+          console.error("Error processing WebSocket message:", error);
+        }
+      };
+
+      socketRef.current.onerror = (error) => {
+        console.error("WebSocket error:", error);
+        setSocketStatus('error');
+      };
+
+      socketRef.current.onclose = () => {
+        console.log("WebSocket connection closed");
+        setSocketStatus('disconnected');
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, [currentMatch?.id, eventName]);
 
   useEffect(() => {
     if (!currentMatch) {
-      navigate('/Dashboard/VexGO/Skills');
+      onClose();
     }
-  }, [currentMatch, navigate]);
-  
+  }, [currentMatch, navigate, onClose]);
+
   useEffect(() => {
     let interval;
     if (isRunning && timer < 120) {
@@ -46,6 +99,51 @@ export default function SheetSolo() {
     }
     return () => clearInterval(interval);
   }, [isRunning, timer]);
+
+  const sendSocketCommand = (action) => {
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Connection Error',
+        text: 'Not connected to server. Please try again.',
+      });
+      return false;
+    }
+
+    try {
+      socketRef.current.send(JSON.stringify({
+        action,
+        eventName,
+        game_id: currentMatch.id
+      }));
+      return true;
+    } catch (error) {
+      console.error(`Error sending ${action} command:`, error);
+      return false;
+    }
+  };
+
+  const handleStart = () => {
+    if (sendSocketCommand("start_game")) {
+      setIsRunning(true);
+    }
+  };
+
+  const handlePause = () => {
+    if (sendSocketCommand("pause_game")) {
+      setIsRunning(false);
+    }
+  };
+
+  const handleReset = () => {
+    if (sendSocketCommand("restart_game")) {
+      setTimer(0);
+      setIsRunning(false);
+      setScores({});
+      setTurbines(0);
+      setCompletedOrder([]);
+    }
+  };
 
   const handleCheckboxChange = (index, value) => {
     setScores(prev => ({ ...prev, [index]: value ? tasks[index].points : 0 }));
@@ -63,7 +161,7 @@ export default function SheetSolo() {
     if (value < 0) value = 0;
     
     setTurbines(value);
-    setScores((prev) => ({ ...prev, 4: value }));
+    setScores(prev => ({ ...prev, 4: value }));
 
     if (value > 0) {
       setCompletedOrder(prev => {
@@ -88,20 +186,46 @@ export default function SheetSolo() {
 
   const totalScore = Object.values(scores).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
 
-  const handleSubmit = () => {
-    if (!currentMatch) return;
+const handleSubmit = async () => {
+  if (!currentMatch) return;
 
-    updateMatch(currentMatch.id, {
-      score: totalScore,
-      taskTimes: completedOrder.reduce((acc, { index, time }) => ({ 
-        ...acc, 
-        [index]: time 
-      })), 
-      totalTime: timer
-    });
- 
-    navigate('/Dashboard/VexGO/Skills');
-  };
+  Alert.confirm({
+    title: 'Submit Final Score?',
+    html: `<p>You're about to submit your final score of <strong>${totalScore}</strong> points.</p>`,
+    confirmText: 'Confirm Submission',
+    cancelText: 'Cancel',
+    onConfirm: async () => {
+      try {
+        await axios.patch(
+          `${process.env.REACT_APP_API_URL}/vex-go/game/${currentMatch.id}/skills/`,
+          {
+            score: totalScore,
+            time_taken: timer
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        updateMatch(currentMatch.id, {
+          score: totalScore,
+          taskTimes: completedOrder.reduce((acc, { index, time }) => ({ 
+            ...acc, 
+            [index]: time 
+          })), 
+          totalTime: timer
+        });
+
+        Swal.fire("Success", "Score submitted successfully!", "success");
+        onClose();
+      } catch (error) {
+        console.error("Submission error:", error);
+        Swal.fire("Error", "Failed to submit score", "error");
+      }
+    },
+    onCancel: () => {
+      Swal.fire('Cancelled', 'Submission was cancelled', 'info');
+    }
+  });
+};
 
   const formatTime = (seconds) => {
     const safeSeconds = Math.max(0, seconds);
@@ -142,13 +266,7 @@ export default function SheetSolo() {
     doc.save(`Match_${currentMatch?.id || ''}_Score.pdf`);
   };
 
-  const handleReset = () => {
-    setIsRunning(false);
-    setTimer(0);
-    setScores({});
-    setTurbines(0);
-    setCompletedOrder([]);
-  };
+
 
   return (
     <div className="max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
@@ -174,15 +292,26 @@ export default function SheetSolo() {
         </div>
       </div>
 
-      {/* Timer */}
+    
+
       <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-100 p-2 sm:p-4 rounded-lg mb-4 sm:mb-6">
         <div className="flex items-center mb-2 sm:mb-0">
           <FaClock className="text-indigo-600 mr-2 text-lg sm:text-xl" />
-          <span className="text-lg sm:text-xl font-semibold">{formatTime(120 - timer)}</span>
+          <span className="text-lg sm:text-xl font-semibold">
+            {formatTime(120 - timer)}
+            <span className={`ml-2 text-xs font-normal ${
+              socketStatus === 'connected' ? 'text-green-600' : 
+              socketStatus === 'connecting' ? 'text-yellow-600' : 
+              'text-red-600'
+            }`}>
+              ({socketStatus})
+            </span>
+          </span>
         </div>
         <div className="flex gap-1 sm:gap-2 w-full sm:w-auto">
           <button
-            onClick={() => setIsRunning(!isRunning)}
+            onClick={isRunning ? handlePause : handleStart}
+            disabled={socketStatus !== 'connected'}
             className={`flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center justify-center text-sm sm:text-base ${
               isRunning ? "bg-yellow-500 hover:bg-yellow-600" : "bg-green-600 hover:bg-green-700"
             } text-white`}
@@ -192,6 +321,7 @@ export default function SheetSolo() {
           </button>
           <button
             onClick={handleReset}
+            disabled={socketStatus !== 'connected'}
             className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
           >
             <FaRedo className="mr-1 sm:mr-2" /> Reset

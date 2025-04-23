@@ -322,7 +322,6 @@ export default function CompetitionSheetContainer() {
       <Header />
 
 
-
       
       <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4 sm:mb-6">
       <TeamInput selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />

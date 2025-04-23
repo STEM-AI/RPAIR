@@ -100,7 +100,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId }) => {
     const [gamePaused, setGamePaused] = useState(false);
     const [timeUp, setTimeUp] = useState(false);
     const socketRef = useRef(null);
-    const eventName = localStorage.getItem("selected_event_name");
+    const eventName = "VexIQ"
     const [showControls, setShowControls] = useState(false);
     const token = localStorage.getItem("access_token");
   
@@ -122,89 +122,88 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId }) => {
     onCalculate(score || 0);
     onClose();
   };
-// Establish WebSocket connection when the component mounts
-  useEffect(() => {
-    socketRef.current = new WebSocket(
-      `wss://rpair.org/ws/competition_event/${eventName}/game/${gameId}/`
-    );
-
-    socketRef.current.onopen = () => {
-      console.log("WebSocket connection established");
-    };
-
-    socketRef.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.status === "paused") {
-        setGamePaused(true);
-        return;
-      }
-      if (data.status === "resume") {
-        setGamePaused(false);
-        return;
-      }
-      if (data.remaining_time !== undefined) {
-        setRemainingTime(Math.round(data.remaining_time));
-        if (data.remaining_time <= 0) {
-          setGameActive(false);
-          setTimeUp(true);
+   // Establish WebSocket connection when the component mounts
+    useEffect(() => {
+      socketRef.current = new WebSocket(
+        `ws://147.93.56.71:8001/ws/competition_event/${eventName}/game/${gameId}/`
+      );
+  
+      socketRef.current.onopen = () => {
+        console.log("WebSocket connection established");
+      };
+  
+      socketRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.status === "paused") {
+          setGamePaused(true);
+          return;
         }
-      }
-    };
-
-    // Cleanup WebSocket connection when the component unmounts
-    return () => {
+        if (data.status === "resume") {
+          setGamePaused(false);
+          return;
+        }
+        if (data.remaining_time !== undefined) {
+          setRemainingTime(Math.round(data.remaining_time));
+          if (data.remaining_time <= 0) {
+            setGameActive(false);
+            setTimeUp(true);
+          }
+        }
+      };
+  
+      // Cleanup WebSocket connection when the component unmounts
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.close();
+          console.log("WebSocket connection closed");
+        }
+      };
+    }, [eventName, gameId]);
+  
+    const startGame = () => {
+      setGameActive(true);
+      setGamePaused(false);
+      setShowControls(true);
+      setTimeUp(false);
+  
+      // Send a message to start the game via WebSocket
       if (socketRef.current) {
-        socketRef.current.close();
-        console.log("WebSocket connection closed");
+        socketRef.current.send(
+          JSON.stringify({ action: "start_game", event_name: eventName, game_id: gameId })
+        );
       }
     };
-  }, [eventName, gameId]);
-
-  const startGame = () => {
-    setGameActive(true);
-    setGamePaused(false);
-    setShowControls(true);
-    setTimeUp(false);
-
-    // Send a message to start the game via WebSocket
-    if (socketRef.current) {
-      socketRef.current.send(
-        JSON.stringify({ action: "start_game", event_name: eventName, game_id: gameId })
-      );
-    }
-  };
-
-  const pauseGame = () => {
-    if (!gameActive || gamePaused) return;
-    if (socketRef.current) {
-      socketRef.current.send(
-        JSON.stringify({ action: "pause_game", event_name: eventName, game_id: gameId })
-      );
-    }
-    setGamePaused(true);
-  };
-
-  const resumeGame = () => {
-    if (!gameActive || !gamePaused) return;
-    if (socketRef.current) {
-      socketRef.current.send(
-        JSON.stringify({ action: "resume_game", event_name: eventName, game_id: gameId })
-      );
-    }
-    setGamePaused(false);
-  };
-
-  const restartGame = () => {
-    if (socketRef.current) {
-      socketRef.current.send(
-        JSON.stringify({ action: "restart_game", event_name: eventName, game_id: gameId })
-      );
-    }
-    setRemainingTime(60);
-    setGamePaused(false);
-    setTimeUp(false);
-  };
-
+  
+    const pauseGame = () => {
+      if (!gameActive || gamePaused) return;
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "pause_game", event_name: eventName, game_id: gameId })
+        );
+      }
+      setGamePaused(true);
+    };
+  
+    const resumeGame = () => {
+      if (!gameActive || !gamePaused) return;
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "resume_game", event_name: eventName, game_id: gameId })
+        );
+      }
+      setGamePaused(false);
+    };
+  
+    const restartGame = () => {
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "restart_game", event_name: eventName, game_id: gameId })
+        );
+      }
+      setRemainingTime(60);
+      setGamePaused(false);
+      setTimeUp(false);
+    };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">

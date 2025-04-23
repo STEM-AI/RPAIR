@@ -5,9 +5,11 @@ import CalculatorSkills from "../Scores/ScoresSkills";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
+import { useEventNameContext } from "../../../../../../../context/EventName";
 
 
 const Skills = () => {
+  const { currentCompetition } = useEventNameContext();
   const [expandedRounds, setExpandedRounds] = useState({ 1: true, 2: false, 3: false });
   const [scores, setScores] = useState({});
   const [confirmed, setConfirmed] = useState({});
@@ -20,7 +22,7 @@ const Skills = () => {
   const [gameTime, setGameTime] = useState("");
   const [activeTab, setActiveTab] = useState('driver_iq');
 
-  const event_name = localStorage.getItem("selected_event_name");
+  const event_name = currentCompetition
   const token = localStorage.getItem("access_token");
 
   const tabs = [
@@ -33,8 +35,8 @@ const Skills = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/event/${event_name}/games-schedule/`,
-        { stage: activeTab, time: gameTime },
+        `${process.env.REACT_APP_API_URL}/core/event/${event_name}/games/schedule/`,
+        { stage: activeTab, game_time: gameTime },
         {
           headers: {
             "Content-Type": "application/json",
@@ -43,6 +45,8 @@ const Skills = () => {
         }
       );
       setSchedule(response.data);
+      console.log(response.data);
+      
     } catch (err) {
       console.error("Error posting schedule:", err);
     }
@@ -53,41 +57,12 @@ const Skills = () => {
       (team) => confirmed[round]?.[team.id] === true
     );
   };
-  // Score confirmation logic
-  // const confirmScores = async (round, teamId) => {
-  //   const team = schedule.find(t => t.id === teamId);
-  //   if (!team) return;
-
-  //   setConfirmed(prev => ({ ...prev, [round]: { ...prev[round], [teamId]: true } }));
-
-  //   if (round < 3 && isRoundCompleted(round)) {
-  //     setExpandedRounds(prev => ({ ...prev, [round + 1]: true }));
-  //   }
-
-  //   try {
-  //     await axios.post(
-  //       `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
-  //       {
-  //         event_name: event_name,
-  //         score: scores[round]?.[teamId]?.[activeTab === 'driver_iq' ? 'driver_iq' : 'auto'] || 0
-  //       },
-  //       { headers: { Authorization: `Bearer ${token}` } }
-  //     );
-  //     Swal.fire("Success", "Score submitted!", "success");
-  //   } catch (error) {
-  //     console.error("Submission error:", error);
-  //     Swal.fire("Error", "Submission failed!", "error");
-  //   }
-  // };
-// داخل مكون Skills (استبدال دالة confirmScores الحالية)
+ 
 const confirmScores = async (round, teamId) => {
   const team = schedule.find(t => t.id === teamId);
   if (!team) return;
 
-  // الحصول على النتيجة الحالية
   const currentScore = scores[round]?.[teamId]?.[activeTab === 'driver_iq' ? 'driver' : 'auto'] || 0;
-
-  // عرض نافذة التأكيد
   Alert.confirm({
     title: 'Submit Final Score?',
     html: `<p>You're about to submit your final score of <strong>${currentScore}</strong> points.</p>`,
@@ -95,10 +70,8 @@ const confirmScores = async (round, teamId) => {
     cancelText: 'Cancel',
     onConfirm: async () => {
       try {
-        // تحديث حالة التأكيد
         setConfirmed(prev => ({ ...prev, [round]: { ...prev[round], [teamId]: true } }));
 
-        // إرسال النتيجة للخادم
         await axios.post(
           `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
           {
@@ -232,7 +205,7 @@ const confirmScores = async (round, teamId) => {
           <tbody>
             {schedule.map(team => (
               <tr key={team.id} className="border-t">
-                <td className="p-4 text-center">{team.team1}</td>
+                <td className="p-4 text-center">{team.team1_name}</td>
                 <td className="p-4 text-center">{team.id}</td>
                 <td className="p-4 text-center">
                   {scores[selectedRound]?.[team.id]?.[activeTab === 'driver_iq' ? 'driver' : 'auto'] || 0}
@@ -241,7 +214,7 @@ const confirmScores = async (round, teamId) => {
                       onClick={() => openCalculator(team, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
                       className="ml-2 text-blue-600"
                     >
-                     <AiOutlineCalculator />
+                     <AiOutlineCalculator  className="text-2xl"/>
                     </button>
                   )}
                 </td>
