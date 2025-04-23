@@ -310,10 +310,10 @@ export default function CompetitionSheetContainer() {
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 bg-white shadow-xl rounded-xl border border-gray-200">
       <Header />
       <GameScheduleForm
-  event_name="vex_123"
-  token={token}
-  onSuccess={(data) => console.log("Success!", data)}
-/>
+      event_name="vex_123"
+      token={token}
+      onSuccess={(data) => console.log("Success!", data)}
+    />
 
 
       

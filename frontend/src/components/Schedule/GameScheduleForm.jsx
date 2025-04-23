@@ -4,6 +4,7 @@ import axios from "axios";
 const GameScheduleForm = ({ event_name, token, onSuccess }) => {
   const [selectedStage, setSelectedStage] = useState("");
   const [gameTime, setGameTime] = useState("");
+  const [schedule, setSchedule] = useState([]);
 
   const stagesOptions = [
     "driver_go",
@@ -35,8 +36,10 @@ const GameScheduleForm = ({ event_name, token, onSuccess }) => {
         }
       );
       console.log("Game schedule created:", response.data);
+      setSchedule(response.data);
       if (onSuccess) {
         onSuccess(response.data);
+
       }
     } catch (error) {
       console.error("Error creating game schedule:", error.response.data);
@@ -61,26 +64,24 @@ const GameScheduleForm = ({ event_name, token, onSuccess }) => {
           ))}
         </select>
       </div>
-
-      <div>
-        <label className="block font-semibold mb-2">Game Time:</label>
-        <input
-          type="time"
-          value={gameTime}
-          onChange={(e) => setGameTime(e.target.value)}
-          required
-          className="border p-2 rounded w-full"
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 "
-      >
-        Submit Game Schedule
-      </button>
+       <div className="flex justify-center mb-6 gap-4">
+            <input
+              type="time"
+              value={gameTime}
+              onChange={(e) => setGameTime(e.target.value)}
+              required
+              className="px-4 py-2 rounded-md border border-indigo-300 focus:ring-2 focus:ring-indigo-200 text-lg"
+            />
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition-all"
+            >
+              Set Game Schedule
+            </button>
+        </div>
     </form>
   );
 };
 
 export default GameScheduleForm;
+

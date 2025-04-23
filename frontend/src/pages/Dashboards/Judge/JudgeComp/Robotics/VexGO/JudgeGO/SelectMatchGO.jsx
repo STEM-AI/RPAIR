@@ -5,7 +5,6 @@ import { BiJoystick } from "react-icons/bi";
 import { GiTeamIdea } from "react-icons/gi";
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
-import Back from "../../../../../../../components/Back/Back"
 
 
 const SelectMatchGO = () => {
@@ -22,7 +21,6 @@ const SelectMatchGO = () => {
 
   return (
     <div className=" w-full flex  p-8">
-      <Back/>
       <div className="grid gap-12 md:grid-cols-2 md:gap-8">
         {[ 
           { 

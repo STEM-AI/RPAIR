@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import ScoreTeams from "../Scores/scoreTeams";
 import { FaTrophy, FaCheck } from "react-icons/fa";
 import axios from "axios";
-
+import { useEventNameContext } from "../../../../../../../context/EventName";
+import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
 const Teamwork = () => {
+  const { currentCompetition } = useEventNameContext();
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [scores, setScores] = useState({});
   const [rankings, setRankings] = useState([]);
@@ -13,23 +15,21 @@ const Teamwork = () => {
   const [showRanking, setShowRanking] = useState(false);
   const [schedule, setSchedule] = useState([]);
   const [gameTime, setGameTime] = useState("");
-
-  const event_name = localStorage.getItem("selected_event_name");
   const token = localStorage.getItem("access_token");
 
   const formData = {
     stage: "teamwork",
-    time: gameTime,
+    game_time: gameTime,
   };
 
- 
+  const event_name = currentCompetition;
 
   // Handle posting game schedule and then fetch updated schedule
   const handleSubmit = async (event) => {
   event.preventDefault();
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/event/${event_name}/games-schedule/`,
+      `${process.env.REACT_APP_API_URL}/core/event/${event_name}/games/schedule/`,
       formData,
       {
         headers: {
@@ -42,7 +42,6 @@ const Teamwork = () => {
     console.log("Schedule posted successfully");
     console.log("Response Data:", response.data); 
 
-    // 🟢 تحديث حالة الجدول بالبيانات المسترجعة من API
     setSchedule(response.data); 
 
   } catch (err) {
@@ -154,10 +153,10 @@ const Td = ({ children, className }) => (
               {schedule.map((match) => (
                 <tr key={match.id} className="hover:bg-gray-50/50">
                   <Td>{match.id}</Td>
-                  <Td>{match.team1}</Td>
-                  <Td className="hidden sm:table-cell">{match.team1_id}</Td>
-                  <Td>{match.team2}</Td>
-                  <Td className="hidden sm:table-cell">{match.team2_id}</Td>
+                  <Td>{match.team1_name}</Td>
+                  <Td className="hidden sm:table-cell">{match.team1}</Td>
+                  <Td>{match.team2_name}</Td>
+                  <Td className="hidden sm:table-cell">{match.team2}</Td>
                   <Td>
                     <div className="flex items-center justify-center gap-1.5">
                       <span className="text-sm font-medium text-blue-600">
