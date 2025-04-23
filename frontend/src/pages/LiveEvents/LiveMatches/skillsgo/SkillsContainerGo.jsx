@@ -1,12 +1,11 @@
-
-
 import React, { useEffect, useState, useRef } from "react";
-import { FaTrophy, FaMedal, FaSyncAlt, FaRobot, FaCar } from "react-icons/fa";
-import { BiSolidJoystick } from "react-icons/bi";
+import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
+import AutoRoundsComponent from "./AutoRoundsComponent";
+import DriverRoundsComponent from "./DriverRoundsComponent";
 
-const LiveSkillsVex = () => {
+const SkillsContainerGO = () => {
   const [rankings, setRankings] = useState([]);
   const [scores, setScores] = useState({});
   const [lastUpdate, setLastUpdate] = useState(new Date());
@@ -16,7 +15,7 @@ const LiveSkillsVex = () => {
   const [activeRounds, setActiveRounds] = useState([1]);
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
-  const eventName = "VexIQ"
+  const eventName = "VexIQ";
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -112,8 +111,9 @@ const LiveSkillsVex = () => {
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <Helmet>
-                    <title>Live-Skills</title>
-                  </Helmet>   
+        <title>Live-Skills</title>
+      </Helmet>   
+      
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
@@ -125,90 +125,13 @@ const LiveSkillsVex = () => {
         </div>
       </div>
 
-      {/* Rounds Section - Now with two tables side by side */}
+      {/* Rounds Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-
-
-      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-          <div className="bg-gradient-to-r from-teal-600 to-teal-800 p-4">
-            <h3 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
-              <BiSolidJoystick /> Driver Rounds
-            </h3>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {matches.filter(team => team.round === 2).map((team) => (
-                  <tr key={`driver-${team.code}`} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {team.score.driver > 0 ? (
-                        <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
-                          {team.score.driver}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-
-        {/* Auto Rounds Table */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4">
-            <h3 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
-              <FaRobot /> Auto Rounds
-            </h3>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {matches.filter(team => team.round === 1).map((team) => (
-                  <tr key={`auto-${team.code}`} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {team.score.autonomous > 0 ? (
-                        <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium">
-                          {team.score.autonomous}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-
+        <DriverRoundsComponent matches={matches} />
+        <AutoRoundsComponent matches={matches} />
       </div>
 
-      {/* Rankings Section - Unchanged */}
+      {/* Rankings Section */}
       <div className="flex justify-center my-8">
         <button
           onClick={fetchRankings}
@@ -276,4 +199,4 @@ const LiveSkillsVex = () => {
   );
 };
 
-export default LiveSkillsVex;
+export default SkillsContainerGO;
