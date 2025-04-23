@@ -26,6 +26,10 @@ export default function CompetitionSheetContainer() {
   const [currentMode, setCurrentMode] = useState(null);
   const [completedModes, setCompletedModes] = useState([]);
   const token = localStorage.getItem("access_token");
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [currentGame, setCurrentGame] = useState(null);
+
+
 
   
   // Data structure for all modes
@@ -121,12 +125,19 @@ export default function CompetitionSheetContainer() {
     return diffs;
   };
 
-  // Handlers
-  const handleGameModeSelect = useCallback((mode) => {
+
+
+  const handleGameModeSelect = ({ mode, gameId }) => {
+    setCurrentGame({ gameId });
     setTimer(INITIAL_TIME);
     setIsRunning(false);
     setCurrentMode(mode);
-  }, []);
+    // ... other handling
+  };
+
+
+
+
 
   const handleModeComplete = useCallback(() => {
     if (!currentMode || !isRunning || completedModes.includes(currentMode.name)) return;
@@ -309,17 +320,12 @@ export default function CompetitionSheetContainer() {
   return (
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 bg-white shadow-xl rounded-xl border border-gray-200">
       <Header />
-      <GameScheduleForm
-      event_name="vex_123"
-      token={token}
-      onSuccess={(data) => console.log("Success!", data)}
-    />
 
 
       
       <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <TeamInput teamName={teamName} setTeamName={setTeamName} />
-        <TimerControls 
+      <TeamInput selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
+              <TimerControls 
           timer={timer}
           isRunning={isRunning}
           setIsRunning={setIsRunning}
@@ -329,12 +335,14 @@ export default function CompetitionSheetContainer() {
         />
       </div>
 
-      <GameModeNavigation 
-        GAME_MODES={GAME_MODES}
-        handleGameModeSelect={handleGameModeSelect}
-        currentMode={currentMode}
-        completedModes={completedModes}
-      />
+      <GameModeNavigation
+      GAME_MODES={GAME_MODES}
+      handleGameModeSelect={handleGameModeSelect}
+      currentGame={currentGame}
+      currentMode={currentMode}
+      completedModes={completedModes}
+      selectedTeam={selectedTeam}
+    />
 
       <MissionTable
         currentMode={currentMode}

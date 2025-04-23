@@ -16,7 +16,7 @@ const LiveSkillsVex = () => {
   const [activeRounds, setActiveRounds] = useState([1]);
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
-  const eventName = localStorage.getItem('selected_event_name');
+  const eventName = "VexIQ"
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -28,7 +28,7 @@ const LiveSkillsVex = () => {
     }
 
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -43,7 +43,7 @@ const LiveSkillsVex = () => {
   };
 
   useEffect(() => {
-    socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");
