@@ -8,15 +8,13 @@ from django.core.management import call_command
 
 @shared_task
 def update_remaining_time(event_name, game_id, start_time=None):    
-
-    ## TODO: check this
     try:
         game = EventGame.objects.get(id=game_id)
     except EventGame.DoesNotExist:
         return f"Game with ID {game_id} not found."
     
     # Mark the game as active
-    if not game.is_active :
+    if not game.is_active:
         print("Game is not active")
         game.is_active = True
         game.save()
@@ -30,37 +28,27 @@ def update_remaining_time(event_name, game_id, start_time=None):
 
     # Calculate the remaining time
     remaining_time = game.paused_time - elapsed_time
-    print("game paused time " ,game.paused_time)
-    print("remiaing time " , remaining_time)
+    print("game paused time ", game.paused_time)
+    print("remaining time ", remaining_time)
 
-    if game.is_paused :
+    if game.is_paused:
         game.paused_time = remaining_time 
         game.save()
         return 
 
     if remaining_time <= 0:
-        if game.stage == 'vex_123':
-            if game.tick_count >= 3:
-                game.completed = True
-                game.is_active = False
-                game.paused_time = 0
-                game.save()
-                remaining_time = 0
-            else:
-                game.tick_count += 1
-                game.is_active = False
-                game.save()
-                remaining_time = game.paused_time - elapsed_time
-        else:
-            # Game is over
-            game.completed = True
-            game.is_active = False
-            game.paused_time = 0
-            game.save()
-            remaining_time = 0
+        # Game is over
+        game.completed = True
+        game.is_active = False
+        game.paused_time = 0
+        game.timer_task_id = None  # Clear task ID
+        game.save()
+        remaining_time = 0
     else:
         # Schedule the task to run again after 1 second
-        update_remaining_time.apply_async(args=[event_name, game_id, start_time], countdown=1)
+        next_task = update_remaining_time.apply_async(args=[event_name, game_id, start_time], countdown=1)
+        game.timer_task_id = next_task.id  # Store the new task ID
+        game.save()
 
     # Notify the WebSocket group
     channel_layer = get_channel_layer()

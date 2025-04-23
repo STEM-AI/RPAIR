@@ -2,36 +2,67 @@ from core.views import GameSkillsView
 from vex_123.serializers import GameSerializer
 from core.serializers import SkillsTeamRankSerializer
 from rapair_db.models import SkillsTeamScore
-from rapair_db.models import EventGame
-from django.db.models import Subquery, OuterRef, FloatField,F
+from rapair_db.models import EventGame,CompetitionEvent
+from django.db.models import Subquery, OuterRef,F,Sum,Value
 from rest_framework.generics import ListAPIView
+from vex_123.serializers import GameCreateSerializer
+from rest_framework.generics import CreateAPIView
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.db.models.functions import Coalesce
+from django.db.models.fields import FloatField
 
+
+
+
+class GameCreateView(CreateAPIView):
+    serializer_class = GameCreateSerializer
+    queryset = EventGame.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        event_name = self.kwargs.get('event_name')
+        if not event_name:
+            return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        event = CompetitionEvent.objects.get(name=event_name)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(event=event)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 class Vex123GameView(GameSkillsView):
     serializer_class = GameSerializer
+    permission_classes = [IsAuthenticated]
 
 class Vex123RankView(ListAPIView):
     serializer_class = SkillsTeamRankSerializer
     queryset = SkillsTeamScore.objects.all()
 
-def get_queryset(self):
-    queryset = super().get_queryset()
-    # Get the event name from the URL parameters
-    event_name = self.kwargs.get('event_name')
-    if not event_name:
-        return SkillsTeamScore.objects.none()
-    # Subquery to get time_taken for the team in the given event
-    time_taken_subquery = (
-        EventGame.objects
-        .filter(team1=OuterRef('team'), event__name=event_name)
-        .values('time_taken')[:1]  # Directly fetch time_taken
-    )
-    # Filter the queryset based on the event name
-    queryset = queryset.filter(team__competition_event__name=event_name)
-    # Annotate the queryset with driver_score and time_taken
-    queryset = queryset.annotate(
-        total_score=F('driver_score'),  # Use only driver_score
-        time_taken=Subquery(time_taken_subquery, output_field=FloatField())
-    )
-    # Order the queryset by total_score and time_taken
-    queryset = queryset.order_by('-total_score', 'time_taken')
-    return queryset
+    def get_queryset(self):
+        event_name = self.kwargs.get('event_name')
+        if not event_name:
+            return SkillsTeamScore.objects.none()
+
+        queryset = SkillsTeamScore.objects.filter(
+            team__competition_event__name=event_name
+        ).values('team').annotate(
+            total_score=Sum('driver_score'),
+            team_name=F('team__name')
+        )
+
+        queryset = queryset.annotate(
+            total_time_taken=Coalesce(
+                Subquery(
+                    EventGame.objects
+                    .filter(team1=OuterRef('team'), event__name=event_name)
+                    .values('team1')
+                    .annotate(total=Sum('time_taken'))
+                    .values('total')[:1],
+                    output_field=FloatField()
+                ),
+                Value(0, output_field=FloatField())
+            )
+        )
+
+        return queryset.order_by('-total_score', 'total_time_taken')

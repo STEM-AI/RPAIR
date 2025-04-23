@@ -23,7 +23,7 @@ def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
-            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage,paused_time=60, schedule=schedule))
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage,paused_time=60, schedule=schedule, duration=60))
             game_time += timedelta(minutes=5)   
 
     return games
@@ -37,23 +37,12 @@ def skills_schedule(event , game_time , stage, schedule):
         paused_time = 120
     elif stage in ['driver_iq','coding','auto']:
         paused_time = 60
-    elif stage == 'vex_123':
-        paused_time = 300
+
 
     for i in range(len(event_teams)):
-            games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage,paused_time=paused_time , schedule=schedule))
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage,paused_time=paused_time , schedule=schedule, duration=paused_time))
             game_time += timedelta(minutes=5)
 
-    # if stage == 'driver_go':
-    #     for i in range(len(event_teams)):
-    #         games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage,paused_time=120))
-    #         game_time += timedelta(minutes=5)
-    # elif stage in ['driver_iq','coding','auto']:
-    #     print("driver go or coding")
-    #     for i in range(len(event_teams)):
-    #         games.append(EventGame(event= event ,team1=event_teams[i], team2=None, time=game_time.time() , stage=stage ,paused_time=60))
-    #         game_time += timedelta(minutes=5)
-    
     return games
         
 
@@ -67,7 +56,7 @@ def create_schedule(event, stage=None , time=None, schedule=None):
         return Response({"error": "Invalid time format. Please use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        if stage in ['driver_iq','driver_go','auto','coding','vex_123']:
+        if stage in ['driver_iq','driver_go','auto','coding']:
             print("driver , auto")
             games = skills_schedule(event, game_time, stage, schedule)
 

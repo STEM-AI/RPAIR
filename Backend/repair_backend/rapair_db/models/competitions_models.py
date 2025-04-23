@@ -89,8 +89,9 @@ class EventGame(models.Model):
     is_active = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)
     paused_time = models.FloatField(default=15)
-    tick_count = models.IntegerField(default=0)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE , null=True , blank=True)
+    duration = models.IntegerField(default=60)
+    timer_task_id = models.CharField(max_length=255, null=True, blank=True)
 
     STAGE_CHOICES = (
         ('teamwork', 'Teamwork'),

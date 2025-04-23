@@ -15,6 +15,8 @@ class UserCreateTeamView(APIView):
 
     def post(self, request):
         event = event_utils.get_object(event_name =request.data.get('event_name'))
+        if not event:
+            return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = TeamSerializer(data = request.data , context = {'event':event})
         if serializer.is_valid():
             serializer.save(user_id=request.user.id)

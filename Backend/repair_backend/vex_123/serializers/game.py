@@ -1,4 +1,19 @@
 from core.serializers import GamesSerializer
+from rapair_db.models import EventGame
+from rest_framework import serializers
+
+class GameCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventGame
+        fields = ['id','event', 'team1', 'time', 'stage', 'paused_time']
+        read_only_fields = ['event','paused_time','stage']
+
+    def create(self, validated_data):
+        validated_data['paused_time'] = 300
+        validated_data['duration'] = 300
+        validated_data['stage'] = 'vex_123'
+        return super().create(validated_data)
+
 
 class GameSerializer(GamesSerializer):
     """

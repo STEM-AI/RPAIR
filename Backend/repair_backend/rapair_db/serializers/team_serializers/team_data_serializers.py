@@ -13,12 +13,12 @@ class TeamSerializer(serializers.ModelSerializer):
     organization_info = serializers.JSONField(write_only=True)
     organization = OrganizationTeamSerializer(read_only=True)
     competition = CompetitionsSerializer(read_only=True)
-    sponsors = TeamSponsorSerializer(many=True) 
-    coach = TeamCoachSerializer(many=True)
-    social_media = TeamSocialMediaSerializer(many=True)
-    previous_competition = TeamPreviousCompetitionSerializer(many=True)
+    sponsors = TeamSponsorSerializer(many=True,required=False) 
+    coach = TeamCoachSerializer(many=True,required=False)
+    social_media = TeamSocialMediaSerializer(many=True,required=False)
+    previous_competition = TeamPreviousCompetitionSerializer(many=True,required=False)
     members = TeamMemberSerializer(many=True)
-    competition_event = serializers.SerializerMethodField(required = False)
+    competition_event = serializers.SerializerMethodField()
     class Meta:
         model = Team
         fields = [
@@ -33,20 +33,20 @@ class TeamSerializer(serializers.ModelSerializer):
             'organization': {'required': False},
             'competition': {'required': False},
             'sponsors': {'required': False},
-            'coach': {'required': True},
-            'social_media': {'required': True},
+            'coach': {'required': False},
+            'social_media': {'required': False},
             'previous_competition': {'required': False},
             'members': {'required': True},
         }
 
     def create(self, validated_data) :
 
-        organization_info = validated_data.pop('organization_info')
-        sponsors_info = validated_data.pop('sponsors')
-        coachs_info = validated_data.pop('coach')
-        social_media_info = validated_data.pop('social_media')
-        previous_competition_info = validated_data.pop('previous_competition')
-        members_info = validated_data.pop('members')
+        organization_info = validated_data.pop('organization_info',None)
+        sponsors_info = validated_data.pop('sponsors',None)
+        coachs_info = validated_data.pop('coach',None)
+        social_media_info = validated_data.pop('social_media',None)    
+        previous_competition_info = validated_data.pop('previous_competition',None)
+        members_info = validated_data.pop('members',None)
 
 
         event = self.context["event"]
@@ -54,12 +54,18 @@ class TeamSerializer(serializers.ModelSerializer):
         team = self.Meta.model(**validated_data)
         team.competition_event = event
 
-        team.organization_info = organization_info
-        team.sponsors_info = sponsors_info
-        team.coachs_info = coachs_info
-        team.social_media_info = social_media_info
-        team.previous_competition_info = previous_competition_info
-        team.members_info = members_info
+        if organization_info:
+            team.organization_info = organization_info
+        if sponsors_info:
+            team.sponsors_info = sponsors_info
+        if coachs_info:
+            team.coachs_info = coachs_info
+        if social_media_info:
+            team.social_media_info = social_media_info
+        if previous_competition_info:
+            team.previous_competition_info = previous_competition_info
+        if members_info:
+            team.members_info = members_info
 
         team.save()
 

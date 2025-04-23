@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from core.tasks import update_remaining_time  # Import the Celery task
 from rapair_db.models import EventGame
 from asgiref.sync import sync_to_async
+from celery.result import AsyncResult
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -77,10 +78,29 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await self.send(json.dumps({ "status": "resumed" }))
 
             elif data["action"] == "restart_game":
-                game.paused_time = 15
+                # Revoke existing task if any
+                if game.timer_task_id:
+                    result = AsyncResult(game.timer_task_id)
+                    result.revoke(terminate=True)
+                
+                game.completed = False
+                game.is_active = True
+                game.paused_time = game.duration
+                game.timer_task_id = None
                 await sync_to_async(game.save)()
                 update_remaining_time.delay(self.event_name, self.game_id)
                 await self.send(json.dumps({"message": "Game timer restarted"}))
+            elif data["action"] == "end_game":
+                # Revoke existing task if any
+                if game.timer_task_id:
+                    result = AsyncResult(game.timer_task_id)
+                    result.revoke(terminate=True)
+                
+                game.completed = True
+                game.is_active = False
+                game.timer_task_id = None
+                await sync_to_async(game.save)()
+                await self.send(json.dumps({"message": "Game timer ended"}))
 
         except json.JSONDecodeError as e:
             await self.send(json.dumps({"error": "Invalid JSON data"}))

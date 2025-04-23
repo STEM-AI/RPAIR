@@ -21,7 +21,7 @@ def get_or_create_organization(sender , instance , **kwargs):
             if created :
                 organization.contact = OrganizationContact.objects.create(
                     organization=organization, 
-                    phone_number=organization_info['contact_phone_number']
+                    phone_number=organization_info['phone_number']
                 )
                 organization.save()
             instance.organization_id = organization.id
@@ -97,7 +97,7 @@ def add_team_score(sender, instance, created, **kwargs):
 
     if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
         print("setting team skills score sginals")
-        if instance.stage in ['driver_iq','driver_go','vex_123']:
+        if instance.stage in ['driver_iq','driver_go']:
             print("Setting driver scores")
             skills_score, created = instance.team1.skills_scores.get_or_create(
                 team=instance.team1,
@@ -126,4 +126,7 @@ def add_team_score(sender, instance, created, **kwargs):
                 skills_score.autonomous_score = instance.autonomous_score
                 print("driver_score", skills_score.driver_score)
                 skills_score.save()
+        elif instance.stage in ['vex_123']:
+            print("Setting vex 123 scores") 
+            instance.team1.skills_scores.create(driver_score = instance.driver_score,autonomous_score = 0,game=instance)
 
