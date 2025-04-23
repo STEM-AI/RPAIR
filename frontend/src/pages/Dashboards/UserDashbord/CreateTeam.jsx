@@ -25,10 +25,10 @@ const CreateTeam = () => {
     team_leader_name: "",
     team_leader_email: "",
     team_leader_phone_number: "",
-    sponsors: [{ name: "", email: "" }],
+    // sponsors: [{ name: "", email: "" }],
     coach: [{ name: "", email: "", phone_number: "", position: "" }],
-    social_media: [{ platform: "", url: "" }],
-    previous_competition: [{ name: "", year: "" }],
+    // social_media: [{ platform: "", url: "" }],
+    // previous_competition: [{ name: "", year: "" }],
     members: [{ name: "", email: "", phone_number: "" }],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -143,10 +143,10 @@ const CreateTeam = () => {
       team_leader_name: "",
       team_leader_email: "",
       team_leader_phone_number: "",
-      sponsors: [{ name: "", email: "" }],
+      // sponsors: [{ name: "", email: "" }],
       coach: [{ name: "", email: "", phone_number: "", position: "" }],
-      social_media: [{ platform: "", url: "" }],
-      previous_competition: [{ name: "", year: "" }],
+      // social_media: [{ platform: "", url: "" }],
+      // previous_competition: [{ name: "", year: "" }],
       members: [{ name: "", email: "", phone_number: "" }],
     });
      Swal.fire({
@@ -379,7 +379,7 @@ const CreateTeam = () => {
           </div>
         </div>
         {/* Sponsors Info */}
-        <div className="sponsors">
+        {/* <div className="sponsors">
           <h3 className=" py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
             Sponsors Info:
           </h3>
@@ -423,9 +423,9 @@ const CreateTeam = () => {
           >
             <IoAddCircle size={24} className="mr-1" /> Add Sponsor
           </button>
-        </div>
+        </div> */}
         {/* previous_competition Info */}
-        <div className="previous_competition">
+        {/* <div className="previous_competition">
           <h3 className=" py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
             Previous Competition :
           </h3>
@@ -469,7 +469,7 @@ const CreateTeam = () => {
           >
             <IoAddCircle size={24} className="mr-1" /> Add Previous Competition
           </button>
-        </div>
+        </div> */}
         {/* coach Info */}
         <div className="coach">
           <h3 className=" py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
@@ -608,7 +608,7 @@ const CreateTeam = () => {
           </button>
         </div>
         {/* social_media Info */}
-        <div className="social_media">
+        {/* <div className="social_media">
           <h3 className=" py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
             Social Media :
           </h3>
@@ -652,7 +652,7 @@ const CreateTeam = () => {
           >
             <IoAddCircle size={24} className="mr-1" /> Add social media
           </button>
-        </div>
+        </div> */}
         <button
           type="submit"
           disabled={isSubmitting}
