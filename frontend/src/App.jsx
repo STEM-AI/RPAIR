@@ -40,6 +40,9 @@ import { EventNameProvider } from './context/EventName';
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
+import SkillsContainer from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerGo";
+import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerGo";
+import SkillsContainerIQ from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerIQ";
 
 
 
@@ -884,14 +887,33 @@ const App = () => {
             </Layout>
           }
         />
-                  <Route
+                  {/* <Route
           path="/LiveMatch/Skills"
           element={
             <Layout>
                 <LiveSkillsVex/>
             </Layout>
           }
+        /> */}
+        
+
+        <Route
+          path="/LiveMatch/Skills"
+          element={
+            <Layout>
+                <SkillsContainerGO />
+            </Layout>
+          }
         />
+                <Route
+          path="/LiveMatch/Skills"
+          element={
+            <Layout>
+                <SkillsContainerIQ />
+            </Layout>
+          }
+        />
+
                   <Route
           path="/LiveMatch/Teamwork"
           element={
