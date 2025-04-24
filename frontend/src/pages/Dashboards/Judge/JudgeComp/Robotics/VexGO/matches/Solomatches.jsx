@@ -230,7 +230,8 @@ const SkillsGO = () => {
                 <thead className="bg-indigo-600 text-white">
                   <tr>
                     <th className="px-3 py-2 text-left">Match</th>
-                    <th className="px-3 py-2 text-left">Team</th>
+                    <th className="px-3 py-2 text-center">Team</th>
+                    <th className="px-3 py-2 text-center">Team_ID</th>
                     <th className="px-3 py-2 text-center">Score</th>
                     <th className="px-3 py-2 text-center">Time</th>
                     <th className="px-3 py-2 text-center">Actions</th>
@@ -243,23 +244,16 @@ const SkillsGO = () => {
                         key={match.id} 
                         className={completedMatches[match.id] ? "bg-green-50" : "hover:bg-gray-50"}
                       >
-                        <td className="px-3 py-3 font-medium">{match.id}</td>
-                        <td className="px-3 py-3">{match.team1_name}</td>
+                        <td className="px-3 py-3 font-medium">#{match.id}</td>
+                        <td className="px-3 py-3 text-center">{match.team1_name}</td>
+                        <td className="px-3 py-3 text-center">{match.team1}</td>
                         <td className="px-3 py-3 text-center">
                           {matches[match.id]?.score || 0}
                         </td>
                         <td className="px-3 py-3 text-center">
                           {matches[match.id]?.totalTime ? formatTime(matches[match.id].totalTime) : '-'}
                         </td>
-                        <td className="px-3 py-3 text-center">
-                          <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${
-                            completedMatches[match.id] 
-                              ? "bg-green-100 text-green-800" 
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}>
-                            {completedMatches[match.id] ? "Done" : "Pending"}
-                          </span>
-                        </td>
+                       
                         <td className="px-3 py-3 text-center space-x-1">
                           <button
                             onClick={() => handleStartMatch(match)}
@@ -267,22 +261,13 @@ const SkillsGO = () => {
                             className={`p-1 ${
                               completedMatches[match.id] 
                                 ? "bg-gray-300 text-gray-600 cursor-not-allowed" 
-                                : "bg-blue-600 hover:bg-blue-700 text-white"
+                                : "bg-green-600 hover:bg-green-700 text-white"
                             } rounded text-xs`}
                           >
-                            <FaPlay className="inline" />
+                            <FaPlay className="inline sm:mr-1" />
+                      <span className="hidden sm:inline">Start</span>
                           </button>
-                          {/* <button
-                            onClick={() => handleCompleteMatch(match.id)}
-                            disabled={completedMatches[match.id]}
-                            className={`p-1 rounded text-xs ${
-                              completedMatches[match.id]
-                                ? "bg-gray-300 text-gray-600"
-                                : "bg-green-600 hover:bg-green-700 text-white"
-                            }`}
-                          >
-                            <FaCheck className="inline" />
-                          </button> */}
+                          
                         </td>
                       </tr>
                     ))}

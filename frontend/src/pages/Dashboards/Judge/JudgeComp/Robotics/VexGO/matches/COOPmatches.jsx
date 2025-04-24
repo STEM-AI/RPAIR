@@ -213,7 +213,6 @@ const COOPMatch = () => {
                 <th className="px-2 sm:px-4 py-2  text-xs font-medium text-white uppercase  text-center">Teams</th>
                 <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase">Score</th>
                 <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase hidden sm:table-cell">Time</th>
-                <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase">Status</th>
                 <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase">Actions</th>
               </tr>
             </thead>
@@ -234,15 +233,7 @@ const COOPMatch = () => {
                   <td className="px-2 sm:px-4 py-2 text-center text-sm hidden sm:table-cell">
                     {matches[match.id]?.totalTime ? formatTime(matches[match.id].totalTime) : '-'}
                   </td>
-                  <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-center">
-                    <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${
-                      completedMatches[match.id] 
-                        ? "bg-green-100 text-green-800" 
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}>
-                      {completedMatches[match.id] ? "Done" : "Pending"}
-                    </span>
-                  </td>
+                 
                   <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-center space-x-1 sm:space-x-2">
                     <button
                       onClick={() => handleStartMatch(match)}
@@ -250,14 +241,14 @@ const COOPMatch = () => {
                       className={`px-2 py-1 text-xs sm:text-sm rounded ${
                         completedMatches[match.id] 
                           ? "bg-gray-300 text-gray-600 cursor-not-allowed" 
-                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                          : "bg-green-600 hover:bg-green-700 text-white"
                       }`}
                       title="Start Match"
                     >
                       <FaPlay className="inline sm:mr-1" />
                       <span className="hidden sm:inline">Start</span>
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => handleMarkAsDone(match.id)}
                       disabled={completedMatches[match.id]}
                       className={`inline-flex items-center px-2 py-1 text-xs sm:text-sm rounded ${
@@ -269,7 +260,7 @@ const COOPMatch = () => {
                     >
                       <FaCheck className="sm:mr-1" />
                       <span className="hidden sm:inline">Complete</span>
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}

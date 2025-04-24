@@ -41,7 +41,7 @@ export const submitScore = async (token, competition, teamId, scoreField, totalS
       { [scoreField]: totalScore },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    Swal.fire("Success!", "Scores saved successfully", "success");
+    Swal.fire(`Success ${scoreField}!${totalScore}`, "Scores saved successfully", `total score: ${totalScore}`, "success");
   } catch (error) {
     Swal.fire("Error", "Submission failed", "error");
   }

@@ -345,6 +345,7 @@ export default function CompetitionSheetContainer() {
     />
 
       <MissionTable
+        currentGame={currentGame}
         currentMode={currentMode}
         currentModeData={currentModeData}
         isRunning={isRunning}

@@ -89,6 +89,9 @@ export default function MissionTable({
   const token = localStorage.getItem("access_token");
 
   if (!currentMode) return null;
+  
+  
+  
 
   const handleCompleteWithScore = async () => {
     if (!currentGame?.gameId) {
@@ -144,6 +147,8 @@ export default function MissionTable({
       }
     } catch (error) {
       console.error("Score submission error:", error);
+      console.log("Error Response:", error.response.data);
+      
       Swal.fire({
         icon: 'error',
         title: 'Submission Failed',
