@@ -1,8 +1,7 @@
-
-
 import { useState, useEffect } from "react";
 import ScoreTeams from "../Scores/scoreTeams";
 import { FaTrophy, FaCheck } from "react-icons/fa";
+import { AiOutlineCalculator } from "react-icons/ai";
 import axios from "axios";
 import { useEventNameContext } from "../../../../../../../context/EventName";
 import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
@@ -82,9 +81,6 @@ const Teamwork = () => {
   }
 };
 
-
- 
-
   const handleOpenCalculator = (matchCode) => {
     console.log("matchCode" , matchCode);
     
@@ -97,15 +93,6 @@ const Teamwork = () => {
       [selectedMatch]: score,
     }));
     setSelectedMatch(null);
-  };
-
-  const handleSaveScore = (matchCode) => {
-    if (tempScores[matchCode] !== undefined) {
-      setScores((prevScores) => ({
-        ...prevScores,
-        [matchCode]: tempScores[matchCode],
-      }));
-    }
   };
 
   const Th = ({ children, className }) => (
@@ -156,7 +143,7 @@ const Td = ({ children, className }) => (
         <tbody className="bg-white divide-y divide-gray-200">
             {schedule.map((match) => (
               <tr key={match.id} className="hover:bg-gray-50 transition-colors">
-                <Td className="font-medium text-indigo-600">#{match.id}</Td>
+                <Td className=" font-extrabold">#{match.id}</Td>
                 <Td className="text-left">
                   <div className="flex flex-col">
                     <span className="font-medium">{match.team1_name}</span>
@@ -171,29 +158,19 @@ const Td = ({ children, className }) => (
                 </Td>
                 <Td>
                   <div className="flex items-center justify-center gap-2">
-                    <span className="font-semibold text-green-600 text-lg">
+                    <span className="font-semibold  text-lg">
                       {tempScores[match.id] ?? scores[match.id] ?? 0}
                     </span>
-                    {tempScores[match.id] !== undefined && (
-                      <button
-                        onClick={() => handleSaveScore(match.id)}
-                        className="p-1 text-green-600 hover:text-green-800 transition-colors"
-                        title="Save score"
-                      >
-                        <FaCheck className="w-4 h-4" />
-                      </button>
-                    )}
+                   
                   </div>
                 </Td>
                 <Td>
                   <button
                     onClick={() => handleOpenCalculator(match.id)}
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-green-500 hover:bg-green-600 focus:outline-none transition-all"
-                  >
-                    <span className="hidden sm:inline mr-1">Calculate</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
+                  
+                      className="ml-2 text-green-600"
+                                      >
+                                       <AiOutlineCalculator  className="text-2xl "/>
                   </button>
                 </Td>
               </tr>
@@ -290,15 +267,15 @@ const Td = ({ children, className }) => (
                   </div>
                 </Td>
                 <Td className="text-left">
-                  <div className="flex items-center space-x-3">
-                    <span className=" w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <div className="flex items-center justify-center ">
+                    <span className=" w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mr-2 ">
                       <span className="text-blue-600 font-medium">#{team.team}</span>
                     </span>
                     <span className="font-medium text-gray-800">{team.team__name}</span>
                   </div>
                 </Td>
                 <Td className="text-right pr-6">
-                  <div className="flex items-center justify-end space-x-2">
+                  <div className="flex items-center justify-end ">
                     <span className="font-semibold text-blue-600">
                       {typeof team.avg_score === 'number' 
                         ? team.avg_score.toFixed(2) 

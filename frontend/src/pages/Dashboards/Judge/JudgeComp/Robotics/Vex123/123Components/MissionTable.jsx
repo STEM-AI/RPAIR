@@ -74,7 +74,7 @@
 import axios from "axios";
 import { useState } from "react";
 import Swal from "sweetalert2";
-
+import {formatTime} from "./constants";
 export default function MissionTable({ 
   currentMode, 
   currentModeData, 
@@ -112,7 +112,7 @@ export default function MissionTable({
         return sum + (currentModeData?.done[index] ? mission.points : 0);
       }, 0);
       
-      const totalTime = currentMode.missions.reduce((sum, mission, index) => {
+        const totalTime = currentMode.missions.reduce((sum, mission, index) => {
         return sum + (currentModeData?.done[index] ? getTimeDifference(index) : 0);
       }, 0);
 
@@ -189,7 +189,7 @@ export default function MissionTable({
                   {mission.points}
                 </td>
                 <td className="px-2 py-1 sm:px-3 sm:py-2 text-center font-semibold text-xs sm:text-sm">
-                  {getTimeDifference(index)}
+                  {formatTime(getTimeDifference(index))}
                 </td>
                 <td className="px-2 py-1 sm:px-3 sm:py-2 text-center">
                   <input
