@@ -97,10 +97,7 @@ const handleCalculateAndSubmit = async () => {
       socketRef.current = new WebSocket(
         `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`
       );
-  socketRef.current.onerror = (error) => {
-    console.error("WebSocket error:", error);
-    Swal.fire("Connection Error", "Failed to connect to game server", "error");
-  };
+  
       socketRef.current.onopen = () => {
         console.log("WebSocket connection established");
       };
@@ -131,7 +128,9 @@ const handleCalculateAndSubmit = async () => {
           }
         }
       };
-  
+      socketRef.current.onerror = (error) => {
+    console.error("WebSocket error:", error);
+  };
       return () => {
         if (socketRef.current) {
           socketRef.current.close();

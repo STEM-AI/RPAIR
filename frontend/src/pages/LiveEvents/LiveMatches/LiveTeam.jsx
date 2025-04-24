@@ -12,7 +12,7 @@ const LiveTeamVex = () => {
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
   const event_Name = localStorage.getItem('selected_event_name');
-  const eventName = "El sadat vexGo"
+  const eventName = "VexIQ"
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
