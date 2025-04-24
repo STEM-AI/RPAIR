@@ -5,10 +5,9 @@ import { BsSkipStartFill } from "react-icons/bs";
 import { GiThreeBurningBalls } from "react-icons/gi";
 import axios from "axios";
 import Swal from "sweetalert2";
-// import {useEventNameContext} from "../../"
+import Alert from "../../../../../../../components/Alert/Alert";
 
-
-const ScoreTeams = ({ onCalculate, onClose, gameId }) => {
+const ScoreTeams = ({ onCalculate, onClose, gameId ,eventName}) => {
   const [switchCount, setSwitchCount] = useState(0);
   const [goalCount, setGoalCount] = useState(0);
   const [passCount, setPassCount] = useState(0);
@@ -19,7 +18,6 @@ const ScoreTeams = ({ onCalculate, onClose, gameId }) => {
   const socketRef = useRef(null);
   const [showControls, setShowControls] = useState(false);
   const token = localStorage.getItem("access_token");
-    const eventName = "VexIQ"
 
   const getPassPoints = (switches) => {
     switch (switches) {
@@ -35,48 +33,56 @@ const ScoreTeams = ({ onCalculate, onClose, gameId }) => {
     return goalCount * 1 + switchCount * 1 + passCount * getPassPoints(switchCount);
   }, [switchCount, goalCount, passCount]);
 
-  const handleCalculateAndSubmit = async () => {
-    if (!score) {
-      alert("Please enter a valid score.");
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/game/${gameId}/set-game-score/`,
-        {
-          event_name: eventName,
-          score: score,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+const handleCalculateAndSubmit = async () => {
+  if (!score) {
+    alert("Please enter a valid score.");
+    return;
+  }
+  
+  Alert.confirm({
+    title: 'Submit Final Score?',
+    html: `<p>You're about to submit your final score of <strong>${score}</strong> points.</p>`,
+    confirmText: 'Confirm Submission',
+    cancelText: 'Cancel',
+    onConfirm: async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/game/${gameId}/set-game-score/`,
+          {
+            event_name: eventName,
+            score: score,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      if (response.status === 200 || response.status === 201) {
-        console.log("Score submitted successfully:", response.data);
-        Swal.fire({
+        if (response.status === 200 || response.status === 201) {
+          Swal.fire({
             icon: "success",
             title: "Success",
             text: "Score submitted successfully!",
             showConfirmButton: true,
             confirmButtonColor: "#28a745" 
           });
-
-        onCalculate(score);
-        onClose();
-      } else {
-        throw new Error("Failed to submit score");
+          onCalculate(score);
+          onClose();
+        } else {
+          throw new Error("Failed to submit score");
+        }
+      } catch (error) {
+        console.error("Submission error:", error);
+        Swal.fire("Error", "Failed to submit score", "error");
       }
-    } catch (error) {
-      console.error("Error submitting score:", error);
-      
-      alert("Failed to submit score. Please try again.");
+    },
+    onCancel: () => {
+      Swal.fire('Cancelled', 'Submission was cancelled', 'info');
     }
-  };
+  }); 
+};
 
   // Establish WebSocket connection when the component mounts
   useEffect(() => {

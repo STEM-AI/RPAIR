@@ -36,6 +36,11 @@ const GenericRubric = ({
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("access_token");
 
+  useEffect(() => {
+  const newTotal = Object.values(scores).reduce((sum, val) => sum + (Number(val) || 0), 0);
+  setTotalScore(newTotal);
+  }, [scores]);
+  
   const handleToggle = (category, level) => {
   setActiveAlerts(prev => ({
     ...prev,

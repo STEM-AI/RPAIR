@@ -103,7 +103,7 @@ const fetchTeamData = async (teamName) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/team/list/`, {
       params: {
-        competition_event_name: currentCompetition, // Changed to single underscore
+        competition_event__name: currentCompetition, 
         search: teamName
       },
       headers: { Authorization: `Bearer ${token}` }
@@ -254,7 +254,7 @@ const postScore = async () => {
     >
       <option value="">Select Team</option>
       {teams.map((team) => (
-        <option key={team.id} value={team.id}>  {/* Prefer using ID instead of name */}
+    <option key={team.id} value={team.name}> 
           {team.name}
         </option>
       ))}
