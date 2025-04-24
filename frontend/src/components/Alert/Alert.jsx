@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 
-const Aleart = {
+const Alert = {
   confirm: ({ 
     title = 'Are you sure?',
     html = 'This action cannot be undone!',
@@ -45,4 +45,4 @@ const Aleart = {
   }
 };
 
-export default Aleart;
+export default Alert;

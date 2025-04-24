@@ -22,6 +22,8 @@ export default function JudgeEvent() {
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
+        const adjustedEnd = new Date(end.getTime() + 24 * 60 * 60 * 1000);
+
 
     if (now < start) {
       return {
@@ -31,11 +33,11 @@ export default function JudgeEvent() {
         color: 'bg-yellow-600 hover:bg-yellow-700',
         icon: MdLock
       };
-    } else if (now >= start && now <= end) {
+    } else if (now <= adjustedEnd) {
       return {
         status: 'in_progress',
         message: 'Start Judging',
-        timeLeft: Math.floor((end - now) / (1000 * 60)), // minutes until end
+        timeLeft: Math.floor((adjustedEnd - now) / (1000 * 60)), // دقائق حتى الانتهاء (بعد 20 ساعة)
         color: 'bg-green-600 hover:bg-green-700',
         icon: MdPlayArrow
       };
@@ -242,7 +244,7 @@ export default function JudgeEvent() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center text-gray-600">
+                    {/* <div className="flex items-center text-gray-600">
                       <MdAccessTime className="h-5 w-5 mr-2 text-blue-600 flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">End Date</p>
@@ -250,7 +252,7 @@ export default function JudgeEvent() {
                           {new Date(event.competition_event.end_date).toLocaleDateString()}
                         </p>
                       </div>
-                    </div>
+                    </div> */}
                     
                     <div className="flex items-center text-gray-600">
                       <MdLocationOn className="h-5 w-5 mr-2 text-blue-600 flex-shrink-0" />

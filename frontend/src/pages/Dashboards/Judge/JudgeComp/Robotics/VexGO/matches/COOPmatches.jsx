@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEventNameContext } from "../../../../../../../context/EventName";
 import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
 
+import SheetCoop from "./SheetCoop";
 
 const COOPMatch = () => {
     const { currentCompetition } = useEventNameContext();
@@ -15,28 +16,27 @@ const COOPMatch = () => {
   const [scores, setScores] = useState({});
   const [completedMatches, setCompletedMatches] = useState({});
   const [schedule, setSchedule] = useState([]);
-  const navigate = useNavigate();
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const token = localStorage.getItem("access_token");
   const [gameTime, setGameTime] = useState("");
     const [rankings, setRankings] = useState([]);
 
-
-
-
+  
   const event_name = currentCompetition
 
 
       const formData = {
-        "stage": "coop",
-        "game_time": gameTime
+        stage: "coop",
+        game_time: gameTime
       }
+
 
 
   const handleSubmit = async (event) => {
   event.preventDefault();
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/vex-go/event/${event_name}/games/schedule/`,
+      `${process.env.REACT_APP_API_URL}/core/event/${event_name}/games/schedule/`,
       formData,
       {
         headers: {
@@ -50,9 +50,15 @@ const COOPMatch = () => {
     console.log("Response Data:", response.data); 
 
     setSchedule(response.data); 
+    console.log("Schedule:", schedule);
+    
 
   } catch (err) {
     console.error("Error posting schedule:", err);
+    console.log("Error Response:", err.response.data);
+    console.log(event_name);
+    
+    
   }
 };
 
@@ -66,10 +72,8 @@ const COOPMatch = () => {
     updateRankings();
   }
 }, [schedule]);
-  // Match data
  
 
-  // Update match score
   const handleSaveScore = (matchId, score) => {
     setScores((prevScores) => ({
       ...prevScores,
@@ -77,14 +81,14 @@ const COOPMatch = () => {
     }));
   };
 
-  // Navigate to SheetGO
+
   const handleStartMatch = (match) => {
     setCurrentMatch({
       ...match,
       type: 'coop',
       mode: 'coop'
     });
-    navigate("/SheetCoop");
+    setSelectedMatch(match); // Corrected line
   };
 
   // Mark match as completed
@@ -149,12 +153,13 @@ const COOPMatch = () => {
   setRankings(sortedRankings);
   console.log("Updated Rankings:", sortedRankings);
   };
-  
+
+
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6">
-      
+      {!selectedMatch ? ( 
+      <>
       {/* Header */}
-      <GameScheduleForm event_name={event_name} token={token} />
       <div className="text-center mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2 flex items-center justify-center gap-2">
           <FaUsers className="text-3xl sm:text-4xl" /> COOP Matches
@@ -208,7 +213,6 @@ const COOPMatch = () => {
                 <th className="px-2 sm:px-4 py-2  text-xs font-medium text-white uppercase  text-center">Teams</th>
                 <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase">Score</th>
                 <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase hidden sm:table-cell">Time</th>
-                <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase">Status</th>
                 <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-white uppercase">Actions</th>
               </tr>
             </thead>
@@ -229,15 +233,7 @@ const COOPMatch = () => {
                   <td className="px-2 sm:px-4 py-2 text-center text-sm hidden sm:table-cell">
                     {matches[match.id]?.totalTime ? formatTime(matches[match.id].totalTime) : '-'}
                   </td>
-                  <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-center">
-                    <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${
-                      completedMatches[match.id] 
-                        ? "bg-green-100 text-green-800" 
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}>
-                      {completedMatches[match.id] ? "Done" : "Pending"}
-                    </span>
-                  </td>
+                 
                   <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-center space-x-1 sm:space-x-2">
                     <button
                       onClick={() => handleStartMatch(match)}
@@ -245,14 +241,14 @@ const COOPMatch = () => {
                       className={`px-2 py-1 text-xs sm:text-sm rounded ${
                         completedMatches[match.id] 
                           ? "bg-gray-300 text-gray-600 cursor-not-allowed" 
-                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                          : "bg-green-600 hover:bg-green-700 text-white"
                       }`}
                       title="Start Match"
                     >
                       <FaPlay className="inline sm:mr-1" />
                       <span className="hidden sm:inline">Start</span>
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => handleMarkAsDone(match.id)}
                       disabled={completedMatches[match.id]}
                       className={`inline-flex items-center px-2 py-1 text-xs sm:text-sm rounded ${
@@ -264,7 +260,7 @@ const COOPMatch = () => {
                     >
                       <FaCheck className="sm:mr-1" />
                       <span className="hidden sm:inline">Complete</span>
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}
@@ -272,7 +268,7 @@ const COOPMatch = () => {
           </table>
         </div>
       </div>
-
+      
       {/* View Ranking Button */}
       <div className="flex justify-center mb-4 sm:mb-6">
         <button
@@ -319,6 +315,14 @@ const COOPMatch = () => {
           </div>
         </div>
       )}
+      </>
+    ) : (
+      <SheetCoop 
+            selectedMatch={selectedMatch} 
+            eventName={event_name}
+        onClose={() => setSelectedMatch(null)} 
+      />
+    )}
     </div>
   );
 };
