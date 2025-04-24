@@ -35,13 +35,20 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
 
+  const gameId = currentMatch?.id
   // WebSocket connection management
   useEffect(() => {
-    if (!currentMatch?.id) return;
+    if (!eventName || !gameId) {
+         Alert.error({
+      title: "Missing Data",
+      text: "Event name or Game ID is missing. Please check the configuration.",
+    });
+    return;
+    }
 
     const connectWebSocket = () => {
       setSocketStatus('connecting');
-      const wsUrl = `ws://147.93.56.71:8001/ws/competition_event/${eventName}/game/${currentMatch.id}/`;
+      const wsUrl = `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`;
       socketRef.current = new WebSocket(wsUrl);
 
       socketRef.current.onopen = () => {
@@ -82,7 +89,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
         socketRef.current.close();
       }
     };
-  }, [currentMatch?.id, eventName]);
+  }, [gameId, eventName]);
 
   useEffect(() => {
     if (!currentMatch) {
@@ -242,7 +249,7 @@ const handleSubmit = async () => {
       .text(`${currentMatch?.challengeType || 'Solo Challenge'}`, 105, 30, { align: "center" });
 
     doc.setFontSize(14).setTextColor(0)
-      .text(`Match ID: ${currentMatch?.id || ''}`, 20, 40)
+      .text(`Match ID: ${gameId || ''}`, 20, 40)
       .text(`Teams: ${currentMatch?.team || ''}`, 20, 50)
       .text(`Total Time: ${formatTime(timer)}`, 20, 60);
 
@@ -263,7 +270,7 @@ const handleSubmit = async () => {
     });
 
     doc.text(`Total Score: ${totalScore}`, 20, doc.autoTable.previous.finalY + 10);
-    doc.save(`Match_${currentMatch?.id || ''}_Score.pdf`);
+    doc.save(`Match_${gameId || ''}_Score.pdf`);
   };
 
 
@@ -284,7 +291,7 @@ const handleSubmit = async () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6 bg-indigo-50 p-2 sm:p-4 rounded-lg sm:rounded-xl">
         <div>
           <h3 className="text-xs sm:text-sm font-medium text-indigo-700 mb-1">Match ID</h3>
-          <p className="text-base sm:text-xl font-bold">{currentMatch?.id || ''}</p>
+          <p className="text-base sm:text-xl font-bold">{gameId || ''}</p>
         </div>
         <div>
           <h3 className="text-xs sm:text-sm font-medium text-indigo-700 mb-1">Team</h3>

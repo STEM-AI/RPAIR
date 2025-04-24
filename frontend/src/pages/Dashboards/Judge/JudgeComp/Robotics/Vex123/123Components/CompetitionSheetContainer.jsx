@@ -190,25 +190,25 @@ export default function CompetitionSheetContainer() {
     }
   }, [currentModeKey, isRunning, timer, currentModeData]);
 
-  const getTimeDifference = (index) => {
-    if (!currentModeKey) return '-';
-    
-    const modeCompleted = completedOrder.filter(
-      item => item.modeKey === currentModeKey
-    ).sort((a, b) => a.time - b.time);
-    
-    const currentTask = modeCompleted.find(t => t.taskIndex === index);
-    if (!currentTask) return '-';
-    
-    const taskIndex = modeCompleted.findIndex(t => t.taskIndex === index);
-    
-    if (taskIndex === 0) {
-      return formatTime(currentTask.time);
-    }
-    
-    const prevTime = modeCompleted[taskIndex - 1].time;
-    return formatTime(currentTask.time - prevTime);
-  };
+ const getTimeDifference = (index) => {
+  if (!currentModeKey) return 0; // ارجع 0 بدلًا من '-'
+  
+  const modeCompleted = completedOrder.filter(
+    item => item.modeKey === currentModeKey
+  ).sort((a, b) => a.time - b.time);
+  
+  const currentTask = modeCompleted.find(t => t.taskIndex === index);
+  if (!currentTask) return 0;
+  
+  const taskIndex = modeCompleted.findIndex(t => t.taskIndex === index);
+  
+  if (taskIndex === 0) {
+    return currentTask.time; // ارجع الرقم مباشرةً
+  }
+  
+  const prevTime = modeCompleted[taskIndex - 1].time;
+  return currentTask.time - prevTime; // ارجع الفرق كعدد
+};
 
   const resetTimer = useCallback(() => {
     if (!currentMode) return;
@@ -317,6 +317,7 @@ export default function CompetitionSheetContainer() {
     doc.save(`Team_${teamName}_Score_Sheet.pdf`);
   }, [teamName, allData, totalScore, totalPossible]);
 
+  
   return (
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 bg-white shadow-xl rounded-xl border border-gray-200">
       <Header />
@@ -339,7 +340,7 @@ export default function CompetitionSheetContainer() {
       GAME_MODES={GAME_MODES}
       handleGameModeSelect={handleGameModeSelect}
       currentGame={currentGame}
-      currentMode={currentMode}
+        currentMode={currentMode}
       completedModes={completedModes}
       selectedTeam={selectedTeam}
     />
@@ -353,6 +354,8 @@ export default function CompetitionSheetContainer() {
         handleMissionComplete={handleMissionComplete}
         handleModeComplete={handleModeComplete}
         getTimeDifference={getTimeDifference}
+                        totalTime={totalTime}
+
       />
 
       <SummarySection 
