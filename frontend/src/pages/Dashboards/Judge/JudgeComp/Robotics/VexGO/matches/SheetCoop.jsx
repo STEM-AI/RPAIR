@@ -57,17 +57,34 @@ export default function SheetCoop({ eventName, onClose }) {
   }, [currentMatch]);
 
   const gameId = currentMatch.id
+
  useEffect(() => {
+      if (!eventName || !gameId) {
+         Alert.error({
+      title: "Missing Data",
+      text: "Event name or Game ID is missing. Please check the configuration.",
+    });
+    return;
+    }
+    
       socketRef.current = new WebSocket(
-        `ws://147.93.56.71:8001/ws/competition_event/${eventName}/game/${gameId}/`
+        `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`
       );
-  
+ 
       socketRef.current.onopen = () => {
         console.log("WebSocket connection established");
       };
   
       socketRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+          if (data.status === "started") {
+            setGameActive(true);
+            setTimeUp(false);
+        }
+         if (data.remaining_time <= 0) {
+          setGameActive(false); // إضافة تحديث الحالة
+          setTimeUp(true);
+        }
         if (data.status === "paused") {
           setGamePaused(true);
           return;
@@ -85,15 +102,12 @@ export default function SheetCoop({ eventName, onClose }) {
         }
       };
   
-      // Cleanup WebSocket connection when the component unmounts
       return () => {
         if (socketRef.current) {
           socketRef.current.close();
-          console.log("WebSocket connection closed");
         }
       };
     }, [eventName, gameId]);
-  
     const startGame = () => {
       setGameActive(true);
       setGamePaused(false);
@@ -128,10 +142,20 @@ export default function SheetCoop({ eventName, onClose }) {
       setGamePaused(false);
     };
   
-    const restartGame = () => {
+   const restartGame = () => {
+  Alert.confirm({
+    title: 'Restart Game?',
+    html: 'This will reset all counters and the timer!',
+    confirmText: 'Confirm Restart',
+    cancelText: 'Cancel',
+    onConfirm: () => {
       if (socketRef.current) {
         socketRef.current.send(
-          JSON.stringify({ action: "restart_game", event_name: eventName, game_id: gameId })
+          JSON.stringify({ 
+            action: "restart_game", 
+            event_name: eventName, 
+            game_id: gameId 
+          })
         );
       }
       setRemainingTime(60);
@@ -141,9 +165,12 @@ export default function SheetCoop({ eventName, onClose }) {
     setScores({});
     setTurbines(0);
     setCompletedOrder([]);
+    },
+        onCancel: () => {
+          Swal.fire('Cancelled', 'Game restart was cancelled', 'info');
+        }
+      });
     };
-
-
 
   const handleCheckboxChange = (index, value) => {
     const elapsedTime = 60 - remainingTime;

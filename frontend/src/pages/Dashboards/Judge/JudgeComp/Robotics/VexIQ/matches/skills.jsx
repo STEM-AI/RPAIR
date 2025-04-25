@@ -11,7 +11,10 @@ import { useEventNameContext } from "../../../../../../../context/EventName";
 const Skills = () => {
   const { currentCompetition } = useEventNameContext();
   const [expandedRounds, setExpandedRounds] = useState({ 1: true, 2: false, 3: false });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [scores, setScores] = useState({});
+    const [rankings, setRankings] = useState([]);
   const [confirmed, setConfirmed] = useState({});
   const [showCalculator, setShowCalculator] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -30,6 +33,36 @@ const Skills = () => {
     { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
   ];
 
+  const fetchRankings = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/event/${event_name}/skills-rank/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setRankings(response.data);
+    } catch (error) {
+      console.error("Error fetching rankings:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleRanking = () => {
+    setShowRanking(prev => {
+      const newState = !prev;
+      if (newState) {
+        fetchRankings(); 
+      }
+      return newState;
+    });
+  };
   // Fetch schedule
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -52,49 +85,7 @@ const Skills = () => {
     }
   };
 
-    const isRoundCompleted = (round) => {
-    return schedule.every(
-      (team) => confirmed[round]?.[team.id] === true
-    );
-  };
  
-const confirmScores = async (round, teamId) => {
-  const team = schedule.find(t => t.id === teamId);
-  if (!team) return;
-
-  const currentScore = scores[round]?.[teamId]?.[activeTab === 'driver_iq' ? 'driver' : 'auto'] || 0;
-  Alert.confirm({
-    title: 'Submit Final Score?',
-    html: `<p>You're about to submit your final score of <strong>${currentScore}</strong> points.</p>`,
-    confirmText: 'Confirm Submission',
-    cancelText: 'Cancel',
-    onConfirm: async () => {
-      try {
-        setConfirmed(prev => ({ ...prev, [round]: { ...prev[round], [teamId]: true } }));
-
-        await axios.post(
-          `${process.env.REACT_APP_API_URL}/game/${teamId}/set-game-score/`,
-          {
-            event_name: event_name,
-            score: currentScore
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        // إذا اكتملت الجولة، فتح الجولة التالية
-        if (round < 3 && isRoundCompleted(round)) {
-          setExpandedRounds(prev => ({ ...prev, [round + 1]: true }));
-        }
-
-        Swal.fire("Success", "Score submitted!", "success");
-      } catch (error) {
-        console.error("Submission error:", error);
-        Swal.fire("Error", "Submission failed!", "error");
-      }
-    }
-  });
-};
-  // Unified calculator handler
   const openCalculator = (team, round, type) => {
     if (confirmed[round]?.[team.id]) return;
 
@@ -131,29 +122,19 @@ const confirmScores = async (round, teamId) => {
     }));
     setShowCalculator(false);
   };
+    const Th = ({ children, className }) => (
+  <th className={`px-2.5 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider text-center ${className}`}>
+    {children}
+  </th>
+);
+
+const Td = ({ children, className }) => (
+  <td className={`px-2.5 py-2 sm:px-4 sm:py-3 text-sm text-gray-900 text-center ${className}`}>
+    {children}
+  </td>
+);
 
   // Ranking calculation
-  const calculateRankings = () => {
-    return schedule.map(team => {
-      let autoSum = 0, driverSum = 0, count = 0;
-      
-      Object.values(scores).forEach(round => {
-        if (round[team.id]) {
-          autoSum += round[team.id].auto || 0;
-          driverSum += round[team.id].driver || 0;
-          count++;
-        }
-      });
-
-      return {
-        id: team.id,
-        name: team.team1,
-        autoAvg: (autoSum / (count || 1)).toFixed(2),
-        driverAvg: (driverSum / (count || 1)).toFixed(2),
-        total: ((autoSum + driverSum) / (count || 1)).toFixed(2),
-      };
-    }).sort((a, b) => b.total - a.total);
-  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
@@ -195,50 +176,37 @@ const confirmScores = async (round, teamId) => {
         <table className="w-full">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-4">Team</th>
               <th className="p-4">Match Code</th>
+              <th className="p-4">Team</th>
               <th className="p-4">{activeTab === 'driver_iq' ? 'Driver Score' : 'Auto Score'}</th>
-              <th className="p-4">Status</th>
               <th className="p-4">Actions</th>
             </tr>
           </thead>
           <tbody>
             {schedule.map(team => (
               <tr key={team.id} className="border-t">
-                <td className="p-4 text-center">{team.team1_name}</td>
-                <td className="p-4 text-center">{team.id}</td>
+                <td className="p-4 text-center font-extrabold">#{team.id}</td>
+                <td className="p-4 text-center">
+                   <div className="flex flex-col">
+                    <span className="font-medium">{team.team1_name}</span>
+                    <span className="text-xs text-gray-500 mt-0.5">#{team.team1}</span>
+                  </div>
+                </td>
                 <td className="p-4 text-center">
                   {scores[selectedRound]?.[team.id]?.[activeTab === 'driver_iq' ? 'driver' : 'auto'] || 0}
+                  
+                </td>
+                <td className="p-4 text-center">
+                 
+                 
                   {!confirmed[selectedRound]?.[team.id] && (
                     <button
                       onClick={() => openCalculator(team, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
-                      className="ml-2 text-blue-600"
+                      className="ml-2 text-green-600"
                     >
-                     <AiOutlineCalculator  className="text-2xl"/>
+                     <AiOutlineCalculator  className="text-2xl "/>
                     </button>
                   )}
-                </td>
-                <td className="p-4 text-center">
-                  <span className={`px-2 py-1 rounded-full ${
-                    confirmed[selectedRound]?.[team.id] 
-                      ? "bg-green-100 text-green-800" 
-                      : "bg-yellow-100 text-yellow-800"
-                  }`}>
-                    {confirmed[selectedRound]?.[team.id] ? "Confirmed" : "Pending"}
-                  </span>
-                </td>
-                <td className="p-4 text-center">
-                  <button
-                    onClick={() => confirmScores(selectedRound, team.id)}
-                    disabled={confirmed[selectedRound]?.[team.id]}
-                    className={`px-4 py-2 rounded-lg ${
-                      confirmed[selectedRound]?.[team.id] 
-                        ? "bg-gray-300" 
-                        : "bg-green-600 hover:bg-green-700 text-white"
-                    }`}
-                  >
-                    <FaCheck />
-                  </button>
                 </td>
               </tr>
             ))}
@@ -247,43 +215,114 @@ const confirmScores = async (round, teamId) => {
       </div>
 
       {/* Ranking Section */}
-      <div className="text-center">
+       <div className="flex justify-center mt-4 sm:mt-6 mb-4">
         <button
-          onClick={() => setShowRanking(!showRanking)}
-          className="bg-yellow-500 text-white px-6 py-2 rounded-lg mb-4"
+          onClick={handleToggleRanking}
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 gap-2"
         >
-          <FaTrophy className="inline mr-2" />
-          {showRanking ? "Hide Rankings" : "Show Rankings"}
+          <FaTrophy className="shrink-0" />
+          <span className="hidden sm:inline">View Ranking</span>
+          <span className="sm:hidden">Ranking</span>
         </button>
-
-        {showRanking && (
-          <div className="bg-white rounded-xl shadow-lg p-4">
-            <h2 className="text-2xl font-bold mb-4">🏆 Rankings</h2>
-            <table className="w-full">
-              <thead className="bg-gray-800 text-white">
-                <tr>
-                  <th className="p-3">Rank</th>
-                  <th className="p-3">Team</th>
-                  <th className="p-3">Auto Avg</th>
-                  <th className="p-3">Driver Avg</th>
-                  <th className="p-3">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {calculateRankings().map((team, index) => (
-                  <tr key={team.id} className="border-t">
-                    <td className="p-3 text-center">{index + 1}</td>
-                    <td className="p-3 text-center">{team.name}</td>
-                    <td className="p-3 text-center">{team.autoAvg}</td>
-                    <td className="p-3 text-center">{team.driverAvg}</td>
-                    <td className="p-3 text-center font-bold">{team.total}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
+
+       {showRanking && (
+  <div className="overflow-x-auto shadow-lg rounded-xl mt-4 bg-white p-4 border border-gray-200">
+    <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800 mb-4 flex items-center justify-center gap-2">
+      <FaTrophy className="text-yellow-500" />
+      Team Rankings
+      <FaTrophy className="text-yellow-500" />
+    </h2>
+    
+    {isLoading ? (
+      <div className="text-center py-8">
+        <svg className="animate-spin h-8 w-8 text-blue-500 mx-auto" 
+             xmlns="http://www.w3.org/2000/svg" fill="none" 
+             viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" 
+                  stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" 
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p className="mt-3 text-gray-600">Loading rankings...</p>
+      </div>
+    ) : error ? (
+      <div className="text-center py-4 text-red-500">
+        ⚠️ Error loading rankings: {error}
+      </div>
+    ) : rankings.length === 0 ? (
+      <div className="text-center py-4 text-gray-500">
+        🏟️ No rankings available yet
+      </div>
+    ) : (
+      <table className="w-full border-collapse" aria-label="Team rankings">
+        <thead>
+          <tr className="bg-gray-50">
+            <Th className="text-center w-20">Rank</Th>
+            <Th className="text-left">Team</Th>
+            <Th className="text-right pr-6">Total Score</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {rankings.map((team, index) => {
+            const rank = index + 1;
+            return (
+              <tr
+                key={team.team}
+                className={`transition-all duration-150 ${
+                  rank <= 3 ? 'bg-gradient-to-r' : 'hover:bg-gray-50'
+                } ${
+                  rank === 1 ? 'from-yellow-50/50 to-yellow-50' :
+                  rank === 2 ? 'from-gray-50/50 to-gray-50' :
+                  rank === 3 ? 'from-amber-50/50 to-amber-50' : ''
+                }`}
+              >
+                <Td className="text-center font-semibold">
+                  <div className="flex items-center justify-center">
+                    {rank <= 3 ? (
+                      <span className={` w-6 h-6 rounded-full flex items-center justify-center 
+                        ${rank === 1 ? 'bg-yellow-400' : 
+                          rank === 2 ? 'bg-gray-400' : 'bg-amber-600'} text-white`}>
+                        {rank}
+                      </span>
+                    ) : (
+                      <span className="text-gray-600">{rank}</span>
+                    )}
+                  </div>
+                </Td>
+                <Td className="text-left">
+                  <div className="flex items-center justify-center ">
+                    <span className=" w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mr-2 ">
+                      <span className="text-blue-600 font-medium">#{team.team}</span>
+                    </span>
+                    <span className="font-medium text-gray-800">{team.team__name}</span>
+                  </div>
+                </Td>
+                <Td className="text-right pr-6">
+                  <div className="flex items-center justify-end ">
+                    <span className="font-semibold text-blue-600">
+                      {typeof team.total_score === 'number' 
+                        ? team.total_score.toFixed(2) 
+                        : 'N/A'}
+                    </span>
+                    {rank <= 3 && (
+                      <span className={`text-sm px-2 py-1 rounded-full 
+                        ${rank === 1 ? 'bg-yellow-100 text-yellow-800' :
+                          rank === 2 ? 'bg-gray-100 text-gray-800' :
+                          'bg-amber-100 text-amber-800'}`}>
+                        {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
+                      </span>
+                    )}
+                  </div>
+                </Td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    )}
+  </div>
+)}
 
       {showCalculator && selectedTeam && (
         <CalculatorSkills
@@ -291,6 +330,7 @@ const confirmScores = async (round, teamId) => {
           onClose={() => setShowCalculator(false)}
           mode={activeTab}
           gameId={selectedTeam.id}
+          eventName ={event_name}
         />
       )}
     </div>

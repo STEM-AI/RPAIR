@@ -113,7 +113,8 @@ export default function GameModeNavigation({
   handleGameModeSelect, 
   currentMode, 
   completedModes,
-  selectedTeam 
+  selectedTeam ,
+  totalTime
 }) {
   const { currentCompetition } = useEventNameContext();
   const [loading, setLoading] = useState(false);
@@ -145,7 +146,7 @@ export default function GameModeNavigation({
         `${process.env.REACT_APP_API_URL}/vex-123/${currentCompetition}/game/create/`,
         {
           team1: selectedTeam.id,
-          time: formatTimeForAPI()
+          time: formatTimeForAPI(totalTime)
         },
         {
           headers: {
