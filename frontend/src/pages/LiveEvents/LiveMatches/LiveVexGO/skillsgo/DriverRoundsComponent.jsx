@@ -20,22 +20,22 @@ const DriverRoundsComponent = ({ matches }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {matches.filter(team => team.round === 2).map((team) => (
-              <tr key={`driver-${team.code}`} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-center">
-                  {team.score.driver > 0 ? (
-                    <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
-                      {team.score.driver}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400">-</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+           {matches.map((team) => (
+          <tr key={`driver-${team.code}`} className="hover:bg-gray-50 transition-colors">
+            <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
+            <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-center">
+              {team.score?.driver > 0 ? (
+                <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
+                  {team.score.driver}
+                </span>
+              ) : (
+                <span className="text-gray-400">-</span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
         </table>
       </div>
     </div>

@@ -159,6 +159,8 @@ const CreateTeam = () => {
   } catch (err) {
     console.error("Error Response:", err.response); 
     setAlertType("error");
+    console.log("Error Response:", err.response.data);
+    
     setResponseMessage(
       err.response?.data?.detail || "Failed to create the event. Please try again."
     );

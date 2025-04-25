@@ -19,6 +19,7 @@ function LiveEvents() {
     {
       id: 1,
       name: 'VEX IQ',
+      type:'vex_iq',
       date: '2025-05-01',
       time: '10:00 AM',
       location: 'ElSadat, Egypt',
@@ -34,6 +35,7 @@ function LiveEvents() {
       name: 'VEX GO',
       date: '2025-05-01',
       time: '10:00 AM',
+      type:'vex_go',
       location: 'ElSadat, Egypt',
       image: vexGo,
       logo: vexGoLogo,
@@ -45,6 +47,7 @@ function LiveEvents() {
     {
       id: 3,
       name: 'VEX 123',
+      type:'vex_123',
       date: '2025-05-01',
       time: '10:00 AM',
       location: 'ElSadat, Egypt',

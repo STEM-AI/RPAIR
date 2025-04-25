@@ -3,7 +3,7 @@ import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 
-const LiveTeamVex = () => {
+const LiveCoop = () => {
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState([]);
   const [rankings, setRankings] = useState([]);
@@ -12,7 +12,7 @@ const LiveTeamVex = () => {
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
   const event_Name = localStorage.getItem('selected_event_name');
-  const eventName = "VexIQ"
+  const eventName = "SadatComp"
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -39,8 +39,7 @@ const LiveTeamVex = () => {
   };
 
   useEffect(() => {
-    // socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
-    socketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coop/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");
@@ -105,12 +104,12 @@ const LiveTeamVex = () => {
   return (
     <div className="p-4 max-w-7xl mx-auto">
             <Helmet>
-                          <title>Live-Team</title>
-                        </Helmet>  
+                <title>Live-Team</title>
+            </Helmet>  
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-          Teamwork Challenge
+          Coop Challenge
         </h1>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
           <FaSyncAlt className="animate-spin" />
@@ -138,10 +137,10 @@ const LiveTeamVex = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {matches.map((match) => (
-                <tr key={match.code} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{match.code}</td>
+                 <tr key={match.code} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{match.code}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center font-bold text-blue-600">{match.score || 0}</td>
+                  {/* <td className="px-6 py-4 whitespace-nowrap text-center font-bold text-blue-600">{match.score || 0}</td> */}
                   <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-center font-bold bg-blue-50 text-blue-700 rounded-lg mx-2">
                     {match.score || 0}
@@ -247,4 +246,4 @@ const LiveTeamVex = () => {
   );
 };
 
-export default LiveTeamVex;
+export default LiveCoop;

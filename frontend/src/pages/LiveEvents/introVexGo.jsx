@@ -22,7 +22,7 @@ const IntroVexGO = () => {
       color: "from-teal-400 to-emerald-500", 
       shadow: "shadow-teal-500/40", 
       icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-2xl" />, 
-      path: "/LiveMatch/Teamwork",
+      path: "/LiveMatch/Coop",
       pattern: "teal"
     },
     { 
