@@ -5,8 +5,7 @@ from ...views.competition_views.event_data_views import(
 ) 
 
 from ...views.competition_views.event_operations_views import(
-    GetEventSchedule,
-    CreateScheduleEventGameView,
+
     TeamWorkRankView,
     TeamsInterviewScoreRankView , 
     TeamsEngNotebookScoreRank,

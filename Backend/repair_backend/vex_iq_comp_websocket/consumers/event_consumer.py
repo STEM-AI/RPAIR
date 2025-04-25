@@ -14,8 +14,9 @@ class EventConsumer(AsyncWebsocketConsumer):
         # Extract the competition_event ID from the URL
         await self.accept()
         self.competition_event_name= self.scope["url_route"]["kwargs"]["event_name"]
+        self.stage = self.scope["url_route"]["kwargs"]["stage"]
 
-        self.room_group_name = f"competition_event_{self.competition_event_name}"
+        self.room_group_name = f"competition_event_{self.competition_event_name}_{self.stage}"
 
         # Join the competition event group
         await self.channel_layer.group_add(

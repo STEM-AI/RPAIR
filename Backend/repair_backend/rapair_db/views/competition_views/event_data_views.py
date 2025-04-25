@@ -31,7 +31,6 @@ class EventsListWithTop3TeamsView(ListAPIView):
             CompetitionEvent.objects
             .select_related('competition')
             .filter(competition__name=competition_name)
-            .all()
             )
 
             

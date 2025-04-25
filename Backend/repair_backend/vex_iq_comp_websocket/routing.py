@@ -8,7 +8,7 @@ from .consumers import (
 )
 
 websocket_urlpatterns = [
-    re_path(r'ws/competition_event/(?P<event_name>[\w-]+)/$', EventConsumer.as_asgi()),
+    re_path(r'ws/competition_event/(?P<event_name>[\w-]+)/(?P<stage>[\w-]+)/$', EventConsumer.as_asgi()),
     re_path(r'ws/competition_event/(?P<event_name>[\w-]+)/game/(?P<game_id>\d+)/$', GameConsumer.as_asgi()),
     
     # Add NewsConsumer to websocket_urlpatterns if you want to receive news updates.

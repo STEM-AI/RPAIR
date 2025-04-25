@@ -36,9 +36,10 @@
     </div>
 
     <script>
-        const eventName = "stem"; // Replace with the actual competition event ID
+        const eventName = "vex_go"; // Replace with the actual competition event ID
+        const stage = 'driver_go'
         
-        const socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/`);
+        const socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/${stage}/`);
 
         socket.onmessage = function (event) {
             const data = JSON.parse(event.data);
