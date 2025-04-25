@@ -1,21 +1,17 @@
-
-
 import React, { useEffect, useState, useRef } from "react";
-import { FaTrophy, FaMedal, FaSyncAlt, FaRobot, FaCar } from "react-icons/fa";
-import { BiSolidJoystick } from "react-icons/bi";
+import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 
-const LiveSkillsVex = () => {
-  const [rankings, setRankings] = useState([]);
-  const [scores, setScores] = useState({});
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+const LiveTeamVex = () => {
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [rankings, setRankings] = useState([]);
   const [showRankings, setShowRankings] = useState(false);
-  const [activeRounds, setActiveRounds] = useState([1]);
+  const [lastUpdate, setLastUpdate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
+  const event_Name = localStorage.getItem('selected_event_name');
   const eventName = "VexIQ"
   const token = localStorage.getItem("access_token");
 
@@ -28,7 +24,7 @@ const LiveSkillsVex = () => {
     }
 
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -43,7 +39,8 @@ const LiveSkillsVex = () => {
   };
 
   useEffect(() => {
-    socketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/`);
+    // socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
+    socketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/teamwork/`);
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connection established");
@@ -61,10 +58,10 @@ const LiveSkillsVex = () => {
               code: data.game_id,
               team1: data.team1_name || 'Team 1',
               team2: data.team2_name || 'Team 2',
-              score: data.score,
-              round: data.round || 1
+              score: data.score
             }];
           }
+
           const updatedMatches = [...prevMatches];
           updatedMatches[matchIndex] = {
             ...updatedMatches[matchIndex],
@@ -74,10 +71,6 @@ const LiveSkillsVex = () => {
         });
 
         setLastUpdate(new Date());
-
-        if (data.round && !activeRounds.includes(data.round)) {
-          setActiveRounds(prevRounds => [...prevRounds, data.round]);
-        }
       }
     };
 
@@ -94,7 +87,7 @@ const LiveSkillsVex = () => {
         socketRef.current.close();
       }
     };
-  }, [eventName, activeRounds]);
+  }, [eventName]);
 
   const getMedalIcon = (rank) => {
     switch (rank) {
@@ -111,13 +104,13 @@ const LiveSkillsVex = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
-      <Helmet>
-                    <title>Live-Skills</title>
-                  </Helmet>   
+            <Helmet>
+                          <title>Live-Team</title>
+                        </Helmet>  
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-          Skills Challenge
+          Teamwork Challenge
         </h1>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
           <FaSyncAlt className="animate-spin" />
@@ -125,91 +118,69 @@ const LiveSkillsVex = () => {
         </div>
       </div>
 
-      {/* Rounds Section - Now with two tables side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-
-
-      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-          <div className="bg-gradient-to-r from-teal-600 to-teal-800 p-4">
-            <h3 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
-              <BiSolidJoystick /> Driver Rounds
-            </h3>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+      {/* Recent Matches Section */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8 border border-gray-100">
+        <div className="bg-gradient-to-r from-blue-600 to-teal-500 p-4">
+          <h2 className="text-xl font-bold text-white text-center">Recent Matches</h2>
+        </div>
+        
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team 1</th>
+                
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team 2</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {matches.map((match) => (
+                <tr key={match.code} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{match.code}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
+                  {/* <td className="px-6 py-4 whitespace-nowrap text-center font-bold text-blue-600">{match.score || 0}</td> */}
+                  <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center font-bold bg-blue-50 text-blue-700 rounded-lg mx-2">
+                    {match.score || 0}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {matches.filter(team => team.round === 2).map((team) => (
-                  <tr key={`driver-${team.code}`} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {team.score.driver > 0 ? (
-                        <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
-                          {team.score.driver}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-
-        {/* Auto Rounds Table */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4">
-            <h3 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
-              <FaRobot /> Auto Rounds
-            </h3>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {matches.filter(team => team.round === 1).map((team) => (
-                  <tr key={`auto-${team.code}`} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {team.score.autonomous > 0 ? (
-                        <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium">
-                          {team.score.autonomous}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Mobile Cards */}
+        <div className="block md:hidden">
+          <div className="grid grid-cols-1 gap-4 p-4">
+            {matches.map((match) => (
+              <div
+                key={match.code}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="text-center text-sm font-medium text-gray-500 mb-3">Match {match.code}</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-center flex-1">
+                    <div className="font-medium text-gray-700">{match.team1}</div>
+                  </div>
+                  <div className="mx-2 text-center">
+                    <div className="text-2xl font-bold text-blue-600">{match.score || 0}</div>
+                    <div className="text-xs text-gray-400">Teamwork Score</div>
+                  </div>
+                  <div className="text-center flex-1">
+                    <div className="font-medium text-gray-700">{match.team2}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-
-
       </div>
 
-      {/* Rankings Section - Unchanged */}
-      <div className="flex justify-center my-8">
+      {/* Rankings Section */}
+      <div className="flex justify-center mb-6">
         <button
           onClick={fetchRankings}
           disabled={isLoading}
@@ -222,16 +193,16 @@ const LiveSkillsVex = () => {
           ) : (
             <FaTrophy className="mr-2" />
           )}
-          {isLoading ? 'Loading...' : 'View Skills Rankings'}
+          {isLoading ? 'Loading...' : 'View Teamwork Rankings'}
         </button>
       </div>
 
       {showRankings && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 mb-8">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
           <div className="bg-gradient-to-r from-amber-500 to-yellow-500 p-4">
             <h2 className="text-xl font-bold text-white text-center flex items-center justify-center gap-2">
               <FaTrophy />
-              Skills Challenge Rankings
+              Teamwork Challenge Rankings
             </h2>
           </div>
           
@@ -241,7 +212,7 @@ const LiveSkillsVex = () => {
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Highest Score</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Average Score</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -276,4 +247,4 @@ const LiveSkillsVex = () => {
   );
 };
 
-export default LiveSkillsVex;
+export default LiveTeamVex;

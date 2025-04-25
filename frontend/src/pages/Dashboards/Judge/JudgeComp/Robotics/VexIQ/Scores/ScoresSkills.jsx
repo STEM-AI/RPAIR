@@ -19,7 +19,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
     const socketRef = useRef(null);
     const [showControls, setShowControls] = useState(false);
     const token = localStorage.getItem("access_token");
-  console.log(process.env.REACT_APP_WS_URL);
+  // console.log(process.env.REACT_APP_WS_URL);
   
  
   const getGoalPoints = (clearSwitch, goals) => {

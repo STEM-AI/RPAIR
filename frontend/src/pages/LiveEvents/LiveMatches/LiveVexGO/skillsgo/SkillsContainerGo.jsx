@@ -12,11 +12,49 @@ const SkillsContainerGO = () => {
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState([]);
   const [showRankings, setShowRankings] = useState(false);
-  const [activeRounds, setActiveRounds] = useState([1]);
   const [isLoading, setIsLoading] = useState(false);
-  const socketRef = useRef(null);
   const eventName = "VexIQ";
   const token = localStorage.getItem("access_token");
+const autoSocketRef = useRef(null);
+  const driverSocketRef = useRef(null);
+  const [autoMatches, setAutoMatches] = useState([]);
+    const [driverMatches, setDriverMatches] = useState([])
+  // WebSocket connection and data handling
+   useEffect(() => {
+    autoSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coding/`);
+
+    autoSocketRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.game_id && data.score?.autonomous !== undefined) {
+        setAutoMatches(prev => updateMatches(prev, data, 1));
+        setLastUpdate(new Date());
+      }
+    };
+
+    return () => {
+      if (autoSocketRef.current) {
+        autoSocketRef.current.close();
+      }
+    };
+   }, [eventName]);
+  
+   useEffect(() => {
+    driverSocketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/driver_go/`);
+
+    driverSocketRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.game_id && data.score?.driver !== undefined) {
+        setDriverMatches(prev => updateMatches(prev, data, 1));
+        setLastUpdate(new Date());
+      }
+    };
+
+    return () => {
+      if (driverSocketRef.current) {
+        driverSocketRef.current.close();
+      }
+    };
+  }, [eventName]);
 
   const fetchRankings = async () => {
     setIsLoading(true);
@@ -40,60 +78,20 @@ const SkillsContainerGO = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    socketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/`);
-
-    socketRef.current.onopen = () => {
-      console.log("WebSocket connection established");
-    };
-
-    socketRef.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Score Update:", data);
-
-      if (data.game_id && data.score !== undefined) {
-        setMatches(prevMatches => {
-          const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
-          if (matchIndex === -1) {
-            return [...prevMatches, {
-              code: data.game_id,
-              team1: data.team1_name || 'Team 1',
-              team2: data.team2_name || 'Team 2',
-              score: data.score,
-              round: data.round || 1
-            }];
-          }
-          const updatedMatches = [...prevMatches];
-          updatedMatches[matchIndex] = {
-            ...updatedMatches[matchIndex],
-            score: data.score
-          };
-          return updatedMatches;
-        });
-
-        setLastUpdate(new Date());
-
-        if (data.round && !activeRounds.includes(data.round)) {
-          setActiveRounds(prevRounds => [...prevRounds, data.round]);
-        }
-      }
-    };
-
-    socketRef.current.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    socketRef.current.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
-  }, [eventName, activeRounds]);
+ const updateMatches = (prevMatches, data, round) => {
+    const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
+    if (matchIndex === -1) {
+      return [...prevMatches, {
+        code: data.game_id,
+        team1: data.team1_name || 'Team 1',
+        score: data.score,
+        round: round
+      }];
+    }
+    return prevMatches.map((m, i) => 
+      i === matchIndex ? { ...m, score: data.score } : m
+    );
+  };
 
   const getMedalIcon = (rank) => {
     switch (rank) {
@@ -127,8 +125,8 @@ const SkillsContainerGO = () => {
 
       {/* Rounds Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        <DriverRoundsComponent matches={matches} />
-        <AutoRoundsComponent matches={matches} />
+        <DriverRoundsComponent matches={driverMatches}/>
+        <AutoRoundsComponent matches={autoMatches} />
       </div>
 
       {/* Rankings Section */}
