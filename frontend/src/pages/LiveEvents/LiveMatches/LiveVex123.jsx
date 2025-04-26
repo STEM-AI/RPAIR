@@ -5,33 +5,18 @@ import { Helmet } from "react-helmet-async";
 
 const LiveVex123 = () => {
   const [rankings, setRankings] = useState([]);
-  const [scores, setScores] = useState({});
   const [lastUpdate, setLastUpdate] = useState(new Date());
-  const [matches, setMatches] = useState([]);
-  const [teams, setTeams] = useState([]);
-  const [showRankings, setShowRankings] = useState(true); // Show rankings by default
-  const [activeRounds, setActiveRounds] = useState([1]);
   const [isLoading, setIsLoading] = useState(false);
-  const socketRef = useRef(null);
-  const eventName = localStorage.getItem('selected_event_name');
-  const token = localStorage.getItem("access_token");
+  const eventName = 'vex_123';
+  const URL = `${process.env.REACT_APP_API_URL}/vex-123/${eventName}/rank/`;
+  const intervalRef = useRef();
 
   const fetchRankings = async () => {
-    setIsLoading(true);
-    if (!eventName) {
-      console.error("No event name found");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      setIsLoading(true);
+      const response = await axios.get(URL);
       setRankings(response.data);
-      setShowRankings(true);
+      setLastUpdate(new Date());
     } catch (error) {
       console.error("Error fetching rankings:", error);
     } finally {
@@ -40,188 +25,50 @@ const LiveVex123 = () => {
   };
 
   useEffect(() => {
-    fetchRankings(); // Load rankings immediately
-    
-    socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
-
-    socketRef.current.onopen = () => {
-      console.log("WebSocket connection established");
-    };
-
-    socketRef.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Score Update:", data);
-
-      if (data.game_id && data.score !== undefined) {
-        setMatches(prevMatches => {
-          const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
-          if (matchIndex === -1) {
-            return [...prevMatches, {
-              code: data.game_id,
-              team1: data.team1_name || 'Team 1',
-              team2: data.team2_name || 'Team 2',
-              score: data.score,
-              round: data.round || 1
-            }];
-          }
-          const updatedMatches = [...prevMatches];
-          updatedMatches[matchIndex] = {
-            ...updatedMatches[matchIndex],
-            score: data.score
-          };
-          return updatedMatches;
-        });
-
-        setLastUpdate(new Date());
-
-        if (data.round && !activeRounds.includes(data.round)) {
-          setActiveRounds(prevRounds => [...prevRounds, data.round]);
-        }
-      }
-    };
-
-    socketRef.current.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    socketRef.current.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
-  }, [eventName, activeRounds]);
+    fetchRankings();
+    intervalRef.current = setInterval(fetchRankings, 10000);
+    return () => clearInterval(intervalRef.current);
+  }, []);
 
   const getMedalIcon = (rank) => {
     switch (rank) {
       case 1:
-        return <FaMedal className="text-yellow-500 text-2xl" />;
+        return <FaTrophy className="w-6 h-6 text-amber-400" />;
       case 2:
-        return <FaMedal className="text-gray-400 text-2xl" />;
+        return <FaMedal className="w-6 h-6 text-gray-400" />;
       case 3:
-        return <FaMedal className="text-amber-600 text-2xl" />;
+        return <FaMedal className="w-6 h-6 text-amber-600" />;
       default:
-        return <span className="text-gray-500 font-medium">{rank}</span>;
+        return <span className="text-gray-600 font-medium">{rank}</span>;
     }
   };
 
-  // Combine matches with rankings
-  const getTeamRanking = (teamName) => {
-    const team = rankings.find(t => t.team__name === teamName);
-    return team ? rankings.indexOf(team) + 1 : '-';
+  const handleRefresh = () => {
+    if (!isLoading) {
+      fetchRankings();
+    }
   };
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <Helmet>
-            <title>Live-Robotics</title>
-      </Helmet>  
+        <title>Live-Robotics</title>
+      </Helmet>
+      
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
           VEX 123 Challenge
         </h1>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-          <FaSyncAlt className="animate-spin" />
+          <button 
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className={`hover:text-blue-600 transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <FaSyncAlt className={`${isLoading ? 'animate-spin' : ''}`} />
+          </button>
           <span>Last updated: {lastUpdate.toLocaleTimeString()}</span>
-        </div>
-      </div>
-
-      {/* Combined Matches and Rankings Table */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 mb-8">
-        <div className="bg-gradient-to-r from-blue-600 to-teal-500 p-4">
-          <h2 className="text-xl font-bold text-white text-center">Live Matches</h2>
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Match ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-
-
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {matches.map((match) => (
-                <React.Fragment key={match.code}>
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900" rowSpan="2">{match.code}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {match.score.autonomous > 0 ? (
-                        <span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-medium">
-                          {match.score.autonomous}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {match.score.driver > 0 ? (
-                        <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-800 font-medium">
-                          {match.score.driver}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
-                      {match.score.autonomous + match.score.driver > 0 ? (
-                        <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-blue-100 to-teal-100 text-blue-800">
-                          {match.score.autonomous + match.score.driver}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {getTeamRanking(match.team1)}
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 transition-colors border-b border-gray-200">
-                    <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {match.score.autonomous > 0 ? (
-                        <span className="inline-block px-2 py-1 rounded bg-green-100 text-green-800 font-medium">
-                          {match.score.autonomous}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {match.score.driver > 0 ? (
-                        <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-800 font-medium">
-                          {match.score.driver}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
-                      {match.score.autonomous + match.score.driver > 0 ? (
-                        <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-blue-100 to-teal-100 text-blue-800">
-                          {match.score.autonomous + match.score.driver}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {getTeamRanking(match.team2)}
-                    </td>
-                  </tr>
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -239,8 +86,10 @@ const LiveVex123 = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Average Score</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team Name</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Score</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Time Taken</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -250,7 +99,7 @@ const LiveVex123 = () => {
                   className={`${
                     index === 0 ? "bg-amber-50" : 
                     index === 1 ? "bg-gray-50" : 
-                    index === 2 ? "bg-amber-25" : "hover:bg-gray-50"
+                    index === 2 ? "bg-amber-100" : "hover:bg-gray-50"
                   } transition-colors`}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -258,10 +107,16 @@ const LiveVex123 = () => {
                       {getMedalIcon(index + 1)}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team__name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{team.team}</td>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team_name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                     <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                      {team.avg_score.toFixed(2)}
+                      {team.total_score}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
+                    <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800">
+                      {team.total_time_taken}s
                     </span>
                   </td>
                 </tr>

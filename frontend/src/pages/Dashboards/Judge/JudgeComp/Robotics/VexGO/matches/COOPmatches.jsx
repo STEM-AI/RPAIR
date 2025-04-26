@@ -19,7 +19,9 @@ const COOPMatch = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const token = localStorage.getItem("access_token");
   const [gameTime, setGameTime] = useState("");
-    const [rankings, setRankings] = useState([]);
+  const [rankings, setRankings] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState(null);
 
   
   const event_name = currentCompetition
@@ -29,7 +31,37 @@ const COOPMatch = () => {
         stage: "coop",
         game_time: gameTime
       }
+  const fetchCoopRankings = async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/vex-go/${event_name}/coop/rank/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setRankings(response.data);
+  } catch (error) {
+    console.error("Error fetching coop rankings:", error);
+    setError(error.message);
+  } finally {
+    setIsLoading(false);
+  }
+  };
+  
 
+    const handleToggleRanking = () => {
+    setShowRanking(prev => {
+      const newState = !prev;
+      if (newState) {
+        fetchCoopRankings(); // جلب البيانات فقط عند عرض الترتيب
+      }
+      return newState;
+    });
+  };
 
 
   const handleSubmit = async (event) => {
@@ -63,16 +95,7 @@ const COOPMatch = () => {
 };
 
 
-  useEffect(() => {
-    updateRankings();
-  }, [scores]);
 
-  useEffect(() => {
-  if (schedule.length > 0) {
-    updateRankings();
-  }
-}, [schedule]);
- 
 
   const handleSaveScore = (matchId, score) => {
     setScores((prevScores) => ({
@@ -112,22 +135,7 @@ const COOPMatch = () => {
     });
   };
 
-  // Calculate rankings
-  const calculateRankings = () => {
-    const teamScores = {};
-    
-    schedule.forEach(match => {
-      const score = parseInt(scores[match.id]) || 0;
-      const teamScore = score / 2;
-      
-      teamScores[match.team1_name] = (teamScores[match.team1_name] || 0) + teamScore;
-      teamScores[match.team2_name] = (teamScores[match.team2_name] || 0) + teamScore;
-    });
-    
-    return Object.entries(teamScores)
-      .map(([team, score]) => ({ team, score }))
-      .sort((a, b) => b.score - a.score);
-  };
+
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -272,7 +280,7 @@ const COOPMatch = () => {
       {/* View Ranking Button */}
       <div className="flex justify-center mb-4 sm:mb-6">
         <button
-          onClick={() => setShowRanking(!showRanking)}
+          onClick={handleToggleRanking}
           className="inline-flex items-center px-3 sm:px-4 py-2 sm:py-3 border border-transparent text-sm sm:text-lg font-medium rounded-md shadow-sm text-white bg-yellow-500 hover:bg-yellow-600"
         >
           <FaTrophy className="mr-1 sm:mr-2" />
@@ -281,46 +289,94 @@ const COOPMatch = () => {
       </div>
 
       {/* Rankings Table */}
-      {showRanking && (
-        <div className="bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl overflow-hidden mb-6 sm:mb-8">
-          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-indigo-600 flex items-center">
-            <FaChartBar className="text-white mr-2 text-lg sm:text-xl" />
-            <h2 className="text-lg sm:text-xl font-bold text-white">Team Rankings</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-indigo-50">
-                <tr>
-                  <th className="px-2 sm:px-4 py-2  text-center text-xs font-medium text-indigo-700 uppercase">Rank</th>
-                  <th className="px-2 sm:px-4 py-2  text-center text-xs font-medium text-indigo-700 uppercase">Team</th>
-                  <th className="px-2 sm:px-4 py-2  text-center text-xs font-medium text-indigo-700 uppercase">Score</th>
-                  <th className="px-2 sm:px-4 py-2  text-center text-xs font-medium text-indigo-700 uppercase">Medal</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {calculateRankings().map((team, index) => (
-                  <tr key={team.team} className="hover:bg-gray-50">
-                    <td className="px-2 sm:px-4 py-2 whitespace-nowrap font-medium text-gray-900 text-sm">{index + 1}</td>
-                    <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-sm">{team.team}</td>
-                    <td className="px-2 sm:px-4 py-2 whitespace-nowrap font-bold text-sm">{team.score || 0}</td>
-                    <td className="px-2 sm:px-4 py-2 whitespace-nowrap">
-                      {index === 0 && <span className="text-yellow-500 text-lg sm:text-xl">🥇</span>}
-                      {index === 1 && <span className="text-gray-400 text-lg sm:text-xl">🥈</span>}
-                      {index === 2 && <span className="text-amber-600 text-lg sm:text-xl">🥉</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+     {showRanking && (
+      <div className="bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl overflow-hidden mb-6 sm:mb-8">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-indigo-600 flex items-center">
+          <FaChartBar className="text-white mr-2 text-lg sm:text-xl" />
+          <h2 className="text-lg sm:text-xl font-bold text-white">Team Rankings</h2>
         </div>
-      )}
-      </>
-    ) : (
-      <SheetCoop 
-            selectedMatch={selectedMatch} 
-            eventName={event_name}
-        onClose={() => setSelectedMatch(null)} 
+          <div className="overflow-x-auto">
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <svg className="animate-spin h-8 w-8 text-blue-500 mx-auto"
+                      xmlns="http://www.w3.org/2000/svg" fill="none"
+                      viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10"
+                        stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p className="mt-3 text-gray-600">Loading rankings...</p>
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-4 text-red-500">
+                    ⚠️ Error loading rankings: {error}
+                  </div>
+                ) : rankings.length === 0 ? (
+                  <div className="text-center py-4 text-gray-500">
+                    🏟️ No rankings available yet
+                  </div>
+                ) : (
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-indigo-50">
+                      <tr>
+                        <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Rank</th>
+                        <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Team</th>
+                        <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Avg_score</th>
+                        <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Medal</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                            {rankings.map((team, index) => {
+                              const rank = index + 1;
+                              return (
+                                <tr
+                                  key={team.team}
+                                  className={`transition-all duration-150 ${
+                                    rank <= 3 ? 'bg-gradient-to-r' : 'hover:bg-gray-50'
+                                  } ${
+                                    rank === 1 ? 'from-yellow-50/50 to-yellow-50' :
+                                    rank === 2 ? 'from-gray-50/50 to-gray-50' :
+                                    rank === 3 ? 'from-amber-50/50 to-amber-50' : ''
+                                  }`}
+                                >
+                                  <td className="px-2 sm:px-4 py-2  whitespace-nowrap font-medium text-gray-900 text-sm">
+                                     <div className="flex items-center justify-center">
+                                    {rank <= 3 ? (
+                                      <span className={` w-6 h-6 rounded-full flex items-center justify-center 
+                                        ${rank === 1 ? 'bg-yellow-400' : 
+                                          rank === 2 ? 'bg-gray-400' : 'bg-amber-600'} text-white`}>
+                                        {rank}
+                                      </span>
+                                    ) : (
+                                      <span className="text-gray-600">{rank}</span>
+                                    )}
+                                  </div>
+                                  </td>
+                                  <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-center">{team.team__name}</td>
+                                  <td className="px-2 sm:px-4 py-2 whitespace-nowrap font-bold text-sm text-center">
+                                    {team.avg_score || 0}
+                                  </td>
+                                  <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-center">
+                                    {rank === 1 && <span className="text-yellow-500 text-lg sm:text-xl">🥇</span>}
+                                    {rank === 2 && <span className="text-gray-400 text-lg sm:text-xl">🥈</span>}
+                                    {rank === 3 && <span className="text-amber-600 text-lg sm:text-xl">🥉</span>}
+                                  </td>
+                                </tr>
+                              )
+                            })}
+                    </tbody>
+                  </table>
+                )}
+        </div>
+      </div>
+    )}
+          </>
+        ) : (
+          <SheetCoop 
+                selectedMatch={selectedMatch} 
+                eventName={event_name}
+            onClose={() => setSelectedMatch(null)} 
       />
     )}
     </div>

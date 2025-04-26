@@ -81,38 +81,38 @@ import { NavHashLink } from "react-router-hash-link";
 const NewsTicker = () => {
   const [news, setNews] = useState("Loading news...");
 
-  useEffect(() => {
+  // useEffect(() => {
    
 
-    let socket;
-    let reconnectInterval = 5000;
+  //   let socket;
+  //   let reconnectInterval = 5000;
 
-    const connectWebSocket = () => {
-      socket = new WebSocket(`wss://rpair.org/ws/news/`);
+  //   const connectWebSocket = () => {
+  //     socket = new WebSocket(`wss://rpair.org/ws/news/`);
 
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setNews(data.message);
-      };
+  //     socket.onmessage = (event) => {
+  //       const data = JSON.parse(event.data);
+  //       setNews(data.message);
+  //     };
 
-      socket.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
+  //     socket.onerror = (error) => {
+  //       console.error("WebSocket error:", error);
+  //     };
 
-      socket.onclose = () => {
-        console.log("WebSocket connection closed, retrying...");
-        setTimeout(connectWebSocket, reconnectInterval);
-      };
-    };
+  //     socket.onclose = () => {
+  //       console.log("WebSocket connection closed, retrying...");
+  //       setTimeout(connectWebSocket, reconnectInterval);
+  //     };
+  //   };
 
-    connectWebSocket();
+  //   connectWebSocket();
 
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-    };
-  });
+  //   return () => {
+  //     if (socket) {
+  //       socket.close();
+  //     }
+  //   };
+  // });
 
   useEffect(() => {
     const fetchLatestNews = async () => {

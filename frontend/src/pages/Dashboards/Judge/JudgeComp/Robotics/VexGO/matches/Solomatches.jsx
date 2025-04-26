@@ -1,6 +1,6 @@
 import Alert from "../../../../../../../components/Alert/Alert";
 import { useState, useEffect } from "react";
-import { FaTrophy, FaCheck, FaPlay, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
+import { FaTrophy, FaCheck, FaPlay, FaChartBar,FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMatchContext } from './MatchContext';
 import SheetSolo from "./SheetSolo"
@@ -22,6 +22,9 @@ const SkillsGO = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [schedule, setSchedule] = useState([]);
   const [gameTime, setGameTime] = useState("");
+  const [rankings, setRankings] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState(null);
   
   const event_name = currentCompetition;
   const token = localStorage.getItem("access_token");
@@ -31,6 +34,38 @@ const SkillsGO = () => {
     { id: 'driver_go', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
     { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
   ];
+
+   const fetchCoopRankings = async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/vex-go/${event_name}/skills/rank/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setRankings(response.data);
+  } catch (error) {
+    console.error("Error fetching coop rankings:", error);
+    setError(error.message);
+  } finally {
+    setIsLoading(false);
+  }
+  };
+  
+
+    const handleToggleRanking = () => {
+    setShowRanking(prev => {
+      const newState = !prev;
+      if (newState) {
+        fetchCoopRankings(); // جلب البيانات فقط عند عرض الترتيب
+      }
+      return newState;
+    });
+  };
 
   // Fetch schedule
   const handleSubmit = async (event) => {
@@ -292,7 +327,7 @@ const SkillsGO = () => {
             </button>
             
             <button
-              onClick={() => setShowRanking(!showRanking)}
+              onClick={handleToggleRanking}
               className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center text-sm"
             >
               <FaTrophy className="mr-1" />
@@ -301,43 +336,88 @@ const SkillsGO = () => {
           </div>
 
           {/* Rankings Table */}
-          {showRanking && (
-            <div className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-              <div className="px-4 py-2 bg-indigo-600 text-white flex items-center">
-                <FaTrophy className="mr-2" />
-                <h2 className="text-lg font-bold">Overall Rankings</h2>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                  <thead className="bg-indigo-50">
-                    <tr>
-                      <th className="px-3 py-2 text-left">Rank</th>
-                      <th className="px-3 py-2 text-left">Team</th>
-                      <th className="px-3 py-2 text-center">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {calculateRankings().map((player, index) => (
-                      <tr key={player.id} className="hover:bg-gray-50">
-                        <td className="px-3 py-3 font-medium">
-                          {index + 1}
-                          {index < 3 && (
-                            <span className="ml-1">
-                              {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
-                            </span>
+               {showRanking && (
+                <div className="bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl overflow-hidden mb-6 sm:mb-8">
+                  <div className="px-4 sm:px-6 py-3 sm:py-4 bg-indigo-600 flex items-center">
+                    <FaChartBar className="text-white mr-2 text-lg sm:text-xl" />
+                    <h2 className="text-lg sm:text-xl font-bold text-white">Team Rankings</h2>
+                  </div>
+                    <div className="overflow-x-auto">
+                          {isLoading ? (
+                            <div className="text-center py-8">
+                              <svg className="animate-spin h-8 w-8 text-blue-500 mx-auto"
+                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10"
+                                  stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              <p className="mt-3 text-gray-600">Loading rankings...</p>
+                            </div>
+                          ) : error ? (
+                            <div className="text-center py-4 text-red-500">
+                              ⚠️ Error loading rankings: {error}
+                            </div>
+                          ) : rankings.length === 0 ? (
+                            <div className="text-center py-4 text-gray-500">
+                              🏟️ No rankings available yet
+                            </div>
+                          ) : (
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead className="bg-indigo-50">
+                                <tr>
+                                  <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Rank</th>
+                                  <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Team</th>
+                                  <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Avg_score</th>
+                                  <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Medal</th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-white divide-y divide-gray-200">
+                                      {rankings.map((team, index) => {
+                                        const rank = index + 1;
+                                        return (
+                                          <tr
+                                            key={team.team}
+                                            className={`transition-all duration-150 ${
+                                              rank <= 3 ? 'bg-gradient-to-r' : 'hover:bg-gray-50'
+                                            } ${
+                                              rank === 1 ? 'from-yellow-50/50 to-yellow-50' :
+                                              rank === 2 ? 'from-gray-50/50 to-gray-50' :
+                                              rank === 3 ? 'from-amber-50/50 to-amber-50' : ''
+                                            }`}
+                                          >
+                                            <td className="px-2 sm:px-4 py-2  whitespace-nowrap font-medium text-gray-900 text-sm">
+                                               <div className="flex items-center justify-center">
+                                              {rank <= 3 ? (
+                                                <span className={` w-6 h-6 rounded-full flex items-center justify-center 
+                                                  ${rank === 1 ? 'bg-yellow-400' : 
+                                                    rank === 2 ? 'bg-gray-400' : 'bg-amber-600'} text-white`}>
+                                                  {rank}
+                                                </span>
+                                              ) : (
+                                                <span className="text-gray-600">{rank}</span>
+                                              )}
+                                            </div>
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-center">{team.team__name}</td>
+                                            <td className="px-2 sm:px-4 py-2 whitespace-nowrap font-bold text-sm text-center">
+                                              {team.total_score || 0}
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-center">
+                                              {rank === 1 && <span className="text-yellow-500 text-lg sm:text-xl">🥇</span>}
+                                              {rank === 2 && <span className="text-gray-400 text-lg sm:text-xl">🥈</span>}
+                                              {rank === 3 && <span className="text-amber-600 text-lg sm:text-xl">🥉</span>}
+                                            </td>
+                                          </tr>
+                                        )
+                                      })}
+                              </tbody>
+                            </table>
                           )}
-                        </td>
-                        <td className="px-3 py-3">{player.team}</td>
-                        <td className="px-3 py-3 text-center font-bold text-indigo-600">
-                          {player.score}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+                  </div>
+                </div>
+              )}
         </>
       ) : (
         <SheetSolo 

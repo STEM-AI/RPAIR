@@ -31,8 +31,8 @@ import IntroVexGO from "./pages/LiveEvents/introVexGo";
 import LiveTeamIQ from "./pages/Dashboards/View/LiveTeam";
 import LiveProgramming from "./pages/LiveEvents/LiveMatches/LiveProgramming";
 import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
-import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveSkills";
-import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveTeam";
+import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveSkillsIQ/LiveSkills";
+import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveTeamwork/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
 import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/123Components/CompetitionSheetContainer";
 
@@ -40,10 +40,8 @@ import { EventNameProvider } from './context/EventName';
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
-import SkillsContainer from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerGo";
-import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerGo";
-import SkillsContainerIQ from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerIQ";
 
+import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo/SkillsContainerGo";
 
 
 
@@ -132,6 +130,7 @@ const VexIQAbout = lazy(() => import("./components/Competitions/Robotics/VexIQ")
 const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Vex"));
 const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
 const InterviewSheet = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
+const LiveCoop = lazy(() => import("./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop"));
 
 
 
@@ -887,14 +886,14 @@ const App = () => {
             </Layout>
           }
         />
-                  {/* <Route
+                  <Route
           path="/LiveMatch/Skills"
           element={
             <Layout>
                 <LiveSkillsVex/>
             </Layout>
           }
-        /> */}
+        />
         
 
         <Route
@@ -905,14 +904,14 @@ const App = () => {
             </Layout>
           }
         />
-                <Route
+                {/* <Route
           path="/LiveMatch/Skills"
           element={
             <Layout>
                 <SkillsContainerIQ />
             </Layout>
           }
-        />
+        /> */}
 
                   <Route
           path="/LiveMatch/Teamwork"
@@ -921,7 +920,17 @@ const App = () => {
                 <LiveTeamVex />
             </Layout>
           }
-        />
+                />
+
+                  <Route
+          path="/LiveMatch/Coop"
+          element={
+            <Layout>
+                <LiveCoop />
+            </Layout>
+          }
+                />
+                
 
           <Route
           path="/LiveProgramming"
