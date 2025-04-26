@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { FiPlusCircle, FiTrash2, FiUserX } from "react-icons/fi";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default function ListJudges() {
     const [judges, setJudges] = useState([]);
@@ -26,6 +28,88 @@ export default function ListJudges() {
     const [eventName, setEventName] = useState(""); // State for dynamic event_name input
     const navigate = useNavigate();
     const token = localStorage.getItem("access_token");
+
+const generatePDF = () => {
+  const doc = new jsPDF();
+
+  // إعدادات التنسيق
+  const primaryColor = "#06b6d4";
+  const headerColor = "#0e7490";
+  const accentColor = "#ecfeff";
+  
+  // عنوان التقرير
+  doc.setFillColor(primaryColor);
+  doc.rect(0, 0, doc.internal.pageSize.width, 40, 'F');
+  doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(255);
+  doc.text("Judges Report", 15, 25);
+
+  // إعداد بيانات الجدول
+  const tableData = judges.flatMap((judge) => {
+    const events = judge.judging_events || [];
+    
+    if (events.length === 0) {
+      return [{
+        judge: judge.username,
+        event: "No assigned events",
+        dates: "-",
+        location: "-"
+      }];
+    }
+
+    return events.map((event, index) => ({
+      judge: index === 0 ? judge.username : "", // اسم القاضي في الصف الأول فقط
+      event: event.competition_event.name,
+      dates: `${event.competition_event.start_date} - ${event.competition_event.end_date}`,
+      location: event.competition_event.location
+    }));
+  });
+
+  // إنشاء الجدول
+  doc.autoTable({
+    startY: 45,
+    head: [["Judge", "Event", "Dates", "Location"]],
+    body: tableData.map(row => [row.judge, row.event, row.dates, row.location]),
+    styles: {
+      fontSize: 12, // حجم خط أكبر
+      cellPadding: 4,
+      valign: "top", // محاذاة علوية للنص
+      fillColor: accentColor,
+      textColor: 40,
+      lineColor: 200,
+      lineWidth: 0.3,
+    },
+    headStyles: {
+      fillColor: headerColor,
+      textColor: 255,
+      fontSize: 14, // حجم خط أكبر للعناوين
+      fontStyle: "bold",
+      valign: "middle"
+    },
+    bodyStyles: {
+      minCellHeight: 15, // ارتفاع الصف الأدنى
+    },
+    columnStyles: {
+      0: { 
+        cellWidth: 35,
+        fontStyle: "bold",
+        halign: "left"
+      },
+      1: { cellWidth: 60 },
+      2: { cellWidth: 50 },
+      3: { cellWidth: 40 }
+    },
+    didParseCell: (data) => {
+      if (data.column.index === 0 && data.cell.raw === "") {
+        data.cell.styles.fillColor = 255; 
+        data.cell.styles.lineColor = 200; 
+      }
+    }
+  });
+
+  doc.save(`judges-report-${new Date().toISOString().slice(0,10)}.pdf`);
+};
 
     // Fetch judges and their events
     const fetchJudgeEvent = async () => {
@@ -211,12 +295,20 @@ export default function ListJudges() {
                         className="w-full px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                     />
                 </div>
-                <button 
+                <div className="flex gap-4">
+                    <button 
                     className="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-cyan-600 to-cyan-400 text-white rounded-full hover:from-cyan-700 hover:to-cyan-500 transition-all shadow-sm hover:shadow-md"
                     onClick={() => navigate('/Dashboard/Admin/CreateStaff')}
-                >
+                    >
                     Add New Judge +
-                </button>
+                    </button>
+                    <button 
+                    className="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-emerald-600 to-emerald-400 text-white rounded-full hover:from-emerald-700 hover:to-emerald-500 transition-all shadow-sm hover:shadow-md"
+                    onClick={generatePDF}
+                    >
+                    Download PDF
+                    </button>
+                </div>
             </div>
 
             {loading ? (
