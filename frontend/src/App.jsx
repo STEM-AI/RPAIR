@@ -34,7 +34,7 @@ import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
 import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveSkillsIQ/LiveSkills";
 import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveTeamwork/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
-import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/123Components/CompetitionSheetContainer";
+import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
 import { EventNameProvider } from './context/EventName';
 import OurEvents from "./pages/EventsResources/OurEvents";
@@ -42,6 +42,7 @@ import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
 
 import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo/SkillsContainerGo";
+import CompetitionSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
 
 
@@ -742,11 +743,15 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <CompetitionSheetContainer />
+              <CompetitionSheetContainer/>
               </LayoutDashboard>
             </Layout>
           }
         /> 
+
+
+
+
 
         {/* PROGRAMMING */}
 

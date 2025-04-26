@@ -16,7 +16,7 @@ import MissionTable from "./MissionTable";
 import SummarySection from "./SummarySection";
 import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
 
-export default function CompetitionSheetContainer() {
+export default function CompetitionSheet() {
   // State
   const [completedOrder, setCompletedOrder] = useState([]);
   const [taskStartTime, setTaskStartTime] = useState(0);
