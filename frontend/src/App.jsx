@@ -40,9 +40,8 @@ import { EventNameProvider } from './context/EventName';
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
-import SkillsContainer from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerGo";
-import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/skillsgo/SkillsContainerGo";
 
+import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo/SkillsContainerGo";
 
 
 
