@@ -5,6 +5,7 @@ import "jspdf-autotable";
 import { FaDownload, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
+import InterviewRankings from "../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
 
 const questions = [
   "1 - Presentation Skills",
@@ -26,7 +27,6 @@ export default function InterviewSheet() {
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [rankings, setRankings] = useState([]);
 
   useEffect(() => {
     const fetchJudge = async () => {
@@ -103,28 +103,7 @@ export default function InterviewSheet() {
     }
   };
 
-  const fetchRankings = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/vex-123/vex_123/team/interview/rank/`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      // Create mapping from team ID to name
-      const idToName = {};
-      teams.forEach((team) => (idToName[team.id] = team.name));
-
-      const displayRankings = res.data.map((item, index) => ({
-        rank: index + 1,
-        teamName: idToName[item.id] || "Unknown",
-        score: item.interview_score,
-      }));
-
-      setRankings(displayRankings);
-    } catch (err) {
-      Swal.fire("Error", "Failed to fetch rankings", "error");
-    }
-  };
+ 
 
   const handleDownloadPDF = () => {
     if (!teamData) {
@@ -231,27 +210,17 @@ export default function InterviewSheet() {
         <button onClick={handleSubmit} className="bg-green-600 text-white px-5 py-3 rounded">
           <FaCheckCircle className="inline mr-2" /> Submit Evaluation
         </button>
-        <button onClick={fetchRankings} className="bg-yellow-500 text-white px-5 py-3 rounded">
-          🏆 Show Rankings
-        </button>
+       
       </div>
 
       <div className="text-center text-gray-600">
         <p>Total Score: {scores.reduce((sum, v) => sum + (parseInt(v) || 0), 0)} / 20</p>
       </div>
 
-      {rankings.length > 0 && (
-        <div className="mt-8">
-          <h3 className="text-xl font-bold text-center text-indigo-700 mb-4">Team Rankings</h3>
-          <ul className="space-y-2">
-            {rankings.map((team) => (
-              <li key={team.rank} className="text-center">
-                {team.rank}. {team.teamName} — {team.score} pts
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      
+        <InterviewRankings
+  apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${currentCompetition}/team/interview/rank/`} 
+/>
     </div>
   );
 }

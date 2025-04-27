@@ -6,6 +6,7 @@ import { GiThreeBurningBalls } from "react-icons/gi";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
+import useSound from 'use-sound';
 
 const ScoreTeams = ({ onCalculate, onClose, gameId ,eventName}) => {
   const [switchCount, setSwitchCount] = useState(0);
@@ -18,7 +19,11 @@ const ScoreTeams = ({ onCalculate, onClose, gameId ,eventName}) => {
   const socketRef = useRef(null);
   const [showControls, setShowControls] = useState(false);
   const token = localStorage.getItem("access_token");
+  const prevTimeRef = useRef(remainingTime);
 
+const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
+const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
   const getPassPoints = (switches) => {
     switch (switches) {
       case 4: return 12;
@@ -138,7 +143,8 @@ const handleCalculateAndSubmit = async () => {
       };
     }, [eventName, gameId]);
   
-    const startGame = () => {
+  const startGame = () => {
+        playStart(); // تشغيل الصوت هنا
       setGameActive(true);
       setGamePaused(false);
       setShowControls(true);
@@ -189,6 +195,7 @@ const handleCalculateAndSubmit = async () => {
           })
         );
       }
+      playStart(); // تشغيل الصوت هنا
     setRemainingTime(60);
     setGamePaused(false);
     setTimeUp(false);
@@ -202,8 +209,27 @@ const handleCalculateAndSubmit = async () => {
     });
   };
   
+  useEffect(() => {
+  if (remainingTime === 0) {
+    playEnd();
+  }
+}, [remainingTime, playEnd]);
+
+// تشغيل playMiddle عند الوصول إلى 25 أو 35 ثانية
+useEffect(() => {
+  if (gameActive && !gamePaused) {
+    if (
+      (prevTimeRef.current >= 25 && remainingTime === 25) ||
+      (prevTimeRef.current >= 35 && remainingTime === 35)
+    ) {
+      playMiddle();
+    }
+  }
+  prevTimeRef.current = remainingTime;
+}, [remainingTime, gameActive, gamePaused, playMiddle]);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">

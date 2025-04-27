@@ -184,7 +184,15 @@ const CreateTeam = () => {
       console.log("Response Data:", response.data);
 
       console.log(" Data:", formData);
-
+        
+           Swal.fire({
+        icon: "success",
+        title: "Team Created!",
+        text: "Team registration completed successfully!",
+        showConfirmButton: false,
+        timer: 2000
+           });
+      
       setFormData({
         event_name: "",
         competition: "",
@@ -204,27 +212,60 @@ const CreateTeam = () => {
         coach: [{ name: "", email: "", phone_number: "", position: "" }],
         members: [{ name: "", email: "", phone_number: "" }],
       });
-
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Registration successful!",
-        showConfirmButton: false,
-      });
       return response.data;
+
+    
     } catch (err) {
-      console.error("Error Response:", err.response);
-
-      setAlertType("error");
-      console.log("Error Response:", err.response.data);
-
-      setResponseMessage(
-        err.response?.data?.detail || "Failed to create the event. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
+    console.error("Error Response:", err.response);
+    const errorData = err.response?.data || {};
+    
+    // Handle existing data errors
+    const errorMessages = [];
+    
+    // Check for specific field conflicts
+    if (errorData.name) {
+      errorMessages.push("Team name is already registered");
     }
-  };
+    if (errorData.robot_name) {
+      errorMessages.push("Robot name is already taken");
+    }
+    if (errorData.organization_info?.email) {
+      errorMessages.push("Organization email is already registered");
+    }
+    if (errorData.team_leader_email) {
+      errorMessages.push("Team leader email is already in use");
+    }
+
+    // Handle generic errors
+    if (errorData.detail) {
+      errorMessages.push(errorData.detail);
+    }
+
+    // If no specific messages, show default error
+    if (errorMessages.length === 0) {
+      errorMessages.push("Failed to create team. Please check your inputs and try again.");
+    }
+
+    Swal.fire({
+      icon: "error",
+      title: '<span style="color: #dc2626">Registration Failed</span>',
+      html: `
+        <div class="text-left">
+          <p class="font-semibold">Please fix the following issues:</p>
+          <ul class="list-disc pl-5 mt-2">
+            ${errorMessages.map(msg => `<li>${msg}</li>`).join('')}
+          </ul>
+        </div>
+      `,
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "Try Again",
+      scrollbarPadding: false
+    });
+
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -236,14 +277,7 @@ const CreateTeam = () => {
         Create a Team
       </h2>
 
-      {responseMessage && (
-        <Stack sx={{ width: "100%" }} spacing={2}>
-          <Alert severity={alertType}>
-            <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
-            {responseMessage}
-          </Alert>
-        </Stack>
-      )}
+      
       <form onSubmit={handleSubmit} className="grid gap-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-5">
           <div className="w-full md:w-1/2">

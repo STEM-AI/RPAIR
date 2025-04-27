@@ -5,6 +5,7 @@ import "jspdf-autotable";
 import { FaDownload, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
+import InterviewRankings from "../../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
 
 
 const questions = [
@@ -358,6 +359,9 @@ const postScore = async () => {
         <p>Total Possible Score: {questions.length * 5} points</p>
         <p className="mt-2">Current Total: {scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)} points</p>
       </div>
+      <InterviewRankings 
+  apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${currentCompetition}/team/interview/rank/`} 
+/>
     </div>
   );
 }

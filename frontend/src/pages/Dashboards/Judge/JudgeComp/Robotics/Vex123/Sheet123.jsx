@@ -4,6 +4,9 @@ import Swal from "sweetalert2";
 import { FaClock, FaPlay, FaPause, FaRedo, FaDownload } from "react-icons/fa";
 import { useEventNameContext } from "../../../../../../context/EventName";
 import { jsPDF } from "jspdf";
+import { FaTrophy, FaMedal} from "react-icons/fa";
+import useSound from 'use-sound';
+
 
 // Constants
 const INITIAL_TIME = 5 * 60; // 5 minutes in seconds
@@ -48,18 +51,69 @@ const [missionEndTimes, setMissionEndTimes] = useState({}); // تتبع أوقا
   const [missionStatus, setMissionStatus] = useState({});
   const [teamScores, setTeamScores] = useState({}); // Track scores per team
   const [teamTimes, setTeamTimes] = useState({}); // Track times per team
-
+const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
+ const [rankings, setRankings] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+    const [showRankings, setShowRankings] = useState(false); // Add this state
+      const [playStart] = useSound('/sounds/Vex123Start.mp3', { volume: 1 });
+      const [playEnd] = useSound('/sounds/Vex123End.mp3', { volume: 1 });
   
-  // Timer Management
-  useEffect(() => {
-    let interval;
-    if (isRunning && timer > 0) {
-      interval = setInterval(() => {
-        setTimer(prevTimer => prevTimer - 1);
-      }, 1000);
+   // Medal icon rendering function (keep this in your component)
+  const getMedalIcon = (rank) => {
+    switch (rank) {
+      case 1:
+        return <FaTrophy className="w-6 h-6 text-amber-400" />;
+      case 2:
+        return <FaMedal className="w-6 h-6 text-gray-400" />;
+      case 3:
+        return <FaMedal className="w-6 h-6 text-amber-600" />;
+      default:
+        return <span className="text-gray-600 font-medium">{rank}</span>;
     }
-    return () => clearInterval(interval);
-  }, [isRunning, timer]);
+  };
+
+  // Modified fetch function with sorting
+  const fetchRankings = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/vex-123/${currentCompetition}/rank/`
+      );
+      
+      // Sort rankings by score then time
+      const sortedData = response.data.sort((a, b) => {
+        if (b.total_score !== a.total_score) {
+          return b.total_score - a.total_score;
+        }
+        return a.total_time_taken - b.total_time_taken;
+      });
+      
+      setRankings(sortedData);
+    } catch (error) {
+      console.error("Error fetching rankings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+ 
+  // Timer Management
+useEffect(() => {
+  let interval;
+  if (isRunning && timer > 0) {
+    interval = setInterval(() => {
+      setTimer(prevTimer => {
+        // تشغيل الصوت عند الوصول لـ 5 ثواني
+        if (prevTimer === 6 && !hasPlayedEndSound) {
+          playEnd();
+          setHasPlayedEndSound(true);
+        }
+        return prevTimer - 1;
+      });
+    }, 1000);
+  }
+  return () => clearInterval(interval);
+}, [isRunning, timer, hasPlayedEndSound, playEnd]);
 
   // Format time display
   const formatTime = (seconds) => {
@@ -282,6 +336,8 @@ const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamT
     const gameId = await createGame(selectedTeam);
     if (gameId) {
       setIsRunning(true);
+    setHasPlayedEndSound(false); // إعادة التعيين هنا
+    playStart();
     }
   };
 
@@ -298,6 +354,9 @@ const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamT
 const handleMissionComplete = (missionIndex) => {
   if (!isRunning) {
     Swal.fire('Warning', 'Please start the timer first', 'warning');
+    return;
+  }if (timer <= 0) {
+    Swal.fire('Warning', 'Tasks cannot be added after the time has expired...', 'warning');
     return;
   }
   
@@ -421,12 +480,10 @@ const handleRestart = async () => {
   if (result.isConfirmed) {
     try {
       setLoading(true);
-      
-      // 1. Reset all local states
       setTimer(INITIAL_TIME);
       setIsRunning(true);
-      setMissionStatus({});
-      setMissionEndTimes({});
+      setHasPlayedEndSound(false); // إعادة التعيين هنا
+      playStart();
 
       // 2. Remove current mode from completed modes
       if (selectedTeam && currentMode) {
@@ -449,13 +506,21 @@ const handleRestart = async () => {
 };
 
   return (
+    <>
   <div className="max-w-5xl mx-auto p-6 bg-gradient-to-br from-indigo-50 to-blue-50 shadow-2xl rounded-2xl">
-  <div className="text-center mb-8">
-    <h1 className="text-3xl font-bold ">
-      🤖 VEX123 Robotics Challenge
-    </h1>
-    <p className="text-gray-600 mt-2 font-medium">Performance Scoring Dashboard</p>
-  </div>
+  <div className="text-center mb-8 relative">
+          <h1 className="text-3xl font-bold">🤖 VEX123 Robotics Challenge</h1>
+          <p className="text-gray-600 mt-2 font-medium">Performance Scoring Dashboard</p>
+          <button
+  onClick={() => {
+    setShowRankings(!showRankings);
+    fetchRankings();
+  }}
+  className="absolute top-0 right-0 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+>
+  {showRankings ? 'Hide Rankings' : 'Show Rankings'}
+</button>
+        </div>
 
   {/* Team Selection Section */}
   <div className="mb-8 bg-white p-6 rounded-xl shadow-sm border border-indigo-100">
@@ -677,7 +742,7 @@ const handleRestart = async () => {
             ${isCompleted 
               ? 'bg-green-500 text-white cursor-default' 
               : 'bg-indigo-600 hover:bg-indigo-700 text-white'}
-            ${!isRunning ? 'opacity-50 cursor-not-allowed' : ''}
+            ${!isRunning || timer <= 0 ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         >
           {isCompleted ? 'Completed' : 'Mark Complete'}
@@ -697,7 +762,7 @@ const handleRestart = async () => {
           </div>
           <button
             onClick={handleRoundComplete}
-            disabled={loading || !isRunning}
+            disabled={loading || !selectedTeam || !currentMode}
             className="px-8 py-3 bg-white text-indigo-700 rounded-xl font-bold hover:bg-indigo-50 transition-colors flex items-center gap-2"
           >
             Complete 
@@ -706,8 +771,61 @@ const handleRestart = async () => {
         </div>
       </div>
     </div>
-  )}
+      )}
+      
 </div>
+      {showRankings && (
+        <div className="max-w-5xl mx-auto my-3 animate-fade-in">
+          <div className="overflow-x-auto rounded-lg shadow-xl">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-indigo-600 text-white">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-bold uppercase">Rank</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold uppercase">Team</th>
+                  <th className="px-6 py-4 text-center text-sm font-bold uppercase">Score</th>
+                  <th className="px-6 py-4 text-center text-sm font-bold uppercase">Time</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {rankings.map((team, index) => (
+                  <tr
+                    key={team.team}
+                    className={`${
+                      index % 2 === 0 ? "bg-white" : "bg-indigo-50"
+                    } hover:bg-indigo-100 transition-colors`}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap font-semibold">
+                      <div className="flex items-center gap-2">
+                        {getMedalIcon(index + 1)}
+                        <span className="text-gray-600">#{index + 1}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="inline-block w-8 text-center font-bold text-indigo-600">
+                          #{team.team}
+                        </span>
+                        <span className="font-medium text-gray-900">{team.team_name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="px-3 py-1.5 rounded-full bg-green-100 text-green-800 font-bold">
+                        {team.total_score} pts
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 font-bold">
+                        {team.total_time_taken}s
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      </>
   );
 };
 

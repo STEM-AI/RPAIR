@@ -32,7 +32,7 @@ const [error, setError] = useState(null);
   // تعريف التبويبات بنفس نمط skills.jsx
   const tabs = [
     { id: 'driver_go', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
-    { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
+    { id: 'auto', label: 'Coding Challenge', icon: '🤖', color: 'blue' },
   ];
 
    const fetchCoopRankings = async () => {
@@ -111,18 +111,18 @@ const [error, setError] = useState(null);
     }));
   };
 
-  const handleStartMatch = (match) => {
-    setCurrentMatch({
-      ...match,
-      id: match.id, 
-      type: 'solo', 
-      team: match.team1_name,
-      challengeType: activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge',
-      mode: activeTab,
-      round: round,
-    });
-    setSelectedMatch(match);
-  };
+ const handleStartMatch = (match) => {
+  setCurrentMatch({
+    ...match,
+    id: match.id,
+    type: 'solo',
+    team: match.team1_name,
+    challengeType: activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge',
+    mode: activeTab,
+    round: round,
+  });
+  setSelectedMatch(match);
+};
 
   // const handleCompleteMatch = async (matchId) => {
   //   const currentScore = matches[matchId]?.score || 0;
@@ -247,7 +247,7 @@ const [error, setError] = useState(null);
                 <FaChevronLeft />
               </button>
               <span className="text-lg font-semibold bg-indigo-600 text-white px-3 py-1 rounded-full">
-                {activeTab === 'driver_go' ? 'Driving' : 'Autonomous'} R{round}
+                {activeTab === 'driver_go' ? 'Driving' : 'Coding'} R{round}
               </span>
               <button
                 onClick={() => setRound(prev => Math.min(3, prev + 1))}
@@ -423,7 +423,8 @@ const [error, setError] = useState(null);
         <SheetSolo 
           selectedMatch={selectedMatch} 
           eventName={event_name}
-          onClose={() => setSelectedMatch(null)} 
+          onClose={() => setSelectedMatch(null)}
+          challengeType={activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge'}
         />
       )}
     </div>

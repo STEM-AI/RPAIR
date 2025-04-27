@@ -5,10 +5,10 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { sortBy } from 'lodash';
 import { useMatchContext } from './MatchContext';
-import Back from "../../../../../../../components/Back/Back";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "../../../../../../../components/Alert/Alert";
+import useSound from 'use-sound';
 
 
 const tasks = [
@@ -23,7 +23,7 @@ const tasks = [
   { title: "End with the robot on the green tile", points: 1 },
 ];
 
-export default function SheetSolo({ selectedMatch, onClose, eventName }) {
+export default function SheetSolo({ selectedMatch, onClose, eventName, challengeType }) {
   const { updateMatch, currentMatch } = useMatchContext();
   const [scores, setScores] = useState({});
   const [turbines, setTurbines] = useState(0);
@@ -34,8 +34,14 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
   const socketRef = useRef(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
-
+    const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+    const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
+  const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
+  
   const gameId = currentMatch?.id
+   const maxTime = challengeType === 'Driving Challenge' ? 120 : 60;
+  const remainingTime = maxTime - timer;
+  const prevRemainingTime = useRef(remainingTime);
   // WebSocket connection management
   useEffect(() => {
     if (!eventName || !gameId) {
@@ -60,7 +66,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
         try {
           const data = JSON.parse(event.data);
           if (data.remaining_time !== undefined) {
-            const elapsedTime = 120 - Math.round(data.remaining_time);
+            const elapsedTime = maxTime - Math.round(data.remaining_time);
             setTimer(elapsedTime);
             if (data.remaining_time <= 0) {
               setIsRunning(false);
@@ -99,13 +105,13 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
 
   useEffect(() => {
     let interval;
-    if (isRunning && timer < 120) {
+    if (isRunning && timer < maxTime) {
       interval = setInterval(() => setTimer(prev => prev + 1), 1000);
-    } else if (timer >= 120) {
+    } else if (timer >= maxTime) {
       setIsRunning(false);
     }
     return () => clearInterval(interval);
-  }, [isRunning, timer]);
+  }, [isRunning, timer, maxTime]);
 
   const sendSocketCommand = (action) => {
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
@@ -133,6 +139,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
   const handleStart = () => {
     if (sendSocketCommand("start_game")) {
       setIsRunning(true);
+      playStart(); // تشغيل الصوت هنا
     }
   };
 
@@ -144,6 +151,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
 
   const handleReset = () => {
     if (sendSocketCommand("restart_game")) {
+      playStart(); // تشغيل الصوت هنا
       setTimer(0);
       setIsRunning(false);
       setScores({});
@@ -251,8 +259,7 @@ const handleSubmit = async () => {
     doc.setFontSize(14).setTextColor(0)
       .text(`Match ID: ${gameId || ''}`, 20, 40)
       .text(`Teams: ${currentMatch?.team || ''}`, 20, 50)
-      .text(`Total Time: ${formatTime(timer)}`, 20, 60);
-
+.text(`Total Time: ${formatTime(timer)} / ${formatTime(maxTime)}`, 20, 60)
     const tableData = tasks.map((task, index) => [
       task.title,
       task.points,
@@ -273,13 +280,30 @@ const handleSubmit = async () => {
     doc.save(`Match_${gameId || ''}_Score.pdf`);
   };
 
+    useEffect(() => {
+    if (remainingTime === 0) {
+      playEnd();
+    }
+  }, [remainingTime, playEnd]);
 
+  useEffect(() => {
+    if (isRunning) {
+      const current = remainingTime;
+      const prev = prevRemainingTime.current;
+
+      // Play sound when reaching 25 or 35 seconds remaining
+      if (prev >= 60 && current === 60 && challengeType === 'Driving Challenge') {
+        playMiddle();
+      }
+
+      prevRemainingTime.current = current;
+    }
+  }, [remainingTime, isRunning, playMiddle]);
 
   return (
     <div className="max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
       {/* Header */}
       <div className="text-center mb-4 sm:mb-8">
-        <Back />
         <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
           🌊 {currentMatch?.challengeType || 'Solo Challenge'}
         </h1>
@@ -305,7 +329,8 @@ const handleSubmit = async () => {
         <div className="flex items-center mb-2 sm:mb-0">
           <FaClock className="text-indigo-600 mr-2 text-lg sm:text-xl" />
           <span className="text-lg sm:text-xl font-semibold">
-            {formatTime(120 - timer)}
+            {formatTime(maxTime - timer)}
+            
             <span className={`ml-2 text-xs font-normal ${
               socketStatus === 'connected' ? 'text-green-600' : 
               socketStatus === 'connecting' ? 'text-yellow-600' : 
@@ -368,7 +393,7 @@ const handleSubmit = async () => {
                       value={turbines}
                       onChange={handleTurbineChange}
                       className="w-12 sm:w-16 px-1 sm:px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-xs sm:text-sm"
-                      disabled={!isRunning || timer >= 120} 
+                      disabled={!isRunning || timer >= maxTime} 
                     />
                   ) : (
                     <input
@@ -376,7 +401,7 @@ const handleSubmit = async () => {
                       checked={!!scores[index]}
                       onChange={(e) => handleCheckboxChange(index, e.target.checked)}
                       className="w-4 h-4 sm:w-5 sm:h-5 accent-green-500 cursor-pointer"
-                      disabled={!isRunning || timer >= 120}
+                      disabled={!isRunning || timer >= maxTime}
                     />
                   )}
                 </td>
