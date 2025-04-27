@@ -191,7 +191,7 @@ export default function SheetCoop({ eventName, onClose }) {
 
   const handleTurbineChange = (e) => {
     let value = parseInt(e.target.value, 10) || 0;
-    if (value > 5) value = 5;
+    if (value > 2) value = 2;
     if (value < 0) value = 0;
     setTurbines(value);
     setScores((prev) => ({ ...prev, 4: value }));
@@ -451,7 +451,7 @@ const formatTime = (seconds) => {
                   <input
                     type="number"
                     min="0"
-                    max="5"
+                    max="2"
                     value={turbines}
                     onChange={handleTurbineChange}
                     className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-sm"
