@@ -334,14 +334,14 @@ const CreateEvent = () => {
     { value: "vex_iq", label: "VEX IQ" },
   { value: "vex_123", label: "VEX 123" },
     { value: "vex_go", label: "Vex GO" },
-    { value: "web_design", label: "Web Design" },
-    { value: "open_source", label: "Open Source" },
-    { value: "mobile_application", label: "Mobile Application" },
-    { value: "programming", label: "Programming" },
-    { value: "artificial_intelligence", label: "Artificial Intelligence" },
-    { value: "fablab", label: "Fablab" },
-    { value: "st_math", label: "ST Math" },
-    { value: "graphic_design", label: "Graphic Design" },
+    // { value: "web_design", label: "Web Design" },
+    // { value: "open_source", label: "Open Source" },
+    // { value: "mobile_application", label: "Mobile Application" },
+    // { value: "programming", label: "Programming" },
+    // { value: "artificial_intelligence", label: "Artificial Intelligence" },
+    // { value: "fablab", label: "Fablab" },
+    // { value: "st_math", label: "ST Math" },
+    // { value: "graphic_design", label: "Graphic Design" },
 
   ];
 

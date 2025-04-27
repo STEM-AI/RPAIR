@@ -298,7 +298,8 @@ const App = () => {
               <AllEventDetails/>
             </Layout>
           }
-        />
+                />
+     
 
         {/* Start Competitions */}
         <Route
@@ -610,7 +611,16 @@ const App = () => {
 
         {/* JUDGE DASHBOARD */}
 
-        
+         <Route
+          path="/Dashboard/JudgeEvent/eventDetailsJudge"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <EventDetailsJudge />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
        
 
         <Route

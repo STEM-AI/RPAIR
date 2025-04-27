@@ -10,6 +10,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { BsSkipStartFill } from "react-icons/bs";
 import Alert from "../../../../../../../components/Alert/Alert";
+import useSound from 'use-sound';
+
 
 
 const tasks = [
@@ -43,8 +45,11 @@ export default function SheetCoop({ eventName, onClose }) {
   const reconnectTimer = useRef(null);
   const [timeUp, setTimeUp] = useState(false);
   const [showControls, setShowControls] = useState(false);
+    const prevTimeRef = useRef(remainingTime);
 
-
+  const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+  const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
+  const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
 
   useEffect(() => {
     if (currentMatch?.type === 'coop') {
@@ -108,7 +113,8 @@ export default function SheetCoop({ eventName, onClose }) {
         }
       };
     }, [eventName, gameId]);
-    const startGame = () => {
+  const startGame = () => {
+      playStart(); // تشغيل الصوت هنا
       setGameActive(true);
       setGamePaused(false);
       setShowControls(true);
@@ -158,6 +164,7 @@ export default function SheetCoop({ eventName, onClose }) {
           })
         );
       }
+      playStart(); // تشغيل الصوت هنا
       setRemainingTime(60);
     setGameActive(false);
     setGamePaused(false);
@@ -349,6 +356,23 @@ const formatTime = (seconds) => {
     doc.save(`Match_${matchData.matchId}_Score.pdf`);
   };
 
+     useEffect(() => {
+    if (remainingTime === 0) {
+      playEnd();
+    }
+     }, [remainingTime, playEnd]);
+  
+   // تشغيل playMiddle عند الوصول إلى 25 أو 35 ثانية
+  useEffect(() => {
+    if (gameActive && !gamePaused) {
+      if (
+        (prevTimeRef.current >= 30 && remainingTime === 30)
+      ) {
+        playMiddle();
+      }
+    }
+    prevTimeRef.current = remainingTime;
+  }, [remainingTime, gameActive, gamePaused, playMiddle]);
 
   return (
     <div className="max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">

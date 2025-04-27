@@ -10,10 +10,48 @@ const LiveVex123 = () => {
   const eventName = 'vex_123';
   const URL = `${process.env.REACT_APP_API_URL}/vex-123/${eventName}/rank/`;
   const intervalRef = useRef();
-    const socketRef = useRef(null);
-      const [matches, setMatches] = useState([]);
-    
+  const socketRef = useRef(null);
+  const [matches, setMatches] = useState([]);
+  const [connectionStatus, setConnectionStatus] = useState('connecting');
+   
+
+  const fetchRankings = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(URL);
+      setRankings(response.data);
+      setLastUpdate(new Date());
+    } catch (error) {
+      console.error("Error fetching rankings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRankings();
+    intervalRef.current = setInterval(fetchRankings, 10000);
+    return () => clearInterval(intervalRef.current);
+  }, []);
   
+const getMedalIcon = (rank) => {
+    switch (rank) {
+      case 1:
+        return <FaTrophy className="w-6 h-6 text-amber-400" />;
+      case 2:
+        return <FaMedal className="w-6 h-6 text-gray-400" />;
+      case 3:
+        return <FaMedal className="w-6 h-6 text-amber-600" />;
+      default:
+        return <span className="text-gray-600 font-medium">{rank}</span>;
+    }
+  };
+
+  const handleRefresh = () => {
+    if (!isLoading) {
+      fetchRankings();
+    }
+  };
 
  
 
@@ -78,8 +116,6 @@ const newMatch = {
   };
 }, [eventName]);
 
-// Add connection status state
-const [connectionStatus, setConnectionStatus] = useState('connecting');
 
 // Add connection status indicator
 const connectionStatusColors = {
@@ -142,6 +178,49 @@ const connectionStatusColors = {
   </table>
 )}
 
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team Name</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Score</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Time Taken</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {rankings.map((team, index) => (
+                <tr
+                  key={team.team}
+                  className={`${
+                    index === 0 ? "bg-amber-50" : 
+                    index === 1 ? "bg-gray-50" : 
+                    index === 2 ? "bg-amber-100" : "hover:bg-gray-50"
+                  } transition-colors`}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      {getMedalIcon(index + 1)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{team.team}</td>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team_name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
+                    <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800">
+                      {team.total_score}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
+                    <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800">
+                      {team.total_time_taken}s
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

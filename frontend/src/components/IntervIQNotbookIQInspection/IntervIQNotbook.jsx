@@ -21,7 +21,7 @@ const GenericRubric = ({
   rubricTitle, 
   pdfFileName, 
   maxTotalScore,
-  apiScoreField 
+  apiScoreField ,
 }) => {
     const { currentCompetition } = useEventNameContext();
     const [totalScore, setTotalScore] = useState(0);
@@ -180,7 +180,7 @@ const handleScoreChange = (category, value) => {
                 </div>
             ))}
             </div>
-      <div className="max-w-full mb-10 bg-white rounded-xl shadow-md overflow-hidden lg:max-w-full md:max-w-5xl">
+      <div className="max-w-full  bg-white rounded-xl shadow-md overflow-hidden lg:max-w-full md:max-w-5xl">
             <div className="md:flex flex-col">
               
       <div className="scoreInput flex flex-col sm:flex-row justify-between items-center p-4 gap-3 sm:gap-0">
