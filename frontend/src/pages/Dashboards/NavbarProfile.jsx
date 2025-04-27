@@ -93,10 +93,10 @@ export default function NavbarProfile({isSidebarOpen}) {
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
     ? userRole.is_superuser
-      ? "/Dashboard/Admin"
+      ? "/Dashboard/Competitions"
       : userRole.is_staff && !userRole.is_judge
       ? "/Dashboard/JudgeEvent"
-      : "/Dashboard/User"
+      : "/Dashboard/Competitions"
     : "/";
 
 

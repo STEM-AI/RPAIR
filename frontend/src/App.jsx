@@ -43,6 +43,7 @@ import CompEvents from "./pages/EventsResources/CompEvents";
 
 import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo/SkillsContainerGo";
 import CompetitionSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
+import Sheet123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
 
 
@@ -743,7 +744,7 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-              <CompetitionSheetContainer/>
+              <Sheet123/>
               </LayoutDashboard>
             </Layout>
           }
