@@ -119,10 +119,10 @@ export default function Navbar() {
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
     ? userRole.is_superuser
-      ? "/Dashboard/Admin"
+      ? "/Dashboard/Competitions"
       : userRole.is_staff && !userRole.is_superuser
       ? "/Dashboard/JudgeEvent"
-      : "/Dashboard/User"
+      : "/Dashboard/Competitions"
     : "/";
 
 

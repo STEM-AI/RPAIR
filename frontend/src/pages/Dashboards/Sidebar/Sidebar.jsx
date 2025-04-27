@@ -47,12 +47,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
           <>
            
                     {/* Dashboard */}
-                    <Link to="/Dashboard/Admin">
+                    {/* <Link to="/Dashboard/Admin">
                       <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                         <MdOutlineDashboard className="mr-2" />
                         Dashboard
                       </li>
-                    </Link>
+                    </Link> */}
         
                     {/* Competitions */}
                     <li
@@ -133,9 +133,60 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Event Details
                           </li>
                         </Link>
-                      
+                        {/* <Link to="/Dashboard/JudgeEvent/vex_go">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <MdOutlineEventNote className="mr-2" />
+                            Vex GO
+                          </li>
+                          
+                        </Link>
 
-                        
+                        <Link to="/Dashboard/JudgeEvent/vex_123">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <MdOutlineEventNote className="mr-2" />
+                            Vex 123
+                          </li>
+                        </Link> */}
+
+                        {/* Event */}
+                          {/* <li
+                            className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                            onClick={() => setIsEventOpen(!isEventOpen)} // Toggle the management sub-menu
+                          >
+                            <TbCalendarEvent className="mr-2" />
+                            Event
+                            {isEventOpen ? (
+                              <LiaAngleDoubleUpSolid className="ml-2" /> // Show double up icon when open
+                            ) : (
+                              <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
+                            )}
+                          </li> */}
+                          {/* Management Sub-menu */}
+                          {/* {isEventOpen && (
+                            <ul className="pl-6 mt-2">
+                              <Link to="/Dashboard/Judge/inspection">
+                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                                    Robot Inspection
+                                </li>
+                              </Link>
+                              <Link to="/Dashboard/Judge/matches">
+                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                                  Matches
+                                </li>
+                              </Link>
+                              <Link to="/Dashboard/Judge/Notebook">
+                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                                  Engineering Notebook
+                                </li>
+                              </Link>
+                              <Link to="/Dashboard/Judge/interview">
+                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                                  Team Interview
+                                </li>
+                              </Link>
+                              
+                            </ul>
+                          )} */}
           </>
         );
 
@@ -143,12 +194,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
         return (
           <>
             {/* Dashboard */}
-                        <Link to="/Dashboard/User">
+                        {/* <Link to="/Dashboard/User">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineDashboard className="mr-2" />
                             Dashboard
                           </li>
-                        </Link>
+                        </Link> */}
                         <li
                       className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
                       onClick={() => navigate("/Dashboard/Competitions")}
@@ -156,12 +207,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                       <GiLaurelsTrophy className="mr-2" />
                       Competitions
                     </li>
-                    <Link to="/Programming">
+                    {/* <Link to="/Programming">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Programming
                           </li>
-                        </Link>
+                        </Link> */}
                         <Link to="/Dashboard/User/Teams">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <FaPeopleGroup className="mr-2" />
