@@ -47,12 +47,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
           <>
            
                     {/* Dashboard */}
-                    <Link to="/Dashboard/Admin">
+                    {/* <Link to="/Dashboard/Admin">
                       <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                         <MdOutlineDashboard className="mr-2" />
                         Dashboard
                       </li>
-                    </Link>
+                    </Link> */}
         
                     {/* Competitions */}
                     <li
@@ -133,7 +133,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Event Details
                           </li>
                         </Link>
-                        <Link to="/Dashboard/JudgeEvent/vex_go">
+                        {/* <Link to="/Dashboard/JudgeEvent/vex_go">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Vex GO
@@ -146,7 +146,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             <MdOutlineEventNote className="mr-2" />
                             Vex 123
                           </li>
-                        </Link>
+                        </Link> */}
 
                         {/* Event */}
                           {/* <li
@@ -194,12 +194,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
         return (
           <>
             {/* Dashboard */}
-                        <Link to="/Dashboard/User">
+                        {/* <Link to="/Dashboard/User">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineDashboard className="mr-2" />
                             Dashboard
                           </li>
-                        </Link>
+                        </Link> */}
                         <li
                       className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
                       onClick={() => navigate("/Dashboard/Competitions")}
@@ -207,12 +207,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                       <GiLaurelsTrophy className="mr-2" />
                       Competitions
                     </li>
-                    <Link to="/Programming">
+                    {/* <Link to="/Programming">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Programming
                           </li>
-                        </Link>
+                        </Link> */}
                         <Link to="/Dashboard/User/Teams">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <FaPeopleGroup className="mr-2" />
