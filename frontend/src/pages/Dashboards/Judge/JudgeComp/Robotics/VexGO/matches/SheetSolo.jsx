@@ -164,7 +164,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName }) {
 
   const handleTurbineChange = (e) => {
     let value = parseInt(e.target.value, 10) || 0;
-    if (value > 5) value = 5;
+    if (value > 2) value = 2;
     if (value < 0) value = 0;
     
     setTurbines(value);
@@ -364,7 +364,7 @@ const handleSubmit = async () => {
                     <input
                       type="number"
                       min="0"
-                      max="5"
+                      max="2"
                       value={turbines}
                       onChange={handleTurbineChange}
                       className="w-12 sm:w-16 px-1 sm:px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-xs sm:text-sm"
@@ -397,7 +397,7 @@ const handleSubmit = async () => {
             onClick={handleSubmit}
             className="px-3 py-2 sm:px-5 sm:py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center 
                      shadow-md hover:shadow-lg transition-all text-xs sm:text-base"
-            disabled={!isRunning}
+            
           >
             <FaCheckCircle className="mr-1 sm:mr-2" /> 
             Submit Score
@@ -406,7 +406,7 @@ const handleSubmit = async () => {
             onClick={handleDownloadPDF}
             className="px-3 py-2 sm:px-5 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg flex items-center justify-center 
                      shadow-md hover:shadow-lg transition-all text-xs sm:text-base"
-            disabled={!isRunning}
+            
           >
             <FaDownload className="mr-1 sm:mr-2" /> 
             Download PDF

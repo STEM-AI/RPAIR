@@ -106,8 +106,6 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     checkLoginStatus();
     
-    // التحقق كل 4 دقائق (240000 مللي ثانية)
-    // نختار 4 دقائق لنضمن تجديد التوكن قبل انتهاء صلاحيته (عادةً 5 دقائق)
     const tokenCheckInterval = setInterval(checkLoginStatus, 240000);
     document.addEventListener('mousedown', handleClickOutside);
 
@@ -316,11 +314,18 @@ export default function Navbar() {
             </div>
           </div>
         ) : (
+            <>
           <Link
             to={"/login"}
-            className="border border-cyan-500 text-cyan-500 uppercase px-4 py-2 rounded-md hover:bg-cyan-50 transition-all duration-300 transform hover:scale-105">
+            className="border border-cyan-500 text-cyan-500 uppercase  px-2 py-2 rounded-md hover:bg-cyan-50 transition-all duration-300 transform hover:scale-105">
             Login
           </Link>
+          <Link
+            to={"/register"}
+            className="border border-cyan-500 text-cyan-500 uppercase px-2 py-2 rounded-md hover:bg-cyan-50 transition-all duration-300 transform hover:scale-105">
+            SignUp
+          </Link>
+            </>
         )}
       </div>
       

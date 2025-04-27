@@ -39,7 +39,7 @@ const autoSocketRef = useRef(null);
    }, [eventName]);
   
    useEffect(() => {
-    driverSocketRef.current = new WebSocket(`ws://147.93.56.71:8001/ws/competition_event/${eventName}/driver_go/`);
+    driverSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/driver_go/`);
 
     driverSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
