@@ -2,7 +2,7 @@ from rapair_db.models import Team
 from rest_framework.generics import UpdateAPIView,ListAPIView
 from core.serializers import TeamInterviewSerializer
 from rapair_db.permissions import IsJudgeUser
-
+from rest_framework.permissions import AllowAny
 
 
 class TeamInterviewView(UpdateAPIView):
@@ -14,7 +14,7 @@ class TeamInterviewView(UpdateAPIView):
 
 
 class TeamInterviewRankListView(ListAPIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
     serializer_class = TeamInterviewSerializer
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')

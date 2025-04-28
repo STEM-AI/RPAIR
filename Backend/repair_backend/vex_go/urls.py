@@ -1,6 +1,6 @@
 from django.urls import path
 from vex_go.views import SkillsRankView,GameCoopView,CoopRankView
-from core.views import TeamInterviewRankListView,TeamInterviewView,GamesScheduleCreateView,GameSkillsView
+from core.views import TeamInterviewRankListView,TeamInterviewView,GameSkillsView
 urlpatterns = [
     
     path('team/<int:id>/interview/', TeamInterviewView.as_view(), name='team_interview'),

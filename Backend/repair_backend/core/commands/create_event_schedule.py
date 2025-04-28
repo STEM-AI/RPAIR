@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from rapair_db.models import CompetitionEvent
+from core.models import Schedule
 from django.db.utils import IntegrityError
-from rapair_db.utils import event_utils
+from core.utils import event_utils
 
 
 class Command(BaseCommand):
@@ -25,7 +26,12 @@ class Command(BaseCommand):
         for event in events:
             try:
                 self.stdout.write(f"Creating schedule for event: {event.name}")
-                event_utils.create_schedule(event=event , stage=self.event_date['stage'] , time=self.event_date['time'])
+                schedule = Schedule.objects.create(
+                    event=event,
+                    time=self.event_date['time'],
+                    stage=self.event_date['stage']
+                )
+                event_utils.create_schedule(event=event , stage=self.event_date['stage'] , time=self.event_date['time'],schedule=schedule)
                 self.stdout.write(self.style.SUCCESS(f"Schedule created for event: {event.name}"))
             except IntegrityError as e:
                 self.stdout.write(self.style.ERROR(f"Integrity error for event {event.name}: {str(e)}"))

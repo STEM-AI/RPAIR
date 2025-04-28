@@ -56,7 +56,7 @@ class GetEventSchedule(ListAPIView):
     
 class TeamWorkRankView(ListAPIView):
     '''Rank teams based on Average of thier Teamwork Score For Event'''
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
     serializer_class = TeamScoreSerializer
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
@@ -89,7 +89,7 @@ class TeamWorkRankView(ListAPIView):
     
         
 class TeamsInterviewScoreRankView(ListAPIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
     serializer_class = TeamInterviewScoreSerializer
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
@@ -102,7 +102,7 @@ class TeamsInterviewScoreRankView(ListAPIView):
                 )
 
 class TeamsEngNotebookScoreRank(ListAPIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
     serializer_class = TeamEngNotebookScoreSerializer
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
@@ -116,7 +116,7 @@ class TeamsEngNotebookScoreRank(ListAPIView):
     
 class SkillsRankView(ListAPIView):
     '''Rank teams based on the sum of the highest autonomous_score and highest driver_score for each team'''
-    permission_classes = [IsJudgeUser]
+    permission_classes = [AllowAny]
     serializer_class = SkillsRankSerializer
 
     def get_queryset(self):

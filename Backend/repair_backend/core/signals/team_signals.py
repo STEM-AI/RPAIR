@@ -99,34 +99,42 @@ def add_team_score(sender, instance, created, **kwargs):
         print("setting team skills score sginals")
         if instance.stage in ['driver_iq','driver_go']:
             print("Setting driver scores")
-            skills_score, created = instance.team1.skills_scores.get_or_create(
-                team=instance.team1,
-                defaults={
-                    'driver_score': instance.driver_score,
-                    'autonomous_score': 0
-                }
-            )
-            if not created:
-                print("updating driver scores")
-                skills_score.driver_score = instance.driver_score
-                print("autonomous_score", skills_score.autonomous_score)
-                skills_score.save()
+            # Try to find an existing record with driver_score = 0
+            existing_score = instance.team1.skills_scores.filter(
+                driver_score=0
+            ).first()
+            
+            if existing_score:
+                print("Updating existing driver score")
+                existing_score.driver_score = instance.driver_score
+                existing_score.save()
+            else:
+                print("Creating new skills score with driver score")
+                instance.team1.skills_scores.create(
+                    driver_score=instance.driver_score,
+                    autonomous_score=0
+                )
         elif instance.stage in ['auto','coding']:
-            print("instance.team1" , instance.team1)
             print("Setting autonomous scores")
-            skills_score, created = instance.team1.skills_scores.get_or_create(
-                team=instance.team1,
-                defaults={
-                    'autonomous_score': instance.autonomous_score,
-                    'driver_score': 0
-                }
-            )
-            if not created:
-                print("updating autonomous scores")
-                skills_score.autonomous_score = instance.autonomous_score
-                print("driver_score", skills_score.driver_score)
-                skills_score.save()
+            # Try to find an existing record with autonomous_score = 0
+            existing_score = instance.team1.skills_scores.filter(
+                autonomous_score=0
+            ).first()
+            
+            if existing_score:
+                print("Updating existing autonomous score")
+                existing_score.autonomous_score = instance.autonomous_score
+                existing_score.save()
+            else:
+                print("Creating new skills score with autonomous score")
+                instance.team1.skills_scores.create(
+                    autonomous_score=instance.autonomous_score,
+                    driver_score=0
+                )
         elif instance.stage in ['vex_123']:
             print("Setting vex 123 scores") 
-            instance.team1.skills_scores.create(driver_score = instance.driver_score,autonomous_score = 0,game=instance)
+            instance.team1.skills_scores.create(
+                driver_score=instance.driver_score,
+                autonomous_score=0
+            )
 

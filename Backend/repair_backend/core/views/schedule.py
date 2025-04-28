@@ -1,7 +1,6 @@
 from rest_framework.generics import ListAPIView ,RetrieveDestroyAPIView
 from core.serializers import ScheduleSerializer,ScheduleDetailSerializer
 from rapair_db.permissions import IsJudgeUser
-from rest_framework.permissions import AllowAny
 from core.models import Schedule
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes

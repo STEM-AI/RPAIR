@@ -20,11 +20,15 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Schedule the management command to run daily at midnight
 app.conf.beat_schedule = {
     'create-schedule-daily': {
-        'task': 'vex_iq_comp_websocket.tasks.run_create_schedule_command',
+        'task': 'core.tasks.run_create_schedule_command',
         'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
     },
-}
+    'update-event-statuses': {
+        'task': 'rapair_db.tasks.update_event_statuses',
+        'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
+    },
 
+}
 
 # Automatically discover tasks in installed apps
 app.autodiscover_tasks()

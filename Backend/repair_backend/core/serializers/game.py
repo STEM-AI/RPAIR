@@ -3,10 +3,12 @@ from rapair_db.models import EventGame
 from core.models import Schedule
 
 class GamesSerializer(serializers.ModelSerializer):
+    team1_name = serializers.CharField(source='team1.name', read_only=True) 
+    team2_name = serializers.CharField(source='team2.name', read_only=True)
     class Meta:
         model = EventGame
-        fields = ['id','team1','team2', 'score','time_taken']
-        read_only_fields = ['id', 'team1','team2']
+        fields = ['id','team1','team2', 'score','time_taken','team1_name','team2_name']
+        read_only_fields = ['id', 'team1','team2','team1_name','team2_name']
         extra_kwargs = {
             'time_taken': {'required': False},
         }

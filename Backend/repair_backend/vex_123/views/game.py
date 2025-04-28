@@ -9,10 +9,10 @@ from vex_123.serializers import GameCreateSerializer
 from rest_framework.generics import CreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.db.models.functions import Coalesce
 from django.db.models.fields import FloatField
-
+from rapair_db.models import Team
 
 
 
@@ -38,31 +38,54 @@ class Vex123GameView(GameSkillsView):
 class Vex123RankView(ListAPIView):
     serializer_class = SkillsTeamRankSerializer
     queryset = SkillsTeamScore.objects.all()
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
         if not event_name:
             return SkillsTeamScore.objects.none()
 
-        queryset = SkillsTeamScore.objects.filter(
-            team__competition_event__name=event_name
-        ).values('team').annotate(
-            total_score=Sum('driver_score'),
-            team_name=F('team__name')
+        queryset = (
+            SkillsTeamScore.objects
+            .filter(team__competition_event__name=event_name)
+            .values('team', 'team__name')
+            .annotate(
+                total_score=Sum('driver_score'),
+                team_name=F('team__name')
+            )
+        )
+        # Subquery to get total time_taken per team (as team1) in the given event
+        total_time_subquery = (
+            EventGame.objects
+            .filter(team1=OuterRef('team'), event__name=event_name)
+            .values('team1')  # Group by team1
+            .annotate(total_time=Sum('time_taken'))
+            .values('total_time')[:1]
         )
 
         queryset = queryset.annotate(
             total_time_taken=Coalesce(
-                Subquery(
-                    EventGame.objects
-                    .filter(team1=OuterRef('team'), event__name=event_name)
-                    .values('team1')
-                    .annotate(total=Sum('time_taken'))
-                    .values('total')[:1],
-                    output_field=FloatField()
-                ),
+                Subquery(total_time_subquery, output_field=FloatField()),
                 Value(0, output_field=FloatField())
             )
         )
 
         return queryset.order_by('-total_score', 'total_time_taken')
+
+
+    def list(self, request, *args, **kwargs):
+        # Get the queryset
+        queryset = self.get_queryset()
+
+        # Serialize the data
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+
+        # Save the rank to the Team model
+        for index, item in enumerate(data):
+            team = Team.objects.get(id=item['team'])
+            team.skills_rank = index + 1  # Rank starts from 1
+            team.save()
+
+        # Return the response
+        return Response(data)

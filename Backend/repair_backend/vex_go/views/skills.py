@@ -3,8 +3,9 @@ from rapair_db.models import EventGame,SkillsTeamScore
 from vex_go.serializers import GameSkillsSerializer
 from core.serializers import SkillsTeamRankSerializer
 from rapair_db.permissions import IsJudgeUser
-from django.db.models import Max, Subquery, OuterRef, FloatField,Sum
+from django.db.models import Max, Subquery, OuterRef, FloatField,Sum,F
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rapair_db.models import Team
 
 class GameSkillsView(UpdateAPIView):
@@ -24,6 +25,7 @@ class SkillsRankView(ListAPIView):
     If two teams have the same total score, rank them by the sum of their time_taken in all games where they are team1.
     """
     serializer_class = SkillsTeamRankSerializer
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
@@ -45,6 +47,7 @@ class SkillsRankView(ListAPIView):
             .values('team', 'team__name')
             .annotate(
                 total_score=Max('autonomous_score') + Max('driver_score'),
+                team_name=F('team__name'),
                 total_time_taken=Subquery(total_time_subquery, output_field=FloatField())
             )
             .order_by('-total_score', 'total_time_taken')

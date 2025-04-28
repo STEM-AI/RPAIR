@@ -46,6 +46,8 @@ class CompetitionEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     fees = models.IntegerField(default=0)
     age = models.CharField(max_length=255 , default='12-19')
+    is_active = models.BooleanField(default=False)
+    is_live = models.BooleanField(default=False)
 
     MINI_EVENT = 'Mini'
     SMALL_EVENT = 'Small'
@@ -64,6 +66,7 @@ class CompetitionEvent(models.Model):
         choices= CATEGORY_CHOICES , 
         default = MINI_EVENT
         )
+
 
     def __str__(self):
         return self.name
