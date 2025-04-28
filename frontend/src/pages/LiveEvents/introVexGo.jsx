@@ -30,7 +30,7 @@ const IntroVexGO = () => {
       color: "from-rose-500 to-pink-600", 
       shadow: "shadow-rose-500/40", 
       icon: <BiJoystick className="text-white text-2xl" />, 
-      path: "/LiveMatch/Skills",
+      path: "/LiveMatch/SkillsGo",
       pattern: "rose"
     }
   ];
