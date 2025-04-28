@@ -903,7 +903,7 @@ const App = () => {
           }
         />
                   <Route
-          path="/LiveMatch/Skills"
+          path="/LiveMatch/SkillsIQ"
           element={
             <Layout>
                 <LiveSkillsVex/>
@@ -913,7 +913,7 @@ const App = () => {
         
 
         <Route
-          path="/LiveMatch/Skills"
+          path="/LiveMatch/SkillsGo"
           element={
             <Layout>
                 <SkillsContainerGO />
