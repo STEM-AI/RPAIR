@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FaClock, FaPlay, FaPause, FaRedo, FaDownload, FaCheckCircle } from "react-icons/fa";
+import { FaClock, FaPlay, FaPause, FaRedo, FaDownload, FaCheckCircle, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -32,6 +32,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
   const [completedOrder, setCompletedOrder] = useState([]);
   const [socketStatus, setSocketStatus] = useState('disconnected');
   const socketRef = useRef(null);
+    const [timeUp, setTimeUp] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
     const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
@@ -136,6 +137,16 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
     }
   };
 
+   const EndGame = () => {
+      setTimeUp(true);
+  
+      // Send a message to start the game via WebSocket
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "end_game", event_name: eventName, game_id: gameId })
+        );
+      }
+    };
   const handleStart = () => {
     if (sendSocketCommand("start_game")) {
       setIsRunning(true);
@@ -149,17 +160,26 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
     }
   };
 
-  const handleReset = () => {
-    if (sendSocketCommand("restart_game")) {
-      playStart(); // تشغيل الصوت هنا
-      setTimer(0);
-      setIsRunning(false);
-      setScores({});
-      setTurbines(0);
-      setCompletedOrder([]);
+const handleReset = () => {
+  Alert.confirm({
+    title: 'Restart Challenge?',
+    html: 'This will reset all counters and the timer!',
+    confirmText: 'Confirm Restart',
+    cancelText: 'Cancel',
+    onConfirm: () => {
+      if (sendSocketCommand("restart_game")) {
+        setTimer(0);
+        setIsRunning(false);
+        setScores({});
+        setTurbines(0);
+        setCompletedOrder([]);
+      }
+    },
+    onCancel: () => {
+      Swal.fire('Cancelled', 'Challenge restart was cancelled', 'info');
     }
-  };
-
+  });
+}
   const handleCheckboxChange = (index, value) => {
     setScores(prev => ({ ...prev, [index]: value ? tasks[index].points : 0 }));
     
@@ -231,6 +251,7 @@ const handleSubmit = async () => {
 
         Swal.fire("Success", "Score submitted successfully!", "success");
         onClose();
+        EndGame();
       } catch (error) {
         console.error("Submission error:", error);
         Swal.fire("Error", "Failed to submit score", "error");
@@ -300,9 +321,37 @@ const handleSubmit = async () => {
     }
   }, [remainingTime, isRunning, playMiddle]);
 
+
+  // ###
+  const getSocketStatusColor = (status) => {
+  switch (status) {
+    case 'connected': return 'text-green-600';
+    case 'connecting': return 'text-yellow-600';
+    case 'error': return 'text-red-600';
+    default: return 'text-gray-600';
+  }
+};
+
+const getProgressBarColor = (remaining, max) => {
+  const percentage = (remaining / max) * 100;
+  if (percentage <= 25) return 'bg-red-500';
+  if (percentage <= 50) return 'bg-yellow-500';
+  return 'bg-indigo-500';
+};
+
+// Inside the component, calculate these variables:
+const progressPercentage = (remainingTime / maxTime) * 100;
+const socketStatusColor = getSocketStatusColor(socketStatus);
+const progressBarColor = getProgressBarColor(remainingTime, maxTime);
   return (
-    <div className="max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
+    <div className="relative max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
       {/* Header */}
+       <button
+    onClick={onClose}
+    className="absolute top-0 left-0 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+  >
+    <FaTimes className="text-xl sm:text-2xl" />
+  </button>
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
           🌊 {currentMatch?.challengeType || 'Solo Challenge'}
@@ -329,16 +378,18 @@ const handleSubmit = async () => {
         <div className="flex items-center mb-2 sm:mb-0">
           <FaClock className="text-indigo-600 mr-2 text-lg sm:text-xl" />
           <span className="text-lg sm:text-xl font-semibold">
-            {formatTime(maxTime - timer)}
-            
-            <span className={`ml-2 text-xs font-normal ${
-              socketStatus === 'connected' ? 'text-green-600' : 
-              socketStatus === 'connecting' ? 'text-yellow-600' : 
-              'text-red-600'
-            }`}>
-              ({socketStatus})
+              {!isRunning && !timeUp ? "Game Paused" : 
+              timeUp ? "Time's Up!" : 
+              formatTime(maxTime - timer)}
+              
+              <span className={`ml-2 text-xs font-normal ${
+                socketStatus === 'connected' ? 'text-green-600' : 
+                socketStatus === 'connecting' ? 'text-yellow-600' : 
+                'text-red-600'
+              }`}>
+                ({socketStatus})
+              </span>
             </span>
-          </span>
         </div>
         <div className="flex gap-1 sm:gap-2 w-full sm:w-auto">
           <button
@@ -360,6 +411,8 @@ const handleSubmit = async () => {
           </button>
         </div>
       </div>
+      
+
 
       {/* Score Table */}
       <div className="overflow-x-auto mb-4 sm:mb-8">

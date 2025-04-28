@@ -25,9 +25,7 @@ const LiveTeamVex = () => {
 
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      
       });
       setRankings(response.data);
       setShowRankings(true);

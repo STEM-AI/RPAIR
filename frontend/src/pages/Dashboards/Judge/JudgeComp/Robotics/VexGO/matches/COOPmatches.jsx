@@ -8,6 +8,7 @@ import { useEventNameContext } from "../../../../../../../context/EventName";
 import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
 
 import SheetCoop from "./SheetCoop";
+import Back from "../../../../../../../components/Back/Back";
 
 const COOPMatch = () => {
     const { currentCompetition } = useEventNameContext();
@@ -167,7 +168,8 @@ const [error, setError] = useState(null);
     <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6">
       {!selectedMatch ? ( 
       <>
-      {/* Header */}
+          {/* Header */}
+           <Back />
       <div className="text-center mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2 flex items-center justify-center gap-2">
           <FaUsers className="text-3xl sm:text-4xl" /> COOP Matches

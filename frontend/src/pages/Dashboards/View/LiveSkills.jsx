@@ -560,7 +560,7 @@ const LiveSkillsIQ = () => {
                               {index + 1}
                             </td>
                             <td className="py-3 px-4 font-medium">{team.team__name}</td>
-                            <td className="py-3 px-4 text-center font-bold">{team.avg_score.toFixed(2)}</td>
+                            <td className="py-3 px-4 text-center font-bold">{team.total_score}</td>
                           </tr>
                         ))}
                       </tbody>

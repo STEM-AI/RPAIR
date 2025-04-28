@@ -78,9 +78,9 @@ const CompetitionEvents = () => {
     fetchJudgeEvent();
   }, [token]);
 
-  const handleCompetitionClick = (eventId) => {
-    navigate(`/Dashboard/Competitions/${eventId}`);
-  };
+ const handleCompetitionClick = (competitionName, eventName) => {
+  navigate(`/Dashboard/Competitions/${competitionName}/${eventName}`);
+};
 
   if (loading) {
     return (
@@ -106,7 +106,7 @@ const CompetitionEvents = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
        {events.length > 0 ? (
   events.map((event, index) => { // Add index here
-    const status = getEventStatus(event.start_date, event.end_date);
+    const status = getEventStatus(event.competition_event.start_date, event.competition_event.end_date);
     const statusColors = {
       Upcoming: 'bg-cyan-100 text-cyan-800',
       Ongoing: 'bg-orange-100 text-orange-800',
@@ -155,7 +155,10 @@ const CompetitionEvents = () => {
                     </span>
                    <button 
                   className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
-                  onClick={() => handleCompetitionClick(event.id)}
+                  onClick={() => handleCompetitionClick(
+                    event.competition_event.competition_name,
+                    event.competition_event.name
+                  )}
                 >
                   View Details
                   <svg
