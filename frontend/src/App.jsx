@@ -912,14 +912,7 @@ const App = () => {
         />
         
 
-        <Route
-          path="/LiveMatch/Skills"
-          element={
-            <Layout>
-                <SkillsContainerGO />
-            </Layout>
-          }
-        />
+      
                 {/* <Route
           path="/LiveMatch/Skills"
           element={

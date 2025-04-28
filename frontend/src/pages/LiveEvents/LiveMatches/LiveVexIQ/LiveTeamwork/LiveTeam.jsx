@@ -12,7 +12,7 @@ const LiveTeamVex = () => {
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
   const event_Name = localStorage.getItem('selected_event_name');
-  const eventName = "VexIQ"
+  const eventName = "stem"
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -25,9 +25,7 @@ const LiveTeamVex = () => {
 
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      
       });
       setRankings(response.data);
       setShowRankings(true);

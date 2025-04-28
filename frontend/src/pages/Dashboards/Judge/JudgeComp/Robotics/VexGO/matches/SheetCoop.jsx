@@ -177,6 +177,18 @@ export default function SheetCoop({ eventName, onClose }) {
           Swal.fire('Cancelled', 'Game restart was cancelled', 'info');
         }
       });
+  };
+     const EndGame = () => {
+      setGameActive(false);
+      setShowControls(false);
+      setTimeUp(true);
+  
+      // Send a message to start the game via WebSocket
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "end_game", event_name: eventName, game_id: gameId })
+        );
+      }
     };
 
   const handleCheckboxChange = (index, value) => {
@@ -304,6 +316,7 @@ const handleSubmit = async () => {
 
         Swal.fire("Success", "Score submitted successfully!", "success");
         onClose();
+        EndGame();
       } catch (error) {
         console.error("Submission error:", error);
         Swal.fire("Error", "Failed to submit score", "error");

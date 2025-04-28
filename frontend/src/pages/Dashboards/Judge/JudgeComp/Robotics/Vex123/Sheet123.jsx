@@ -479,11 +479,11 @@ const handleRestart = async () => {
 
   if (result.isConfirmed) {
     try {
+      playStart();
       setLoading(true);
       setTimer(INITIAL_TIME);
       setIsRunning(true);
       setHasPlayedEndSound(false); // إعادة التعيين هنا
-      playStart();
 
       // 2. Remove current mode from completed modes
       if (selectedTeam && currentMode) {

@@ -74,9 +74,7 @@ const LiveSkillsVex = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+       
       });
       setRankings(response.data);
       setShowRankings(true);
@@ -177,7 +175,7 @@ const LiveSkillsVex = () => {
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team__name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                         {(team.avg_score ?? 0).toFixed(2)}
+                         {(team.total_score ?? 0).toFixed(2)}
                       </span>
                     </td>
                   </tr>
