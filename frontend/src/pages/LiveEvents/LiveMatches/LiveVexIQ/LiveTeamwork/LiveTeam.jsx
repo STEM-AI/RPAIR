@@ -12,7 +12,7 @@ const LiveTeamVex = () => {
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
   const event_Name = localStorage.getItem('selected_event_name');
-  const eventName = "VexIQ"
+  const eventName = "VexIQ";
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -39,7 +39,11 @@ const LiveTeamVex = () => {
   };
 
   useEffect(() => {
-    // socketRef.current = new WebSocket(`wss://rpair.org/ws/competition_event/${eventName}/`);
+    const savedMatches = localStorage.getItem('live_matches');
+    if (savedMatches) {
+      setMatches(JSON.parse(savedMatches));
+    }
+
     socketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/teamwork/`);
 
     socketRef.current.onopen = () => {
@@ -52,21 +56,25 @@ const LiveTeamVex = () => {
 
       if (data.game_id && data.score !== undefined) {
         setMatches(prevMatches => {
+          let updatedMatches;
+
           const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
           if (matchIndex === -1) {
-            return [...prevMatches, {
+            updatedMatches = [...prevMatches, {
               code: data.game_id,
               team1: data.team1_name || 'Team 1',
               team2: data.team2_name || 'Team 2',
               score: data.score
             }];
+          } else {
+            updatedMatches = [...prevMatches];
+            updatedMatches[matchIndex] = {
+              ...updatedMatches[matchIndex],
+              score: data.score
+            };
           }
 
-          const updatedMatches = [...prevMatches];
-          updatedMatches[matchIndex] = {
-            ...updatedMatches[matchIndex],
-            score: data.score
-          };
+          localStorage.setItem('live_matches', JSON.stringify(updatedMatches));
           return updatedMatches;
         });
 
@@ -104,10 +112,13 @@ const LiveTeamVex = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
-            <Helmet>
-                          <title>Live-Team</title>
-                        </Helmet>  
+      <Helmet>
+        <title>Live-Team</title>
+      </Helmet>
+
+
       {/* Header Section */}
+      
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
           Teamwork Challenge
