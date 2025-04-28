@@ -7,7 +7,7 @@ import SheetSolo from "./SheetSolo"
 import { useEventNameContext } from "../../../../../../../context/EventName";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import Back from "../../../../../../../components/Back/Back";
 const SkillsGO = () => {
   const { currentCompetition } = useEventNameContext();
   const { matches, setCurrentMatch } = useMatchContext();
@@ -32,7 +32,7 @@ const [error, setError] = useState(null);
   // تعريف التبويبات بنفس نمط skills.jsx
   const tabs = [
     { id: 'driver_go', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
-    { id: 'auto', label: 'Coding Challenge', icon: '🤖', color: 'blue' },
+    { id: 'coding', label: 'Coding Challenge', icon: '🤖', color: 'blue' },
   ];
 
    const fetchCoopRankings = async () => {
@@ -124,43 +124,6 @@ const [error, setError] = useState(null);
   setSelectedMatch(match);
 };
 
-  // const handleCompleteMatch = async (matchId) => {
-  //   const currentScore = matches[matchId]?.score || 0;
-       
-    // Alert.confirm({
-    //   title: 'Submit Final Score?',
-    //   html: `<p>You're about to submit your final score of <strong>${currentScore}</strong> points.</p>`,
-    //   confirmText: 'Confirm Submission',
-    //   cancelText: 'Cancel',
-    //   onConfirm: async () => {
-    //     try {
-    //       setCompletedMatches((prev) => ({
-    //         ...prev,
-    //         [matchId]: true,
-    //       }));
-
-    //       await axios.post(
-    //         `${process.env.REACT_APP_API_URL}/game/${matchId}/set-game-score/`,
-    //         {
-    //           event_name: event_name,
-    //           score: currentScore
-    //         },
-    //         { headers: { Authorization: `Bearer ${token}` } }
-    //       );
-
-    //       Alert.success({
-    //         title: 'Score Submitted!',
-    //         text: 'Your results have been successfully recorded'
-    //       });
-    //     } catch (error) {
-    //       console.error("Submission error:", error);
-    //       Swal.fire("Error", "Submission failed!", "error");
-    //     }
-    //   }
-    // });
-  //   setIsRunning(false);
-  //   setTimeLeft(60);
-  // };
 
   const handleFinishRound = () => {
     const currentRoundMatches = schedule.filter(match => match.round === round);
@@ -200,6 +163,7 @@ const [error, setError] = useState(null);
    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-4">
       {!selectedMatch ? ( 
         <>
+          <Back />
           {/* Header */}
           <div className="text-center mb-4">
             <h1 className="text-2xl font-bold text-indigo-700 mb-2">🏁 Skills Challenge</h1>
@@ -369,7 +333,7 @@ const [error, setError] = useState(null);
                                 <tr>
                                   <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Rank</th>
                                   <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Team</th>
-                                  <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Avg_score</th>
+                                  <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">total_score</th>
                                   <th className="px-2 sm:px-4 py-2 text-center text-xs font-medium text-indigo-700 uppercase">Medal</th>
                                 </tr>
                               </thead>
@@ -400,7 +364,7 @@ const [error, setError] = useState(null);
                                               )}
                                             </div>
                                             </td>
-                                            <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-center">{team.team__name}</td>
+                                            <td className="px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-center">{team.team_name}</td>
                                             <td className="px-2 sm:px-4 py-2 whitespace-nowrap font-bold text-sm text-center">
                                               {team.total_score || 0}
                                             </td>

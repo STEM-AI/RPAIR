@@ -73,6 +73,7 @@ const handleCalculateAndSubmit = async () => {
             showConfirmButton: true,
             confirmButtonColor: "#28a745" 
           });
+          EndGame()
           onCalculate(score);
           onClose();
         } else {
@@ -154,6 +155,18 @@ const handleCalculateAndSubmit = async () => {
       if (socketRef.current) {
         socketRef.current.send(
           JSON.stringify({ action: "start_game", event_name: eventName, game_id: gameId })
+        );
+      }
+    };
+  const EndGame = () => {
+      setGameActive(false);
+      setShowControls(false);
+      setTimeUp(true);
+  
+      // Send a message to start the game via WebSocket
+      if (socketRef.current) {
+        socketRef.current.send(
+          JSON.stringify({ action: "end_game", event_name: eventName, game_id: gameId })
         );
       }
     };
@@ -340,6 +353,7 @@ useEffect(() => {
           >
             Calculate & Submit Score
           </button>
+         
         </div>
       </div>
     </div>

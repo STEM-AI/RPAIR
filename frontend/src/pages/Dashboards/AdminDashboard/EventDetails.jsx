@@ -6,6 +6,7 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { MdOutlineDateRange } from "react-icons/md";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { IoPersonOutline } from "react-icons/io5";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 
 
@@ -19,7 +20,8 @@ export default function EventDetails() {
     const [error, setError] = useState(null);
     const token = localStorage.getItem("access_token");
     console.log("event_name", event_name);
-    
+    const [openTeamIndex, setOpenTeamIndex] = useState(null);
+
 
 
 
@@ -32,6 +34,7 @@ export default function EventDetails() {
         });
           setEvents(response.data);
           console.log("API Response:", response.data);
+          console.log("API Response:", response.data.members);
           
         setLoading(false);
       } catch (err) {
@@ -162,12 +165,31 @@ export default function EventDetails() {
                           <p className="text-sm text-gray-600">
                             <span className="font-medium">Leader:</span> {team.team_leader_name}
                           </p>
-                          <div className="pt-2">
-                            <span className="inline-flex items-center text-sm text-gray-500">
-                                 <IoPersonOutline className="mr-1 text-gray-600 text-base" />
-                              {team.members?.length || 0} members
-                            </span>
-                          </div>
+                         <div className="pt-2">
+  <div 
+    className="flex items-center cursor-pointer text-sm text-gray-600 hover:text-gray-900 transition-colors"
+    onClick={() => setOpenTeamIndex(openTeamIndex === index ? null : index)}
+  >
+    <IoPersonOutline className="mr-1 text-gray-600 text-base" />
+    <span>{team.members?.length || 0} members</span>
+    {openTeamIndex === index ? (
+      <IoChevronUp className="ml-1 text-sm" />
+    ) : (
+      <IoChevronDown className="ml-1 text-sm" />
+    )}
+  </div>
+
+  {openTeamIndex === index && team.members?.length > 0 && (
+    <div className="ml-5 mt-2 space-y-1 border-l-2 border-gray-200 pl-3">
+      {team.members.map((member, memberIndex) => (
+        <div key={memberIndex} className="flex items-center text-sm text-gray-600">
+          <span className="mr-2">•</span>
+          {member.name || `Member ${memberIndex + 1}`}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
                         </div>
                       </div>
                     ))}

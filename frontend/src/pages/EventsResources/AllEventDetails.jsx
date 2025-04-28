@@ -11,12 +11,16 @@ import { IoPersonOutline } from "react-icons/io5";
 
 export default function AllEventDetails() {
     const { event_name } = useParams();
+    const { competition_name } = useParams();
     const navigate = useNavigate();
     const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const token = localStorage.getItem("access_token");
+
+    
+
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -35,7 +39,7 @@ export default function AllEventDetails() {
 
         fetchEvents();
     }, [event_name, token]);
-    
+   
     const handleJoinNow = () => {
         navigate('/register', { state: { eventName: event_name } });
     };
@@ -104,8 +108,12 @@ export default function AllEventDetails() {
                     >
                         Join Now
                     </button>
-                </div>
+                    
+                    
+                    
 
+                </div>
+          
                 <div className="bg-white overflow-hidden shadow-xl rounded-2xl">
                     <div className="px-6 py-8 sm:p-10">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -178,8 +186,10 @@ export default function AllEventDetails() {
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+   
             </div>
+            
         </div>
     );
 }

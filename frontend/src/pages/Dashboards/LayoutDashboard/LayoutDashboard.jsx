@@ -25,9 +25,14 @@ import React, { useState } from "react";
 import NavbarProfile from "../../../pages/Dashboards/NavbarProfile";
 import Sidebar from "../Sidebar/Sidebar";
 import Back from "../../../components/Back/Back";
+import { useLocation } from "react-router-dom";
+
 
 const LayoutDashboard = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const hiddenBackPaths = ['/Dashboard/VexGO/COOPMatches',"/Dashboard/VexGO/Skills"];
+  const shouldHideBack = hiddenBackPaths.includes(location.pathname);
 
   return (
     <div className="flex ">
@@ -43,7 +48,7 @@ const LayoutDashboard = ({ children }) => {
         />
         
         <div className="p-6 flex-1 overflow-auto bg-gray-100">
-          <Back />
+          {!shouldHideBack && <Back />}
           {children}</div>
         
       </div>

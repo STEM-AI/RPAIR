@@ -9,7 +9,7 @@ export default function Back() {
       <button
         onClick={() => navigate(-1)}
         aria-label="Go back"
-        className="sticky  left-0  z-30 flex h-12 w-12 items-center justify-center rounded-full
+        className="sticky  left-0 flex h-12 w-12 items-center justify-center rounded-full
          bg-white shadow-lg transition-all duration-300 hover:bg-gray-50 hover:shadow-xl
          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:bottom-12 sm:right-12"
       >

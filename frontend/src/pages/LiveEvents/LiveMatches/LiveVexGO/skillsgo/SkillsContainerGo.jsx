@@ -13,7 +13,7 @@ const SkillsContainerGO = () => {
   const [teams, setTeams] = useState([]);
   const [showRankings, setShowRankings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const eventName = "VexIQ";
+  const eventName = "SadatComp";
   const token = localStorage.getItem("access_token");
 const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
@@ -65,10 +65,8 @@ const autoSocketRef = useRef(null);
     }
 
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/vex-go/${eventName}/skills/rank/`, {
+      
       });
       setRankings(response.data);
       setShowRankings(true);
