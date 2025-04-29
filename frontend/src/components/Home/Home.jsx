@@ -7,9 +7,6 @@ import NewsTicker from "../News/NewsLive";
 import { Helmet } from "react-helmet-async";
 
 const Home = () => {
-
-  
-
   initTWE({ Carousel, Ripple });
 
   const hasRefreshed = sessionStorage.getItem("hasRefreshed");
