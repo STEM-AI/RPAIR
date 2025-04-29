@@ -29,9 +29,7 @@ const SkillsGO = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [roundSchedules, setRoundSchedules] = useState([]);
-  const navigate = useNavigate();
   const [selectedMatch, setSelectedMatch] = useState(null);
-  const [gameTime, setGameTime] = useState("");
   const [schedulesLoading, setSchedulesLoading] = useState(false);
   const [schedulesError, setSchedulesError] = useState(null);
   
@@ -148,7 +146,6 @@ const handleCompleteRound = () => {
     [activeTab]: [...prev[activeTab], round]
   }));
 
-  // Refresh schedules to get latest data from backend
   refetchSchedules();
 
   // Auto-advance to next round if not final

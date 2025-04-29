@@ -1,9 +1,4 @@
-
-
-import React, { useEffect, useState, useRef } from "react";
-import { FaTrophy, FaMedal } from "react-icons/fa";
-import { FaRobot, FaSyncAlt, FaListOl } from 'react-icons/fa';
-
+import React, { useEffect, useState, useRef ,useCallback } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { TiStopwatch } from "react-icons/ti";
@@ -22,11 +17,10 @@ const LiveVex123 = () => {
    
 
   const URL = `${process.env.REACT_APP_API_URL}/vex-123/${eventName}/rank/`;
-  const socketRef = useRef(null);
   const intervalRef = useRef(null);
 
-  // Fetch rankings periodically
-  const fetchRankings = async () => {
+  // Memoized fetch function
+  const fetchRankings = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await axios.get(URL);
@@ -37,23 +31,26 @@ const LiveVex123 = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [URL]); // URL is dependency as it uses eventName
 
+  // Setup interval and initial fetch
   useEffect(() => {
     fetchRankings();
+    intervalRef.current = setInterval(fetchRankings, 60000); // 60 seconds
     
-  }, []);
-  
-const getMedalIcon = (rank) => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [fetchRankings]); // Re-run when fetchRankings changes
+
+  const getMedalIcon = (rank) => {
     switch (rank) {
-      case 1:
-        return <FaTrophy className="w-6 h-6 text-amber-400" />;
-      case 2:
-        return <FaMedal className="w-6 h-6 text-gray-400" />;
-      case 3:
-        return <FaMedal className="w-6 h-6 text-amber-600" />;
-      default:
-        return <span className="text-gray-600 font-medium">{rank}</span>;
+      case 1: return <FaTrophy className="w-6 h-6 text-amber-400" />;
+      case 2: return <FaMedal className="w-6 h-6 text-gray-400" />;
+      case 3: return <FaMedal className="w-6 h-6 text-amber-600" />;
+      default: return <span className="text-gray-600 font-medium">{rank}</span>;
     }
   };
 
@@ -61,7 +58,10 @@ const getMedalIcon = (rank) => {
     if (!isLoading) {
       fetchRankings();
     }
-  };
+  }; 
+
+
+  
 
  
 
