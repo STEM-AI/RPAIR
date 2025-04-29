@@ -1,326 +1,229 @@
-
-
-
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import { Link, useParams } from "react-router-dom";
-// import Alert from "@mui/material/Alert";
-// import AlertTitle from "@mui/material/AlertTitle";
-// import TextField from "@mui/material/TextField";
-
-// const MyTeams = () => {
-//   const { team_name } = useParams(); // استخراج اسم الفريق من الـ URL
-//   const [teams, setTeams] = useState([]);
-//   const [filteredTeams, setFilteredTeams] = useState([]);
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [responseMessage, setResponseMessage] = useState(null);
-//   const [alertType, setAlertType] = useState("");
-//   const [userRole, setUserRole] = useState(""); 
-//   const token = localStorage.getItem("access_token");
-
-//   useEffect(() => {
-//     if (!token) {
-//       setResponseMessage("You are not authorized. Please log in.");
-//       setAlertType("error");
-//       return;
-//     }
-
-//     const fetchUserRole = async () => {
-//       if (!team_name) return; // التأكد من وجود `team_name`
-//       try {
-//         const response = await axios.get(
-//           `http://147.93.56.71:8000/api/team/${team_name}/team-profile/`,
-//           {
-//             headers: { Authorization: `Bearer ${token}` },
-//           }
-//         );
-//         if (response.data && response.data.role) {
-//           setUserRole(response.data.role);
-//         }
-//       } catch (error) {
-//         console.error("Failed to fetch user role", error);
-//       }
-//     };
-
-//     const fetchTeams = async () => {
-//       try {
-//         const response = await axios.get(
-//           `http://147.93.56.71:8000/api/team/profile/`,
-//           {
-//             headers: { Authorization: `Bearer ${token}` },
-//           }
-//         );
-//         if (response.data) {
-//           setTeams(response.data);
-//           setFilteredTeams(response.data);
-//         }
-//       } catch (err) {
-//         setAlertType("error");
-//         setResponseMessage("Failed to fetch teams. Please try again.");
-//       }
-//     };
-
-//     fetchUserRole();
-//     fetchTeams();
-//   }, [token, team_name]); // إضافة `team_name` إلى قائمة الـ dependencies
-
-//   const handleSearchChange = (event) => {
-//     const query = event.target.value.toLowerCase();
-//     setSearchQuery(query);
-//     setFilteredTeams(
-//       teams.filter((team) => team.name?.toLowerCase().includes(query))
-//     );
-//   };
-
-//   return (
-//     <div className="container max-w-6xl">
-//       <h2 className="mb-8 tracking-tight text-center text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500">
-//         My Teams
-//       </h2>
-
-//       {responseMessage && (
-//         <div className="mb-6">
-//           <Alert severity={alertType}>
-//             <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
-//             {responseMessage}
-//           </Alert>
-//         </div>
-//       )}
-
-//       <div className="mb-6 flex justify-center">
-//         <TextField
-//           label="Search Teams"
-//           variant="outlined"
-//           value={searchQuery}
-//           onChange={handleSearchChange}
-//           fullWidth
-//           sx={{ maxWidth: 400 }}
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//         {filteredTeams.map((team, index) => (
-//           <div key={team.id || index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-//             <div className="px-6 py-4">
-//               <h3 className="text-lg font-bold text-gray-800">
-//                 {team.name || "Unnamed Team"}
-//               </h3>
-//               <p className="mt-2 text-sm text-gray-600">
-//                 Competition: <span className="font-medium">{team.competition_event || "N/A"}</span>
-//               </p>
-//               <p className="mt-2 text-sm text-gray-600">
-//                 Organization: <span className="font-medium">{team.organization?.name || "N/A"}</span>
-//               </p>
-
-//               {userRole === "Admin" ? (
-//                 <>
-//                   <p className="mt-2 text-sm text-gray-600">
-//                     Phone Number: <span className="font-medium">{team.team_leader_phone_number || "N/A"}</span>
-//                   </p>
-//                   <p className="mt-2 text-sm text-gray-600">
-//                     Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
-//                   </p>
-//                 </>
-//               ) : userRole === "Judge" && (
-//                 <>
-//                   <p className="mt-2 text-sm text-gray-600">
-//                     Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
-//                   </p>
-//                   <p className="mt-2 text-sm text-gray-600">
-//                     Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
-//                   </p>
-//                 </>
-//               )}
-// <Link
-//   to={`/Dashboard/${userRole}/Teams/${team.name}/team-profile`}
-//   className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
-// >
-//   View Details
-// </Link>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default MyTeams;
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
-import { useParams } from "react-router-dom";
+import { Icon } from "@mui/material";
+import { Groups, Engineering, School, Person, Phone, SmartToy, Search } from "@mui/icons-material";
 
 const MyTeams = () => {
-    const { team_name } = useParams();
+  const { team_name } = useParams();
   const [teams, setTeams] = useState([]);
   const [filteredTeams, setFilteredTeams] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
-  const [userRole, setUserRole] = useState(""); 
+  const [userRole, setUserRole] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("access_token");
 
   useEffect(() => {
     if (!token) {
       setResponseMessage("You are not authorized. Please log in.");
       setAlertType("error");
+      setIsLoading(false);
       return;
     }
 
-    const fetchUserRole = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/user/${team_name}`, 
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setUserRole(response.data.role);
-      } catch (error) {
-        console.error("Failed to fetch user role", error);
-      }
-    };
-
-    const fetchTeams = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/user/`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setTeams(response.data);
-        setFilteredTeams(response.data);
-      } catch (err) {
-        if (err.response && err.response.status === 401) {
-          setAlertType("error");
-          setResponseMessage("Unauthorized access. Please check your token.");
-        } else {
-          setAlertType("error");
-          setResponseMessage("Failed to fetch teams. Please try again.");
+        // Fetch user role
+        if (team_name) {
+          const roleResponse = await axios.get(
+            `${process.env.REACT_APP_API_URL}/team/user/${team_name}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          setUserRole(roleResponse.data?.role || "Unknown");
         }
+
+        // Fetch teams data
+        const teamsResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/team/user/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (!Array.isArray(teamsResponse.data)) {
+          throw new Error("Invalid data format received from server");
+        }
+
+        setTeams(teamsResponse.data);
+        setFilteredTeams(teamsResponse.data);
+      } catch (error) {
+        handleApiError(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchUserRole();
-    fetchTeams();
-  }, [token]);
+    const handleApiError = (error) => {
+      const errorMessage = error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch data. Please try again later.";
+      
+      setAlertType("error");
+      setResponseMessage(errorMessage);
+
+      if (error.response?.status === 401) {
+        localStorage.removeItem("access_token");
+      }
+    };
+
+    fetchData();
+  }, [token, team_name]);
 
   const handleSearchChange = (event) => {
-    const query = event.target.value;
+    const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-    const filtered = teams.filter((team) =>
-      team.name?.toLowerCase().includes(query.toLowerCase())
+    setFilteredTeams(
+      teams.filter(team => 
+        team.name?.toLowerCase().includes(query) ||
+        team.robot_name?.toLowerCase().includes(query) ||
+        team.competition_event?.toLowerCase().includes(query)
+      )
     );
-    setFilteredTeams(filtered);
   };
 
   if (!token) {
     return (
-      <div className="text-red-600 text-center ">{responseMessage}</div>
+      <div className="text-center py-12">
+        <Alert severity="error" className="max-w-md mx-auto">
+          {responseMessage}
+        </Alert>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        <div className="animate-pulse">
+          <Groups className="text-4xl text-gray-300 mb-4" />
+          <p>Loading teams...</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="container max-w-6xl">
-      <h2 className="mb-8 tracking-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl font-extrabold">
-        All Teams
-      </h2>
+    <div className="container max-w-6xl mx-auto px-4 py-8">
+      <div className="text-center mb-12 animate-fade-in">
+        <h2 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-700 to-teal-500 leading-tight">
+          My Teams
+        </h2>
+        <p className="text-gray-600 text-lg">Explore and manage your registered teams</p>
+      </div>
 
       {responseMessage && (
-        <div className="mb-6">
-          <Alert severity={alertType}>
-            <AlertTitle>
+        <div className="mb-8 animate-slide-down">
+          <Alert severity={alertType} className="rounded-lg shadow-sm">
+            <AlertTitle className="font-semibold">
               {alertType === "success" ? "Success" : "Error"}
             </AlertTitle>
-            {responseMessage}
+            <span className="text-sm">{responseMessage}</span>
           </Alert>
         </div>
       )}
 
-      <div className="mb-6 flex justify-center">
+      <div className="mb-8 max-w-2xl mx-auto animate-fade-in">
         <TextField
-          label="Search Teams"
+          fullWidth
           variant="outlined"
+          placeholder="Search teams..."
           value={searchQuery}
           onChange={handleSearchChange}
-          fullWidth
-          sx={{ maxWidth: 400 }}
+          InputProps={{
+            startAdornment: <Search className="text-gray-400 mr-2" />,
+            sx: {
+              borderRadius: '12px',
+              '&:focus-within': {
+                borderColor: '#0891b2',
+                boxShadow: '0 0 0 3px rgba(8, 145, 178, 0.1)'
+              }
+            }
+          }}
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTeams.map((team) => (
-          <div
-            key={team.id}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-          >
-            <div className="px-6 py-4">
-              <h3 className="text-lg font-bold text-gray-800">
-                {team.name || "Unnamed Team"}
-              </h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Competition: <span className="font-medium">{team.competition_event || "N/A"}</span>
-              </p>
-              <p className="mt-2 text-sm text-gray-600">
-                Organization: <span className="font-medium">{team.organization?.name || "N/A"}</span>
-              </p>
-
-              {userRole === "Admin" ? (
-                <>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Phone Number: <span className="font-medium">{team.team_leader_phone_number || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Coach: <span className="font-medium">{team.coach?.name || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Team Leader: <span className="font-medium">{team.team_leader_name || "N/A"}</span>
-                  </p>
-                </>
-              ) : userRole === "Judge" && (
-                <>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Members: <span className="font-medium">{team.members?.map(member => member.name).join(", ") || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Robot Name: <span className="font-medium">{team.robot_name || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Coach: <span className="font-medium">{team.coach?.name || "N/A"}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Team Leader: <span className="font-medium">{team.team_leader_name || "N/A"}</span>
-                  </p>
-                </>
-              )}
-
-
-
-              <Link
-                to={`/Dashboard/Teams/User/${team.name ? team.name : ''}`}
-                className="inline-block mt-4 px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors duration-300"
-              >
-                View Details
-              </Link>
-            </div>
-          </div>
+          <TeamCard key={team.id} team={team} userRole={userRole} />
         ))}
       </div>
+
+      {filteredTeams.length === 0 && !isLoading && (
+        <div className="text-center py-12 text-gray-500">
+          <Groups className="text-4xl text-gray-300 mb-4" />
+          <p className="text-lg">No teams found matching your search</p>
+        </div>
+      )}
     </div>
   );
 };
+
+const TeamCard = ({ team, userRole }) => (
+  <div className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out group hover:-translate-y-1.5 border border-gray-100">
+    <div className="px-6 py-5">
+      <div className="flex items-start mb-4">
+        <div className="bg-cyan-100 p-3 rounded-lg mr-4">
+          <Groups className="text-cyan-600 text-2xl" />
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold text-gray-800 truncate">
+            {team.name || "Unnamed Team"}
+          </h3>
+          <p className="text-sm text-cyan-600 font-medium">
+            {team.competition_event || "General Competition"}
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-3 text-sm">
+        <div className="flex items-center text-gray-600">
+          <School className="text-gray-400 mr-2 text-base" />
+          <span>{team.organization?.name || "No Organization"}</span>
+        </div>
+
+        {userRole === "Admin" && (
+          <>
+            <div className="flex items-center text-gray-600">
+              <Phone className="text-gray-400 mr-2 text-base" />
+              <span>{team.team_leader_phone_number || "N/A"}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <Person className="text-gray-400 mr-2 text-base" />
+              <span className="truncate">
+                {team.members?.map(member => member.name)?.join(", ") || "No members"}
+              </span>
+            </div>
+          </>
+        )}
+
+        {(userRole === "Admin" || userRole === "Judge") && (
+          <>
+            <div className="flex items-center text-gray-600">
+              <SmartToy className="text-gray-400 mr-2 text-base" />
+              <span>{team.robot_name || "Unnamed Robot"}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <Engineering className="text-gray-400 mr-2 text-base" />
+              <span>{team.coach?.name || "No Coach"}</span>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="mt-6 flex justify-end border-t border-gray-100 pt-4">
+        <Link
+          to={`/Dashboard/Teams/User/${team.name || team.id}`}
+          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-medium rounded-lg transition-all hover:from-cyan-700 hover:to-teal-600 shadow-sm hover:shadow-md"
+        >
+          <span>View Details</span>
+          <Icon className="ml-2 text-sm">arrow_forward</Icon>
+        </Link>
+      </div>
+    </div>
+  </div>
+);
 
 export default MyTeams;
