@@ -47,8 +47,8 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
   useEffect(() => {
     if (!eventName || !gameId) {
          Alert.error({
-      title: "Missing Data",
-      text: "Event name or Game ID is missing. Please check the configuration.",
+      title: "Missing Information",
+      text: "Event name or Match ID is missing. Please check your configuration.",
     });
     return;
     }
@@ -119,7 +119,8 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
       Swal.fire({
         icon: 'error',
         title: 'Connection Error',
-        text: 'Not connected to server. Please try again.',
+        text: 'Unable to connect to server. Please try again.',
+        confirmButtonText: 'OK'
       });
       return false;
     }
@@ -162,9 +163,9 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
 
 const handleReset = () => {
   Alert.confirm({
-    title: 'Restart Challenge?',
-    html: 'This will reset all counters and the timer!',
-    confirmText: 'Confirm Restart',
+    title: 'Reset Match?',
+    html: 'Are you sure you want to reset this match? All scores and timer will be reset.',
+    confirmText: 'Reset',
     cancelText: 'Cancel',
     onConfirm: () => {
       if (sendSocketCommand("restart_game")) {
@@ -176,7 +177,7 @@ const handleReset = () => {
       }
     },
     onCancel: () => {
-      Swal.fire('Cancelled', 'Challenge restart was cancelled', 'info');
+      Swal.fire('Cancelled', 'Match reset was cancelled', 'info');
     }
   });
 }
@@ -227,7 +228,7 @@ const handleSubmit = async () => {
   Alert.confirm({
     title: 'Submit Final Score?',
     html: `<p>You're about to submit your final score of <strong>${totalScore}</strong> points.</p>`,
-    confirmText: 'Confirm Submission',
+    confirmText: 'Submit',
     cancelText: 'Cancel',
     onConfirm: async () => {
       try {
@@ -249,16 +250,16 @@ const handleSubmit = async () => {
           totalTime: timer
         });
 
-        Swal.fire("Success", "Score submitted successfully!", "success");
+        Swal.fire("Success", "Score has been submitted successfully", "success");
         onClose();
         EndGame();
       } catch (error) {
         console.error("Submission error:", error);
-        Swal.fire("Error", "Failed to submit score", "error");
+        Swal.fire("Error", "Failed to submit the score", "error");
       }
     },
     onCancel: () => {
-      Swal.fire('Cancelled', 'Submission was cancelled', 'info');
+      Swal.fire('Cancelled', 'Score submission was cancelled', 'info');
     }
   });
 };
@@ -378,7 +379,7 @@ const progressBarColor = getProgressBarColor(remainingTime, maxTime);
         <div className="flex items-center mb-2 sm:mb-0">
           <FaClock className="text-indigo-600 mr-2 text-lg sm:text-xl" />
           <span className="text-lg sm:text-xl font-semibold">
-              {!isRunning && !timeUp ? "Game Paused" : 
+              {!isRunning && !timeUp ? "Match Paused" : 
               timeUp ? "Time's Up!" : 
               formatTime(maxTime - timer)}
               

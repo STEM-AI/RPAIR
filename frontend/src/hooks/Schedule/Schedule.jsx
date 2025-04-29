@@ -6,12 +6,18 @@ const useSchedule = (scheduleId) => {
   const [schedule, setSchedule] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token = localStorage.getItem("access_token");
 
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/core/event/schedule/${scheduleId}/`
+          `${process.env.REACT_APP_API_URL}/core/event/schedule/${scheduleId}/`,
+         {
+    headers: { // التصحيح هنا
+      Authorization: `Bearer ${token}`,
+    },
+  }
         );
         setSchedule(response.data);
       } catch (err) {

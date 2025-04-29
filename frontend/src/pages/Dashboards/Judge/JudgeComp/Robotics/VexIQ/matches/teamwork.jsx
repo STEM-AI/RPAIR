@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import ScoreTeams from "../Scores/scoreTeams";
-import { FaTrophy, FaCheck } from "react-icons/fa";
+import { FaTrophy, FaCheck,FaUsers,FaChartBar ,FaSync} from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import axios from "axios";
 import { useEventNameContext } from "../../../../../../../context/EventName";
-import GameScheduleForm from "../../../../../../../components/Schedule/GameScheduleForm";
+import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
+import useSchedule from "../../../../../../../hooks/Schedule/Schedule"
+
 const Teamwork = () => {
   const { currentCompetition } = useEventNameContext();
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -13,16 +15,37 @@ const Teamwork = () => {
   const [tempScores, setTempScores] = useState({});
   const [showRanking, setShowRanking] = useState(false);
   const [schedule, setSchedule] = useState([]);
-  const [gameTime, setGameTime] = useState("");
   const token = localStorage.getItem("access_token");
    const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const event_name = currentCompetition;
 
   
-  const formData = {
-    stage: "teamwork",
-    game_time: gameTime,
+
+
+const { 
+    schedules: eventSchedules, 
+    loading: schedulesLoading, 
+    error: schedulesError, 
+    refetch: refetchSchedules 
+  } = useEventSchedules(event_name, "teamwork", "-id"); // Order by descending ID
+
+  const lastScheduleId = eventSchedules[0]?.id; // أول عنصر بعد الترتيب التنازلي
+  const { 
+    schedule: scheduleDetails, 
+    loading: scheduleLoading, 
+    error: scheduleError,
+    refetch: refetchScheduleDetails 
+  } = useSchedule(lastScheduleId);
+
+  // دالة جديدة لجلب الجدول الأخير
+  const handleRefreshSchedule = async () => {
+    try {
+      await refetchSchedules();
+      await refetchScheduleDetails();
+    } catch (err) {
+      console.error("Error refreshing schedule:", err);
+    }
   };
 
  const fetchRankings = async () => {
@@ -56,30 +79,7 @@ const Teamwork = () => {
       return newState;
     });
   };
-  // Handle posting game schedule and then fetch updated schedule
-  const handleSubmit = async (event) => {
-  event.preventDefault();
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/core/event/${event_name}/games/schedule/`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    
-    console.log("Schedule posted successfully");
-    console.log("Response Data:", response.data); 
-
-    setSchedule(response.data); 
-
-  } catch (err) {
-    console.error("Error posting schedule:", err);
-  }
-};
+  
 
   const handleOpenCalculator = (matchCode) => {
     console.log("matchCode" , matchCode);
@@ -107,76 +107,188 @@ const Td = ({ children, className }) => (
   </td>
 );
   
-  return (
-    <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-8 py-4">
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-6">
-        Teamwork Matches
-      </h1>
-      <div className="flex justify-center mb-6">
-          <form onSubmit={handleSubmit} className="flex gap-4 items-center">
-            <input
-              type="time"
-              value={gameTime}
-              onChange={(e) => setGameTime(e.target.value)}
-              className="px-4 py-2 rounded-md border border-indigo-300 focus:ring-2 focus:ring-indigo-200 text-lg"
-            />
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition-all"
-            >
-              Set Schedule
-            </button>
-          </form>
+ return (
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Header Section */}
+      <div className="mb-8 flex items-center justify-between border-b border-gray-200 pb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-indigo-700 flex items-center gap-3">
+            <FaUsers className="w-8 h-8" />
+            Teamwork Matches
+          </h1>
+          <p className="mt-2 text-gray-600">Managing matches for {event_name}</p>
         </div>
+        <button
+          onClick={handleRefreshSchedule}
+          className="h-fit flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+        >
+          <FaSync className="w-4 h-4" />
+          <span className="hidden sm:inline">Refresh Schedule</span>
+        </button>
+      </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm mb-8">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead>
-          <tr>
-            <Th className="w-12">Match</Th>
-            <Th className="text-left">Team 1</Th>
-            <Th className="text-left">Team 2</Th>
-            <Th className="w-32">Score</Th>
-            <Th className="w-40">Actions</Th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-            {schedule.map((match) => (
+      {/* Matches Table */}
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <table className="w-full divide-y divide-gray-200">
+          <thead className="bg-indigo-600">
+            <tr>
+              {['Match', 'Team 1', 'Team 2', 'Score', 'Actions'].map((header) => (
+                <th
+                  key={header}
+                  className="px-4 py-3 text-sm font-semibold text-white text-center uppercase tracking-wider"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {(scheduleDetails?.games || []).map((match) => (
               <tr key={match.id} className="hover:bg-gray-50 transition-colors">
-                <Td className=" font-extrabold">#{match.id}</Td>
-                <Td className="text-left">
-                  <div className="flex flex-col">
-                    <span className="font-medium">{match.team1_name}</span>
-                    <span className="text-xs text-gray-500 mt-0.5">#{match.team1}</span>
+                <td className="px-4 py-3 text-center font-medium text-indigo-600">#{match.id}</td>
+                
+                <td className="px-4 py-3">
+                  <div className="flex flex-col space-y-1">
+                    <span className="font-medium text-gray-800">{match.team1_name}</span>
+                    <span className="text-xs text-gray-500">#{match.team1}</span>
                   </div>
-                </Td>
-                <Td className="text-left">
-                  <div className="flex flex-col">
-                    <span className="font-medium">{match.team2_name}</span>
-                    <span className="text-xs text-gray-500 mt-0.5">#{match.team2}</span>
+                </td>
+                
+                <td className="px-4 py-3">
+                  <div className="flex flex-col space-y-1">
+                    <span className="font-medium text-gray-800">{match.team2_name}</span>
+                    <span className="text-xs text-gray-500">#{match.team2}</span>
                   </div>
-                </Td>
-                <Td>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="font-semibold  text-lg">
-                      {tempScores[match.id] ?? scores[match.id] ?? 0}
-                    </span>
-                   
-                  </div>
-                </Td>
-                <Td>
+                </td>
+                
+                <td className="px-4 py-3 text-center font-bold text-indigo-600 text-xl">
+                  {tempScores[match.id] ?? scores[match.id] ?? 0}
+                </td>
+                
+                <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => handleOpenCalculator(match.id)}
-                  
-                      className="ml-2 text-green-600"
-                                      >
-                                       <AiOutlineCalculator  className="text-2xl "/>
+                    className="p-2 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-600 transition-colors"
+                  >
+                    <AiOutlineCalculator className="w-6 h-6" />
                   </button>
-                </Td>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        
+        {/* Loading State */}
+        {(schedulesLoading || scheduleLoading) && (
+          <div className="p-6 space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg" />
+            ))}
+          </div>
+        )}
+        
+        {/* Error State */}
+        {schedulesError && (
+          <div className="p-6 text-center bg-red-50 border-t-4 border-red-300">
+            <div className="text-red-600 font-medium">⚠️ Error loading schedule: {schedulesError}</div>
+          </div>
+        )}
+      </div>
+
+      {/* Ranking Section */}
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 bg-indigo-600">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <FaTrophy className="w-6 h-6" />
+            Team Rankings
+          </h2>
+          <button
+            onClick={handleToggleRanking}
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+          >
+            <FaChartBar className="w-4 h-4" />
+            {showRanking ? 'Hide' : 'Show'} Rankings
+          </button>
+        </div>
+
+        {showRanking && (
+          <div className="p-6">
+            {isLoading ? (
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg" />
+                ))}
+              </div>
+            ) : error ? (
+              <div className="text-center py-6 text-red-500">
+                ⚠️ Error loading rankings: {error}
+              </div>
+            ) : rankings.length === 0 ? (
+              <div className="text-center py-6 text-gray-500">
+                🏟️ No rankings available yet
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {rankings.map((team, index) => {
+                  const rank = index + 1;
+                  return (
+                    <div
+                      key={team.team}
+                      className={`flex items-center justify-between p-4 rounded-lg ${
+                        rank <= 3 ? 'border-2' : 'border hover:border-indigo-200'
+                      } ${
+                        rank === 1
+                          ? 'border-yellow-300 bg-yellow-50'
+                          : rank === 2
+                          ? 'border-gray-300 bg-gray-50'
+                          : rank === 3
+                          ? 'border-amber-400 bg-amber-50'
+                          : 'border-gray-200 bg-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <span
+                          className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                            rank <= 3
+                              ? rank === 1
+                                ? 'bg-yellow-400 text-white'
+                                : rank === 2
+                                ? 'bg-gray-400 text-white'
+                                : 'bg-amber-500 text-white'
+                              : 'bg-indigo-100 text-indigo-600'
+                          }`}
+                        >
+                          {rank}
+                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-800">{team.team__name}</span>
+                          <span className="text-xs text-gray-500">Team #{team.team}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4">
+                        <span className="text-lg font-bold text-indigo-600">
+                          {typeof team.avg_score === 'number' 
+                            ? team.avg_score.toFixed(2)
+                            : 'N/A'}
+                        </span>
+                        {rank <= 3 && (
+                          <span className={`text-sm px-2 py-1 rounded-full ${
+                            rank === 1 ? 'bg-yellow-100 text-yellow-800' :
+                            rank === 2 ? 'bg-gray-100 text-gray-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {selectedMatch && (
@@ -188,117 +300,6 @@ const Td = ({ children, className }) => (
           eventName={event_name}
         />
       )}
-
-      
-  {/* Ranking Section */}
-   <div className="flex justify-center mt-4 sm:mt-6 mb-4">
-        <button
-          onClick={handleToggleRanking}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 gap-2"
-        >
-          <FaTrophy className="shrink-0" />
-          <span className="hidden sm:inline">View Ranking</span>
-          <span className="sm:hidden">Ranking</span>
-        </button>
-      </div>
-
-   {showRanking && (
-  <div className="overflow-x-auto shadow-lg rounded-xl mt-4 bg-white p-4 border border-gray-200">
-    <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800 mb-4 flex items-center justify-center gap-2">
-      <FaTrophy className="text-yellow-500" />
-      Team Rankings
-      <FaTrophy className="text-yellow-500" />
-    </h2>
-    
-    {isLoading ? (
-      <div className="text-center py-8">
-        <svg className="animate-spin h-8 w-8 text-blue-500 mx-auto" 
-             xmlns="http://www.w3.org/2000/svg" fill="none" 
-             viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" 
-                  stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" 
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <p className="mt-3 text-gray-600">Loading rankings...</p>
-      </div>
-    ) : error ? (
-      <div className="text-center py-4 text-red-500">
-        ⚠️ Error loading rankings: {error}
-      </div>
-    ) : rankings.length === 0 ? (
-      <div className="text-center py-4 text-gray-500">
-        🏟️ No rankings available yet
-      </div>
-    ) : (
-      <table className="w-full border-collapse" aria-label="Team rankings">
-        <thead>
-          <tr className="bg-gray-50">
-            <Th className="text-center w-20">Rank</Th>
-            <Th className="text-left">Team</Th>
-            <Th className="text-right pr-6">Avg Score</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {rankings.map((team, index) => {
-            const rank = index + 1;
-            return (
-              <tr
-                key={team.team}
-                className={`transition-all duration-150 ${
-                  rank <= 3 ? 'bg-gradient-to-r' : 'hover:bg-gray-50'
-                } ${
-                  rank === 1 ? 'from-yellow-50/50 to-yellow-50' :
-                  rank === 2 ? 'from-gray-50/50 to-gray-50' :
-                  rank === 3 ? 'from-amber-50/50 to-amber-50' : ''
-                }`}
-              >
-                <Td className="text-center font-semibold">
-                  <div className="flex items-center justify-center">
-                    {rank <= 3 ? (
-                      <span className={` w-6 h-6 rounded-full flex items-center justify-center 
-                        ${rank === 1 ? 'bg-yellow-400' : 
-                          rank === 2 ? 'bg-gray-400' : 'bg-amber-600'} text-white`}>
-                        {rank}
-                      </span>
-                    ) : (
-                      <span className="text-gray-600">{rank}</span>
-                    )}
-                  </div>
-                </Td>
-                <Td className="text-left">
-                  <div className="flex items-center justify-center ">
-                    <span className=" w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mr-2 ">
-                      <span className="text-blue-600 font-medium">#{team.team}</span>
-                    </span>
-                    <span className="font-medium text-gray-800">{team.team__name}</span>
-                  </div>
-                </Td>
-                <Td className="text-right pr-6">
-                  <div className="flex items-center justify-end ">
-                    <span className="font-semibold text-blue-600">
-                      {typeof team.avg_score === 'number' 
-                        ? team.avg_score.toFixed(2) 
-                        : 'N/A'}
-                    </span>
-                    {rank <= 3 && (
-                      <span className={`text-sm px-2 py-1 rounded-full 
-                        ${rank === 1 ? 'bg-yellow-100 text-yellow-800' :
-                          rank === 2 ? 'bg-gray-100 text-gray-800' :
-                          'bg-amber-100 text-amber-800'}`}>
-                        {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
-                      </span>
-                    )}
-                  </div>
-                </Td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    )}
-  </div>
-)}
     </div>
   );
 };
