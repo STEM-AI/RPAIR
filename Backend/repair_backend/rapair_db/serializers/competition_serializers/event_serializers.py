@@ -14,9 +14,10 @@ class TeamCompetitionProfileSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     teams = TeamCompetitionProfileSerializer(many=True , required=False,read_only=True)
+    competition_name = serializers.CharField(source='competition.name',read_only=True)
     class Meta:
         model = CompetitionEvent
-        fields = ['id','name','start_date', 'end_date', 'location' , 'teams'  , 'fees' , 'age' , 'category' , 'is_active' , 'is_live']
+        fields = ['id','name','start_date', 'end_date', 'location' , 'teams'  , 'fees' , 'age' , 'category' , 'is_active' , 'is_live' , 'competition_name']
 
 class EventGameSerializer(serializers.ModelSerializer):
     team1_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), source='team1.id', allow_null=True, required=False)
