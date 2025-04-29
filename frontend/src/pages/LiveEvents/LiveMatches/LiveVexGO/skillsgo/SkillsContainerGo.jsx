@@ -4,6 +4,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import AutoRoundsComponent from "./AutoRoundsComponent";
 import DriverRoundsComponent from "./DriverRoundsComponent";
+import { useSearchParams } from "react-router-dom";
 
 const SkillsContainerGO = () => {
   const [rankings, setRankings] = useState([]);
@@ -11,9 +12,10 @@ const SkillsContainerGO = () => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
   const [showRankings, setShowRankings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const eventName = "SadatComp";
   const token = localStorage.getItem("access_token");
 const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
@@ -178,10 +180,10 @@ const autoSocketRef = useRef(null);
                         {getMedalIcon(index + 1)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team__name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team_name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                        {team.avg_score.toFixed(2)}
+                        {team.total_score}
                       </span>
                     </td>
                   </tr>

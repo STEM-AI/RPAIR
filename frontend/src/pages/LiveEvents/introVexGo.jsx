@@ -5,12 +5,14 @@ import React from 'react';
 import { BiJoystick } from "react-icons/bi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 
 const IntroVexGO = () => {
   const navigate = useNavigate();
+   const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
 
   const handleClick = (path) => {
     navigate(path);
@@ -72,7 +74,7 @@ const IntroVexGO = () => {
                 y: -5,
                 scale: 1.02
               }}
-              onClick={() => handleClick(challenge.path)}
+              onClick={() => handleClick( `${challenge.path}?eventName=${encodeURIComponent(eventName)}`)}
               className="relative rounded-2xl bg-white p-6 shadow-xl h-40 flex items-center justify-between cursor-pointer overflow-hidden group"
             >
               {/* Gradient background overlay */}

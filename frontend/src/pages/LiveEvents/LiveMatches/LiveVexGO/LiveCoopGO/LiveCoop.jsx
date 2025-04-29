@@ -254,6 +254,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
 
 const LiveCoop = () => {
   const [matches, setMatches] = useState([]);
@@ -263,8 +264,8 @@ const LiveCoop = () => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
-
-  const eventName = "SadatComp"; // You can change dynamically if needed
+  const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
   const token = localStorage.getItem("access_token");
 
   // Fetch Rankings API
@@ -495,7 +496,7 @@ const LiveCoop = () => {
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team__name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700">
-                        {team.average_score.toFixed(2)}
+                        {team.avg_score}
                       </span>
                     </td>
                   </tr>
