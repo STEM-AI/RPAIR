@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
 
 const LiveTeamVex = () => {
   const [matches, setMatches] = useState([]);
@@ -11,9 +12,8 @@ const LiveTeamVex = () => {
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
-  const event_Name = localStorage.getItem('selected_event_name');
-  const eventName = "VexIQ";
-  const token = localStorage.getItem("access_token");
+  const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
 
   const fetchRankings = async () => {
     setIsLoading(true);

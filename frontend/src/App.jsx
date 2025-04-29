@@ -26,7 +26,7 @@ import CompetitionResult from "./pages/Competitions/Programming/main/Competition
 import Robotics from "./pages/Gallary/Robotics/Robotics";
 import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
 import LiveEvents from "./pages/LiveEvents/introEvents";
-import IntroVexIQ from "./pages/Dashboards/AdminDashboard/IntroVexIQ";
+import IntroVexIQ from "./pages/LiveEvents/IntroVexIQ";
 import IntroVexGO from "./pages/LiveEvents/introVexGo";
 import LiveTeamIQ from "./pages/Dashboards/View/LiveTeam";
 import LiveProgramming from "./pages/LiveEvents/LiveMatches/LiveProgramming";
@@ -79,7 +79,6 @@ const TeamDetails = lazy(() => import("./pages/Dashboards/AdminDashboard/TeamDet
 const ListCompetitions = lazy(() => import("./pages/Dashboards/AdminDashboard/ListCompetitions"));
 const CompetitionEvents = lazy(() => import("./pages/Dashboards/AdminDashboard/CompetitionEvents"));
 const ListJudges = lazy(() => import("./pages/Dashboards/AdminDashboard/ListJudges"));
-const Matchess = lazy(() => import("./pages/Dashboards/AdminDashboard/IntroVexIQ"));
 
 //                          User (Lazy Loading)                   //
 const MyTeams = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeams"));
@@ -133,6 +132,7 @@ const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Ve
 const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
 const InterviewSheet = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
 const LiveCoop = lazy(() => import("./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop"));
+const GameScheduleForm = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm"));
 
 
 
@@ -486,6 +486,16 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateEvent />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/CreateSchedule"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <GameScheduleForm />
               </LayoutDashboard>
             </Layout>
           }

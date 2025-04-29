@@ -110,6 +110,11 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Create Judge
                           </li>
                         </Link>
+                        <Link to="/Dashboard/Admin/CreateSchedule">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Create Schedule
+                          </li>
+                        </Link>
                         
                       </ul>
                     )}
