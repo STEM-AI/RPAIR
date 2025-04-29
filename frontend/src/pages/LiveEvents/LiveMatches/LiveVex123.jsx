@@ -1,6 +1,9 @@
 
 
 import React, { useEffect, useState, useRef } from "react";
+import { FaTrophy, FaMedal } from "react-icons/fa";
+import { FaRobot, FaSyncAlt, FaListOl } from 'react-icons/fa';
+
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { TiStopwatch } from "react-icons/ti";
