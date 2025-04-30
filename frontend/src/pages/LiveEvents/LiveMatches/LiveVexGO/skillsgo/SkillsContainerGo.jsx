@@ -216,7 +216,6 @@ const SkillsContainerGO = () => {
   const eventName = searchParams.get('eventName');
   const [showRankings, setShowRankings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const token = localStorage.getItem("access_token");
   
   const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);

@@ -525,7 +525,6 @@ const LiveCoop = () => {
   const socketRef = useRef(null);
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
-  const token = localStorage.getItem("access_token");
 
   // Fetch Rankings API
   const fetchRankings = async () => {
@@ -538,12 +537,7 @@ const LiveCoop = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`
       );
       setRankings(response.data);
       setShowRankings(true);

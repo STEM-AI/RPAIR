@@ -216,7 +216,6 @@ export default function AllEventDetails() {
       const [events, setEvents] = useState([]);
       const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const token = localStorage.getItem("access_token");
     console.log("event_name", event_name);
     const [openTeamIndex, setOpenTeamIndex] = useState(null);
 
@@ -227,9 +226,7 @@ export default function AllEventDetails() {
     const fetchEvents = async () => {
       const apiUrl = `${process.env.REACT_APP_API_URL}/event/${event_name}/profile/`;
       try {
-        const response = await axios.get(apiUrl, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(apiUrl);
           setEvents(response.data);
           console.log("API Response:", response.data);
           console.log("API Response:", response.data.members);
@@ -242,7 +239,7 @@ export default function AllEventDetails() {
     };
 
     fetchEvents();
-    }, [event_name, token]);
+    }, [event_name]);
     
     if (loading) {
     return (

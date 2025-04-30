@@ -127,11 +127,7 @@ const [searchParams] = useSearchParams();
   const fetchRankings = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`);
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {
