@@ -25,10 +25,10 @@ const COOPMatch = () => {
 const [error, setError] = useState(null);
 
   
-  const event_name = currentCompetition
 
 
-    
+    localStorage.setItem('event_name', currentCompetition);
+const event_name = localStorage.getItem('event_name');
   
   const { 
       schedules: eventSchedules, 

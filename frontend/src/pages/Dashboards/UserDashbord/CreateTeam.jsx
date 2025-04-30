@@ -244,6 +244,8 @@ const CreateTeam = () => {
     // If no specific messages, show default error
     if (errorMessages.length === 0) {
       errorMessages.push("Failed to create team. Please check your inputs and try again.");
+    } else {
+      errorMessages.push(`Failed to create team. Please ${ err.response?.data}`);
     }
 
     Swal.fire({

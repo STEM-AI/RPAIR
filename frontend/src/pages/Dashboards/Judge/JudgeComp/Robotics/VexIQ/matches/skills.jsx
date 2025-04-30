@@ -25,7 +25,9 @@ const Skills = () => {
   const [gameTime, setGameTime] = useState("");
   const [activeTab, setActiveTab] = useState('driver_iq');
 
-  const event_name = currentCompetition
+       localStorage.setItem('event_name', currentCompetition);
+const event_name = localStorage.getItem('event_name');
+
   const token = localStorage.getItem("access_token");
 
   const tabs = [
@@ -77,15 +79,71 @@ const Skills = () => {
           },
         }
       );
-      setSchedule(response.data);
-      console.log(response.data);
+     const validData = Array.isArray(response.data) ? response.data : [];
+      setSchedule(validData);
+      localStorage.setItem('skillsSchedule', JSON.stringify(validData));
       
     } catch (err) {
       console.error("Error posting schedule:", err);
     }
   };
+// 1. تحسين جلب البيانات الأولية
+  useEffect(() => {
+    const loadPersistedData = () => {
+      try {
+        const savedSchedule = localStorage.getItem('skillsSchedule');
+        if (savedSchedule) {
+          const parsedSchedule = JSON.parse(savedSchedule);
+          setSchedule(Array.isArray(parsedSchedule) ? parsedSchedule : []);
+        }
 
- 
+        const savedScores = localStorage.getItem('skillsScores');
+        if (savedScores) {
+          const parsedScores = JSON.parse(savedScores);
+          setScores(typeof parsedScores === 'object' ? parsedScores : {});
+        }
+      } catch (e) {
+        console.error("Error loading data:", e);
+      }
+    };
+
+    loadPersistedData();
+  }, []);
+
+  // 2. تعديل دالة حفظ النتائج
+  const handleScoreCalculated = (calculatedScore) => {
+    if (!selectedTeam || !selectedRound || !scoreType) return;
+
+    setScores(prev => {
+      const newScores = {
+        ...prev,
+        [selectedRound]: {
+          ...prev[selectedRound],
+          [selectedTeam.id]: {
+            ...prev[selectedRound]?.[selectedTeam.id],
+            [scoreType]: calculatedScore ?? 0
+          }
+        }
+      };
+      localStorage.setItem('skillsScores', JSON.stringify(newScores)); // حفظ فوري
+      return newScores;
+    });
+
+    setShowCalculator(false);
+  };
+
+  // // 3. تحسين جلب الجدول الزمني
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     const response = await axios.post(/* ...الكود الحالي */);
+  //     const validData = Array.isArray(response.data) ? response.data : [];
+  //     setSchedule(validData);
+  //     localStorage.setItem('skillsSchedule', JSON.stringify(validData));
+  //   } catch (err) {
+  //     console.error("Error posting schedule:", err);
+  //   }
+  // };
   const openCalculator = (team, round, type) => {
     if (confirmed[round]?.[team.id]) return;
 
@@ -107,21 +165,21 @@ const Skills = () => {
   };
 
   // Score calculation handler
-  const handleScoreCalculated = (calculatedScore) => {
-    if (!selectedTeam || !selectedRound || !scoreType) return;
+  // const handleScoreCalculated = (calculatedScore) => {
+  //   if (!selectedTeam || !selectedRound || !scoreType) return;
 
-    setScores(prev => ({
-      ...prev,
-      [selectedRound]: {
-        ...prev[selectedRound],
-        [selectedTeam.id]: {
-          ...prev[selectedRound]?.[selectedTeam.id],
-          [scoreType]: calculatedScore || 0
-        }
-      }
-    }));
-    setShowCalculator(false);
-  };
+  //   setScores(prev => ({
+  //     ...prev,
+  //     [selectedRound]: {
+  //       ...prev[selectedRound],
+  //       [selectedTeam.id]: {
+  //         ...prev[selectedRound]?.[selectedTeam.id],
+  //         [scoreType]: calculatedScore || 0
+  //       }
+  //     }
+  //   }));
+  //   setShowCalculator(false);
+  // };
     const Th = ({ children, className }) => (
   <th className={`px-2.5 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider text-center ${className}`}>
     {children}

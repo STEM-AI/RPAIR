@@ -58,6 +58,10 @@ const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
       const [playStart] = useSound('/sounds/Vex123Start.mp3', { volume: 1 });
       const [playEnd] = useSound('/sounds/Vex123End.mp3', { volume: 1 });
   
+    localStorage.setItem('event_name', currentCompetition);
+const event_name = localStorage.getItem('event_name');
+  
+  
    // Medal icon rendering function (keep this in your component)
   const getMedalIcon = (rank) => {
     switch (rank) {
@@ -77,7 +81,7 @@ const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/vex-123/${currentCompetition}/rank/`
+        `${process.env.REACT_APP_API_URL}/vex-123/${event_name}/rank/`
       );
       
       // Sort rankings by score then time
@@ -141,7 +145,7 @@ useEffect(() => {
 
 
 // Generate PDF for a team
-const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamTimes) => {
+const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) => {
   // Add null checks for critical parameters
   if (!team || !GAME_MODES) return;
   
@@ -157,7 +161,7 @@ const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamT
   doc.setTextColor(255, 255, 255);
   doc.text("VEX123 Robotics Challenge", pageWidth / 2, 25, { align: 'center' });
   doc.setFontSize(12);
-  doc.text(`Competition: ${currentCompetition}`, pageWidth / 2, 32, { align: 'center' });
+  doc.text(`Competition: ${event_name}`, pageWidth / 2, 32, { align: 'center' });
 
   // Team Information Section
   let yPosition = 50;
@@ -242,7 +246,7 @@ const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamT
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/list/`,
           {
-            params: { competition_event__name: currentCompetition },
+            params: { competition_event__name: event_name },
             headers: { Authorization: `Bearer ${token}` }
           }
         );
@@ -254,10 +258,10 @@ const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamT
       }
     };
 
-    if (currentCompetition) {
+    if (event_name) {
       fetchTeams();
     }
-  }, [currentCompetition, token]);
+  }, [event_name, token]);
 
   // Handle team selection
   const handleTeamSelect = (event) => {
@@ -270,7 +274,7 @@ const generateTeamPDF = (team, currentCompetition, GAME_MODES, teamScores, teamT
     try {
       setLoading(true);
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/vex-123/${currentCompetition}/game/create/`,
+        `${process.env.REACT_APP_API_URL}/vex-123/${event_name}/game/create/`,
         {
           team1: team.id.toString(),
           time: formatTime(INITIAL_TIME)
@@ -572,7 +576,7 @@ const handleRestart = async () => {
             </div>
             
             <button
-              onClick={() => generateTeamPDF(selectedTeam, currentCompetition, GAME_MODES, teamScores, teamTimes)}
+              onClick={() => generateTeamPDF(selectedTeam, event_name, GAME_MODES, teamScores, teamTimes)}
               className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-md"
             >
               <FaDownload className="text-lg" />

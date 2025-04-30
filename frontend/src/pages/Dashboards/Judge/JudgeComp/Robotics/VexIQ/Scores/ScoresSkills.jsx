@@ -23,20 +23,20 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
   // console.log(process.env.REACT_APP_WS_URL);
     const prevTimeRef = useRef(remainingTime);
   
-  const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+  const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
   const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
   const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
  
   const getGoalPoints = (clearSwitch, goals) => {
-    let goalValue = mode === "auto" ? 6 : 4;
-    if (clearSwitch === 4) goalValue = mode === "auto" ? 18 : 12;
-    else if (clearSwitch === 3) goalValue = mode === "auto" ? 14 : 10;
-    else if (clearSwitch === 2) goalValue = mode === "auto" ? 10 : 8;
+    let goalValue = 4;
+    if (clearSwitch === 4) goalValue =  12;
+    else if (clearSwitch === 3) goalValue =  10;
+    else if (clearSwitch === 2) goalValue =  8;
     return goalValue * goals;
   };
 
   const score = useMemo(() => {
-    return switchCount * (mode === "auto" ? 2 : 1) + getGoalPoints(switchCount, goalCount);
+    return switchCount * (1) + getGoalPoints(switchCount, goalCount);
   }, [switchCount, goalCount, mode]);
 
   const handleCalculate = async () => {
@@ -166,6 +166,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
         );
       }
       setGamePaused(true);
+      
     };
   
     const resumeGame = () => {
@@ -176,6 +177,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
         );
       }
       setGamePaused(false);
+      
     };
    const EndGame = () => {
       setGameActive(false);
@@ -225,7 +227,6 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
     }
   }, [remainingTime, playEnd]);
   
-  // تشغيل playMiddle عند الوصول إلى 25 أو 35 ثانية
   useEffect(() => {
     if (gameActive && !gamePaused) {
       if (
@@ -327,7 +328,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCount(label === "Switch" ? Math.min(4, count + 1) : count + 1)}
-                 disabled={!gameActive} // Disable if the game is not active
+                 disabled={!gameActive ||gamePaused} // Disable if the game is not active
                   className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 +
@@ -336,7 +337,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
               <button
                 onClick={() => setCount(Math.max(0, count - 1))}
                   className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!gameActive}
+                disabled={!gameActive || gamePaused}
               >
                 -
               </button>

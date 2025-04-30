@@ -35,7 +35,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
     const [timeUp, setTimeUp] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
-    const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+    const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
     const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
   const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
   
@@ -343,7 +343,8 @@ const getProgressBarColor = (remaining, max) => {
 // Inside the component, calculate these variables:
 const progressPercentage = (remainingTime / maxTime) * 100;
 const socketStatusColor = getSocketStatusColor(socketStatus);
-const progressBarColor = getProgressBarColor(remainingTime, maxTime);
+  const progressBarColor = getProgressBarColor(remainingTime, maxTime);
+  
   return (
     <div className="relative max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
       {/* Header */}
