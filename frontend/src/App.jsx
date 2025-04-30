@@ -45,6 +45,23 @@ import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo
 import CompetitionSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 import Sheet123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
+//                          Judge (Normal Loading)                   //
+import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
+import MatchRounds from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/matches";
+import Interview from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/interview";
+import Inspection from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Inspection";
+import Notebook from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Notebook";
+import Teamwork from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/teamwork";
+import Skills from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/skills";
+import EventDetailsJudge from "./pages/Dashboards/Judge/eventDetailsJudge";
+
+import SelectEvent from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/SelectMatch";
+import StartMatchIQ from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/StartMatchIQ";
+import StartMatchGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO";
+import SelectMatchGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO";
+import COOPMatch from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/COOPmatches";
+import SkillsGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches";
+import SheetCoop from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop";
 
 
 //                              semple pages & Forms               //
@@ -84,23 +101,6 @@ const ListJudges = lazy(() => import("./pages/Dashboards/AdminDashboard/ListJudg
 const MyTeams = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeams"));
 const MyTeamDetails = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeamDetails"));
 
-//                          Judge (Lazy Loading)                   //
-const JudgeEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeEvent"));
-const MatchRounds = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/matches"));
-const Interview = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/interview"));
-const Inspection = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Inspection"));
-const Notebook = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Notebook"));
-const Teamwork = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/teamwork"));
-const Skills = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/skills"));
-const EventDetailsJudge = lazy(() => import("./pages/Dashboards/Judge/eventDetailsJudge"));
-
-const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/SelectMatch"));
-const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/StartMatchIQ"));
-const StartMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
-const SelectMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
-const COOPMatch = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
-const SkillsGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches"));
-const SheetCoop = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop"));
 
 
 //                          Misc (Lazy Loading)                   //
@@ -116,13 +116,6 @@ const RoboticsGallery = lazy(() => import("./pages/Gallary/Robotics/RoboticsGall
 //                        start  Competitions (Lazy Loading)                   //
 const RoboticsPage = lazy(() => import("./components/Competitions/roboticsPage"));
 const OpenSourcePage = lazy(() => import("./components/Competitions/openSourcePage"));
-const Programming = lazy(() => import("./components/Competitions/Programming"));
-const WebDesign = lazy(() => import("./components/Competitions/WebDesign"));
-const AI = lazy(() => import("./components/Competitions/AI"));
-const GraphicDesign = lazy(() => import("./components/Competitions/GraphicDesign"));
-const STMATH = lazy(() => import("./components/Competitions/STMATH"));
-const MobileApp = lazy(() => import("./components/Competitions/MobileApp"));
-const Fablab = lazy(() => import("./components/Competitions/Fablab"));
 const Arduino = lazy(() => import("./components/Competitions/OpenSource/Arduino"));
 const VexGOAbout = lazy(() => import("./components/Competitions/Robotics/VexGo"));
 const Vex123About = lazy(() => import("./components/Competitions/Robotics/Vex123"));
@@ -133,6 +126,24 @@ const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSour
 const InterviewSheet = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
 const LiveCoop = lazy(() => import("./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop"));
 const GameScheduleForm = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm"));
+
+//                          Judge (Lazy Loading)                   //
+// const JudgeEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeEvent"));
+// const MatchRounds = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/matches"));
+// const Interview = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/interview"));
+// const Inspection = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Inspection"));
+// const Notebook = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Notebook"));
+// const Teamwork = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/teamwork"));
+// const Skills = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/skills"));
+// const EventDetailsJudge = lazy(() => import("./pages/Dashboards/Judge/eventDetailsJudge"));
+
+// const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/SelectMatch"));
+// const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/StartMatchIQ"));
+// const StartMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
+// const SelectMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
+// const COOPMatch = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
+// const SkillsGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches"));
+// const SheetCoop = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop"));
 
 
 
@@ -348,14 +359,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
-          path="/Competitions/Robotics/VexV5"
-          element={
-            <Layout>
-              <VexIQAbout />
-            </Layout>
-          }
-        />
+       
 
         <Route
           path="/competitions/OpenSource"

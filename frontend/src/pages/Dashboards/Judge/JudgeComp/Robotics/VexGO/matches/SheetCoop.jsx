@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { FaTrophy, FaClock, FaPlay, FaPause, FaRedo, FaDownload, FaCheckCircle } from "react-icons/fa";
+import { FaTimes ,FaTrophy, FaClock, FaPlay, FaPause, FaRedo, FaDownload, FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { sortBy } from 'lodash';
 import { useMatchContext } from './MatchContext';
-import Back from "../../../../../../../components/Back/Back";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { BsSkipStartFill } from "react-icons/bs";
@@ -47,7 +46,7 @@ export default function SheetCoop({ eventName, onClose }) {
   const [showControls, setShowControls] = useState(false);
     const prevTimeRef = useRef(remainingTime);
 
-  const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+  const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
   const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
   const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
 
@@ -166,8 +165,9 @@ export default function SheetCoop({ eventName, onClose }) {
       }
       playStart(); // تشغيل الصوت هنا
       setRemainingTime(60);
-    setGameActive(false);
-    setGamePaused(false);
+      setGameActive(true);
+      setShowControls(true);
+    setGamePaused();
     setTimeUp(false);
     setScores({});
     setTurbines(0);
@@ -388,8 +388,13 @@ const formatTime = (seconds) => {
   }, [remainingTime, gameActive, gamePaused, playMiddle]);
 
   return (
-    <div className="max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
-      
+    <div className="relative max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
+       <button
+          onClick={onClose}
+          className="absolute top-0 left-0 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+        >
+          <FaTimes className="text-xl sm:text-2xl" />
+        </button>
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">🌊 Ocean Science Exploration</h1>
         <p className="text-sm sm:text-lg text-gray-600">Coop Match Score Sheet</p>

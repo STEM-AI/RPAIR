@@ -21,7 +21,7 @@ const ScoreTeams = ({ onCalculate, onClose, gameId ,eventName}) => {
   const token = localStorage.getItem("access_token");
   const prevTimeRef = useRef(remainingTime);
 
-const [playStart] = useSound('/sounds/start.mp3', { volume: 1 });
+const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
 const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
 const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
   const getPassPoints = (switches) => {

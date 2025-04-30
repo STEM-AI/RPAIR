@@ -18,8 +18,10 @@ const Teamwork = () => {
   const token = localStorage.getItem("access_token");
    const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const event_name = currentCompetition;
 
+   localStorage.setItem('skillsEvent', currentCompetition);
+
+  const event_name = localStorage.getItem('event_name');
   
 
 

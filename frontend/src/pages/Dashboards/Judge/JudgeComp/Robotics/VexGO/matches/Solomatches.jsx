@@ -33,7 +33,9 @@ const SkillsGO = () => {
   const [schedulesLoading, setSchedulesLoading] = useState(false);
   const [schedulesError, setSchedulesError] = useState(null);
   
-  const event_name = currentCompetition;
+localStorage.setItem('event_name', currentCompetition);
+const event_name = localStorage.getItem('event_name');
+
   const token = localStorage.getItem("access_token");
 
   // تعريف التبويبات
