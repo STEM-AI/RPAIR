@@ -21,7 +21,6 @@ const [searchParams] = useSearchParams();
   const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
 
-  const token = localStorage.getItem("access_token");
 
   // Load existing matches from localStorage when component mounts
   useEffect(() => {
