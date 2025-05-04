@@ -45,6 +45,7 @@ import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo
 import CompetitionSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 import Sheet123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
+
 //                          Judge (Normal Loading)                   //
 import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
 import MatchRounds from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/matches";
@@ -62,6 +63,7 @@ import SelectMatchGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/Jud
 import COOPMatch from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/COOPmatches";
 import SkillsGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches";
 import SheetCoop from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop";
+import ScheduleManagement from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/ScheduleManagement";
 
 
 //                              semple pages & Forms               //
@@ -96,6 +98,8 @@ const TeamDetails = lazy(() => import("./pages/Dashboards/AdminDashboard/TeamDet
 const ListCompetitions = lazy(() => import("./pages/Dashboards/AdminDashboard/ListCompetitions"));
 const CompetitionEvents = lazy(() => import("./pages/Dashboards/AdminDashboard/CompetitionEvents"));
 const ListJudges = lazy(() => import("./pages/Dashboards/AdminDashboard/ListJudges"));
+const GameScheduleForm = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm"));
+const DeleteSchedule = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/DeleteSchedule"));
 
 //                          User (Lazy Loading)                   //
 const MyTeams = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeams"));
@@ -125,7 +129,6 @@ const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Ve
 const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
 const InterviewSheet = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
 const LiveCoop = lazy(() => import("./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop"));
-const GameScheduleForm = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm"));
 
 //                          Judge (Lazy Loading)                   //
 // const JudgeEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeEvent"));
@@ -494,12 +497,13 @@ const App = () => {
             </Layout>
           }
         />
+       
         <Route
-          path="/Dashboard/Admin/CreateSchedule"
+          path="/Dashboard/Admin/Schedule"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <GameScheduleForm />
+                <ScheduleManagement />
               </LayoutDashboard>
             </Layout>
           }

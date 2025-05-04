@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiClock, FiCalendar, FiAward, FiLoader } from "react-icons/fi";
-// import { 
-//   competitionOptions,
-//   stagesOptions,
-//   fetchEvents,
-//   createSchedule 
-// } from "../../../../hooks/Schedule/servicesApi";
 
-const GameScheduleForm = () => {
-  const [selectedStage, setSelectedStage] = useState("");
+export default function DeleteSchedule() {
+ const [selectedStage, setSelectedStage] = useState("");
   const [gameTime, setGameTime] = useState("");
   const [eventName, setEventName] = useState("");
   const [selectedEvent, setSelectedEvent] = useState("");
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [scheduleID, setScheduleID] = useState("");
+    const [schedules, setSchedules] = useState([]);
+    const [selectedScheduleId, setSelectedScheduleId] = useState("");
+    const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
   const token = localStorage.getItem("access_token");
 
   const stagesOptions = [
@@ -37,9 +35,12 @@ const GameScheduleForm = () => {
 
   useEffect(() => {
     if (eventName) {
-      fetchEvents();
+        fetchEvents();
     }
   }, [eventName]);
+    
+    
+
 
   const fetchEvents = async () => {
     setIsLoading(true);
@@ -55,50 +56,94 @@ const GameScheduleForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+    };
 
-  const handleSubmit = async (e) => {
+
+ const fetchSchedules = async () => {
+  setIsLoading(true);
+  setError("");
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/core/event/${selectedEvent}/schedule/`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { 
+          ordering: 'id',
+          stage: selectedStage 
+        },
+      }
+    );
+    setSchedules(response.data);
+  } catch (err) {
+    setError("Failed to fetch schedules. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+useEffect(() => {
+  if (selectedEvent && selectedStage) {
+    fetchSchedules();
+  }
+}, [selectedEvent, selectedStage]);
+    
+    const handleDelete = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
 
-    if (!selectedEvent) {
-      setError("Please select an event");
-      return;
+    if (selectedScheduleIds.length === 0) {
+        setError("Please select at least one schedule to delete");
+        return;
     }
-
-    const formData = {
-      stage: selectedStage,
-      game_time: gameTime,
-    };
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/core/event/${selectedEvent}/games/schedule/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+        const deletePromises = selectedScheduleIds.map(id => 
+        axios.delete(
+            `${process.env.REACT_APP_API_URL}/core/event/schedule/${id}/`,
+            {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+            }
+        )
+        );
+
+        const results = await Promise.allSettled(deletePromises);
+        
+        // التحقق من النتائج
+        const failedDeletions = results
+        .filter(result => result.status === 'rejected')
+        .map((result, index) => ({
+            id: selectedScheduleIds[index],
+            reason: result.reason.response?.data?.message || 'Unknown error'
+        }));
+
+        if (failedDeletions.length === 0) {
+        setSuccessMessage(`${selectedScheduleIds.length} schedules deleted successfully!`);
+        setSchedules(schedules.filter(s => !selectedScheduleIds.includes(s.id.toString())));
+        setSelectedScheduleIds([]);
+        } else {
+        const errorMessages = failedDeletions
+            .map(f => `ID ${f.id}: ${f.reason}`)
+            .join('\n');
+        setError(`Some deletions failed:\n${errorMessages}`);
         }
-      );
-      
-      // إدارة النجاح داخليًا
-      setSuccessMessage("Game schedule created successfully!");
-      setGameTime("");
-      setSelectedStage("");
-      setTimeout(() => setSuccessMessage(""), 3000); // إخفاء الرسالة بعد 3 ثواني
+
+        setTimeout(() => {
+        setSuccessMessage("");
+        setError("");
+        }, 5000);
+
     } catch (error) {
-      setError(error.response?.data?.message || "Error creating schedule");
+        setError("Error processing deletions: " + error.message);
     }
-  };
+    };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-8  duration-200 ">
+     <form onSubmit={handleDelete} className="max-w-lg mx-auto p-8  transition-all duration-200 ">
       <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center gap-2">
-        <FiCalendar className="text-cyan-600" />
-        Create Game Schedule
+        <FiCalendar className="text-red-600" />
+        Delete Game Schedule
       </h2>
 
       {/* Messages */}
@@ -183,44 +228,51 @@ const GameScheduleForm = () => {
         </select>
       </div>
 
-      {/* Game Time */}
-      <div className="mb-8">
-        <label className=" text-sm font-semibold text-gray-600 mb-2 flex items-center gap-1">
-          <FiClock className="text-cyan-600" />
-          Game Time
-        </label>
-        <div className="relative">
-          <input
-            type="time"
-            value={gameTime}
-            onChange={(e) => setGameTime(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all pr-12"
-            required
-          />
-          {/* <FiClock className="absolute right-4 top-4 text-gray-400 pointer-events-none" /> */}
-        </div>
-      </div>
+   {/* Schedule Selection */}
+    <div className="mb-6">
+    <label className="text-sm font-semibold text-gray-600 mb-2 flex items-center gap-1">
+        <FiClock className="text-cyan-600" />
+        Select Schedules to Delete (Multiple selection)
+    </label>
+    <div className="relative">
+        <select
+        multiple
+        value={selectedScheduleIds}
+        onChange={(e) => setSelectedScheduleIds(Array.from(e.target.selectedOptions, option => option.value))}
+        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all h-32"
+        disabled={!schedules.length || isLoading}
+        >
+        {schedules.map((schedule) => (
+            <option key={schedule.id} value={schedule.id}>
+            ID: {schedule.id} - {new Date(schedule.time).toLocaleString()}
+            </option>
+        ))}
+        </select>
+        {isLoading && (
+        <FiLoader className="absolute right-4 top-4 animate-spin text-gray-400" />
+        )}
+    </div>
+    </div>
 
       {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 flex items-center justify-center gap-2"
-      >
-        {isLoading ? (
-          <>
-            <FiLoader className="animate-spin" />
-            Creating Schedule...
-          </>
-        ) : (
-          <>
-            <FiCalendar />
-            Create Schedule
-          </>
-        )}
-      </button>
+    <button
+            type="submit"
+            disabled={isLoading || selectedScheduleIds.length === 0}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+            {isLoading ? (
+                <>
+                <FiLoader className="animate-spin" />
+                Deleting...
+                </>
+            ) : (
+                <>
+                <FiCalendar />
+                Delete Selected Schedules ({selectedScheduleIds.length})
+                </>
+            )}
+            </button>
     </form>
   );
 };
 
-export default GameScheduleForm;

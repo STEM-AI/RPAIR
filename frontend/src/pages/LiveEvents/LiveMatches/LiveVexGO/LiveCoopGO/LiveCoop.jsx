@@ -28,7 +28,9 @@ const LiveCoop = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`);
+        `${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`
+      );
+
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {

@@ -244,16 +244,7 @@ export default function JudgeEvent() {
                       </div>
                     </div>
                     
-                    {/* <div className="flex items-center text-gray-600">
-                      <MdAccessTime className="h-5 w-5 mr-2 text-blue-600 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium">End Date</p>
-                        <p className="text-sm">
-                          {new Date(event.competition_event.end_date).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div> */}
-                    
+                   
                     <div className="flex items-center text-gray-600">
                       <MdLocationOn className="h-5 w-5 mr-2 text-blue-600 flex-shrink-0" />
                       <div>
@@ -267,7 +258,7 @@ export default function JudgeEvent() {
                 </div>
                   <Link 
                   onClick={() => setCurrentCompetition(event.competition_event.name)}
-                  to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}`}
+                  to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventName=${encodeURIComponent(event.competition_event.name)}`}
                 >
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
                     <button 
