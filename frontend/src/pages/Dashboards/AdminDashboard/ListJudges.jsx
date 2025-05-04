@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
+import { FiSearch } from "react-icons/fi";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
@@ -10,8 +10,10 @@ import { motion } from "framer-motion";
 import { FiPlusCircle, FiTrash2, FiUserX } from "react-icons/fi";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { FiCalendar } from "react-icons/fi";
 
 export default function ListJudges() {
+    const [searchQuery, setSearchQuery] = useState("");
     const [judges, setJudges] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,6 +23,7 @@ export default function ListJudges() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedJudge, setSelectedJudge] = useState(null);
     const [events, setEvents] = useState([]);
+    const [selectedDate, setSelectedDate] = useState("");
     const [formEvents, setFormEvents] = useState({
         competition_event: "",
         user: ""
@@ -28,9 +31,26 @@ export default function ListJudges() {
     const [eventName, setEventName] = useState(""); // State for dynamic event_name input
     const navigate = useNavigate();
     const token = localStorage.getItem("access_token");
+const [debouncedQuery, setDebouncedQuery] = useState("");
 
-const generatePDF = () => {
-  const doc = new jsPDF();
+useEffect(() => {
+    const timer = setTimeout(() => {
+        setDebouncedQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+}, [searchQuery]);
+    const generatePDF = () => {
+     if (!selectedDate) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Select Date',
+      text: 'Please choose a date first!',
+    });
+    return;
+  }
+    const doc = new jsPDF();
+    const filterDate = new Date(selectedDate);
+
 
   // إعدادات التنسيق
   const primaryColor = "#06b6d4";
@@ -44,22 +64,22 @@ const generatePDF = () => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255);
   doc.text("Judges Report", 15, 25);
+  
+        
+        
 
   // إعداد بيانات الجدول
   const tableData = judges.flatMap((judge) => {
-    const events = judge.judging_events || [];
-    
-    if (events.length === 0) {
-      return [{
-        judge: judge.username,
-        event: "No assigned events",
-        dates: "-",
-        location: "-"
-      }];
-    }
+    const validEvents = judge.judging_events?.filter(event => {
+      const start = new Date(event.competition_event.start_date);
+      const end = new Date(event.competition_event.end_date);
+      return start <= filterDate && filterDate <= end;
+    }) || [];
 
-    return events.map((event, index) => ({
-      judge: index === 0 ? judge.username : "", // اسم القاضي في الصف الأول فقط
+    if (validEvents.length === 0) return [];
+
+    return validEvents.map((event, index) => ({
+      judge: index === 0 ? judge.username : "",
       event: event.competition_event.name,
       dates: `${event.competition_event.start_date} - ${event.competition_event.end_date}`,
       location: event.competition_event.location
@@ -108,7 +128,7 @@ const generatePDF = () => {
     }
   });
 
-  doc.save(`judges-report-${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`judges-report-${selectedDate}.pdf`);
 };
 
     // Fetch judges and their events
@@ -276,6 +296,14 @@ const generatePDF = () => {
         }
     }, [eventName, token]);
 
+    const filteredJudges = judges.filter(judge => {
+    const matchesName = judge.username.toLowerCase().includes(searchQuery);
+    const matchesEvent = judge.judging_events?.some(event => 
+        event.competition_event.name.toLowerCase().includes(searchQuery)
+    );
+    return matchesName || matchesEvent;
+    });
+    
    
     return (
         <div className="container max-w-7xl mx-auto px-4 py-8">
@@ -289,13 +317,29 @@ const generatePDF = () => {
             {/* Search and Filters */}
             <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div className="w-full sm:max-w-xs">
-                    <input
-                        type="text"
-                        placeholder="Search judges..."
-                        className="w-full px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                    />
+                 <input
+                    type="text"
+                    placeholder="Search by judge name or event..."
+                    className="w-full px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+                />
                 </div>
                 <div className="flex gap-4">
+                      <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    />
+                    </div>
+                <div className="flex gap-4">
+                      {/* <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    /> */}
                     <button 
                     className="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-cyan-600 to-cyan-400 text-white rounded-full hover:from-cyan-700 hover:to-cyan-500 transition-all shadow-sm hover:shadow-md"
                     onClick={() => navigate('/Dashboard/Admin/CreateStaff')}
@@ -303,11 +347,12 @@ const generatePDF = () => {
                     Add New Judge +
                     </button>
                     <button 
-                    className="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-emerald-600 to-emerald-400 text-white rounded-full hover:from-emerald-700 hover:to-emerald-500 transition-all shadow-sm hover:shadow-md"
-                    onClick={generatePDF}
-                    >
-                    Download PDF
-                    </button>
+                className="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-emerald-600 to-emerald-400 text-white rounded-full hover:from-emerald-700 hover:to-emerald-500 transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                onClick={generatePDF}
+                >
+                <FiCalendar size={18} />
+                Download PDF
+                </button>
                 </div>
             </div>
 
@@ -325,7 +370,7 @@ const generatePDF = () => {
                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                     {/* Mobile View */}
                     <div className="block md:hidden space-y-4 p-4">
-                        {judges.map((judge) => (
+                        {filteredJudges.map((judge) => (
                             <motion.div 
                                 key={judge.username}
                                 initial={{ opacity: 0, y: 10 }}
@@ -394,7 +439,7 @@ const generatePDF = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {judges.map((judge) => (
+                                {filteredJudges.map((judge) => (
                                     <motion.tr 
                                         key={judge.username}
                                         initial={{ opacity: 0 }}
@@ -453,19 +498,19 @@ const generatePDF = () => {
                     </div>
 
                     {/* Empty State */}
-                    {judges.length === 0 && !loading && (
-                        <div className="text-center py-16">
-                            <div className="text-gray-400 mb-4">
-                                <FiUserX size={48} className="mx-auto" />
-                            </div>
-                            <h3 className="text-xl font-medium text-gray-500 mb-2">
-                                No judges found
-                            </h3>
-                            <p className="text-gray-400">
-                                Start by adding your first judge
-                            </p>
-                        </div>
-                    )}
+                   {filteredJudges.length === 0 && !loading && (
+    <div className="text-center py-16">
+        <div className="text-gray-400 mb-4">
+            <FiSearch size={48} className="mx-auto" />
+        </div>
+        <h3 className="text-xl font-medium text-gray-500 mb-2">
+            No matching judges found
+        </h3>
+        <p className="text-gray-400">
+            Try searching with different keywords
+        </p>
+    </div>
+)}
                 </div>
             )}
 
