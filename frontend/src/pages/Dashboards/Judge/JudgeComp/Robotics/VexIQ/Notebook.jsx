@@ -4,9 +4,11 @@ import NotBookRankings from "../../../../../../components/IntervIQNotbookIQInspe
 import GenericRubric from "../../../../../../components/IntervIQNotbookIQInspection/IntervIQNotbook";
 import {notebookCategories} from "../../../../../../components/IntervIQNotbookIQInspection/notebookCategories";
 import { useEventNameContext } from "../../../../../../context/EventName";
+import { useSearchParams } from "react-router-dom";
 
 const Notebook = () => {
-  const { currentCompetition } = useEventNameContext();
+    const [searchParams] = useSearchParams();
+    const event_name = searchParams.get('eventName');
     
     return (
       <>
@@ -18,7 +20,7 @@ const Notebook = () => {
     apiScoreField="eng_notebook_score"
         />
         <NotBookRankings
-        apiUrl={`${process.env.REACT_APP_API_URL}/event/${currentCompetition}/teams-eng-notebook-rank/`}
+        apiUrl={`${process.env.REACT_APP_API_URL}/event/${event_name}/teams-eng-notebook-rank/`}
       />
     </>
 );

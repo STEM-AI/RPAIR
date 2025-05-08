@@ -4,14 +4,14 @@ import React from 'react';
 import { BiJoystick } from "react-icons/bi";
 import { GiTeamIdea } from "react-icons/gi";
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
 const SelectMatchGO = () => {
   const navigate = useNavigate();
-  const eventName = localStorage.getItem("event_name");
-  // console.log("event_name", eventName);
-
+  const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
+  console.log("eventName", eventName);
 
   
 
@@ -42,7 +42,7 @@ const SelectMatchGO = () => {
         ].map((service, index) => (
           <div 
             key={index} 
-            onClick={() => handleClick(service.path)}
+            onClick={() => handleClick(`${service.path}?eventName=${encodeURIComponent(eventName)}`)}
             className="relative rounded-xl mt-12 bg-white p-6 text-center shadow-xl h-96 flex flex-col items-center justify-center transform transition-transform duration-300 hover:scale-105 cursor-pointer">
             
             <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex h-20 w-20 items-center justify-center rounded-full ${service.color} ${service.shadow}`}>

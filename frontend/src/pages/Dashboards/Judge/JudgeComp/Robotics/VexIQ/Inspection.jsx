@@ -7,10 +7,11 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { fetchJudgeData, fetchTeams, submitScore } from "../../../../../../components/IntervIQNotbookIQInspection/ApiService";
 import { inspectionChecklist } from "../../../../../../components/IntervIQNotbookIQInspection/InspectionCategories"
 import axios from "axios";
-import { useEventNameContext } from "../../../../../../context/EventName";
 import Swal from "sweetalert2";
+import { useSearchParams } from "react-router-dom";
 export default function Inspection() {
-  const { currentCompetition } = useEventNameContext();
+     const [searchParams] = useSearchParams();
+  const event_name = searchParams.get('eventName');
   const [checkedItems, setCheckedItems] = useState(new Array(inspectionChecklist.length).fill(false));
   const [division, setDivision] = useState("");
   const [score, setScore] = useState("");
@@ -29,12 +30,12 @@ export default function Inspection() {
         const judgeName = await fetchJudgeData(token);
         setJudge(judgeName);
         
-        const teamsData = await fetchTeams(token, currentCompetition);
+        const teamsData = await fetchTeams(token, event_name);
         setTeams(teamsData);
       }
     };
     loadData();
-  }, [token, currentCompetition]);
+  }, [token, event_name]);
   
 
 
@@ -83,7 +84,7 @@ export default function Inspection() {
      });
      return;
    }
-     await submitScore(token, currentCompetition, teamData.id, apiScoreField, totalScore);
+     await submitScore(token, event_name, teamData.id, apiScoreField, totalScore);
   };
   
   return (

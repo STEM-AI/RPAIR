@@ -6,6 +6,7 @@ import { FaDownload, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
 import InterviewRankings from "../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
+import { useSearchParams } from "react-router-dom";
 
 const questions = [
   "1 - Presentation Skills",
@@ -27,6 +28,10 @@ export default function InterviewSheet() {
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
+      const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
+  console.log("eventName", eventName);
+  
 
   useEffect(() => {
     const fetchJudge = async () => {
@@ -50,7 +55,7 @@ export default function InterviewSheet() {
         const res = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/list/`,
           {
-            params: { competition_event__name: currentCompetition },
+            params: { competition_event__name: eventName },
             headers: { Authorization: `Bearer ${token}` },
           }
         );
@@ -219,7 +224,7 @@ export default function InterviewSheet() {
 
       
         <InterviewRankings
-  apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${currentCompetition}/team/interview/rank/`} 
+  apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${eventName}/team/interview/rank/`} 
 />
     </div>
   );

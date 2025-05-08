@@ -1,6 +1,6 @@
 import { useState , useEffect} from "react";
 import { FaTrophy,FaSync, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
 import Alert from "../../../../../../../components/Alert/Alert";
 import axios from "axios";
@@ -11,7 +11,6 @@ import SheetCoop from "./SheetCoop";
 import Back from "../../../../../../../components/Back/Back";
 
 const COOPMatch = () => {
-    const { currentCompetition } = useEventNameContext();
   const { matches, setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [scores, setScores] = useState({});
@@ -19,17 +18,16 @@ const COOPMatch = () => {
   const [schedule, setSchedule] = useState([]);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const token = localStorage.getItem("access_token");
-  const [gameTime, setGameTime] = useState("");
   const [rankings, setRankings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState(null);
-
+  
+const [searchParams] = useSearchParams();
+  const event_name = searchParams.get('eventName');
   
 
 
-    localStorage.setItem('event_name', currentCompetition);
-const event_name = localStorage.getItem('event_name');
-  
+
   const { 
       schedules: eventSchedules, 
       loading: schedulesLoading, 

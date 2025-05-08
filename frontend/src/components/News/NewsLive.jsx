@@ -6,41 +6,65 @@ import { NavHashLink } from "react-router-hash-link";
 const NewsTicker = () => {
   const [news, setNews] = useState("Loading news...");
 
-  // useEffect(() => {
-   
+  useEffect(() => {
+    let socket;
+    let reconnectInterval = 5000;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
 
-  //   let socket;
-  //   let reconnectInterval = 5000;
+    const connectWebSocket = () => {
+      if (!process.env.REACT_APP_WS_URL) {
+        console.error("WebSocket URL is not defined");
+        return;
+      }
 
-  //   const connectWebSocket = () => {
-  //     socket = new WebSocket(`${process.env.REACT_APP_API_URL}/ws/news/`);
+      socket = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/news/`);
 
-  //     socket.onmessage = (event) => {
-  //       const data = JSON.parse(event.data);
-  //       setNews(data.message);
-  //     };
+      socket.onopen = () => {
+        console.log("WebSocket connection established");
+        reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+      };
 
-  //     socket.onerror = (error) => {
-  //       console.error("WebSocket error:", error);
-  //     };
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setNews(data.message);
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      };
 
-  //     socket.onclose = () => {
-  //       console.log("WebSocket connection closed, retrying...");
-  //       setTimeout(connectWebSocket, reconnectInterval);
-  //     };
-  //   };
+      socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
 
-  //   connectWebSocket();
+      socket.onclose = () => {
+        if (reconnectAttempts < maxReconnectAttempts) {
+          reconnectAttempts++;
+          console.log(`WebSocket connection closed, retrying... (attempt ${reconnectAttempts})`);
+          setTimeout(connectWebSocket, reconnectInterval);
+        } else {
+          console.error("Max reconnection attempts reached");
+          setNews("Connection to news feed lost");
+        }
+      };
+    };
 
-  //   return () => {
-  //     if (socket) {
-  //       socket.close();
-  //     }
-  //   };
-  // });
+    connectWebSocket();
+
+    return () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+    };
+  }, []); // Empty dependency array means this runs once on mount
 
   useEffect(() => {
     const fetchLatestNews = async () => {
+      if (!process.env.REACT_APP_API_URL) {
+        console.error("API URL is not defined");
+        return;
+      }
 
       try {
         const response = await fetch(
@@ -51,6 +75,11 @@ const NewsTicker = () => {
             },
           }
         );
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         const latestNews = data[0]?.content || "No news available.";
         setNews(latestNews);
@@ -61,7 +90,8 @@ const NewsTicker = () => {
     };
 
     fetchLatestNews();
-  });
+  }, []); // Empty dependency array means this runs once on mount
+
 
   return (
     news !== "No news available." &&

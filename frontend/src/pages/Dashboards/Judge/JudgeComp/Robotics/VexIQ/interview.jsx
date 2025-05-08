@@ -5,8 +5,10 @@ import GenericRubric from "../../../../../../components/IntervIQNotbookIQInspect
 import {interviewCategories} from "../../../../../../components/IntervIQNotbookIQInspection/interviewCategories";
 import InterviewRankings from "../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
 import { useEventNameContext } from "../../../../../../context/EventName";
+import { useSearchParams } from "react-router-dom";
 const Interview = () => {
-  const { currentCompetition } = useEventNameContext();
+   const [searchParams] = useSearchParams();
+  const event_name = searchParams.get('eventName');
   
   return (
     <>
@@ -18,7 +20,7 @@ const Interview = () => {
         apiScoreField="interview_score"
       />
       <InterviewRankings
-        apiUrl={`${process.env.REACT_APP_API_URL}/event/${currentCompetition}/teams-interview-rank/`}
+        apiUrl={`${process.env.REACT_APP_API_URL}/event/${event_name}/teams-interview-rank/`}
       />
     </>
   );
