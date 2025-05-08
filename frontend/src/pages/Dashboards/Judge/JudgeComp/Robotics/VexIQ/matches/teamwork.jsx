@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEventNameContext } from "../../../../../../../context/EventName";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule"
+import { useSearchParams } from "react-router-dom";
 
 const Teamwork = () => {
   const { currentCompetition } = useEventNameContext();
@@ -19,10 +20,8 @@ const Teamwork = () => {
    const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-   localStorage.setItem('skillsEvent', currentCompetition);
-
-  const event_name = localStorage.getItem('event_name');
-  
+     const [searchParams] = useSearchParams();
+  const event_name = searchParams.get('eventName');
 
 
 const { 

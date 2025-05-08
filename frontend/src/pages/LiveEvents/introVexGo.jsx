@@ -13,6 +13,7 @@ const IntroVexGO = () => {
   const navigate = useNavigate();
    const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  
 
   const handleClick = (path) => {
     navigate(path);

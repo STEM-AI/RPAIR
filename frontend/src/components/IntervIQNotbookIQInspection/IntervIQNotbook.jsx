@@ -11,10 +11,10 @@ import { GoDotFill } from "react-icons/go";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import Alert from '@mui/material/Alert';
 import { FaRegCheckCircle } from "react-icons/fa";
-import { useEventNameContext } from "../../context/EventName";
 import Swal from "sweetalert2";
 import { fetchJudgeData, fetchTeams, submitScore } from "./ApiService";
 import { generateRubricPDF } from "./pdfService";
+import { useSearchParams } from "react-router-dom";
 
 const GenericRubric = ({ 
   categories, 
@@ -23,8 +23,9 @@ const GenericRubric = ({
   maxTotalScore,
   apiScoreField ,
 }) => {
-    const { currentCompetition } = useEventNameContext();
-    const [totalScore, setTotalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+  const [searchParams] = useSearchParams();
+    const event_name = searchParams.get('eventName');
 
   const [scores, setScores] = useState({});
   const [activeAlerts, setActiveAlerts] = useState({});
@@ -59,12 +60,12 @@ const handleScoreChange = (category, value) => {
         const judgeName = await fetchJudgeData(token);
         setJudge(judgeName);
         
-        const teamsData = await fetchTeams(token, currentCompetition);
+        const teamsData = await fetchTeams(token, event_name);
         setTeams(teamsData);
       }
     };
     loadData();
-  }, [token, currentCompetition]);
+  }, [token, event_name]);
 
   const postScore = async () => {
      if (!teamData?.id) {
@@ -75,7 +76,7 @@ const handleScoreChange = (category, value) => {
     });
     return;
   }
-    await submitScore(token, currentCompetition, teamData.id, apiScoreField, totalScore);
+    await submitScore(token, event_name, teamData.id, apiScoreField, totalScore);
   };
 
  const generatePDF = () => {

@@ -6,6 +6,7 @@ import { FaDownload, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
 import InterviewRankings from "../../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
+import { useSearchParams } from "react-router-dom";
 
 
 const questions = [
@@ -36,7 +37,6 @@ const gradeLevels = [
 
 export default function InterviewSheet() {
   const [judge, setJudge] = useState("");
-  const { currentCompetition } = useEventNameContext();
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
@@ -45,8 +45,9 @@ export default function InterviewSheet() {
   const [selectedTeam, setSelectedTeam] = useState('');
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
-console.log("currentCompetition", currentCompetition);
-
+     const [searchParams] = useSearchParams();
+  const eventName = searchParams.get('eventName');
+  console.log("eventName", eventName);
   
 useEffect(() => {
   const fetchData = async () => {
@@ -80,7 +81,7 @@ useEffect(() => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/team/list/`, 
         {
-          params: { competition_event__name: currentCompetition },
+          params: { competition_event__name: eventName },
           headers: { Authorization: `Bearer ${token}` }
         }
       );
@@ -104,7 +105,7 @@ const fetchTeamData = async (teamName) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/team/list/`, {
       params: {
-        competition_event__name: currentCompetition, 
+        competition_event__name: eventName, 
         search: teamName
       },
       headers: { Authorization: `Bearer ${token}` }
@@ -360,7 +361,7 @@ const postScore = async () => {
         <p className="mt-2">Current Total: {scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)} points</p>
       </div>
       <InterviewRankings 
-  apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${currentCompetition}/team/interview/rank/`} 
+  apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${eventName}/team/interview/rank/`} 
 />
     </div>
   );

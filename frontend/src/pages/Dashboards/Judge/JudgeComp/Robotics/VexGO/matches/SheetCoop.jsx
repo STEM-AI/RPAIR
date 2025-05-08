@@ -35,13 +35,11 @@ export default function SheetCoop({ eventName, onClose }) {
   const [gamePaused, setGamePaused] = useState(false);
   const [remainingTime, setRemainingTime] = useState(60);
   const [matchData, setMatchData] = useState({ matchId: '', team1_name: '', team2_name: '' });
-  const navigate = useNavigate();
   const [completedOrder, setCompletedOrder] = useState([]);
   const token = localStorage.getItem("access_token");
   const socketRef = useRef(null);
  
-  const [socketStatus, setSocketStatus] = useState('disconnected'); // 'connecting', 'connected', 'error'
-  const reconnectTimer = useRef(null);
+
   const [timeUp, setTimeUp] = useState(false);
   const [showControls, setShowControls] = useState(false);
     const prevTimeRef = useRef(remainingTime);
@@ -73,6 +71,7 @@ export default function SheetCoop({ eventName, onClose }) {
     
       socketRef.current = new WebSocket(
         `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`
+
       );
  
       socketRef.current.onopen = () => {
@@ -246,48 +245,6 @@ export default function SheetCoop({ eventName, onClose }) {
   const totalScore = Object.values(scores).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
 
 
-//   const handleSubmit = async () => {
-//   if (!totalScore) {
-//     Alert.error("Submission Failed", "Please enter a valid score.");
-//     return;
-//   }
-
-//   Alert.confirm({
-//     title: 'Confirm Score Submission',
-//     html: `<p>You're about to submit a total score of <strong>${totalScore}</strong> points.</p>
-//           <p class="text-sm text-gray-600">This action cannot be undone.</p>`,
-//     confirmText: 'Submit Anyway',
-//     cancelText: 'Review Again',
-//     onConfirm: async () => {
-//       try {
-//         const response = await axios.patch(
-//           `${process.env.REACT_APP_API_URL}/vex-go/game/${matchData.matchId}/coop/`,
-//           { score: totalScore, task_times: taskTimes },
-//           { headers: { Authorization: `Bearer ${token}` } }
-//         );
-
-//         if (response.status === 200) {
-//           Alert.success({
-//             title: 'Success!',
-//             text: 'Score has been recorded',
-//             onClose: () => {
-//               updateMatch(currentMatch.id, {
-//                 ...currentMatch,
-//                 score: totalScore,
-//                 taskTimes,
-//                 totalTime: 60 - remainingTime
-//               });
-//               onClose();
-//             }
-//           });
-//         }
-//       } catch (error) {
-//         Alert.error('Submission Error', 'Failed to submit score. Please check your connection.');
-//       }
-//     }
-//   });
-// };
- 
 const handleSubmit = async () => {
   if (!currentMatch) return;
   const timeTaken = 60 - remainingTime; // Calculate total time taken
@@ -543,5 +500,3 @@ const formatTime = (seconds) => {
   );
 
 }
-
-

@@ -4,7 +4,7 @@
 import Alert from "../../../../../../../components/Alert/Alert";
 import { useState, useEffect } from "react";
 import { FaTrophy, FaCheck, FaPlay, FaChartBar,FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMatchContext } from './MatchContext';
 import SheetSolo from "./SheetSolo"
 import { useEventNameContext } from "../../../../../../../context/EventName";
@@ -15,7 +15,6 @@ import useSchedule from "../../../../../../../hooks/Schedule/Schedule";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 
 const SkillsGO = () => {
-  const { currentCompetition } = useEventNameContext();
   const { matches, setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [activeTab, setActiveTab] = useState('driver_go');
@@ -33,9 +32,9 @@ const SkillsGO = () => {
   const [schedulesLoading, setSchedulesLoading] = useState(false);
   const [schedulesError, setSchedulesError] = useState(null);
   
-localStorage.setItem('event_name', currentCompetition);
-const event_name = localStorage.getItem('event_name');
-
+const [searchParams] = useSearchParams();
+  const event_name = searchParams.get('eventName');
+  // console.log("eventName", event_name);
   const token = localStorage.getItem("access_token");
 
   // تعريف التبويبات

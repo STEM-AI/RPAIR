@@ -6,6 +6,7 @@ import { useEventNameContext } from "../../../../../../context/EventName";
 import { jsPDF } from "jspdf";
 import { FaTrophy, FaMedal} from "react-icons/fa";
 import useSound from 'use-sound';
+import { useSearchParams } from "react-router-dom";
 
 
 // Constants
@@ -57,9 +58,10 @@ const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
     const [showRankings, setShowRankings] = useState(false); // Add this state
       const [playStart] = useSound('/sounds/Vex123Start.mp3', { volume: 1 });
       const [playEnd] = useSound('/sounds/Vex123End.mp3', { volume: 1 });
-  
-    localStorage.setItem('event_name', currentCompetition);
-const event_name = localStorage.getItem('event_name');
+ 
+      const [searchParams] = useSearchParams();
+    const event_name = searchParams.get('eventName');
+    console.log("eventName", event_name);
   
   
    // Medal icon rendering function (keep this in your component)
@@ -267,6 +269,7 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
   const handleTeamSelect = (event) => {
     const team = teams.find(t => t.id.toString() === event.target.value);
     setSelectedTeam(team);
+    setCurrentMode(null);
   };
 
   // Create new game when timer starts
@@ -299,7 +302,7 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
   };
 
   // Handle mode selection
-  const handleModeSelect = (mode) => {
+  const handleModeSelect = async(mode) => {
     if (!selectedTeam) {
       Swal.fire({
         title: 'Error',
@@ -318,6 +321,10 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
       });
       return;
     }
+    
+     const gameId = await createGame(selectedTeam);
+  if (!gameId) return;
+
 
     setCurrentMode(mode);
     setTimer(INITIAL_TIME);
@@ -336,13 +343,9 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
       return;
     }
 
-    // Create game when starting timer
-    const gameId = await createGame(selectedTeam);
-    if (gameId) {
       setIsRunning(true);
-    setHasPlayedEndSound(false); // إعادة التعيين هنا
+    setHasPlayedEndSound(false); 
     playStart();
-    }
   };
 
   // Handle timer controls
@@ -404,71 +407,73 @@ const calculateMissionTime = () => {
   };
 
   // Handle round completion
-  const handleRoundComplete = async () => {
-    if (!currentGame) return;
+  // Handle round completion
+const handleRoundComplete = async () => {
+  if (!currentGame) return;
 
-    const result = await Swal.fire({
-      title: 'Complete Round?',
-      text: 'Are you sure you want to complete this round?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, complete it',
-      cancelButtonText: 'No, continue'
-    });
+  const result = await Swal.fire({
+    title: 'Complete Round?',
+    text: 'Are you sure you want to complete this round?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, complete it',
+    cancelButtonText: 'No, continue'
+  });
 
-    if (result.isConfirmed) {
-      try {
-        setLoading(true);
-        const score = calculateScore();
-      const timeTaken = calculateMissionTime(); // التعديل هنا
+  if (result.isConfirmed) {
+    try {
+      setLoading(true);
+      const score = calculateScore();
+      const timeTaken = INITIAL_TIME - timer; // الوقت الإجمالي منذ البداية
 
-        await axios.patch(
-          `${process.env.REACT_APP_API_URL}/vex-123/game/${currentGame.id}/`,
-          {
-            score: score,
-            time_taken: timeTaken
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-
-        // Update team scores and times
-         setTeamGames(prev => ({
-        ...prev,
-        [selectedTeam.id]: {
-          ...prev[selectedTeam.id],
-          [currentMode.name]: true // تم وضع علامة الإكمال هنا ✅
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/vex-123/game/${currentGame.id}/`,
+        {
+          score: score,
+          time_taken: timeTaken
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
         }
-         }));
-         setTeamScores(prev => ({
+      );
+
+      // Update team scores and times
+      setTeamGames(prev => ({
         ...prev,
         [selectedTeam.id]: {
           ...prev[selectedTeam.id],
-          [currentMode.name]: score // حفظ النقاط
+          [currentMode.name]: true
+        }
+      }));
+      
+      setTeamScores(prev => ({
+        ...prev,
+        [selectedTeam.id]: {
+          ...prev[selectedTeam.id],
+          [currentMode.name]: score
         }
       }));
 
-        setTeamTimes(prev => ({
-          ...prev,
-          [selectedTeam.id]: {
-            ...prev[selectedTeam.id],
-            [currentMode.name]: timeTaken
-          }
-        }));
+      setTeamTimes(prev => ({
+        ...prev,
+        [selectedTeam.id]: {
+          ...prev[selectedTeam.id],
+          [currentMode.name]: timeTaken
+        }
+      }));
 
-        Swal.fire('Success', 'Round completed successfully!', 'success');
-        setCurrentGame(null);
-        setTimer(INITIAL_TIME);
-        setIsRunning(false);
-        setMissionStatus({});
-      } catch (error) {
-        Swal.fire('Error', 'Failed to complete round', 'error');
-      } finally {
-        setLoading(false);
-      }
+      Swal.fire('Success', 'Round completed successfully!', 'success');
+      setCurrentGame(null);
+      setTimer(INITIAL_TIME);
+      setIsRunning(false);
+      setMissionStatus({});
+    } catch (error) {
+      Swal.fire('Error', 'Failed to complete round', 'error');
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+};
 
 const handleRestart = async () => {
   const result = await Swal.fire({

@@ -23,7 +23,7 @@ const SelectMatch = () => {
       <div className="grid gap-12 md:grid-cols-2 md:gap-8">
         {[ 
           { 
-            title: "Teamwork Matches", 
+            title: "Teamworkbhjbkj Matches", 
             color: "bg-teal-400", 
             shadow: "shadow-teal-500/40", 
             icon: <FontAwesomeIcon icon={faPeopleGroup} className="text-white text-4xl" />, 

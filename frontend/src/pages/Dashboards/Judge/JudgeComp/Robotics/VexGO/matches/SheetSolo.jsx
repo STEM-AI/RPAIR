@@ -235,18 +235,18 @@ const handleSubmit = async () => {
         await axios.patch(
           `${process.env.REACT_APP_API_URL}/vex-go/game/${currentMatch.id}/skills/`,
           {
-            score: totalScore,
+            score: totalScore || 0,
             time_taken: timer
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         updateMatch(currentMatch.id, {
-          score: totalScore,
+          score: totalScore || 0,
           taskTimes: completedOrder.reduce((acc, { index, time }) => ({ 
-            ...acc, 
-            [index]: time 
-          })), 
+  ...acc, 
+  [index]: time 
+}), {}), 
           totalTime: timer
         });
 
@@ -255,6 +255,8 @@ const handleSubmit = async () => {
         EndGame();
       } catch (error) {
         console.error("Submission error:", error);
+        console.log(error);
+        
         Swal.fire("Error", "Failed to submit the score", "error");
       }
     },
