@@ -424,7 +424,7 @@ const handleRoundComplete = async () => {
     try {
       setLoading(true);
       const score = calculateScore();
-      const timeTaken = INITIAL_TIME - timer; // الوقت الإجمالي منذ البداية
+      const timeTaken = INITIAL_TIME - timer; 
 
       await axios.patch(
         `${process.env.REACT_APP_API_URL}/vex-123/game/${currentGame.id}/`,
