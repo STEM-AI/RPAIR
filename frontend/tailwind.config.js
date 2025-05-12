@@ -9,6 +9,10 @@ export const theme = {
       vexV5: "#D8262F",
       vexGo: "#007378",
       vex123: "#6D4284",
+      gold: {
+        300: '#D4AF37',
+        500: '#B8860B',
+      }
     },
     animation: {
       marquee: "marquee 60s linear infinite",

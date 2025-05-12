@@ -45,14 +45,6 @@ const Sidebar = ({isOpen, setIsOpen}) => {
       case 'admin':
         return (
           <>
-           
-                    {/* Dashboard */}
-                    {/* <Link to="/Dashboard/Admin">
-                      <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                        <MdOutlineDashboard className="mr-2" />
-                        Dashboard
-                      </li>
-                    </Link> */}
         
                     {/* Competitions */}
                     <li
@@ -113,6 +105,11 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                         <Link to="/Dashboard/Admin/Schedule">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Schedule Management
+                          </li>
+                        </Link>
+                        <Link to="/Dashboard/Admin/Certificates">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Create Certificate
                           </li>
                         </Link>
                         
@@ -222,6 +219,12 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <FaPeopleGroup className="mr-2" />
                             My Teams
+                          </li>
+                        </Link>
+                        <Link to="/Dashboard/User/Certificate">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <FaPeopleGroup className="mr-2" />
+                            My Certificate
                           </li>
                         </Link>
                         <Link to="/Dashboard/User/CreateTeam">

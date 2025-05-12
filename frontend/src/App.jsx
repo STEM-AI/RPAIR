@@ -35,7 +35,7 @@ import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveSkillsIQ
 import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveTeamwork/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
 import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
-
+import Certificate from "./components/Certificate/Certificate"
 import { EventNameProvider } from './context/EventName';
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
@@ -64,6 +64,8 @@ import COOPMatch from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches
 import SkillsGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches";
 import SheetCoop from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop";
 import ScheduleManagement from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/ScheduleManagement";
+import CreateCert from "./pages/Dashboards/AdminDashboard/Management/CreateCert";
+import MyCertificate from "./pages/Dashboards/UserDashbord/MyCertificate";
 
 
 //                              semple pages & Forms               //
@@ -394,6 +396,16 @@ const App = () => {
         />
         {/* Admin Dashboard Routes */}
         <Route
+          path="/Dashboard/Certificate"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <Certificate />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
           path="/Dashboard/AddNews"
           element={
             <Layout hideNavbar>
@@ -409,6 +421,16 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <UADashboard />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/Certificates"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <CreateCert />
               </LayoutDashboard>
             </Layout>
           }
@@ -580,6 +602,16 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <CreateTeam />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/User/Certificate"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <MyCertificate />
               </LayoutDashboard>
             </Layout>
           }
