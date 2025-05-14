@@ -7,7 +7,7 @@ from .team_social_media_serializers import TeamSocialMediaSerializer
 from .team_prev_comp_serializers import TeamPreviousCompetitionSerializer
 from .team_sponsor_serializers import TeamSponsorSerializer
 from ..competition_serializers.competitions_serializers import CompetitionsSerializer
-
+from django.db import transaction
 class TeamMinimalSerializer(serializers.ModelSerializer):
     is_completed = serializers.BooleanField(source='competition_event.is_completed',read_only=True)
     class Meta:
@@ -22,7 +22,7 @@ class TeamSerializer(serializers.ModelSerializer):
     coach = TeamCoachSerializer(many=True, required=False)
     social_media = TeamSocialMediaSerializer(many=True, required=False)
     previous_competition = TeamPreviousCompetitionSerializer(many=True, required=False)
-    members = TeamMemberSerializer(many=True)
+    members = TeamMemberSerializer(many=True, required=False)
     competition_event = serializers.SerializerMethodField()
     team_number = serializers.CharField(required=False, allow_null=True)
     image = serializers.ImageField(required=False, allow_null=True)
@@ -44,14 +44,16 @@ class TeamSerializer(serializers.ModelSerializer):
             'coach': {'required': False},
             'social_media': {'required': False},
             'previous_competition': {'required': False},
-            'members': {'required': True},
             'team_number': {'required': False},
             'image': {'required': False},
         }
 
+     # Add a validation method to debug what's happening
     def validate(self, attrs):
-        print("attrs",attrs)
-        return super().validate(attrs)
+        print("VALIDATING SERIALIZER DATA:")
+        for key, value in attrs.items():
+            print(f"{key}: {type(value)} - {value}")
+        return attrs
 
     def create(self, validated_data):
         print("validated_data",validated_data)
@@ -63,25 +65,25 @@ class TeamSerializer(serializers.ModelSerializer):
         members_info = validated_data.pop('members', None)
 
         event = self.context["event"]
+        with transaction.atomic():
+            team = self.Meta.model(**validated_data)
+            team.competition_event = event
 
-        team = self.Meta.model(**validated_data)
-        team.competition_event = event
+            if organization_info:
+                team.organization_info = organization_info
+            if sponsors_info:
+                team.sponsors_info = sponsors_info
+            if coachs_info:
+                team.coachs_info = coachs_info
+            if social_media_info:
+                team.social_media_info = social_media_info
+            if previous_competition_info:
+                team.previous_competition_info = previous_competition_info
+            if members_info:
+                team.members_info = members_info
 
-        if organization_info:
-            team.organization_info = organization_info
-        if sponsors_info:
-            team.sponsors_info = sponsors_info
-        if coachs_info:
-            team.coachs_info = coachs_info
-        if social_media_info:
-            team.social_media_info = social_media_info
-        if previous_competition_info:
-            team.previous_competition_info = previous_competition_info
-        if members_info:
-            team.members_info = members_info
-
-        team.save()
-        return team
+            team.save()
+            return team
     
     def get_competition_event(self,obj):
         try:

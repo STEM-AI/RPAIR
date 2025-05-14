@@ -197,68 +197,91 @@ class UserCreateTeamView(APIView):
         if not event:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Parse JSON strings from form data
-        data = request.data.copy()
-        if 'multipart/form-data' in request.content_type:
-            print("multipart/form-data")
-            json_fields = ['organization_info', 'members', 'sponsors', 'previous_competition', 'coach', 'social_media']
-            
-            for field in json_fields:
-                if field in data:
-                    print(f"Processing field: {field}")
-                    try:
-                        field_value = data.get(field)
-                        
-                        # If the field is already a list, process each item
-                        if isinstance(field_value, list):
-                            processed_items = []
-                            for item in field_value:
-                                if isinstance(item, str):
-                                    processed_items.append(json.loads(item))
-                                else:
-                                    processed_items.append(item)
-                            data[field] = processed_items
-                        # If it's a string, parse it as JSON
-                        elif isinstance(field_value, str):
-                            parsed_value = json.loads(field_value)
-                            data[field] = parsed_value
-                            
-                        print(f"Processed {field}: {data[field]}")
-                    except json.JSONDecodeError as e:
-                        print(f"JSON decode error for {field}: {e}")
-                        return Response(
-                            {"error": f"Invalid JSON format for {field}"}, 
-                            status=status.HTTP_400_BAD_REQUEST
-                        )
+         # Create a completely new dictionary for data processing
+        processed_data = {}
         
-        # Fix organization_info structure
-        if 'organization_info' in data and isinstance(data['organization_info'], list):
-            data['organization_info'] = data['organization_info'][0] if data['organization_info'] else {}
+        # Handle standard form fields
+        standard_fields = ['event_name', 'name', 'robot_name', 'type', 'team_leader_name', 
+                          'team_leader_email', 'team_leader_phone_number', 'team_number', 'image']
+        
+        for field in standard_fields:
+            if field in request.data:
+                # Get the first item if it's a list (normal behavior for form data)
+                value = request.data.get(field)
+                if isinstance(value, list) and len(value) == 1:
+                    processed_data[field] = value[0]
+                else:
+                    processed_data[field] = value
+        
+        # Handle JSON fields that need special processing
+        json_fields = ['organization_info', 'members', 'sponsors', 'previous_competition', 'coach', 'social_media']
+        
+        for field in json_fields:
+            if field in request.data:
+                try:
+                    # Get the raw value from the QueryDict
+                    raw_value = request.data.get(field)
+                    
+                    # If we have a list with one item (common with form data), use that item
+                    if isinstance(raw_value, list) and len(raw_value) == 1:
+                        raw_value = raw_value[0]
+                    
+                    # If it's a string, try to parse it as JSON
+                    if isinstance(raw_value, str):
+                        parsed_value = json.loads(raw_value)
+                        
+                        # For list fields, ensure we have a list
+                        if field in ['members', 'sponsors', 'previous_competition', 'coach', 'social_media']:
+                            if not isinstance(parsed_value, list):
+                                parsed_value = [parsed_value]
+                        
+                        processed_data[field] = parsed_value
+                    else:
+                        # Already a parsed object
+                        processed_data[field] = raw_value
+                        
+                    print(f"Processed {field}: {processed_data[field]}")
+                except json.JSONDecodeError as e:
+                    print(f"JSON decode error for {field}: {str(e)}")
+                    return Response(
+                        {"error": f"Invalid JSON format for {field}: {str(e)}"}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+        
+        # Fix organization_info structure - add phone_number if needed
+        if 'organization_info' in processed_data:
+            org_info = processed_data['organization_info']
             
-        # Add phone_number to organization_info if missing
-        if 'organization_info' in data and 'contacts' in data['organization_info']:
-            contacts = data['organization_info']['contacts']
-            if contacts and 'phone_number' not in data['organization_info']:
-                data['organization_info']['phone_number'] = contacts[0].get('phone_number', '')
-                
-        # Ensure members is properly formatted
-        if 'members' in data and isinstance(data['members'], list) and len(data['members']) > 0:
-            # Make sure we're not wrapping a list in a list unnecessarily
-            if len(data['members']) == 1 and isinstance(data['members'][0], list):
-                data['members'] = data['members'][0]
-                
-        print("Final processed data:", data)
-        serializer = TeamSerializer(data=data, context={'event': event})
+            # Ensure it's not wrapped in a list
+            if isinstance(org_info, list) and len(org_info) > 0:
+                org_info = org_info[0]
+                processed_data['organization_info'] = org_info
+            
+            # Add phone_number from contacts if missing
+            if 'contacts' in org_info and isinstance(org_info['contacts'], list) and len(org_info['contacts']) > 0:
+                if 'phone_number' not in org_info and 'phone_number' in org_info['contacts'][0]:
+                    org_info['phone_number'] = org_info['contacts'][0]['phone_number']
+        
+        print("Final processed data:", processed_data)
+        
+        # Validate all required fields are present
+        required_fields = ['members', 'organization_info']
+        missing_fields = [field for field in required_fields if field not in processed_data]
+        if missing_fields:
+            return Response({field: ["This field is required."] for field in missing_fields}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = TeamSerializer(data=processed_data, context={'event': event})
         if serializer.is_valid():
-            print(serializer.errors)
             team = serializer.save(user_id=request.user.id)
             return Response({
                 "message": "Team created successfully",
                 "team": serializer.data
             }, status=status.HTTP_201_CREATED)
         else:
-            print("serializer.errors",serializer.errors)
+            print("Serializer errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(
     parameters=[

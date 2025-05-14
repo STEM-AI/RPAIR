@@ -23,7 +23,7 @@ class Team(models.Model):
     teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
     skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
     team_number = models.CharField(max_length=255 , unique=True , null=True, blank=True)
-    image = models.ImageField(upload_to='team_images/', null=True, blank=True,default=None)
+    image = models.ImageField(upload_to='static/teams_image/', null=True, blank=True,default=None)
 
     HIGH_SCHOOL = 'HS'
     ELEMENTARY_SCHOOL = 'ES'
