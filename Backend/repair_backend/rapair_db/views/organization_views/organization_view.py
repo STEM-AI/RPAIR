@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated 
 from ...permissions import IsJudgeUser
 from rest_framework import status
-from ...serializers import OrganizationSerializer
+from ...serializers import OrganizationSerializer , OrganizationMinimalSerializer
 from ...models import Organization 
 from rest_framework.generics import ListAPIView , RetrieveAPIView
 
@@ -68,7 +68,7 @@ class DeleteOrganizationView(APIView):
 
 class ListOrganizationsView(ListAPIView):
     permission_classes = [IsJudgeUser]
-    serializer_class = OrganizationSerializer
+    serializer_class = OrganizationMinimalSerializer
     queryset = Organization.objects.all()
 
 

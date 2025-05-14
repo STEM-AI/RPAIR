@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from ...models import Competition 
 
+
+class CompetitionMinimalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Competition
+        fields = ['id','name']
+
 class CompetitionsSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     class Meta:

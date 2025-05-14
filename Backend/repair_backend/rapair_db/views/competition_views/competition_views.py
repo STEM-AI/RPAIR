@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
-from ...serializers import CompetitionsSerializer 
+from ...serializers import CompetitionsSerializer , CompetitionMinimalSerializer
 from ...models import Competition
 from ...permissions import IsJudgeUser
 from rest_framework.generics import ListAPIView , RetrieveAPIView
@@ -19,7 +19,7 @@ class CompetitionProfileView(RetrieveAPIView):
     
 class CompetitionsListView(ListAPIView):
     permission_classes = [AllowAny]
-    serializer_class = CompetitionsSerializer
+    serializer_class = CompetitionMinimalSerializer
     queryset = Competition.objects.all()
     
 class CompetitionCreateView(APIView):

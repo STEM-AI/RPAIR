@@ -7,7 +7,7 @@ from ..validators import phone_validator
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255 , unique=True)
-    robot_name = models.CharField(max_length=255, unique=True)
+    robot_name = models.CharField(max_length=255, null=True, blank=True)
     user = models.ForeignKey('User', blank=True , on_delete=models.CASCADE)
     type = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,6 +22,8 @@ class Team(models.Model):
     note = models.CharField(max_length=255 , null=True, blank=True , default='')
     teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
     skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
+    team_number = models.CharField(max_length=255 , unique=True , null=True, blank=True)
+    image = models.ImageField(upload_to='team_images/', null=True, blank=True,default=None)
 
     HIGH_SCHOOL = 'HS'
     ELEMENTARY_SCHOOL = 'ES'
@@ -42,6 +44,12 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.team_number:
+            self.team_number = f"{self.competition_event.competition.name}-{self.competition_event.start_date.year}-{self.id}"
+            super().save(update_fields=['team_number'])
     
 class TeamworkTeamScore(models.Model):
     id = models.AutoField(primary_key=True)

@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rapair_db.permissions import IsJudgeUser , IsSuperUser
 from rest_framework import status
-from rapair_db.serializers import TeamSerializer,TeamListSerializer,EventGameSerializer
+from rapair_db.serializers import TeamSerializer,TeamListSerializer,EventGameSerializer,TeamCertificationSerializer
 from rapair_db.models import Team ,EventGame
 from rest_framework.generics import RetrieveAPIView , ListAPIView 
 from rest_framework.permissions import AllowAny
@@ -65,3 +65,13 @@ class TeamGamesListView(ListAPIView):
             .select_related('team1' , 'team2')
             .filter(Q(team1__name=team_name) | Q(team2__name=team_name))
             )
+
+
+class TeamCertificationView(RetrieveAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = TeamCertificationSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'team_id'
+
+    def get_queryset(self):
+        return Team.objects.filter(id=self.kwargs.get('team_id'))

@@ -22,6 +22,12 @@ class Command(BaseCommand):
             else:
                 event.is_live = False
                 
+            # Update is_completed
+            if today > event.end_date:
+                event.is_completed = True
+            else:
+                event.is_completed = False
+                
             event.save()
             
         self.stdout.write(self.style.SUCCESS(f'Successfully updated {events.count()} events')) 

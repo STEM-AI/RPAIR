@@ -48,6 +48,7 @@ class CompetitionEvent(models.Model):
     age = models.CharField(max_length=255 , default='12-19')
     is_active = models.BooleanField(default=False)
     is_live = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
 
     MINI_EVENT = 'Mini'
     SMALL_EVENT = 'Small'

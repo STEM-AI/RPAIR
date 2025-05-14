@@ -12,6 +12,10 @@ class OrganizationContactSerializer(serializers.ModelSerializer):
         fields = ['phone_number']
 
 
+class OrganizationMinimalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = ['id','name']
 
 class OrganizationSerializer(serializers.ModelSerializer):
     contacts = OrganizationContactSerializer(many=True)
