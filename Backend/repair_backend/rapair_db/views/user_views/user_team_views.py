@@ -10,7 +10,7 @@ from rest_framework.generics import ListAPIView , RetrieveAPIView
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import json
-
+from django_filters.rest_framework import DjangoFilterBackend
 @extend_schema(
     request={
         'application/json': {
@@ -296,6 +296,8 @@ class UserCreateTeamView(APIView):
 class UserTeamListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TeamMinimalSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['competition_event__name','competition_event__competition__name']
 
     def get_queryset(self):
         user = self.request.user
