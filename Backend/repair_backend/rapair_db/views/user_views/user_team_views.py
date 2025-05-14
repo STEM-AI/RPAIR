@@ -272,26 +272,11 @@ class UserCreateTeamView(APIView):
 )
 class UserTeamListView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = TeamSerializer
+    serializer_class = TeamMinimalSerializer
 
     def get_queryset(self):
         user = self.request.user
-        return (
-            Team.objects
-            .filter(user=user)
-            .prefetch_related(
-            'sponsors', 
-            'social_media',
-            'previous_competition',
-            'coach',
-            'members'
-            )
-            .select_related('organization' , 'competition_event')
-            )
-    def get_serializer_class(self):
-        if self.request.query_params.get('minimal','false') == 'true':
-            return TeamMinimalSerializer
-        return TeamSerializer
+        return Team.objects.filter(user=user)
 
 class UserTeamRetrieveView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]

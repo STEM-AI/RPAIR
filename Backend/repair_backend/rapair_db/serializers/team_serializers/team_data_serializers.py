@@ -92,10 +92,6 @@ class TeamSerializer(serializers.ModelSerializer):
             return str(e)
 
 
-class TeamListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Team
-        fields = ['id','name']
 
 class TeamMemberCertificationSerializer(serializers.ModelSerializer):
     class Meta:
