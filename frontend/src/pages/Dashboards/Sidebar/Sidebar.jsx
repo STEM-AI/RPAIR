@@ -107,11 +107,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Schedule Management
                           </li>
                         </Link>
-                        <Link to="/Dashboard/Admin/Certificates">
-                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            Create Certificate
-                          </li>
-                        </Link>
+                        
                         
                       </ul>
                     )}

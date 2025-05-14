@@ -64,8 +64,8 @@ import COOPMatch from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches
 import SkillsGO from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches";
 import SheetCoop from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop";
 import ScheduleManagement from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/ScheduleManagement";
-import CreateCert from "./pages/Dashboards/AdminDashboard/Management/CreateCert";
 import MyCertificate from "./pages/Dashboards/UserDashbord/MyCertificate";
+import Rank from "./pages/EventsResources/Rank";
 
 
 //                              semple pages & Forms               //
@@ -299,6 +299,14 @@ const App = () => {
           }
         />
         <Route
+          path="/Competitions/:competition_name/:event_name/Rank"
+          element={
+            <Layout>
+                <Rank/>
+            </Layout>
+          }
+        />
+        <Route
           path="/Competitions/:competition_name"
           element={
             <Layout>
@@ -425,16 +433,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
-          path="/Dashboard/Admin/Certificates"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateCert />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+       
 
         <Route
           path="/Dashboard/Event/:competition_name/:event_name"

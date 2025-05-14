@@ -7,8 +7,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { HelmetProvider } from 'react-helmet-async';
 // import { GoogleOAuthProvider } from '@react-oauth/google';
-import { Suspense } from 'react';
-import LoadingPage from './components/LoadingPage';
+import 'animate.css/animate.min.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
