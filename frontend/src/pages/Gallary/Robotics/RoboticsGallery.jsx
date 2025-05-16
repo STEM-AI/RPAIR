@@ -26,8 +26,8 @@ const { VexType } = useParams(); // استخدام اسم بارامتر متو�
 
     const subEvents = {
       VexIQ: ["FutureComp-sadat", "MiniEvent-DSA", "NationalComp"],
-      Vex123: ["FutureComp-sadat"],
-      VexGo: ["FutureComp-sadat"], // تغيير من VexGO إلى VexGo
+      Vex123: ["FutureComp-sadat" ,"MiniEvent-Elsadat"],
+      VexGo: ["FutureComp-sadat"], 
       // VexV5: [] 
     };
 
@@ -39,9 +39,8 @@ const { VexType } = useParams(); // استخدام اسم بارامتر متو�
   }, [VexType]);
 
   const contextMap = useMemo(() => ({
-  // جعل الأسماء متطابقة مع القيم المرسلة عبر البارامتر
   Vex123: require.context('../../../assets/gallery/Robotics/Vex123/', true, /\.(jpe?g|png|JPG|PNG)$/i),
-  VexGo: require.context('../../../assets/gallery/Robotics/VexGO/', true, /\.(jpe?g|png|JPG|PNG)$/i), // تغيير إلى VexGo
+  VexGo: require.context('../../../assets/gallery/Robotics/VexGO/', true, /\.(jpe?g|png|JPG|PNG)$/i), 
   VexIQ: require.context('../../../assets/gallery/Robotics/VexIQ/', true, /\.(jpe?g|png|JPG|PNG)$/i),
   // VexV5: require.context('../../../assets/gallery/Robotics/VexV5/', true, /\.(jpe?g|png|JPG|PNG)$/i),
 }), []);

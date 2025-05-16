@@ -606,7 +606,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/User/Certificate"
+          path="/Dashboard/User/Certificate/:id"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>

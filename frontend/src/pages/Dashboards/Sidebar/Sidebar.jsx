@@ -217,12 +217,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             My Teams
                           </li>
                         </Link>
-                        <Link to="/Dashboard/User/Certificate">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <FaPeopleGroup className="mr-2" />
-                            My Certificate
-                          </li>
-                        </Link>
+                        
                         <Link to="/Dashboard/User/CreateTeam">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdGroupAdd className="mr-2" />

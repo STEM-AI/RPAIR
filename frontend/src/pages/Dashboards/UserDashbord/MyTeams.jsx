@@ -5,8 +5,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
 import { Icon } from "@mui/material";
-import { Groups, Engineering, School, Person, Phone, SmartToy, Search } from "@mui/icons-material";
-
+import { Groups, Engineering, School, Person, Phone, SmartToy, Search, Done } from "@mui/icons-material";
 const MyTeams = () => {
   const { team_name } = useParams();
   const [teams, setTeams] = useState([]);
@@ -14,7 +13,7 @@ const MyTeams = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
-  const [userRole, setUserRole] = useState("");
+  const [teamDetails, setTeamDetails] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("access_token");
 
@@ -28,16 +27,6 @@ const MyTeams = () => {
 
     const fetchData = async () => {
       try {
-        // Fetch user role
-        if (team_name) {
-          const roleResponse = await axios.get(
-            `${process.env.REACT_APP_API_URL}/team/user/${team_name}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-          setUserRole(roleResponse.data?.role || "Unknown");
-        }
-
-        // Fetch teams data
         const teamsResponse = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/user/`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -66,6 +55,7 @@ const MyTeams = () => {
 
       if (error.response?.status === 401) {
         localStorage.removeItem("access_token");
+
       }
     };
 
@@ -147,7 +137,35 @@ const MyTeams = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTeams.map((team) => (
-          <TeamCard key={team.id} team={team} userRole={userRole} />
+          <div className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out group hover:-translate-y-1.5 border border-gray-100">
+    <div className="px-6 py-5">
+      <div className="flex items-start mb-4">
+        <div className="bg-cyan-100 p-3 rounded-lg mr-4">
+          <Groups className="text-cyan-600 text-2xl" />
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold text-gray-800 truncate">
+            {team.name || "Unnamed Team"}
+          </h3>
+         
+        </div>
+      </div>
+
+      <div className="mt-6 flex justify-between border-t border-gray-100 pt-4">
+      {team.is_completed && (
+        <Link to={`/Dashboard/User/Certificate/${team.id}`} className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-2 rounded-lg mr-2 flex items-center">
+          Certificate
+        </Link>
+      )}
+        <Link
+          to={`/Dashboard/Teams/User/${team.name}`}
+          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-medium rounded-lg transition-all hover:from-cyan-700 hover:to-teal-600 shadow-sm hover:shadow-md"
+        >
+          <span>View Details</span>
+        </Link>
+      </div>
+    </div>
+  </div>
         ))}
       </div>
 
@@ -161,69 +179,6 @@ const MyTeams = () => {
   );
 };
 
-const TeamCard = ({ team, userRole }) => (
-  <div className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out group hover:-translate-y-1.5 border border-gray-100">
-    <div className="px-6 py-5">
-      <div className="flex items-start mb-4">
-        <div className="bg-cyan-100 p-3 rounded-lg mr-4">
-          <Groups className="text-cyan-600 text-2xl" />
-        </div>
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800 truncate">
-            {team.name || "Unnamed Team"}
-          </h3>
-          <p className="text-sm text-cyan-600 font-medium">
-            {team.competition_event || "General Competition"}
-          </p>
-        </div>
-      </div>
 
-      <div className="space-y-3 text-sm">
-        <div className="flex items-center text-gray-600">
-          <School className="text-gray-400 mr-2 text-base" />
-          <span>{team.organization?.name || "No Organization"}</span>
-        </div>
-
-        {userRole === "Admin" && (
-          <>
-            <div className="flex items-center text-gray-600">
-              <Phone className="text-gray-400 mr-2 text-base" />
-              <span>{team.team_leader_phone_number || "N/A"}</span>
-            </div>
-            <div className="flex items-center text-gray-600">
-              <Person className="text-gray-400 mr-2 text-base" />
-              <span className="truncate">
-                {team.members?.map(member => member.name)?.join(", ") || "No members"}
-              </span>
-            </div>
-          </>
-        )}
-
-        {(userRole === "Admin" || userRole === "Judge") && (
-          <>
-            <div className="flex items-center text-gray-600">
-              <SmartToy className="text-gray-400 mr-2 text-base" />
-              <span>{team.robot_name || "Unnamed Robot"}</span>
-            </div>
-            <div className="flex items-center text-gray-600">
-              <Engineering className="text-gray-400 mr-2 text-base" />
-              <span>{team.coach?.name || "No Coach"}</span>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="mt-6 flex justify-end border-t border-gray-100 pt-4">
-        <Link
-          to={`/Dashboard/Teams/User/${team.name || team.id}`}
-          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-medium rounded-lg transition-all hover:from-cyan-700 hover:to-teal-600 shadow-sm hover:shadow-md"
-        >
-          <span>View Details</span>
-          <Icon className="ml-2 text-sm">arrow_forward</Icon>
-        </Link>
-      </div>
-    </div>
-  </div>
-);
 
 export default MyTeams;

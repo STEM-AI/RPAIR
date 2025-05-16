@@ -9,6 +9,7 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import { Helmet } from "react-helmet-async";
 
 const CreateTeam = () => {
+  const [hasGlobalNumber, setHasGlobalNumber] = useState(null);
   const [events, setEvents] = useState([]);
   const [formData, setFormData] = useState({
     event_name: "",
@@ -17,12 +18,14 @@ const CreateTeam = () => {
       name: "",
       address: "",
       email: "",
-      type: "", // profit or non-profit
+      type: "", 
       contacts: [{ phone_number: "" }],
     },
     name: "",
     robot_name: "",
     type: "",
+    team_number: null,
+    image: "",
     team_leader_name: "",
     team_leader_email: "",
     team_leader_phone_number: "",
@@ -38,6 +41,12 @@ const CreateTeam = () => {
       fetchEvents(formData.competition);
     }
   }, [formData.competition]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, image: file });
+  };
+
 
   const fetchEvents = async (competition_name) => {
     try {
@@ -164,16 +173,51 @@ const CreateTeam = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (hasGlobalNumber === null) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "Please specify if you have a global team number or not",
+      });
+      return;
+    }
+  
     setIsSubmitting(true);
     setResponseMessage(null);
 
     try {
+      const formDataToSend = new FormData();
+      
+      // Append the image file
+      if (formData.image) {
+        formDataToSend.append("image", formData.image);
+      }
+      if (hasGlobalNumber === true && formData.team_number) {
+        formDataToSend.append("team_number", formData.team_number);
+      }
+      
+      // Append other fields
+      formDataToSend.append("event_name", formData.event_name);
+      formDataToSend.append("competition", formData.competition);
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("robot_name", formData.robot_name);
+      formDataToSend.append("type", formData.type);
+      // formDataToSend.append("team_number", formData.team_number);
+      formDataToSend.append("team_leader_name", formData.team_leader_name);
+      formDataToSend.append("team_leader_email", formData.team_leader_email);
+      formDataToSend.append("team_leader_phone_number", formData.team_leader_phone_number);
+      
+      // Stringify nested objects
+      formDataToSend.append("organization_info", JSON.stringify(formData.organization_info));
+      formDataToSend.append("coach", JSON.stringify(formData.coach));
+      formDataToSend.append("members", JSON.stringify(formData.members));
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/team/create/`,
-        formData,
+        formDataToSend,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -206,6 +250,8 @@ const CreateTeam = () => {
         name: "",
         robot_name: "",
         type: "",
+        team_number: "",
+        image: "",
         team_leader_name: "",
         team_leader_email: "",
         team_leader_phone_number: "",
@@ -441,7 +487,71 @@ const CreateTeam = () => {
               <option value="non-profite">Non-Profit</option>
             </select>
           </div>
+          {/* <div className="w-full md:w-1/2">
+            <label className="block mb-2 text-sm font-bold text-gray-700"> Team Number</label>
+            <input
+              type="text"
+              name="team_number"
+              value={formData.team_number}
+              onChange={handleChange}
+              className="bg-gray-200 border rounded py-2 px-4 w-full"
+              required
+            />
+          </div> */}
+           
+         
+        <div className="w-full md:w-1/2">
+        <label className="block mb-2 text-sm font-bold text-gray-700">Image</label>
+        <input
+          type="file"
+          onChange={handleImageChange}
+          className="bg-gray-200 border rounded py-2 px-4 w-full"
+        />
         </div>
+        </div>
+        <div className="  md:mr-2">
+            <label className="block mb-2 text-sm font-bold text-gray-700">Team Number</label>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="hasGlobalNumber"
+                    checked={hasGlobalNumber === true}
+                    onChange={() => {
+                      setHasGlobalNumber(true);
+                      setFormData({...formData, team_number: ""}); // Reset to empty string if they choose yes
+                    }}
+                    className="form-radio"
+                  />
+                  <span className="ml-2">Yes, I have a global number</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="hasGlobalNumber"
+                    checked={hasGlobalNumber === false}
+                    onChange={() => {
+                      setHasGlobalNumber(false);
+                      setFormData({...formData, team_number: null}); // Set to null if they choose no
+                    }}
+                    className="form-radio"
+                  />
+                  <span className="ml-2">No global number</span>
+                </label>
+              </div>
+              {hasGlobalNumber === true && (
+                <input
+                  type="text"
+                  name="team_number"
+                  value={formData.team_number || ""}
+                  onChange={handleChange}
+                  className="bg-gray-200 border rounded py-2 px-4 w-full"
+                  required
+                />
+              )}
+            </div>
+          </div>
 
         {/* Team Leader Info */}
         <div className="teamLeader">
