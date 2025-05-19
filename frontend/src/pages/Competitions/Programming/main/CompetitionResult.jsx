@@ -7,6 +7,7 @@ import { useResult } from '../../../../context/CompetitionContext';
 
 const CompetitionResult = () => {
   const { competition } = useParams();
+  
   const navigate = useNavigate();
   const { 
     score, 

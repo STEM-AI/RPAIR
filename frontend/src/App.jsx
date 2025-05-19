@@ -19,6 +19,7 @@ import Interview123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Int
 import MainProg from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgInfo from "./pages/Competitions/Programming/main/ProgInfo";
+import OpenWelcome from "./pages/Competitions/OpenSource/OpenWelcom"
 import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
 import Home from "./components/Home/Home";
 import {ResultProvider } from "../src/context/CompetitionContext" ; 
@@ -36,7 +37,6 @@ import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveTeamwork/L
 import ProgrammingComp from "./components/Competitions/Programming";
 import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 import Certificate from "./components/Certificate/Certificate"
-import { EventNameProvider } from './context/EventName';
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
@@ -68,89 +68,64 @@ import MyCertificate from "./pages/Dashboards/UserDashbord/MyCertificate";
 import Rank from "./pages/EventsResources/Rank";
 
 
-//                              semple pages & Forms               //
-//                          Common Pages (Lazy Loading)                   //
-const NotFoundPage = lazy(() => import("./pages/NotFound"));
-const Login = lazy(() => import("./pages/Auth/login"));
-const Register = lazy(() => import("./pages/Auth/Register"));
-const ResetPassword = lazy(() => import("./pages/Auth/ResetPassword"));
-const VolunteerForm = lazy(() => import("./pages/Volunteer/Volunteerform"));
-const ComingSoonPage = lazy(() => import("./pages/ComingSoon"));
+//                              Sample pages & Forms               //
+//                          Common Pages                           //
+import NotFoundPage from "./pages/NotFound";
+import Login from "./pages/Auth/login";
+import Register from "./pages/Auth/Register";
+import ResetPassword from "./pages/Auth/ResetPassword";
+import VolunteerForm from "./pages/Volunteer/Volunteerform";
+import ComingSoonPage from "./pages/ComingSoon";
 
-//                          Admin Pages (Lazy Loading)                   //
-const AddNews = lazy(() => import("./pages/Dashboards/AddNews"));
-const CreateEvent = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateEvent"));
-const CreateStaff = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateStaff"));
-const CreateCompetition = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateCompetition"));
-const CreateOrganization = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateOrg"));
+//                          Admin Pages                           //
+import AddNews from "./pages/Dashboards/AddNews";
+import CreateEvent from "./pages/Dashboards/AdminDashboard/Management/CreateEvent";
+import CreateStaff from "./pages/Dashboards/AdminDashboard/Management/CreateStaff";
+import CreateCompetition from "./pages/Dashboards/AdminDashboard/Management/CreateCompetition";
+import CreateOrganization from "./pages/Dashboards/AdminDashboard/Management/CreateOrg";
 
-//                          User Pages (Lazy Loading)                   //
-const CreateTeam = lazy(() => import("./pages/Dashboards/UserDashbord/CreateTeam"));
-const PaymentForm = lazy(() => import("./pages/Dashboards/UserDashbord/PayMent"));
+//                          User Pages                           //
+import CreateTeam from "./pages/Dashboards/UserDashbord/CreateTeam";
+import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 
-//                          Dashboards (Lazy Loading)                   //
-const EventDash = lazy(() => import("./pages/Dashboards/EventsDash"));
-const UADashboard = lazy(() => import("./pages/Dashboards/UADashboard"));
-
+//                          Dashboards                           //
+import EventDash from "./pages/Dashboards/EventsDash";
+import UADashboard from "./pages/Dashboards/UADashboard";
 
 // 414
-//                          Admin (Lazy Loading)                   //
-const ListTeams = lazy(() => import("./pages/Dashboards/AdminDashboard/ListTeams"));
-const TeamDetails = lazy(() => import("./pages/Dashboards/AdminDashboard/TeamDetails"));
-const ListCompetitions = lazy(() => import("./pages/Dashboards/AdminDashboard/ListCompetitions"));
-const CompetitionEvents = lazy(() => import("./pages/Dashboards/AdminDashboard/CompetitionEvents"));
-const ListJudges = lazy(() => import("./pages/Dashboards/AdminDashboard/ListJudges"));
-const GameScheduleForm = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm"));
-const DeleteSchedule = lazy(() => import("./pages/Dashboards/AdminDashboard/Management/CreateSchedule/DeleteSchedule"));
+//                          Admin                           //
+import ListTeams from "./pages/Dashboards/AdminDashboard/ListTeams";
+import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
+import ListCompetitions from "./pages/Dashboards/AdminDashboard/ListCompetitions";
+import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEvents";
+import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
+import GameScheduleForm from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm";
+import DeleteSchedule from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/DeleteSchedule";
 
-//                          User (Lazy Loading)                   //
-const MyTeams = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeams"));
-const MyTeamDetails = lazy(() => import("./pages/Dashboards/UserDashbord/MyTeamDetails"));
+//                          User                           //
+import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";
+import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 
-
-
-//                          Misc (Lazy Loading)                   //
-const AllSetting = lazy(() => import("./pages/AccountSetting/AllSetting"));
-const LiveTeam = lazy(() => import("./pages/Dashboards/View/LiveTeam"));
-const LiveSkills = lazy(() => import("./pages/Dashboards/View/LiveSkills"));
+//                          Misc                           //
+import AllSetting from "./pages/AccountSetting/AllSetting";
 
 //                      Home pages              //
-const About = lazy(() => import("./pages/About/About"));
-const Gallery = lazy(() => import("./pages/Gallary/Gallary"));
-const RoboticsGallery = lazy(() => import("./pages/Gallary/Robotics/RoboticsGallery"));
+import Gallery from "./pages/Gallary/Gallary";
+import RoboticsGallery from "./pages/Gallary/Robotics/RoboticsGallery";
 
-//                        start  Competitions (Lazy Loading)                   //
-const RoboticsPage = lazy(() => import("./components/Competitions/roboticsPage"));
-const OpenSourcePage = lazy(() => import("./components/Competitions/openSourcePage"));
-const Arduino = lazy(() => import("./components/Competitions/OpenSource/Arduino"));
-const VexGOAbout = lazy(() => import("./components/Competitions/Robotics/VexGo"));
-const Vex123About = lazy(() => import("./components/Competitions/Robotics/Vex123"));
-const VexV5About = lazy(() => import("./components/Competitions/Robotics/VexV5"));
-const VexIQAbout = lazy(() => import("./components/Competitions/Robotics/VexIQ"));
-const VexPage = lazy(() => import("./pages/Dashboards/AdminDashboard/Robotics/Vex"));
-const SourcePage = lazy(() => import("./pages/Dashboards/AdminDashboard/OpenSource/Source"));
-const InterviewSheet = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo"));
-const LiveCoop = lazy(() => import("./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop"));
-
-//                          Judge (Lazy Loading)                   //
-// const JudgeEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeEvent"));
-// const MatchRounds = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/matches"));
-// const Interview = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/interview"));
-// const Inspection = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Inspection"));
-// const Notebook = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/Notebook"));
-// const Teamwork = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/teamwork"));
-// const Skills = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/skills"));
-// const EventDetailsJudge = lazy(() => import("./pages/Dashboards/Judge/eventDetailsJudge"));
-
-// const SelectEvent = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/matches/SelectMatch"));
-// const StartMatchIQ = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexIQ/StartMatchIQ"));
-// const StartMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/StartMatchGO"));
-// const SelectMatchGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/SelectMatchGO"));
-// const COOPMatch = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/COOPmatches"));
-// const SkillsGO = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/Solomatches"));
-// const SheetCoop = lazy(() => import("./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetCoop"));
-
-
+//                        Competitions                       //
+import RoboticsPage from "./components/Competitions/roboticsPage";
+import OpenSourcePage from "./components/Competitions/openSourcePage";
+import Arduino from "./components/Competitions/OpenSource/Arduino";
+import VexGOAbout from "./components/Competitions/Robotics/VexGo";
+import Vex123About from "./components/Competitions/Robotics/Vex123";
+import VexV5About from "./components/Competitions/Robotics/VexV5";
+import VexIQAbout from "./components/Competitions/Robotics/VexIQ";
+import VexPage from "./pages/Dashboards/AdminDashboard/Robotics/Vex";
+import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
+import InterviewSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo";
+import LiveCoop from "./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop";
+import CompOpen from "./pages/Competitions/OpenSource/CompOpen";
 
 
 const App = () => {
@@ -178,16 +153,13 @@ const App = () => {
          <LoadingProvider>
         <MatchProvider>
         <ResultProvider>
-        <EventNameProvider>
       <Routes>
         {/* Public Routes */}
         <Route
           path="/"
           element={
             <Layout>
-              <Suspense fallback={<LoadingPage />}>
               <Home />
-              </Suspense>
             </Layout>
           }
         />
@@ -263,9 +235,9 @@ const App = () => {
           path="/gallery"
           element={
             <Layout>
-              <Suspense fallback={<LoadingPage/>}>
+              
                 <Gallery />
-              </Suspense>
+              
             </Layout>
           }
         />
@@ -273,9 +245,7 @@ const App = () => {
           path="/gallery/Robotics"
           element={
             <Layout>
-              <Suspense fallback={<LoadingPage/>}>
                 <Robotics />
-              </Suspense>
             </Layout>
           }
         />
@@ -283,9 +253,9 @@ const App = () => {
           path="/gallery/Robotics/:VexType"
           element={
             <Layout>
-              <Suspense fallback={<LoadingPage/>}>
+              
                 <RoboticsGallery />
-              </Suspense>
+              
             </Layout>
           }
         />
@@ -330,9 +300,9 @@ const App = () => {
           path="/Robotics/Vex"
           element={
             <Layout>
-              <Suspense fallback={<LoadingPage/>}>
+              
                 <RoboticsPage />
-                </Suspense>
+                
             </Layout>
           }
         />
@@ -340,9 +310,9 @@ const App = () => {
           path="/Competitions/Robotics/VexGo"
           element={
             <Layout>
-              <Suspense fallback={<LoadingPage />}>
+              
               <VexGOAbout />
-              </Suspense>
+              
             </Layout>
           }
         />
@@ -350,9 +320,9 @@ const App = () => {
           path="/Competitions/Robotics/Vex123"
           element={
             <Layout>
-            <Suspense fallback={<LoadingPage/>}>
+            
                 <Vex123About />
-              </Suspense>
+              
             </Layout>
           }
         />
@@ -825,13 +795,33 @@ const App = () => {
             </Layout>
           }
           />
+        <Route
+          path="/OpenSource"
+          element={
+            <Layout hideNavbar>
+              {/* <LayoutDashboard> */}
+              <OpenWelcome/>
+              {/* </LayoutDashboard> */}
+            </Layout>
+          }
+          />
 
-<Route
+        <Route
           path="/Competition-start/:competition"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}
               <ProgInfo/>
+              {/* </LayoutDashboard> */}
+            </Layout>
+          }
+          />
+        <Route
+          path="/CompetitionOpenSource-start/:competition"
+          element={
+            <Layout hideNavbar>
+              {/* <LayoutDashboard> */}
+              <CompOpen/>
               {/* </LayoutDashboard> */}
             </Layout>
           }
@@ -1017,7 +1007,6 @@ const App = () => {
           }
             />
             </Routes>
-            </EventNameProvider>
             </ResultProvider>
             </MatchProvider>
         {/* <ContactUs /> */}

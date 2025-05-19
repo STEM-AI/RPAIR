@@ -4,7 +4,6 @@
 import GenericRubric from "../../../../../../components/IntervIQNotbookIQInspection/IntervIQNotbook";
 import {interviewCategories} from "../../../../../../components/IntervIQNotbookIQInspection/interviewCategories";
 import InterviewRankings from "../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
-import { useEventNameContext } from "../../../../../../context/EventName";
 import { useSearchParams } from "react-router-dom";
 const Interview = () => {
    const [searchParams] = useSearchParams();

@@ -7,7 +7,6 @@ import { FaTrophy, FaCheck, FaPlay, FaChartBar,FaFlagCheckered, FaChevronLeft, F
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMatchContext } from './MatchContext';
 import SheetSolo from "./SheetSolo"
-import { useEventNameContext } from "../../../../../../../context/EventName";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Back from "../../../../../../../components/Back/Back";
@@ -37,7 +36,6 @@ const [searchParams] = useSearchParams();
   // console.log("eventName", event_name);
   const token = localStorage.getItem("access_token");
 
-  // تعريف التبويبات
   const tabs = [
     { id: 'driver_go', label: 'Driving Challenge', icon: '🚗', color: 'blue' },
     { id: 'coding', label: 'Coding Challenge', icon: '🤖', color: 'blue' },

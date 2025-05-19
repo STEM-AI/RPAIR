@@ -6,6 +6,8 @@ import logo from "../../../../assets/Static/logoWrite-re.png";
 
 const ProgInfo = () => {
   const { competition } = useParams();
+  console.log("Competition:", competition);
+  
   const navigate = useNavigate();
 
   // Competition details based on competition type
