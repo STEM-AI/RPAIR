@@ -8,6 +8,10 @@ from .team_prev_comp_serializers import TeamPreviousCompetitionSerializer
 from .team_sponsor_serializers import TeamSponsorSerializer
 from ..competition_serializers.competitions_serializers import CompetitionsSerializer
 from django.db import transaction
+
+import logging
+logger = logging.getLogger(__name__)
+
 class TeamMinimalSerializer(serializers.ModelSerializer):
     is_completed = serializers.BooleanField(source='competition_event.is_completed',read_only=True)
     class Meta:
@@ -48,22 +52,24 @@ class TeamSerializer(serializers.ModelSerializer):
             'image': {'required': False},
         }
 
-     # Add a validation method to debug what's happening
+    # Add a validation method to debug what's happening
     def validate(self, attrs):
-        print("VALIDATING SERIALIZER DATA:")
+        logger.info("VALIDATING SERIALIZER DATA:")
         for key, value in attrs.items():
-            print(f"{key}: {type(value)} - {value}")
+            logger.info(f"{key}: {type(value)} - {value}")
         return attrs
 
     def create(self, validated_data):
-        print("validated_data",validated_data)
+        logger.info(f"validated_data :{validated_data}")
+        logger.info(f"self.context :{self.context}")
+        user = self.context['request'].user
         organization_info = validated_data.pop('organization_info', None)
         sponsors_info = validated_data.pop('sponsors', None)
         coachs_info = validated_data.pop('coach', None)
         social_media_info = validated_data.pop('social_media', None)    
         previous_competition_info = validated_data.pop('previous_competition', None)
         members_info = validated_data.pop('members', None)
-
+        
         event = self.context["event"]
         with transaction.atomic():
             team = self.Meta.model(**validated_data)
@@ -73,8 +79,37 @@ class TeamSerializer(serializers.ModelSerializer):
                 team.organization_info = organization_info
             if sponsors_info:
                 team.sponsors_info = sponsors_info
+            # Create the new coach object from current user
+            user_coach = {
+                'name': user.username,
+                'email': user.email,
+                'phone_number': user.phone_number if hasattr(user, 'phone_number') else None,
+                'position': 'primary'
+            }
+            logger.info(f"user_coach :{user_coach}")
+
             if coachs_info:
+                # Ensure coachs_info is always a list
+                if not isinstance(coachs_info, list):
+                    coachs_info = [coachs_info]
+                logger.info(f"coachs_info before :{coachs_info}")
+                # Check if current user already exists in the coaches list
+                user_exists = False
+                for coach in coachs_info:
+                    if coach.get('email') == user.email:
+                        user_exists = True
+                        break
+
+                logger.info(f"user_exists :{user_exists}")
+                # If user doesn't exist, add them to the list
+                if not user_exists:
+                    coachs_info.append(user_coach)
+                logger.info(f"coachs_info after :{coachs_info}")
                 team.coachs_info = coachs_info
+            else:
+                # If no coaches exist, create new list with current user
+                team.coachs_info = [user_coach]
+                logger.info(f"team.coachs_info :{team.coachs_info}")
             if social_media_info:
                 team.social_media_info = social_media_info
             if previous_competition_info:

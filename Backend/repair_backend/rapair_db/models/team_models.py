@@ -158,8 +158,8 @@ class TeamCoach(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="coach")
     name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
+    email = models.EmailField()
+    phone_number = models.CharField(validators=[phone_validator] , max_length=255)
     PRIMARY = "primary"
     SECONDARY = "secondary"
     POSITION_CHOICES = [
@@ -175,7 +175,7 @@ class TeamCoach(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['team', 'name' ],
+                fields=['team', 'name' , 'email' ],
                 name='unique_coach'
             )
         ]
@@ -187,13 +187,13 @@ class TeamMember(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="members")
     name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
+    email = models.EmailField()
+    phone_number = models.CharField(validators=[phone_validator] , max_length=255)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['team', 'name' ],
+                fields=['team', 'name' , 'email' ],
                 name='unique_member'
             )
         ]

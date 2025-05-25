@@ -271,7 +271,8 @@ class UserCreateTeamView(APIView):
             return Response({field: ["This field is required."] for field in missing_fields}, 
                             status=status.HTTP_400_BAD_REQUEST)
         
-        serializer = TeamSerializer(data=processed_data, context={'event': event})
+        # Create team
+        serializer = TeamSerializer(data=processed_data, context={'event': event, 'request': request})
         if serializer.is_valid():
             team = serializer.save(user_id=request.user.id)
             return Response({
