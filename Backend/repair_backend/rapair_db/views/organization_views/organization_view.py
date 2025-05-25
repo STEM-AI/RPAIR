@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated 
-from ...permissions import IsJudgeUser
 from rest_framework import status
 from ...serializers import OrganizationSerializer , OrganizationMinimalSerializer
 from ...models import Organization 
@@ -9,10 +8,10 @@ from rest_framework.generics import ListAPIView , RetrieveAPIView
 
 
 class CreateOrganizationView(APIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [IsAuthenticated]
     serializer_class = OrganizationSerializer
     def post(self, request):
-        serializer = OrganizationSerializer(data=request.data)
+        serializer = OrganizationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -29,7 +28,7 @@ class OrganizationProfileView(RetrieveAPIView):
 
     
 class OrganizationEditProfileView(APIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [IsAuthenticated]
     serializer_class = OrganizationSerializer
 
     def patch(self, request, organization_name):
@@ -48,7 +47,7 @@ class OrganizationEditProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DeleteOrganizationView(APIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [IsAuthenticated]
     def patch(self, request ,organization_name ):
         new_organization = request.data.get('new_organization_info')
         if not new_organization:
@@ -67,7 +66,7 @@ class DeleteOrganizationView(APIView):
     
 
 class ListOrganizationsView(ListAPIView):
-    permission_classes = [IsJudgeUser]
+    permission_classes = [IsAuthenticated]
     serializer_class = OrganizationMinimalSerializer
     queryset = Organization.objects.all()
 

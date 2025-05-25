@@ -1,8 +1,8 @@
 from django.db import models
 from ..validators import phone_validator
 
-
 class Organization(models.Model):
+    owner = models.ForeignKey('User', on_delete=models.CASCADE, related_name='organizations', null=False)
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
     address = models.CharField(max_length=255)
@@ -10,7 +10,7 @@ class Organization(models.Model):
     email = models.EmailField(unique=True , default=None)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} (Owner: {self.owner.username})"
     
 
 class OrganizationContact(models.Model):

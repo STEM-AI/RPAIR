@@ -1,4 +1,4 @@
-from django.db.models.signals import pre_delete , pre_save , post_save
+from django.db.models.signals import pre_delete , post_save
 from django.dispatch import receiver
 from rapair_db.models import Team , Organization , OrganizationContact
 

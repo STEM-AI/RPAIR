@@ -19,8 +19,8 @@ class TeamMinimalSerializer(serializers.ModelSerializer):
         fields = ['id','name','is_completed']
 
 class TeamSerializer(serializers.ModelSerializer):
-    organization_info = serializers.JSONField(write_only=True, required=False)
     organization = OrganizationTeamSerializer(read_only=True)
+    organization_id = serializers.IntegerField(write_only=True, required=True)
     competition = CompetitionsSerializer(read_only=True)
     sponsors = TeamSponsorSerializer(many=True, required=False) 
     coach = TeamCoachSerializer(many=True, required=False)
@@ -34,14 +34,14 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = [
-            'name', 'robot_name', 'user_id', 'type', 'organization_info', 'team_leader_name', 'team_leader_email',
-            'team_leader_phone_number', 'organization', 'competition', 'sponsors', 'coach', 'social_media',
+            'name', 'robot_name', 'user_id', 'type', 'organization_id', 'organization', 'team_leader_name', 'team_leader_email',
+            'team_leader_phone_number', 'competition', 'sponsors', 'coach', 'social_media',
             'previous_competition', 'members', 'competition_event', 'id', 'team_number', 'image'
         ]
 
         extra_kwargs = {
             'user_id': {'required': False},
-            'organization_id': {'required': False},
+            'organization_id': {'required': True},
             'organization': {'required': False},
             'competition': {'required': False},
             'sponsors': {'required': False},
@@ -52,7 +52,6 @@ class TeamSerializer(serializers.ModelSerializer):
             'image': {'required': False},
         }
 
-    # Add a validation method to debug what's happening
     def validate(self, attrs):
         logger.info("VALIDATING SERIALIZER DATA:")
         for key, value in attrs.items():
@@ -63,7 +62,6 @@ class TeamSerializer(serializers.ModelSerializer):
         logger.info(f"validated_data :{validated_data}")
         logger.info(f"self.context :{self.context}")
         user = self.context['request'].user
-        organization_info = validated_data.pop('organization_info', None)
         sponsors_info = validated_data.pop('sponsors', None)
         coachs_info = validated_data.pop('coach', None)
         social_media_info = validated_data.pop('social_media', None)    
@@ -75,8 +73,6 @@ class TeamSerializer(serializers.ModelSerializer):
             team = self.Meta.model(**validated_data)
             team.competition_event = event
 
-            if organization_info:
-                team.organization_info = organization_info
             if sponsors_info:
                 team.sponsors_info = sponsors_info
             # Create the new coach object from current user

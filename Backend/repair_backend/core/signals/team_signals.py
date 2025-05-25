@@ -1,30 +1,9 @@
 from django.db.models.signals import pre_save ,post_save
 from django.dispatch import receiver
 from rapair_db.models import (
-    Team , Organization , OrganizationContact , TeamSponsor , TeamCoach , 
+    Team , TeamSponsor , TeamCoach , 
     TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame,
     )
-
-@receiver(pre_save , sender=Team)
-def get_or_create_organization(sender , instance , **kwargs):
-    if hasattr(instance , 'organization_info'):
-        organization_info = instance.organization_info
-        if organization_info :
-            organization , created = Organization.objects.get_or_create(
-                name=organization_info['name'] , 
-                defaults={
-                    "type": organization_info['type'] , 
-                    'address' : organization_info['address'],
-                    'email' : organization_info['email']
-                    }
-                    )
-            if created :
-                organization.contact = OrganizationContact.objects.create(
-                    organization=organization, 
-                    phone_number=organization_info['phone_number']
-                )
-                organization.save()
-            instance.organization_id = organization.id
 
 @receiver(post_save , sender=Team)
 def get_or_create_sponsor(sender, instance, created, **kwargs):

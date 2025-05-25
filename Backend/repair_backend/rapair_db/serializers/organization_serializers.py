@@ -4,7 +4,7 @@ from ..models import Organization , OrganizationContact
 class OrganizationTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['name', 'type']  
+        fields = ['id', 'name', 'type']  
 
 class OrganizationContactSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,24 +20,33 @@ class OrganizationMinimalSerializer(serializers.ModelSerializer):
 class OrganizationSerializer(serializers.ModelSerializer):
     contacts = OrganizationContactSerializer(many=True)
     teams = serializers.SerializerMethodField()
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    
     class Meta:
         model = Organization
-        fields = ['name','address','email','type','contacts', 'teams'] 
+        fields = ['id', 'name', 'address', 'email', 'type', 'contacts', 'teams', 'owner'] 
         extra_kwargs = {
             'name': {'required': True},
             'address': {'required': True},
             'type': {'required': True},
-            'contacts' :{'required': True}
+            'contacts': {'required': True}
         }
 
     def create(self, validated_data):
         contacts_data = validated_data.pop('contacts')
         organization = self.Meta.model(**validated_data)
-        organization.contacts_data = contacts_data
+        organization.owner = self.context['request'].user
         organization.save()
+        
+        # Create contact
+        for contact_data in contacts_data:
+            OrganizationContact.objects.create(
+                organization=organization,
+                **contact_data
+            )
+        
         return organization
 
-        
     def get_teams(self, obj):
         from ..serializers import TeamSerializer
         teams = obj.team_organization.all()
