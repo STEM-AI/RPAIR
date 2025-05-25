@@ -9,6 +9,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['is_staff'] = user.is_staff
         token['is_superuser'] = user.is_superuser
+        if user.organizations.first() :
+            token['organization'] = True
+        else:
+            token['organization'] = False
         # ...
 
         return token

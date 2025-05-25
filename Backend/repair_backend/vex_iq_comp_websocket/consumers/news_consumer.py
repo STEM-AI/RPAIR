@@ -6,11 +6,12 @@ class NewsConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         user = self.scope["user"]
 
-        if user.is_authenticated:
-            await self.accept()
-            await self.send(json.dumps({"message": f"Welcome {user.username}!"}))
-        else:
-            await self.close()
+        # if user.is_authenticated:
+        #     await self.accept()
+        #     await self.send(json.dumps({"message": f"Welcome {user.username}!"}))
+        # else:
+        #     await self.close()
+        await self.accept()
         # Add the client to the 'news_updates' group
         await self.channel_layer.group_add('news_updates', self.channel_name)
 

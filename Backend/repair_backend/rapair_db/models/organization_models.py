@@ -8,6 +8,7 @@ class Organization(models.Model):
     address = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     email = models.EmailField(unique=True , default=None)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} (Owner: {self.owner.username})"

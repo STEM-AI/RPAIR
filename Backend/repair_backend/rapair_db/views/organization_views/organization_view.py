@@ -5,33 +5,36 @@ from rest_framework import status
 from ...serializers import (
     OrganizationSerializer, 
     OrganizationMinimalSerializer,
-    CreateOrganizationWithUserSerializer,
-    CreateUserWithOrganizationSerializer
+    CreateUserWithOrganizationSerializer,
+    ActiveOrganizationSerializer
 )
 from ...models import Organization 
-from rest_framework.generics import ListAPIView , RetrieveAPIView
+from rest_framework.generics import ListAPIView , RetrieveAPIView , UpdateAPIView
+from rapair_db.permissions import IsSuperUser
+import logging
 
+logger = logging.getLogger(__name__)
 
-class CreateOrganizationView(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = OrganizationSerializer
-    def post(self, request):
-        serializer = OrganizationSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class CreateOrganizationView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = OrganizationSerializer
+#     def post(self, request):
+#         serializer = OrganizationSerializer(data=request.data, context={'request': request})
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CreateOrganizationWithUserView(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = CreateOrganizationWithUserSerializer
+# class CreateOrganizationWithUserView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = CreateOrganizationWithUserSerializer
     
-    def post(self, request):
-        serializer = CreateOrganizationWithUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         serializer = CreateOrganizationWithUserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateUserWithOrganizationView(APIView):
     serializer_class = CreateUserWithOrganizationSerializer
@@ -40,6 +43,8 @@ class CreateUserWithOrganizationView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            logger.info(f"User created: {user}")
+            logger.info(f"User data: {serializer.data}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -96,4 +101,16 @@ class ListOrganizationsView(ListAPIView):
     serializer_class = OrganizationMinimalSerializer
     queryset = Organization.objects.all()
 
+class NonActiveOrganizationListView(ListAPIView):
+    permission_classes = [IsSuperUser]
+    serializer_class = OrganizationMinimalSerializer
+    queryset = Organization.objects.filter(is_active=False)
 
+class ActiveOrganizationView(UpdateAPIView):
+    permission_classes = [IsSuperUser]
+    serializer_class = ActiveOrganizationSerializer
+    queryset = Organization.objects.all()
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+
+    

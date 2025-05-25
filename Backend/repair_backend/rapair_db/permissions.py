@@ -28,7 +28,7 @@ class IsOrganizationOwner(permissions.BasePermission):
             return True
             
         # Check if user owns any organization
-        return Organization.objects.filter(owner=request.user).exists()
+        return Organization.objects.filter(owner=request.user, is_active=True).exists()
 
     def has_object_permission(self, request, view, obj):
         # Superusers can do anything

@@ -244,9 +244,49 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password (or app-specific password)
 DEFAULT_FROM_EMAIL =config('DEFAULT_FROM_EMAIL')   # Default 'from' address in emails
 ZEROBOUNCE_API_KEY = config('ZEROBOUNCE_API_KEY')
-# import logging
 
 # logging.basicConfig(level=logging.DEBUG)
+
+import logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[{levelname}] {name}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'rapair_db': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',  # or 'DEBUG' for more verbosity
+            'propagate': True,
+        },
+        # This ensures your `__name__` logger will show up
+        '__main__': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 
