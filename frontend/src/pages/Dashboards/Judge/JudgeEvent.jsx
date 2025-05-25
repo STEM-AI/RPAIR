@@ -5,11 +5,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { MdEvent, MdAccessTime, MdLocationOn, MdInfo, MdRefresh, MdError, MdPlayArrow, MdLock, MdDone } from 'react-icons/md';
 import { Link } from "react-router-dom";
 import { authAxios, getTokens } from "../../Auth/auth"
-import {useEventNameContext} from '../../../context/EventName'
 
 
 export default function JudgeEvent() {
-    const { setCurrentCompetition } = useEventNameContext();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -257,7 +255,6 @@ export default function JudgeEvent() {
                   </div>
                 </div>
                   <Link 
-                  onClick={() => setCurrentCompetition(event.competition_event.name)}
                   to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventName=${encodeURIComponent(event.competition_event.name)}`}
                 >
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">

@@ -45,14 +45,6 @@ const Sidebar = ({isOpen, setIsOpen}) => {
       case 'admin':
         return (
           <>
-           
-                    {/* Dashboard */}
-                    {/* <Link to="/Dashboard/Admin">
-                      <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                        <MdOutlineDashboard className="mr-2" />
-                        Dashboard
-                      </li>
-                    </Link> */}
         
                     {/* Competitions */}
                     <li
@@ -115,6 +107,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Schedule Management
                           </li>
                         </Link>
+                        
                         
                       </ul>
                     )}
@@ -212,18 +205,25 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                       <GiLaurelsTrophy className="mr-2" />
                       Competitions
                     </li>
-                    {/* <Link to="/Programming">
+                    <Link to="/Programming">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
                             Programming
                           </li>
-                        </Link> */}
+                        </Link>
+                    <Link to="/OpenSource">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <MdOutlineEventNote className="mr-2" />
+                            Open Source
+                          </li>
+                        </Link>
                         <Link to="/Dashboard/User/Teams">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <FaPeopleGroup className="mr-2" />
                             My Teams
                           </li>
                         </Link>
+                        
                         <Link to="/Dashboard/User/CreateTeam">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdGroupAdd className="mr-2" />

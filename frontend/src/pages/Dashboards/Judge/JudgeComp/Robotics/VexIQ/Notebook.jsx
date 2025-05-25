@@ -3,7 +3,6 @@
 import NotBookRankings from "../../../../../../components/IntervIQNotbookIQInspection/NotBookRankings";
 import GenericRubric from "../../../../../../components/IntervIQNotbookIQInspection/IntervIQNotbook";
 import {notebookCategories} from "../../../../../../components/IntervIQNotbookIQInspection/notebookCategories";
-import { useEventNameContext } from "../../../../../../context/EventName";
 import { useSearchParams } from "react-router-dom";
 
 const Notebook = () => {

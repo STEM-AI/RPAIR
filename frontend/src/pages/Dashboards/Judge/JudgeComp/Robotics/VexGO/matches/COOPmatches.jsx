@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
 import Alert from "../../../../../../../components/Alert/Alert";
 import axios from "axios";
-import { useEventNameContext } from "../../../../../../../context/EventName";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule";
 import SheetCoop from "./SheetCoop";

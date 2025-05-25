@@ -9,28 +9,21 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
+import { tasks as oceanTasks } from './SheetOcean';
+import { tasks as spaceTasks } from './SheetSpace';
 
 
-const tasks = [
-  { title: "Move purple sensor to the fish habitat", points: 1 },
-  { title: "Move blue sensor to the pipeline", points: 1 },
-  { title: "Move the orange sensor to the volcano tile", points: 1 },
-  { title: "Orange sensor placed on top of the volcano", points: 2 },
-  { title: "Align the turbines", points: "1 per turbine", isDynamic: true },
-  { title: "Open the clam", points: 1 },
-  { title: "Remove the pearl from the clam", points: 1 },
-  { title: "Deliver the pearl to the green starting tile", points: 1 },
-  { title: "End with the robot on the green tile", points: 1 },
-];
 
 export default function SheetSolo({ selectedMatch, onClose, eventName, challengeType }) {
   const { updateMatch, currentMatch } = useMatchContext();
   const [scores, setScores] = useState({});
-  const [turbines, setTurbines] = useState(0);
+  const [turbines, setTurbines] = useState({});
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [completedOrder, setCompletedOrder] = useState([]);
   const [socketStatus, setSocketStatus] = useState('disconnected');
+  const [selectedChallenge, setSelectedChallenge] = useState('ocean'); 
+  const [tasks, setTasks] = useState(oceanTasks);
   const socketRef = useRef(null);
     const [timeUp, setTimeUp] = useState(false);
   const navigate = useNavigate();
@@ -44,6 +37,13 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
   const remainingTime = maxTime - timer;
   const prevRemainingTime = useRef(remainingTime);
   // WebSocket connection management
+
+  
+  const handleChallengeChange = (type) => {
+    setSelectedChallenge(type);
+    setTasks(type === 'ocean' ? oceanTasks : spaceTasks);
+  };
+
   useEffect(() => {
     if (!eventName || !gameId) {
          Alert.error({
@@ -191,21 +191,22 @@ const handleReset = () => {
     }
   };
 
-  const handleTurbineChange = (e) => {
-    let value = parseInt(e.target.value, 10) || 0;
-    if (value > 2) value = 2;
-    if (value < 0) value = 0;
+  const handleTurbineChange = (index, value) => {
+    let parsedValue = parseInt(value, 10) || 0;
     
-    setTurbines(value);
-    setScores(prev => ({ ...prev, 4: value }));
-
-    if (value > 0) {
+    if (parsedValue > 5) parsedValue = 5;
+    if (parsedValue < 0) parsedValue = 0;
+  
+    setTurbines(prev => ({ ...prev, [index]: parsedValue }));
+    setScores(prev => ({ ...prev, [index]: parsedValue }));
+  
+    if (parsedValue > 0) {
       setCompletedOrder(prev => {
-        const exists = prev.some(item => item.index === 4);
-        return exists ? prev : [...prev, { index: 4, time: timer }];
+        const exists = prev.some(item => item.index === index);
+        return exists ? prev : [...prev, { index, time: timer }];
       });
     } else {
-      setCompletedOrder(prev => prev.filter(item => item.index !== 4));
+      setCompletedOrder(prev => prev.filter(item => item.index !== index));
     }
   };
 
@@ -356,11 +357,33 @@ const socketStatusColor = getSocketStatusColor(socketStatus);
   >
     <FaTimes className="text-xl sm:text-2xl" />
   </button>
+  <div className="flex gap-4 justify-center mb-6">
+        <button 
+          onClick={() => handleChallengeChange('ocean')}
+          className={`px-4 py-2 rounded-lg ${
+            selectedChallenge === 'ocean' 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-200 text-gray-700'
+          }`}
+        >
+          🌊 Ocean Challenge
+        </button>
+        <button
+          onClick={() => handleChallengeChange('space')}
+          className={`px-4 py-2 rounded-lg ${
+            selectedChallenge === 'space' 
+              ? 'bg-gray-800 text-white' 
+              : 'bg-gray-200 text-gray-700'
+          }`}
+        >
+          🚀 Space Challenge
+        </button>
+      </div>
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
-          🌊 {currentMatch?.challengeType || 'Solo Challenge'}
+          {selectedChallenge === 'ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
         </h1>
-        <p className="text-sm sm:text-lg text-gray-600">Ocean Science Exploration</p>
+        <p className="text-sm sm:text-lg text-gray-600">{currentMatch?.challengeType || 'Solo Challenge'}</p>
         <p className="text-sm sm:text-lg font-bold text-indigo-700">Round {currentMatch?.round}</p>
       </div>
 
@@ -444,14 +467,14 @@ const socketStatusColor = getSocketStatusColor(socketStatus);
                 <td className="px-2 sm:px-4 py-2 text-center">
                   {task.isDynamic ? (
                     <input
-                      type="number"
-                      min="0"
-                      max="2"
-                      value={turbines}
-                      onChange={handleTurbineChange}
-                      className="w-12 sm:w-16 px-1 sm:px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-xs sm:text-sm"
-                      disabled={!isRunning || timer >= maxTime} 
-                    />
+                    type="number"
+                    min="0"
+                    max="5"
+                    value={turbines[index] || 0}
+                    onChange={(e) => handleTurbineChange(index, e.target.value)}
+                    className="w-12 sm:w-16 px-1 sm:px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-xs sm:text-sm"
+                    disabled={!isRunning || timer >= maxTime}
+                  />
                   ) : (
                     <input
                       type="checkbox"

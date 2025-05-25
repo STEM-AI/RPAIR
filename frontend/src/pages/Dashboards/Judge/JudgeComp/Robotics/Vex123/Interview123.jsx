@@ -1,4 +1,3 @@
-import {useEventNameContext} from "../../../../../../context/EventName"
 import { useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -18,7 +17,6 @@ const questions = [
 const scoreOptions = [1, 2, 3, 4, 5];
 
 export default function InterviewSheet() {
-    const { currentCompetition } = useEventNameContext();
   const [judge, setJudge] = useState("");
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");

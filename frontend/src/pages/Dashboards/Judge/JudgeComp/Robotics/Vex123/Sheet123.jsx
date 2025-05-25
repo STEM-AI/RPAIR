@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FaClock, FaPlay, FaPause, FaRedo, FaDownload } from "react-icons/fa";
-import { useEventNameContext } from "../../../../../../context/EventName";
 import { jsPDF } from "jspdf";
 import { FaTrophy, FaMedal} from "react-icons/fa";
 import useSound from 'use-sound';
@@ -36,7 +35,6 @@ const GAME_MODES = [
 ];
 
 const Sheet123 = () => {
-  const { currentCompetition } = useEventNameContext();
   const token = localStorage.getItem("access_token");
 const [missionEndTimes, setMissionEndTimes] = useState({}); // تتبع أوقات نهاية المهام
 
@@ -424,7 +422,7 @@ const handleRoundComplete = async () => {
     try {
       setLoading(true);
       const score = calculateScore();
-      const timeTaken = INITIAL_TIME - timer; // الوقت الإجمالي منذ البداية
+      const timeTaken = INITIAL_TIME - timer; 
 
       await axios.patch(
         `${process.env.REACT_APP_API_URL}/vex-123/game/${currentGame.id}/`,

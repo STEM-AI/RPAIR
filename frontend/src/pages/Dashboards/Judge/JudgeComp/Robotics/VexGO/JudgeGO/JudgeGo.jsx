@@ -5,14 +5,12 @@ import { BiJoystick } from "react-icons/bi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
-import {useEventNameContext} from "../../../../../../../context/EventName"
 
 
 const JudgeGo = () => {
   const navigate = useNavigate();
-    const { currentCompetition } = useEventNameContext();
 
-  const eventName = currentCompetition
+
 
 
   

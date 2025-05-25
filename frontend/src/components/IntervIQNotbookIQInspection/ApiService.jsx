@@ -1,7 +1,6 @@
 // src/services/apiService.js
 import axios from "axios";
 import Swal from "sweetalert2";
-import {useEventNameContext} from '../../context/EventName'
 
 export const fetchJudgeData = async (token) => {
   try {

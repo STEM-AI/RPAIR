@@ -3,13 +3,11 @@ import ScoreTeams from "../Scores/scoreTeams";
 import { FaTrophy, FaCheck,FaUsers,FaChartBar ,FaSync} from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import axios from "axios";
-import { useEventNameContext } from "../../../../../../../context/EventName";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule"
 import { useSearchParams } from "react-router-dom";
 
 const Teamwork = () => {
-  const { currentCompetition } = useEventNameContext();
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [scores, setScores] = useState({});
   const [rankings, setRankings] = useState([]);

@@ -10,30 +10,19 @@ import Swal from "sweetalert2";
 import { BsSkipStartFill } from "react-icons/bs";
 import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
-
-
-
-const tasks = [
-  { title: "Move purple sensor to the fish habitat", points: 1 },
-  { title: "Move blue sensor to the pipeline", points: 1 },
-  { title: "Move the orange sensor to the volcano tile", points: 1 },
-  { title: "Orange sensor placed on top of the volcano", points: 2 },
-  { title: "Align the turbines", points: "1 per turbine", isDynamic: true },
-  { title: "Open the clam", points: 1 },
-  { title: "Remove the pearl from the clam", points: 1 },
-  { title: "Deliver the pearl to the green starting tile", points: 1 },
-  { title: "End with the robot on the green tile", points: 1 },
-];
-
+import { tasks as oceanTasks } from './SheetOcean';
+import { tasks as spaceTasks } from './SheetSpace';
 export default function SheetCoop({ eventName, onClose }) {
 
   const { currentMatch, updateMatch } = useMatchContext();
   const [scores, setScores] = useState({});
   const [taskTimes, setTaskTimes] = useState({});
-  const [turbines, setTurbines] = useState(0);
+  const [turbines, setTurbines] = useState({});
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
   const [remainingTime, setRemainingTime] = useState(60);
+  const [selectedChallenge, setSelectedChallenge] = useState('ocean'); 
+  const [tasks, setTasks] = useState(oceanTasks);
   const [matchData, setMatchData] = useState({ matchId: '', team1_name: '', team2_name: '' });
   const [completedOrder, setCompletedOrder] = useState([]);
   const token = localStorage.getItem("access_token");
@@ -47,6 +36,11 @@ export default function SheetCoop({ eventName, onClose }) {
   const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
   const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
   const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
+
+  const handleChallengeChange = (type) => {
+    setSelectedChallenge(type);
+    setTasks(type === 'ocean' ? oceanTasks : spaceTasks);
+  };
 
   useEffect(() => {
     if (currentMatch?.type === 'coop') {
@@ -207,25 +201,26 @@ export default function SheetCoop({ eventName, onClose }) {
     }
   };
 
-  const handleTurbineChange = (e) => {
-    let value = parseInt(e.target.value, 10) || 0;
-    if (value > 2) value = 2;
-    if (value < 0) value = 0;
-    setTurbines(value);
-    setScores((prev) => ({ ...prev, 4: value }));
-
+  const handleTurbineChange = (index, value) => {
+    let parsedValue = parseInt(value, 10) || 0;
+    if (parsedValue > 2) parsedValue = 5;
+    if (parsedValue < 0) parsedValue = 0;
+  
+    setTurbines(prev => ({ ...prev, [index]: parsedValue }));
+    setScores(prev => ({ ...prev, [index]: parsedValue }));
+  
     const elapsedTime = 60 - remainingTime;
-    if (value > 0) {
+    if (parsedValue > 0) {
       setCompletedOrder(prev => {
-        const exists = prev.some(item => item.index === 4);
-        return exists ? prev : [...prev, { index: 4, time: elapsedTime }];
+        const exists = prev.some(item => item.index === index);
+        return exists ? prev : [...prev, { index, time: elapsedTime }];
       });
-      setTaskTimes((prev) => ({ ...prev, 4: elapsedTime }));
+      setTaskTimes(prev => ({ ...prev, [index]: elapsedTime }));
     } else {
-      setCompletedOrder(prev => prev.filter(item => item.index !== 4));
-      setTaskTimes((prev) => {
+      setCompletedOrder(prev => prev.filter(item => item.index !== index));
+      setTaskTimes(prev => {
         const newTimes = { ...prev };
-        delete newTimes[4];
+        delete newTimes[index];
         return newTimes;
       });
     }
@@ -297,7 +292,7 @@ const formatTime = (seconds) => {
     const doc = new jsPDF();
     doc.setFontSize(18)
       .setTextColor(79, 70, 229)
-      .text("Ocean Science Exploration", 105, 20, { align: "center" })
+      .text(`${selectedChallenge === 'ocean' ? 'Ocean' : 'Space'} Science Exploration`, 105, 20, { align: "center" })
       .setFontSize(14)
       .text("Coop Match Score Sheet", 105, 30, { align: "center" });
 
@@ -351,9 +346,33 @@ const formatTime = (seconds) => {
           className="absolute top-0 left-0 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
         >
           <FaTimes className="text-xl sm:text-2xl" />
+      </button>
+      <div className="flex gap-4 justify-center mb-6">
+        <button 
+          onClick={() => handleChallengeChange('ocean')}
+          className={`px-4 py-2 rounded-lg ${
+            selectedChallenge === 'ocean' 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-200 text-gray-700'
+          }`}
+        >
+          🌊 Ocean Challenge
         </button>
+        <button
+          onClick={() => handleChallengeChange('space')}
+          className={`px-4 py-2 rounded-lg ${
+            selectedChallenge === 'space' 
+              ? 'bg-gray-800 text-white' 
+              : 'bg-gray-200 text-gray-700'
+          }`}
+        >
+          🚀 Space Challenge
+        </button>
+      </div>
       <div className="text-center mb-4 sm:mb-8">
-        <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">🌊 Ocean Science Exploration</h1>
+        <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
+          {selectedChallenge === 'ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
+        </h1>
         <p className="text-sm sm:text-lg text-gray-600">Coop Match Score Sheet</p>
       </div>
 
@@ -447,17 +466,15 @@ const formatTime = (seconds) => {
               </td>
               <td className="px-4 py-2 text-center">
                 {task.isDynamic ? (
-                  <input
-                    type="number"
-                    min="0"
-                    max="2"
-                    value={turbines}
-                    onChange={handleTurbineChange}
-                    className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-sm"
-                    // disabled={!gameActive || gamePaused || timeUp}
-                    disabled={!gameActive || gamePaused || timeUp}
-
-                  />
+                 <input
+                 type="number"
+                 min="0"
+                 max="5"
+                 value={turbines[index] || 0}
+                 onChange={(e) => handleTurbineChange(index, e.target.value)}
+                 className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-sm"
+                 disabled={!gameActive || gamePaused || timeUp}
+               />
                 ) : (
                   <input
                     type="checkbox"

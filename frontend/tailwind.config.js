@@ -4,11 +4,21 @@
 export const content = ["./src/**/*.{js,jsx,ts,tsx}"];
 export const theme = {
   extend: {
+    spacing: {
+      'screen': '100vw',
+    },
+    fontSize: {
+      dynamic: 'clamp(1rem, 4vw, 2.5rem)'
+    },
     colors: {
       vexIq: "#0074BD",
       vexV5: "#D8262F",
       vexGo: "#007378",
       vex123: "#6D4284",
+      gold: {
+        300: '#D4AF37',
+        500: '#B8860B',
+      }
     },
     animation: {
       marquee: "marquee 60s linear infinite",
@@ -23,6 +33,10 @@ export const theme = {
       fadeInDown: 'fadeInDown 0.5s ease-out',
     },
     keyframes: {
+      marquee: {
+        from: { transform: "translateX(0)" }, // Start from original position
+        to: { transform: "translateX(-100%)" }, // Move completely to the left
+      },
        fadeInDown: {
           '0%': { opacity: '0', transform: 'translateY(-20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
@@ -50,11 +64,6 @@ export const theme = {
         "75%": { clipPath: "inset(0 0 25% 0)", opacity: "0.75" },
         "100%": { clipPath: "inset(0 0 0 0)", opacity: "1" },
       },
-        marquee: {
-          from: { transform: "translateX(0)" }, // يبدأ من موضعه الطبيعي، وليس خارج الشاشة
-          to: { transform: "translateX(-100%)" }, // يتحرك حتى يخرج من اليسار بالكامل
-        },
-
       float: {
         "0%": { transform: "translateY(0)" },
         "50%": { transform: "translateY(-10px)" },
