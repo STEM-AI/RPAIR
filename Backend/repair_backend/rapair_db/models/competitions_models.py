@@ -45,10 +45,11 @@ class CompetitionEvent(models.Model):
     location = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     fees = models.IntegerField(default=0)
-    age = models.CharField(max_length=255 , default='12-19')
-    is_active = models.BooleanField(default=False)
+    age = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
     is_live = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='events', null=True, blank=True)
 
     MINI_EVENT = 'Mini'
     SMALL_EVENT = 'Small'

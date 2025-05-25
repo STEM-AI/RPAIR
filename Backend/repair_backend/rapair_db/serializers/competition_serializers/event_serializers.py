@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ...models import CompetitionEvent , Team , EventGame , TeamworkTeamScore
+from ...models import CompetitionEvent , Team , EventGame , TeamworkTeamScore , Organization
 from ..team_serializers.team_member_serializers import TeamMemberSerializer
 from ..team_serializers.team_score_serializers import TeamScoreSerializer
 from django.db.models import Avg
@@ -13,11 +13,52 @@ class TeamCompetitionProfileSerializer(serializers.ModelSerializer):
         fields = ['name','robot_name','type','members' , 'team_leader_name' ]
 
 class EventSerializer(serializers.ModelSerializer):
-    teams = TeamCompetitionProfileSerializer(many=True , required=False,read_only=True)
-    competition_name = serializers.CharField(source='competition.name',read_only=True)
+    teams = TeamCompetitionProfileSerializer(many=True, required=False, read_only=True)
+    competition_name = serializers.CharField(source='competition.name', read_only=True)
+    organization_name = serializers.CharField(source='organization.name', read_only=True)
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=Organization.objects.all(),
+        required=False,
+        write_only=True
+    )
+    
     class Meta:
         model = CompetitionEvent
-        fields = ['id','name','start_date', 'end_date', 'location' , 'teams'  , 'fees' , 'age' , 'category' , 'is_active' , 'is_live' , 'competition_name']
+        fields = [
+            'id', 'name', 'start_date', 'end_date', 'location', 'teams',
+            'fees', 'age', 'category', 'is_active', 'is_live',
+            'competition_name', 'organization_name', 'organization'
+        ]
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request and not request.user.is_superuser:
+            # For non-superusers, organization is required
+            if 'organization' not in attrs:
+                raise serializers.ValidationError(
+                    {"organization": "Organization is required for non-superusers."}
+                )
+            
+            # Verify that the user owns the organization
+            if attrs['organization'].owner != request.user:
+                raise serializers.ValidationError(
+                    {"organization": "You can only create events for organizations you own."}
+                )
+        return attrs
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        
+        # For non-superusers, automatically set their organization
+        if not request.user.is_superuser:
+            organization = Organization.objects.filter(owner=request.user).first()
+            if not organization:
+                raise serializers.ValidationError(
+                    {"organization": "You must own an organization to create events."}
+                )
+            validated_data['organization'] = organization
+        
+        return super().create(validated_data)
 
 class EventGameSerializer(serializers.ModelSerializer):
     team1_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), source='team1.id', allow_null=True, required=False)
@@ -37,9 +78,10 @@ class EventGameSerializer(serializers.ModelSerializer):
 class EventListSerializer(serializers.ModelSerializer):
     top3_teams = serializers.SerializerMethodField(read_only = True)
     competition_name = serializers.CharField(source='competition.name')
+    organization_name = serializers.CharField(source='organization.name')
     class Meta:
         model = CompetitionEvent
-        fields = ['id' ,'name', 'start_date', 'end_date', 'location' , 'top3_teams','competition_name']
+        fields = ['id' ,'name', 'start_date', 'end_date', 'location' , 'top3_teams','competition_name', 'organization_name']
 
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_top3_teams(self, obj):

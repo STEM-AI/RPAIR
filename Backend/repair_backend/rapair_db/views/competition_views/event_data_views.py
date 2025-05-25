@@ -1,25 +1,44 @@
 from rest_framework.permissions import AllowAny
 from ...serializers import EventSerializer , EventListSerializer
-from ...permissions import IsSuperUser 
+from ...permissions import IsSuperUser, IsOrganizationOwner
 from ...models import CompetitionEvent,Competition 
-from rest_framework.generics import ListAPIView,RetrieveAPIView,CreateAPIView
+from rest_framework.generics import ListAPIView,RetrieveAPIView,CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
+from django.db import transaction
 
 
 class EventCreateView(CreateAPIView):
-    permission_classes = [IsSuperUser]
-    serializer_class = EventSerializer
     queryset = CompetitionEvent.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated, (IsSuperUser | IsOrganizationOwner)]
 
     def perform_create(self, serializer):
-        competition_name = self.kwargs.get('competition_name')
+        competition_id = self.request.data.get('competition')
+        if not competition_id:
+            raise serializers.ValidationError(
+                {"competition": "Competition ID is required."}
+            )
+        
         try:
-            competition = Competition.objects.get(name=competition_name)
+            competition = Competition.objects.get(id=competition_id)
         except Competition.DoesNotExist:
-            raise serializers.ValidationError({"competition_name": "Competition not found."})
+            raise serializers.ValidationError(
+                {"competition": "Invalid competition ID."}
+            )
         
         serializer.save(competition=competition)
-        
+
+class EventListView(ListAPIView):
+    queryset = CompetitionEvent.objects.all()
+    serializer_class = EventListSerializer
+    permission_classes = [IsAuthenticated]
+
+class EventDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = CompetitionEvent.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated, (IsSuperUser | IsOrganizationOwner)]
+
 class EventsListWithTop3TeamsView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = EventListSerializer
