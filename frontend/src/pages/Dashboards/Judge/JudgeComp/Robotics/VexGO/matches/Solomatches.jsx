@@ -12,8 +12,11 @@ import Swal from "sweetalert2";
 import Back from "../../../../../../../components/Back/Back";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
+import ChoiseSheet from "./ChoiseSheet";
+
 
 const SkillsGO = () => {
+  const [selectedChallenge, setSelectedChallenge] = useState(null);
   const { matches, setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [activeTab, setActiveTab] = useState('driver_go');
@@ -212,15 +215,16 @@ const handleCompleteRound = () => {
   };
 
   return (
-       <div className="max-w-7xl mx-auto px-4 py-6">
-      {!selectedMatch ? (
+    <div className="max-w-7xl mx-auto px-4 py-6">
+      {!selectedChallenge ? ( 
+        <ChoiseSheet onChallengeSelect={setSelectedChallenge} />
+      ) : !selectedMatch ? ( 
         <>
-          <Back className="mb-6" />
           
           {/* Main Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              ⚡ Skills Challenge
+              ⚡ Skills {selectedChallenge} Challenge
             </h1>
             
             {/* Mode Tabs */}
@@ -446,17 +450,23 @@ const handleCompleteRound = () => {
               </div>
             </div>
           )}
-        </>
+ </>
       ) : (
         <SheetSolo 
           selectedMatch={selectedMatch} 
           eventName={event_name}
           onClose={() => setSelectedMatch(null)}
           challengeType={activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge'}
+          sheetType={selectedChallenge}
         />
       )}
     </div>
   );
 };
-
 export default SkillsGO;
+
+
+
+
+
+

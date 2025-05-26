@@ -31,6 +31,8 @@ const Sidebar = ({isOpen, setIsOpen}) => {
           setUserRole('admin');
         } else if (decodedToken.is_staff) {
           setUserRole('judge');
+        } else if (decodedToken.organization) {
+          setUserRole('organization');
         } else {
           setUserRole('user');
         }
@@ -105,6 +107,11 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                         <Link to="/Dashboard/Admin/Schedule">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Schedule Management
+                          </li>
+                        </Link>
+                        <Link to="/Dashboard/Admin/ActiveOrganization">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Active Organization
                           </li>
                         </Link>
                         
@@ -185,6 +192,20 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                               
                             </ul>
                           )} */}
+          </>
+        );
+      case 'organization':
+        return (
+          <>
+             {/* Dashboard */}
+                        <Link to="/Dashboard/OrganizerEvent">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <MdOutlineDashboard className="mr-2" />
+                            Dashboard
+                          </li>
+                        </Link>
+                  
+                       
           </>
         );
 

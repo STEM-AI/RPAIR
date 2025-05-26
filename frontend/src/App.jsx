@@ -108,6 +108,7 @@ import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 
 //                          Misc                           //
 import AllSetting from "./pages/AccountSetting/AllSetting";
+import TeamSetting from "./pages/AccountSetting/TeamSetting";
 
 //                      Home pages              //
 import Gallery from "./pages/Gallary/Gallary";
@@ -126,6 +127,9 @@ import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 import InterviewSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo";
 import LiveCoop from "./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop";
 import CompOpen from "./pages/Competitions/OpenSource/CompOpen";
+import RegisterOrg from "./pages/Auth/RegisterOrg";
+import OrganizerDash from "./pages/Dashboards/OrganizerDash/OrganizerDash";
+import ActiveOrg from "./pages/Dashboards/AdminDashboard/Management/ActiveOrg";
 
 
 const App = () => {
@@ -201,6 +205,14 @@ const App = () => {
           element={
             <Layout>
               <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/register/organization"
+          element={
+            <Layout>
+              <RegisterOrg />
             </Layout>
           }
         />
@@ -372,6 +384,29 @@ const App = () => {
             </Layout>
           }
         />
+         <Route
+          path="/Dashboard/TeamSetting/:team_name"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <TeamSetting />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+              {/* Organizer Dashboard Routes */}
+         <Route
+          path="/Dashboard/OrganizerEvent"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <OrganizerDash />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+              
+
         {/* Admin Dashboard Routes */}
         <Route
           path="/Dashboard/Certificate"
@@ -379,6 +414,16 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <Certificate />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/ActiveOrganization"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <ActiveOrg />
               </LayoutDashboard>
             </Layout>
           }

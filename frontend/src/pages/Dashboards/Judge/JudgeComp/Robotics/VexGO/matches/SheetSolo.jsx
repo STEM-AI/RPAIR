@@ -14,7 +14,7 @@ import { tasks as spaceTasks } from './SheetSpace';
 
 
 
-export default function SheetSolo({ selectedMatch, onClose, eventName, challengeType }) {
+export default function SheetSolo({ selectedMatch, onClose, eventName, challengeType,sheetType }) {
   const { updateMatch, currentMatch } = useMatchContext();
   const [scores, setScores] = useState({});
   const [turbines, setTurbines] = useState({});
@@ -22,7 +22,6 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
   const [isRunning, setIsRunning] = useState(false);
   const [completedOrder, setCompletedOrder] = useState([]);
   const [socketStatus, setSocketStatus] = useState('disconnected');
-  const [selectedChallenge, setSelectedChallenge] = useState('ocean'); 
   const [tasks, setTasks] = useState(oceanTasks);
   const socketRef = useRef(null);
     const [timeUp, setTimeUp] = useState(false);
@@ -39,10 +38,10 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
   // WebSocket connection management
 
   
-  const handleChallengeChange = (type) => {
-    setSelectedChallenge(type);
-    setTasks(type === 'ocean' ? oceanTasks : spaceTasks);
-  };
+  useEffect(() => {
+    setTasks(sheetType === 'Ocean' ? oceanTasks : spaceTasks);
+  }, [sheetType]);
+
 
   useEffect(() => {
     if (!eventName || !gameId) {
@@ -343,11 +342,7 @@ const getProgressBarColor = (remaining, max) => {
   return 'bg-indigo-500';
 };
 
-// Inside the component, calculate these variables:
-const progressPercentage = (remainingTime / maxTime) * 100;
-const socketStatusColor = getSocketStatusColor(socketStatus);
-  const progressBarColor = getProgressBarColor(remainingTime, maxTime);
-  
+
   return (
     <div className="relative max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
       {/* Header */}
@@ -357,32 +352,11 @@ const socketStatusColor = getSocketStatusColor(socketStatus);
   >
     <FaTimes className="text-xl sm:text-2xl" />
   </button>
-  <div className="flex gap-4 justify-center mb-6">
-        <button 
-          onClick={() => handleChallengeChange('ocean')}
-          className={`px-4 py-2 rounded-lg ${
-            selectedChallenge === 'ocean' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-200 text-gray-700'
-          }`}
-        >
-          🌊 Ocean Challenge
-        </button>
-        <button
-          onClick={() => handleChallengeChange('space')}
-          className={`px-4 py-2 rounded-lg ${
-            selectedChallenge === 'space' 
-              ? 'bg-gray-800 text-white' 
-              : 'bg-gray-200 text-gray-700'
-          }`}
-        >
-          🚀 Space Challenge
-        </button>
-      </div>
+
       <div className="text-center mb-4 sm:mb-8">
-        <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
-          {selectedChallenge === 'ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
-        </h1>
+      <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
+        {sheetType === 'Ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
+      </h1>
         <p className="text-sm sm:text-lg text-gray-600">{currentMatch?.challengeType || 'Solo Challenge'}</p>
         <p className="text-sm sm:text-lg font-bold text-indigo-700">Round {currentMatch?.round}</p>
       </div>

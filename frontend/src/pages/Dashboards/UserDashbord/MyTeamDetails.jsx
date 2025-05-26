@@ -165,6 +165,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import { IoSettingsOutline } from "react-icons/io5";
 import { 
   Group, 
   Person, 
@@ -177,6 +178,7 @@ import {
   Badge,
   Image
 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const MyTeamDetails = () => {
   const { team_name } = useParams();
@@ -224,6 +226,7 @@ const MyTeamDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10 mb-10 transition-all hover:shadow-2xl">
+     
       {/* Header Section */}
       <div className="bg-gradient-to-r from-cyan-600 to-blue-500 text-white p-8 rounded-2xl text-center shadow-md relative">
         {/* Team Image */}
@@ -245,7 +248,10 @@ const MyTeamDetails = () => {
         <div className="absolute -top-4 right-8 bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-1">
           <Badge className="!text-sm" />
           <span>{team.team_number || "TBD"}</span>
+          <Link to={`/Dashboard/TeamSetting/${team.name}`}><IoSettingsOutline />
+          </Link>
         </div>
+
         
         <h2 className="text-4xl font-bold mb-2 drop-shadow-md">{team.name}</h2>
         <div className="flex items-center justify-center gap-2">
