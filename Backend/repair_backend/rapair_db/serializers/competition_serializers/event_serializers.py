@@ -78,7 +78,7 @@ class EventGameSerializer(serializers.ModelSerializer):
 class EventListSerializer(serializers.ModelSerializer):
     top3_teams = serializers.SerializerMethodField(read_only = True)
     competition_name = serializers.CharField(source='competition.name')
-    organization_name = serializers.CharField(source='organization.name')
+    organization_name = serializers.CharField(source='organization.name',default=None)
     class Meta:
         model = CompetitionEvent
         fields = ['id' ,'name', 'start_date', 'end_date', 'location' , 'top3_teams','competition_name', 'organization_name']

@@ -6,7 +6,9 @@ from rest_framework.generics import ListAPIView,RetrieveAPIView,CreateAPIView, R
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
+import logging
 
+logger = logging.getLogger(__name__)
 
 class EventCreateView(CreateAPIView):
     queryset = CompetitionEvent.objects.all()
@@ -45,7 +47,7 @@ class EventsListWithTop3TeamsView(ListAPIView):
 
     def get_queryset(self):
         competition_name = self.kwargs.get('competition_name')
-        print("competition_name" , competition_name)
+        logger.info(f"competition_name: {competition_name}")
         return (
             CompetitionEvent.objects
             .select_related('competition')

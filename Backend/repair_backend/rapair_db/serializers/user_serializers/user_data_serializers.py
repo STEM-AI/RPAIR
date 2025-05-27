@@ -3,11 +3,16 @@ from rest_framework import serializers
 from ...models import User
 from django.contrib.auth.password_validation import validate_password
 from ..competition_serializers.judge_event_serializers import JudgeEventListSerializer
+from ...serializers.organization_serializers import OrganizationMinimalSerializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UserSerializer(serializers.ModelSerializer):
+    organization = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['first_name','last_name','username', 'email', 'country' ,'password'  , 'phone_number' , 'date_of_birth' , 'address']
+        fields = ['first_name','last_name','username', 'email', 'country' ,'password'  , 'phone_number' , 'date_of_birth' , 'address', 'organization']
 
         extra_kwargs = {
             'password': {'write_only': True},
@@ -53,6 +58,13 @@ class UserSerializer(serializers.ModelSerializer):
 
         return instance
     
+    def get_organization(self, obj):
+        logger.info(f"Organization:")
+        if obj.organizations.all():
+            logger.info(f"Organization: {obj.organizations.all()}")
+            logger.info(f"Organization Serializer: {OrganizationMinimalSerializer(obj.organizations.all(), many=True).data}")
+            return OrganizationMinimalSerializer(obj.organizations.all(), many=True).data
+        return None
 
 class UserEditProfileSerializer(serializers.ModelSerializer):
     class Meta:

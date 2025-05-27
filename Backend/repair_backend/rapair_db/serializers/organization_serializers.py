@@ -21,9 +21,17 @@ class OrganizationContactSerializer(serializers.ModelSerializer):
 
 
 class OrganizationMinimalSerializer(serializers.ModelSerializer):
+    has_events = serializers.SerializerMethodField()
+    has_teams = serializers.SerializerMethodField()
     class Meta:
         model = Organization
-        fields = ['id','name','is_active']
+        fields = ['id','name','is_active','has_events','has_teams']
+
+    def get_has_events(self, obj):
+        return obj.events.count() > 0
+
+    def get_has_teams(self, obj):
+        return obj.team_organization.count() > 0
 
 class CreateUserWithOrganizationSerializer(serializers.ModelSerializer):
     organization = serializers.SerializerMethodField()
