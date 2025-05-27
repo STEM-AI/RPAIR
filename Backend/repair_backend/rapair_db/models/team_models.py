@@ -127,18 +127,20 @@ class TeamSocialMedia(models.Model):
 class TeamPreviousCompetition(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE,related_name="previous_competition")
-    VEX_IQ = "vex_iq"
-    ROV = "rov"
-    ROBOCUP = "robocup"
+
     COMPETITION_CHOICES = [
-        (VEX_IQ, "VEX_IQ"),
-        (ROV, "ROV"),
-        (ROBOCUP , "ROBOCUP")
+        ('vex_iq', "VEX_IQ"),
+        ('vex_go', "VEX_GO"),
+        ('vex_123', "VEX_123"),
+        ('rov', "ROV"),
+        ('programming', "Programming"),
+        ('arduino', "Arduino"),
+        ('flutter', "Flutter")
     ]
     name = models.CharField(
         max_length=255,
         choices=COMPETITION_CHOICES,
-        default=VEX_IQ
+        default='vex_iq'
     )
     year = models.DateField()
 

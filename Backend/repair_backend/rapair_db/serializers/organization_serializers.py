@@ -23,7 +23,7 @@ class OrganizationContactSerializer(serializers.ModelSerializer):
 class OrganizationMinimalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id','name']
+        fields = ['id','name','is_active']
 
 class CreateUserWithOrganizationSerializer(serializers.ModelSerializer):
     organization = serializers.SerializerMethodField()

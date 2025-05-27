@@ -11,6 +11,8 @@ from ...serializers import (
 from ...models import Organization 
 from rest_framework.generics import ListAPIView , RetrieveAPIView , UpdateAPIView
 from rapair_db.permissions import IsSuperUser
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -100,7 +102,11 @@ class ListOrganizationsView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrganizationMinimalSerializer
     queryset = Organization.objects.all()
-
+    filter_backends = [SearchFilter,DjangoFilterBackend]
+    search_fields = ['name', 'email']
+    filterset_fields ={
+        'is_active':['exact']
+    }
 class NonActiveOrganizationListView(ListAPIView):
     permission_classes = [IsSuperUser]
     serializer_class = OrganizationMinimalSerializer

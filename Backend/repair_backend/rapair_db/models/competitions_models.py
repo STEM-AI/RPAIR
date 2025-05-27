@@ -7,7 +7,9 @@ class Competition(models.Model):
         ('vex_iq', 'VEX IQ'),
         ('vex_go', 'VEX GO'),
         ('vex_123', 'VEX_123'),
-        ('programming', 'Programming')  
+        ('programming', 'Programming'),
+        ('arduino', 'Arduino'),
+        ('flutter', 'Flutter'),
     ]
     name = models.CharField(
         max_length=255,
