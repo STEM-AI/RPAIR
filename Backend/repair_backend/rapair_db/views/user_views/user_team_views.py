@@ -17,24 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
             'type': 'object',
             'properties': {
                 'event_name': {'type': 'string'},
-                'organization_info': {
-                    'type': 'object',
-                    'properties': {
-                        'name': {'type': 'string'},
-                        'address': {'type': 'string'},
-                        'type': {'type': 'string'},
-                        'email': {'type': 'string'},
-                        'contacts': {
-                            'type': 'array',
-                            'items': {
-                                'type': 'object',
-                                'properties': {
-                                    'phone_number': {'type': 'string'}
-                                }
-                            }
-                        }
-                    }
-                },
+                'organization_id': {'type': 'string'},
                 'name': {'type': 'string'},
                 'robot_name': {'type': 'string'},
                 'type': {'type': 'string'},
@@ -101,24 +84,7 @@ from django_filters.rest_framework import DjangoFilterBackend
             'type': 'object',
             'properties': {
                 'event_name': {'type': 'string'},
-                'organization_info': {
-                    'type': 'object',
-                    'properties': {
-                        'name': {'type': 'string'},
-                        'address': {'type': 'string'},
-                        'type': {'type': 'string'},
-                        'email': {'type': 'string'},
-                        'contacts': {
-                            'type': 'array',
-                            'items': {
-                                'type': 'object',
-                                'properties': {
-                                    'phone_number': {'type': 'string'}
-                                }
-                            }
-                        }
-                    }
-                },
+                'organization_id': {'type': 'string'},
                 'name': {'type': 'string'},
                 'robot_name': {'type': 'string'},
                 'type': {'type': 'string'},
@@ -214,7 +180,7 @@ class UserCreateTeamView(APIView):
                     processed_data[field] = value
         
         # Handle JSON fields that need special processing
-        json_fields = ['organization_info', 'members', 'sponsors', 'previous_competition', 'coach', 'social_media']
+        json_fields = ['members', 'sponsors', 'previous_competition', 'coach', 'social_media']
         
         for field in json_fields:
             if field in request.data:
@@ -247,25 +213,8 @@ class UserCreateTeamView(APIView):
                         {"error": f"Invalid JSON format for {field}: {str(e)}"}, 
                         status=status.HTTP_400_BAD_REQUEST
                     )
-        
-        # Fix organization_info structure - add phone_number if needed
-        if 'organization_info' in processed_data:
-            org_info = processed_data['organization_info']
-            
-            # Ensure it's not wrapped in a list
-            if isinstance(org_info, list) and len(org_info) > 0:
-                org_info = org_info[0]
-                processed_data['organization_info'] = org_info
-            
-            # Add phone_number from contacts if missing
-            if 'contacts' in org_info and isinstance(org_info['contacts'], list) and len(org_info['contacts']) > 0:
-                if 'phone_number' not in org_info and 'phone_number' in org_info['contacts'][0]:
-                    org_info['phone_number'] = org_info['contacts'][0]['phone_number']
-        
-        print("Final processed data:", processed_data)
-        
         # Validate all required fields are present
-        required_fields = ['members', 'organization_info']
+        required_fields = ['members', 'organization_id']
         missing_fields = [field for field in required_fields if field not in processed_data]
         if missing_fields:
             return Response({field: ["This field is required."] for field in missing_fields}, 
