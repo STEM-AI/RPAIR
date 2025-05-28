@@ -1,2 +1,3 @@
 from .organization_signals import reassign_teams_to_existing_organization
 from .user_signals import create_judge , create_admin
+from .team_signals import get_or_create_sponsor,add_team_coachs,add_team_socail_media,add_team_previous_competition,add_team_members,add_team_score

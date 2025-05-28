@@ -74,6 +74,7 @@ class TeamSerializer(serializers.ModelSerializer):
             team.competition_event = event
 
             if sponsors_info:
+                logger.info(f"sponsors_info :{sponsors_info}")
                 team.sponsors_info = sponsors_info
             # Create the new coach object from current user
             user_coach = {
@@ -107,10 +108,13 @@ class TeamSerializer(serializers.ModelSerializer):
                 team.coachs_info = [user_coach]
                 logger.info(f"team.coachs_info :{team.coachs_info}")
             if social_media_info:
+                logger.info(f"social_media_info :{social_media_info}")
                 team.social_media_info = social_media_info
             if previous_competition_info:
+                logger.info(f"previous_competition_info :{previous_competition_info}")
                 team.previous_competition_info = previous_competition_info
             if members_info:
+                logger.info(f"members_info :{members_info}")
                 team.members_info = members_info
 
             team.save()

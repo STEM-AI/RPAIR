@@ -11,7 +11,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import json
 from django_filters.rest_framework import DjangoFilterBackend
-@extend_schema(
+
+class UserCreateTeamView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    @extend_schema(
     request={
         'application/json': {
             'type': 'object',
@@ -152,10 +157,6 @@ from django_filters.rest_framework import DjangoFilterBackend
     },
     responses={201: TeamSerializer}
 )
-class UserCreateTeamView(APIView):
-
-    permission_classes = [IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser, JSONParser]
     def post(self, request):
         print("request.data",request.data)
         print("request.content_type",request.content_type)
