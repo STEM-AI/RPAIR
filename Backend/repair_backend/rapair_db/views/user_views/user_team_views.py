@@ -168,7 +168,7 @@ class UserCreateTeamView(APIView):
         
         # Handle standard form fields
         standard_fields = ['event_name', 'name', 'robot_name', 'type', 'team_leader_name', 
-                          'team_leader_email', 'team_leader_phone_number', 'team_number', 'image']
+                          'team_leader_email', 'team_leader_phone_number', 'team_number', 'image','organization_id']
         
         for field in standard_fields:
             if field in request.data:
