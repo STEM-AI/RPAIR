@@ -58,8 +58,7 @@ class EventsListWithTop3TeamsView(ListAPIView):
 class EventProfileView(RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = EventSerializer
-    lookup_url_kwarg = 'event_name'
-    lookup_field = 'name'  # Lookup by event name instead of the default 'pk'
+    lookup_field = 'id'  # Lookup by event name instead of the default 'pk'
     queryset = CompetitionEvent.objects.all()
 
 class LiveEventListView(ListAPIView):

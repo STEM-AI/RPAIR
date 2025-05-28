@@ -17,7 +17,7 @@ from ...views.competition_views.judge_event_views import(
 )
 
 urlpatterns =[
-    path('<str:event_name>/profile/', EventProfileView.as_view(), name='event-profile'),  
+    path('<int:id>/profile/', EventProfileView.as_view(), name='event-profile'),  
     path('<str:event_name>/teamwork-rank/', TeamWorkRankView.as_view(), name='teamwork-rank'),  
     path('<str:event_name>/teams-interview-rank/', TeamsInterviewScoreRankView.as_view(), name='team-interview-rank'),  
     path('<str:event_name>/teams-eng-notebook-rank/', TeamsEngNotebookScoreRank.as_view(), name='team-eng-notebook-rank'),  
