@@ -46,6 +46,8 @@ export default function ActiveOrg() {
             );
 
             setOrganizations(response.data);
+
+
             setLoading(false);
         } catch (err) {
             setLoading(false);
@@ -71,11 +73,13 @@ export default function ActiveOrg() {
         try {
             await axios.patch(
                 `${process.env.REACT_APP_API_URL}/admin/active-organization/${orgId}/`,
-                { headers: { Authorization: `Bearer ${token}` } }
+                {}, // Empty request body
+                { headers: { Authorization: `Bearer ${token}` } } // Correct headers position
             );
-
+    
+            // Update state to reflect the change
             setOrganizations(organizations.map(org => 
-                org.id === orgId ? { ...org } : org
+                org.id === orgId ? { ...org, is_active: !org.is_active } : org
             ));
             
             Swal.fire({
@@ -100,47 +104,64 @@ export default function ActiveOrg() {
     const filteredOrgs = organizations.filter(org =>
         org.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const handleDeleteOrganization = async (organizationName) => {
+  const handleDeleteOrganization = async (org) => {
+    // التحقق من وجود فرق أو أحداث مرتبطة بالمنظمة
+    if (org.has_teams || org.has_events) {
+      let errorMessage = "Cannot delete organization because it has ";
+      const issues = [];
+      
+      if (org.has_teams) issues.push("teams");
+      if (org.has_events) issues.push("events");
+      
+      errorMessage += issues.join(" and ") + " associated with it.";
+      
+      Swal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: errorMessage,
+        footer: "You must remove all teams and events first."
+      });
+      return;
+    }
+  
     const confirmation = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+      title: 'Are you sure?',
+      text: `Are you sure you want to delete the "${org.name}" organization? \n You won't be able to revert this!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
     });
-
+  
     if (!confirmation.isConfirmed) return;
-
+  
     try {
-        await axios.patch(
-            `${process.env.REACT_APP_API_URL}/organization/${organizationName}/delete-organization/`,
-            {},
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            }
-        );
-
-        // Update the organizations list after successful deletion
-        setOrganizations(organizations.filter(org => org.name !== organizationName));
-        
-        Swal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "Organization has been deleted.",
-            showConfirmButton: false,
-            timer: 1500
-        });
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/organization/delete-organization/${org.id}/`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+  
+      // تحديث قائمة المنظمات بعد الحذف
+      setOrganizations(organizations.filter(organization => organization.id !== org.id));
+      
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Organization has been deleted.",
+        showConfirmButton: false,
+        timer: 1500
+      });
     } catch (err) {
-        Swal.fire({
-            icon: "error",
-            title: "Delete Failed",
-            text: err.response?.data?.detail || "Could not delete organization",
-        });
+      Swal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: err.response?.data?.detail || "Could not delete organization",
+      });
     }
   };
-  
 
 
     return (
@@ -262,7 +283,7 @@ export default function ActiveOrg() {
                                                 <motion.button
                                                     whileHover={{ scale: 1.05 }}
                                                     whileTap={{ scale: 0.95 }}
-                                                    onClick={() => handleDeleteOrganization(org.name)}
+                                                    onClick={() => handleDeleteOrganization(org)}
                                                     className="p-4 rounded-lg hover:bg-red-100 transition-colors relative group"
                                                 >
                                                     <FiTrash2 className="w-5 h-5 text-red-600" />
@@ -318,7 +339,7 @@ export default function ActiveOrg() {
                                     </motion.button>
                                     <motion.button
                                         whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleDeleteOrganization(org.name)}
+                                        onClick={() => handleDeleteOrganization(org)}
                                         className="flex items-center justify-center px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 transition-colors"
                                     >
                                         <FiTrash2 className="w-4 h-4 mr-2" />

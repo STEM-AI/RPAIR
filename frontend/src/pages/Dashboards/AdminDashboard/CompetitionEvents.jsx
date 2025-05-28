@@ -62,8 +62,8 @@ const CompetitionEvents = () => {
     );
   }
 
-   const handleCompetitionClick = (event_name) => {
-    navigate(`/Dashboard/Competitions/${competition_name}/${event_name}`);
+   const handleCompetitionClick = (event_id) => {
+    navigate(`/Dashboard/Competitions/${competition_name}/${event_id}`);
   };
 
   return (
@@ -126,7 +126,7 @@ const CompetitionEvents = () => {
                       {status}
                     </span>
                     <button className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
-                      onClick={() => handleCompetitionClick(event.name)}> 
+                      onClick={() => handleCompetitionClick(event.id , event.name)}> 
                     View Details
                       <svg
                       className="w-4 h-4 ml-1"

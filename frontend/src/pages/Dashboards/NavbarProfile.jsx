@@ -96,7 +96,7 @@ export default function NavbarProfile({isSidebarOpen}) {
       ? "/Dashboard/Competitions"
       : userRole.is_staff && !userRole.is_superuser
       ? "/Dashboard/JudgeEvent"
-      : "/Dashboard/OrganizerEvent"
+      : "/Dashboard/Competitions"
     : "/";
 
 

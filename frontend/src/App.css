@@ -40,3 +40,13 @@
   }
 }
 
+@media print {
+  .cert-ignore {
+    display: none !important;
+  }
+}
+
+@page {
+  size: A4 landscape;
+  margin: 0;
+}

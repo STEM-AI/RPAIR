@@ -11,6 +11,11 @@ import { Helmet } from "react-helmet-async";
 const CreateTeam = () => {
   const [hasGlobalNumber, setHasGlobalNumber] = useState(null);
   const [events, setEvents] = useState([]);
+  const [organizations, setOrganizations] = useState([]); // تأكد أنها مصفوفة فارغة
+  const [isManualOrgEntry, setIsManualOrgEntry] = useState(false); // إضافة حالة جديدة
+  const [hasCoach, setHasCoach] = useState(false); // هل يريد إضافة كوتش؟
+  const [showCoachForm, setShowCoachForm] = useState(false); // هل نعرض حقول الكوتش؟
+
   const [formData, setFormData] = useState({
     event_name: "",
     competition: "",
@@ -29,16 +34,69 @@ const CreateTeam = () => {
     team_leader_name: "",
     team_leader_email: "",
     team_leader_phone_number: "",
-    coach: [{ name: "", email: "", phone_number: "", position: "" }],
+    coach: [],
     members: [{ name: "", email: "", phone_number: "" }],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
 
+   // دالة جديدة للتعامل مع اختيار المنظمة
+   const handleOrgSelect = (e) => {
+    const selectedOrgName = e.target.value;
+    
+    if (selectedOrgName === "manual") {
+      setIsManualOrgEntry(true);
+      setFormData(prev => ({
+        ...prev,
+        organization_info: {
+          name: "",
+          address: "",
+          email: "",
+          type: "",
+          contacts: [{ phone_number: "" }]
+        }
+      }));
+      return;
+    }
+    
+    const selectedOrg = organizations.find(org => org.name === selectedOrgName);
+    if (selectedOrg) {
+      setIsManualOrgEntry(false);
+      setFormData(prev => ({
+        ...prev,
+        organization_info: { 
+          ...selectedOrg,
+          // تأكد أن contacts موجودة وإلا استخدم مصفوفة فارغة
+          contacts: selectedOrg.contacts || [] 
+        }
+      }));
+    }
+  };
+
+  const handleCoachChoice = (choice) => {
+    setHasCoach(choice);
+    setShowCoachForm(choice);
+    
+    if (choice) {
+      // إذا اختار إضافة كوتش، نضيف كوتش فارغ
+      setFormData(prev => ({
+        ...prev,
+        coach: [{ name: "", email: "", phone_number: "", position: "" }]
+      }));
+    } else {
+      // إذا اختار لا، نمسح أي بيانات كوتش
+      setFormData(prev => ({
+        ...prev,
+        coach: []
+      }));
+    }
+  };
+
   useEffect(() => {
     if (formData.competition) {
       fetchEvents(formData.competition);
+      fetchOrganizations();
     }
   }, [formData.competition]);
 
@@ -46,6 +104,29 @@ const CreateTeam = () => {
     const file = e.target.files[0];
     setFormData({ ...formData, image: file });
   };
+
+   const fetchOrganizations = async () => {
+          if (!token) {
+              setResponseMessage("You are not authorized. Please log in.");
+            
+              return;
+          }
+  
+          try {
+              const response = await axios.get(
+                  `${process.env.REACT_APP_API_URL}/organization/list-organizations/`,
+                  {
+                      headers: { Authorization: `Bearer ${token}` }
+                  }
+              );
+  
+              setOrganizations(response.data);
+  
+  
+          } catch (err) {
+              console.log(err);
+          }
+      };
 
 
   const fetchEvents = async (competition_name) => {
@@ -171,57 +252,64 @@ const CreateTeam = () => {
     );
   }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (hasGlobalNumber === null) {
-      Swal.fire({
-        icon: "error",
-        title: "Missing Information",
-        text: "Please specify if you have a global team number or not",
-      });
-      return;
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  if (hasGlobalNumber === null) {
+    Swal.fire({
+      icon: "error",
+      title: "Missing Information",
+      text: "Please specify if you have a global team number or not",
+    });
+    return;
+  }
+
+  setIsSubmitting(true);
+  setResponseMessage(null);
+
+  try {
+    const formDataToSend = new FormData();
+    
+    // Append the image file
+    if (formData.image) {
+      formDataToSend.append("image", formData.image);
     }
-  
-    setIsSubmitting(true);
-    setResponseMessage(null);
+    if (hasGlobalNumber === true && formData.team_number) {
+      formDataToSend.append("team_number", formData.team_number);
+    }
 
-    try {
-      const formDataToSend = new FormData();
-      
-      // Append the image file
-      if (formData.image) {
-        formDataToSend.append("image", formData.image);
-      }
-      if (hasGlobalNumber === true && formData.team_number) {
-        formDataToSend.append("team_number", formData.team_number);
-      }
-      
-      // Append other fields
-      formDataToSend.append("event_name", formData.event_name);
-      formDataToSend.append("competition", formData.competition);
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("robot_name", formData.robot_name);
-      formDataToSend.append("type", formData.type);
-      // formDataToSend.append("team_number", formData.team_number);
-      formDataToSend.append("team_leader_name", formData.team_leader_name);
-      formDataToSend.append("team_leader_email", formData.team_leader_email);
-      formDataToSend.append("team_leader_phone_number", formData.team_leader_phone_number);
-      
-      // Stringify nested objects
+    // تحديد شكل بيانات المنظمة بناءً على نوع الإدخال
+    if (isManualOrgEntry) {
+      // إرسال كافة بيانات المنظمة الجديدة
       formDataToSend.append("organization_info", JSON.stringify(formData.organization_info));
-      formDataToSend.append("coach", JSON.stringify(formData.coach));
-      formDataToSend.append("members", JSON.stringify(formData.members));
+    } else {
+      // إرسال معرف المنظمة فقط للمنظمة الموجودة
+      formDataToSend.append("organization_id", formData.organization_info.id);
+    }
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/team/create/`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    // Append other fields
+    formDataToSend.append("event_name", formData.event_name);
+    formDataToSend.append("competition", formData.competition);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("robot_name", formData.robot_name);
+    formDataToSend.append("type", formData.type);
+    formDataToSend.append("team_leader_name", formData.team_leader_name);
+    formDataToSend.append("team_leader_email", formData.team_leader_email);
+    formDataToSend.append("team_leader_phone_number", formData.team_leader_phone_number);
+    
+    // Stringify nested objects
+    formDataToSend.append("coach", JSON.stringify(formData.coach));
+    formDataToSend.append("members", JSON.stringify(formData.members));
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/team/create/`,
+      formDataToSend,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
       setAlertType("success");
       setResponseMessage("Event created successfully!");
@@ -289,7 +377,7 @@ const CreateTeam = () => {
 
     // If no specific messages, show default error
     if (errorMessages.length === 0) {
-      errorMessages.push("Failed to create team. Please check your inputs and try again.");
+      errorMessages.push(`Failed to create team. Please check your inputs and try again.${ err.response.data}`);
     } else {
       errorMessages.push(`Failed to create team. Please ${ err.response?.data}`);
     }
@@ -363,89 +451,158 @@ const CreateTeam = () => {
           </div>
         </div>
 
-        {/* Organization Info */}
-        <div className="organizationInfo">
-          <h3 className="py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
-            Organization Info:
-          </h3>
-          <div className="md:flex md:justify-between">
-            <div className="md:mr-2">
-              <label className="block mb-2 text-sm font-bold text-gray-700">Organization Name</label>
+      {/* Organization Info */}
+      <div className="organizationInfo">
+        <h3 className="py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
+          Organization Info:
+        </h3>
+        
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-bold text-gray-700">
+            Organization Selection
+          </label>
+          
+          {isManualOrgEntry ? (
+            <div className="flex items-center mb-4">
               <input
                 type="text"
                 value={formData.organization_info.name}
                 onChange={(e) => handleChange(e, "organization_info", null, "name")}
-                className="bg-gray-200 border rounded py-2 px-4 w-full"
-              />
-            </div>
-            <div className="md:mr-2">
-              <label className="block mb-2 text-sm font-bold text-gray-700">Address</label>
-              <input
-                type="text"
-                value={formData.organization_info.address}
-                onChange={(e) => handleChange(e, "organization_info", null, "address")}
-                className="bg-gray-200 border rounded py-2 px-4 w-full"
-              />
-            </div>
-            <div className="md:mr-2">
-              <label className="block mb-2 text-sm font-bold text-gray-700">Type</label>
-              <select
-                value={formData.organization_info.type}
-                onChange={(e) => handleChange(e, "organization_info", null, "type")}
-                className="bg-gray-200 border rounded py-2 px-4 w-full"
-                required
-              >
-                <option value="">Select Type</option>
-                <option value="profite">Profit</option>
-                <option value="non-profite">Non-Profit</option>
-              </select>
-            </div>
-          </div>
-          <div className="md:mr-2">
-            <label className="block mb-2 text-sm font-bold text-gray-700">Email</label>
-            <input
-              type="email"
-              value={formData.organization_info.email}
-              onChange={(e) => handleChange(e, "organization_info", null, "email")}
-              className="bg-gray-200 border rounded py-2 px-4 w-full"
-            />
-          </div>
-
-          {/* Organization Contacts */}
-          <h4 className="mt-4 text-lg font-bold">Contacts</h4>
-          {formData.organization_info.contacts.map((contact, index) => (
-            <div key={index} className="flex items-center gap-4">
-              <input
-                type="text"
-                placeholder="enter your phone"
-                pattern="^\+20\d{10}$"
-                title="Phone number must start with +2 and contain 12 digits."
-                value={contact.phone_number}
-                onChange={(e) =>
-                  handlePhoneNumberChange(e, "organization_info", index, "phone_number", "contacts")
-                }
-                className="bg-gray-200 border rounded py-2 px-4 w-full"
+                className="bg-gray-100 border rounded py-2 px-4 w-full"
+                placeholder="Enter organization name"
                 required
               />
               <button
                 type="button"
+                onClick={() => setIsManualOrgEntry(false)}
+                className="ml-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition"
+              >
+                Select from List
+              </button>
+            </div>
+          ) : (
+            <select
+              value={formData.organization_info.name}
+              onChange={handleOrgSelect}
+              className="bg-gray-200 border rounded py-2 px-4 w-full mb-4"
+              required
+            >
+              <option value="">Select Organization</option>
+              {organizations.map((org, index) => (
+                <option key={index} value={org.name}>
+                  {org.name}
+                </option>
+              ))}
+              <option value="manual">Add New Organization...</option>
+            </select>
+          )}
+        </div>
+        
+        <div className="md:flex md:justify-between">
+          <div className="md:mr-2">
+            <label className="block mb-2 text-sm font-bold text-gray-700">
+              Organization Name
+            </label>
+            {isManualOrgEntry ? (
+              <input
+                type="text"
+                value={formData.organization_info.id}
+                onChange={(e) => handleChange(e, "organization_info", null, "id")}
+                className="bg-gray-100 border rounded py-2 px-4 w-full"
+                required
+              />
+            ) : (
+              <input
+                type="text"
+                value={formData.organization_info.name}
+                readOnly
+                className="bg-gray-200 border rounded py-2 px-4 w-full cursor-not-allowed"
+              />
+            )}
+          </div>
+          
+          <div className="md:mr-2">
+            <label className="block mb-2 text-sm font-bold text-gray-700">Address</label>
+            <input
+              type="text"
+              value={formData.organization_info.address}
+              onChange={(e) => handleChange(e, "organization_info", null, "address")}
+              className={`border rounded py-2 px-4 w-full ${isManualOrgEntry ? 'bg-gray-100' : 'bg-gray-200 cursor-not-allowed'}`}
+              readOnly={!isManualOrgEntry}
+              required={isManualOrgEntry}
+            />
+          </div>
+          
+          <div className="md:mr-2">
+            <label className="block mb-2 text-sm font-bold text-gray-700">Type</label>
+            <select
+              value={formData.organization_info.type}
+              onChange={(e) => handleChange(e, "organization_info", null, "type")}
+              className={`border rounded py-2 px-4 w-full ${isManualOrgEntry ? 'bg-gray-100' : 'bg-gray-200 cursor-not-allowed'}`}
+              disabled={!isManualOrgEntry}
+              required={isManualOrgEntry}
+            >
+              <option value="">Select Type</option>
+              <option value="profite">Profit</option>
+              <option value="non-profite">Non-Profit</option>
+            </select>
+          </div>
+        </div>
+        
+        <div className="md:mr-2">
+          <label className="block mb-2 text-sm font-bold text-gray-700">Email</label>
+          <input
+            type="email"
+            value={formData.organization_info.email}
+            onChange={(e) => handleChange(e, "organization_info", null, "email")}
+            className={`border rounded py-2 px-4 w-full ${isManualOrgEntry ? 'bg-gray-100' : 'bg-gray-200 cursor-not-allowed'}`}
+            readOnly={!isManualOrgEntry}
+            required={isManualOrgEntry}
+          />
+        </div>
+
+        {/* Organization Contacts */}
+        <h4 className="mt-4 text-lg font-bold">Contacts</h4>
+        {formData.organization_info.contacts.map((contact, index) => (
+          <div key={index} className="flex items-center gap-4">
+            <input
+              type="tel"
+              placeholder="Enter phone number (+20XXXXXXXXXX)"
+              pattern="^\+20\d{10}$"
+              title="Phone number must start with +20 and contain 12 digits."
+              value={contact.phone_number}
+              onChange={(e) =>
+                handlePhoneNumberChange(e, "organization_info", index, "phone_number", "contacts")
+              }
+              className={`border rounded py-2 px-4 w-full ${isManualOrgEntry ? 'bg-gray-100' : 'bg-gray-200 cursor-not-allowed'}`}
+              readOnly={!isManualOrgEntry}
+              required={isManualOrgEntry}
+            />
+            {isManualOrgEntry && (
+              <button
+                type="button"
                 onClick={() => handleRemoveItem("organization_info", index, "contacts")}
-                className="text-red-500"
+                className="text-red-500 hover:text-red-700"
               >
                 <IoIosRemoveCircle size={24} />
               </button>
-            </div>
-          ))}
+            )}
+          </div>
+        ))}
+        
+        {isManualOrgEntry && (
           <button
             type="button"
             onClick={() =>
               handleAddItem("organization_info", { phone_number: "" }, "contacts")
             }
-            className="text-cyan-500 flex items-center mt-2"
+            className="text-cyan-600 hover:text-cyan-800 flex items-center mt-2"
           >
             <IoAddCircle size={24} className="mr-1" /> Add Contact
           </button>
-        </div>
+        )}
+      </div>
+
 
         {/* Team Info */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-5">
@@ -594,13 +751,10 @@ const CreateTeam = () => {
                 value={formData.team_leader_phone_number}
                 onChange={(e) => {
                   let value = e.target.value;
-                  // Remove any non-digit characters except '+'
                   value = value.replace(/[^\d+]/g, '');
-                  // Ensure it starts with +2
                   if (!value.startsWith('+2')) {
                     value = '+2' + value.replace('+', '');
                   }
-                  // Limit to +2 plus 11 digits
                   if (value.length > 13) {
                     value = value.slice(0, 13);
                   }
@@ -613,13 +767,42 @@ const CreateTeam = () => {
           </div>
         </div>
 
-        {/* Coach Info */}
         <div className="coach">
           <h3 className="py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
             Coach Info:
           </h3>
-          {formData.coach.map((coach, index) => (
+          
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-bold text-gray-700">
+              Do you want to add another coach?
+            </label>
+            <div className="flex gap-4">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="hasCoach"
+                  checked={hasCoach === true}
+                  onChange={() => handleCoachChoice(true)}
+                  className="form-radio"
+                />
+                <span className="ml-2">Yes</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="hasCoach"
+                  checked={hasCoach === false}
+                  onChange={() => handleCoachChoice(false)}
+                  className="form-radio"
+                />
+                <span className="ml-2">No</span>
+              </label>
+            </div>
+          </div>
+          
+          {showCoachForm && formData.coach.map((coach, index) => (
             <div key={index} className="mb-5">
+              <h4 className="text-lg font-medium mb-3">Coach #{index + 1}</h4>
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                 <div className="w-full md:w-1/2">
                   <label className="block mb-2 text-sm font-bold text-gray-700">Name</label>
@@ -628,7 +811,7 @@ const CreateTeam = () => {
                     value={coach.name}
                     onChange={(e) => handleChange(e, "coach", index, "name")}
                     className="bg-gray-200 border rounded py-2 px-4 w-full"
-                    required
+                    required={showCoachForm}
                   />
                 </div>
                 <div className="w-full md:w-1/2">
@@ -638,7 +821,7 @@ const CreateTeam = () => {
                     value={coach.email}
                     onChange={(e) => handleChange(e, "coach", index, "email")}
                     className="bg-gray-200 border rounded py-2 px-4 w-full"
-                    required
+                    required={showCoachForm}
                   />
                 </div>
               </div>
@@ -653,7 +836,7 @@ const CreateTeam = () => {
                     value={coach.phone_number}
                     onChange={(e) => handlePhoneNumberChange(e, "coach", index, "phone_number")}
                     className="bg-gray-200 border rounded py-2 px-4 w-full"
-                    required
+                    required={showCoachForm}
                   />
                 </div>
                 <div className="w-full md:w-1/2">
@@ -662,7 +845,7 @@ const CreateTeam = () => {
                     value={coach.position}
                     onChange={(e) => handleChange(e, "coach", index, "position")}
                     className="bg-gray-200 border rounded py-2 px-4 w-full"
-                    required
+                    required={showCoachForm}
                   >
                     <option value="">Select Position</option>
                     <option value="primary">Primary</option>
@@ -672,22 +855,29 @@ const CreateTeam = () => {
               </div>
               {index >= 1 && (
                 <div className="flex justify-center items-center gap-2 mt-4">
-                  <button type="button" onClick={() => handleRemoveItem("coach", index)}>
-                    <IoIosRemoveCircle className="text-red-500 bg-white text-3xl hover:text-red-700" />
+                  <button 
+                    type="button" 
+                    onClick={() => handleRemoveItem("coach", index)}
+                    className="text-red-500 hover:text-red-700 flex items-center"
+                  >
+                    <IoIosRemoveCircle className="mr-1" /> Remove Coach
                   </button>
                 </div>
               )}
             </div>
           ))}
-          <button
-            type="button"
-            onClick={() =>
-              handleAddItem("coach", { name: "", email: "", phone_number: "", position: "" })
-            }
-            className="text-cyan-500 flex items-center mt-2"
-          >
-            <IoAddCircle size={24} className="mr-1" /> Add Coach
-          </button>
+          
+          {showCoachForm && (
+            <button
+              type="button"
+              onClick={() =>
+                handleAddItem("coach", { name: "", email: "", phone_number: "", position: "" })
+              }
+              className="text-cyan-500 flex items-center mt-2"
+            >
+              <IoAddCircle size={24} className="mr-1" /> Add Another Coach
+            </button>
+          )}
         </div>
 
         {/* Team Members */}

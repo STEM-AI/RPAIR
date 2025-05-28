@@ -12,6 +12,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 
 
 
+
 const Sidebar = ({isOpen, setIsOpen}) => {
   // const [isOpen, setIsOpen] = useState(false);
   const [isManagementOpen, setIsManagementOpen] = useState(false);
@@ -198,10 +199,16 @@ const Sidebar = ({isOpen, setIsOpen}) => {
         return (
           <>
              {/* Dashboard */}
-                        <Link to="/Dashboard/OrganizerEvent">
+                        <Link to="/Dashboard/Competitions">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineDashboard className="mr-2" />
                             Dashboard
+                          </li>
+                        </Link>
+                        <Link to="/Dashboard/Admin/CreateEvent">
+                        <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                        <TbCalendarEvent className="mr-2" />
+                            Create Event
                           </li>
                         </Link>
                   
