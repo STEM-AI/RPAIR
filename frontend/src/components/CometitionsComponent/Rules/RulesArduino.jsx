@@ -21,13 +21,13 @@ const RulesArduino = () => {
                 </h3>
                 <p className="text-gray-700 text-base font-normal leading-relaxed lg:text-start text-center">
                   {showFullText
-                    ? `The Arduino competition is designed for teams of 2–3 students who must create functional and safe projects using only the components provided in the kit.
+                    ? `The Arduino competition is designed for teams of 2–4 students who must create functional and safe projects using only the components provided in the kit.
                      All code must be written during the competition, and no internet access is allowed, though teams can bring printed reference materials.
                       The competition is divided into two age categories: Lower Level (13–15 years old) and Upper Level (16–18 years old).
                        Each level has two matches where teams design and build Arduino-based circuits to solve specific challenges, such as creating smart solutions or interactive systems.
-                        Projects are judged on functionality, code logic, creativity, wiring, and presentation, with bonus points for exceptional innovation.
-                    Safety is a priority, and judges are available to assist with any concerns. The judges' decisions are final, and teams must ensure their projects are completed within the allotted time.`
-                    : `The Arduino competition is designed for teams of 2–3 students who must create functional and safe projects using only the components provided in the kit.
+                        Projects are judged on functionality, code logic, creativity, wiring, and presentation.
+                    Safety is a priority, and judges are available to assist with any concerns. The judges' decisions are final, and teams must ensure their projects are completed within the allowed time.`
+                    : `The Arduino competition is designed for teams of 2–4 students who must create functional and safe projects using only the components provided in the kit.
                      All code must be written during the competition...`}
                 </p>
               </div>

@@ -107,7 +107,7 @@ export default function AllEventDetails() {
           </button>
         </div>
         {showResults ? (
-          <Rank eventName={event_name}  eventCategory={events.competition_name}/>
+          <Rank eventName={events.name}  eventCategory={events.competition_name}/>
         ) : (
 
           <div className="bg-white overflow-hidden shadow-xl rounded-2xl">

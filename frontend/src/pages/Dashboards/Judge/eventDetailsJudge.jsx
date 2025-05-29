@@ -157,7 +157,7 @@ const CompetitionEvents = () => {
                   className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
                   onClick={() => handleCompetitionClick(
                     event.competition_event.competition_name,
-                    event.competition_event.name
+                    event.competition_event.id
                   )}
                 >
                   View Details

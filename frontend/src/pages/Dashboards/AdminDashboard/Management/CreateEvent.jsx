@@ -15,6 +15,7 @@ const CreateEvent = () => {
     category: "Mini",
     fees: 200,
     age: "00-00",
+    
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);

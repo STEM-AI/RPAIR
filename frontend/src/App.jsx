@@ -130,6 +130,7 @@ import CompOpen from "./pages/Competitions/OpenSource/CompOpen";
 import RegisterOrg from "./pages/Auth/RegisterOrg";
 import OrganizerDash from "./pages/Dashboards/OrganizerDash/OrganizerDash";
 import ActiveOrg from "./pages/Dashboards/AdminDashboard/Management/ActiveOrg";
+import Python from "./pages/Dashboards/Judge/JudgeComp/Programming/Python";
 
 
 const App = () => {
@@ -681,6 +682,16 @@ const App = () => {
             <Layout hideNavbar>
               <LayoutDashboard>
                 <EventDetailsJudge />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+         <Route
+          path="/Dashboard/JudgeEvent/python"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <Python />
               </LayoutDashboard>
             </Layout>
           }

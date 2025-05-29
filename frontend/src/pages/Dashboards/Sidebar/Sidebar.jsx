@@ -139,20 +139,14 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Event Details
                           </li>
                         </Link>
-                        {/* <Link to="/Dashboard/JudgeEvent/vex_go">
+                       
+                        <Link to="/Dashboard/JudgeEvent/python">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
-                            Vex GO
+                            Python
                           </li>
                           
                         </Link>
-
-                        <Link to="/Dashboard/JudgeEvent/vex_123">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineEventNote className="mr-2" />
-                            Vex 123
-                          </li>
-                        </Link> */}
 
                         {/* Event */}
                           {/* <li
@@ -205,7 +199,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Dashboard
                           </li>
                         </Link>
-                        <Link to="/Dashboard/Admin/CreateEvent">
+                        <Link to="/Dashboard/OrganizerEvent">
                         <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                         <TbCalendarEvent className="mr-2" />
                             Create Event
