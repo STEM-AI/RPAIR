@@ -69,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserEditProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name','last_name','profile_name', 'email', 'country' ]
+        fields = ['first_name','last_name','username', 'email', 'country' ]
 
     def to_internal_value(self, data):
         # Get the allowed fields from the serializer

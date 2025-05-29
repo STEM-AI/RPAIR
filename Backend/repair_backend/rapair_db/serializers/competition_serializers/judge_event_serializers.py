@@ -24,7 +24,7 @@ class CompetitionEventSerializer(serializers.ModelSerializer):
     competition_name = serializers.CharField(source='competition.name')
     class Meta:
         model = CompetitionEvent
-        fields = ['name', 'start_date', 'end_date', 'location','competition_name']
+        fields = ['id','name', 'start_date', 'end_date', 'location','competition_name']
 
 
 class JudgeEventListSerializer(serializers.ModelSerializer):
