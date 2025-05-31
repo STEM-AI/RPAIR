@@ -413,9 +413,7 @@ const App = () => {
           path="/Dashboard/Certificate"
           element={
             <Layout hideNavbar>
-              <LayoutDashboard>
                 <Certificate />
-              </LayoutDashboard>
             </Layout>
           }
         />

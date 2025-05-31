@@ -5,7 +5,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 
-const CreateEvent = () => {
+const CreateEvent = ({orgID}) => {
   const [competition_name, setCompetitionName] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -80,7 +80,8 @@ const CreateEvent = () => {
     try {
       const requestData = {
         ...formData,
-        competition: competition_name  // Add competition ID to request body
+        competition: competition_name,  // Add competition ID to request body
+        organization: orgID
       };
 
       await axios.post(

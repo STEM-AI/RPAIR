@@ -29,6 +29,7 @@ export default function OrganizerDash() {
           setStatus(response.data.organization[0].is_active)
 
 
+          console.log("API Active:", userData.organization?.[0]?.id );
           
 
         } catch {
@@ -49,7 +50,7 @@ export default function OrganizerDash() {
           <h2 className="text-xl font-bold">Your account is active!</h2>
           <p>You can now create and manage events</p>
         </div>
-        <CreateEvent />
+          <CreateEvent orgID={userData.organization?.[0]?.id}  />
       </div>
       ) : (
 
