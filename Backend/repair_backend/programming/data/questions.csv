@@ -1,0 +1,19 @@
+question,category,difficulty,answer,is_correct
+Who was the first President of the United States?,session,easy,George Washington,True
+Who was the first President of the United States?,session,easy,Thomas Jefferson,False
+What is the capital of France?,session,easy,Paris,True
+What is the capital of France?,session,easy,London,False
+Which country won the FIFA World Cup in 2018?,compiler,medium,France,True
+Which country won the FIFA World Cup in 2018?,compiler,medium,Germany,False
+Who is known as the father of modern physics?,problem_solving,medium,Albert Einstein,True
+Who is known as the father of modern physics?,problem_solving,medium,Isaac Newton,False
+What is the largest planet in our solar system?,problem_solving,easy,Jupiter,True
+What is the largest planet in our solar system?,problem_solving,easy,Saturn,False
+Who wrote the play "Romeo and Juliet"?,session,easy,William Shakespeare,True
+Who wrote the play "Romeo and Juliet"?,session,easy,Charles Dickens,False
+What is the chemical formula for table salt?,problem_solving,easy,NaCl,True
+What is the chemical formula for table salt?,problem_solving,easy,H2O,False
+Which team has won the most UEFA Champions League titles?,compiler,hard,Real Madrid,True
+Which team has won the most UEFA Champions League titles?,compiler,hard,Barcelona,False
+What is the smallest prime number?,problem_solving,hard,2,True
+What is the smallest prime number?,problem_solving,hard,1,False

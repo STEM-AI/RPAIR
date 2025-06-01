@@ -32,6 +32,7 @@ urlpatterns = [
     path('core/', include('core.urls')),
     path('arduino/', include(arduino)),
     path('flutter/', include(flutter)),
+    path('programming/', include('programming.urls')),
 
 ]
 

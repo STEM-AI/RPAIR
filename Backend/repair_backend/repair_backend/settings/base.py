@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'vex_123',
     'vex_iq_comp_websocket.apps.VexIqCompWebsocketConfig',
+    'programming',
 
     'django_celery_beat',
     
