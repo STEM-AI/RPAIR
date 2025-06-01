@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Organization , OrganizationContact 
+from ..models import Organization , OrganizationContact , Team
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
@@ -171,14 +171,21 @@ class CreateOrganizationWithUserSerializer(serializers.ModelSerializer):
         
         return organization
 
+class TeamOrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ['id', 'name']
+
 class OrganizationSerializer(serializers.ModelSerializer):
     contacts = OrganizationContactSerializer(many=True)
     teams = serializers.SerializerMethodField()
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    events = serializers.SerializerMethodField()
+
     
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'address', 'email', 'type', 'contacts', 'teams', 'owner', 'is_active'] 
+        fields = ['id', 'name', 'address', 'email', 'type', 'contacts', 'teams', 'owner', 'is_active', 'events'] 
         extra_kwargs = {
             'name': {'required': True},
             'address': {'required': True},
@@ -186,6 +193,16 @@ class OrganizationSerializer(serializers.ModelSerializer):
             'contacts': {'required': True},
             'is_active': {'required': False, 'read_only': True}
         }
+
+    def get_teams(self, obj):
+        teams = obj.team_organization.all()
+        return TeamOrganizationSerializer(teams, many=True).data
+    
+    def get_events(self, obj):
+        from ..serializers import CompetitionEventSerializer
+        events = obj.events.all()
+        return CompetitionEventSerializer(events, many=True).data
+    
 
     def create(self, validated_data):
         contacts_data = validated_data.pop('contacts')
@@ -202,22 +219,27 @@ class OrganizationSerializer(serializers.ModelSerializer):
         
         return organization
 
-    def get_teams(self, obj):
-        from ..serializers import TeamSerializer
-        teams = obj.team_organization.all()
-        return TeamSerializer(teams, many=True).data
-
+    
     def update(self, instance, validated_data):
-        new_name = validated_data.get("name", instance.name)
-
-        if new_name != instance.name:
-            existing_organization = Organization.objects.filter(name=new_name).first()
-            if existing_organization:
-                raise serializers.ValidationError({"name": "An organization with this name already exists."})
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
+        logger.info(f"Updating organization: {instance.name}")
+        logger.info(f"Validated data: {validated_data}")
+        contacts_data = validated_data.pop('contacts')
+        with transaction.atomic():
+            for attr, value in validated_data.items():
+                logger.info(f"Setting {attr} to {value}")
+                setattr(instance, attr, value)
+            
+            if contacts_data:
+                logger.info(f"Deleting contacts: {instance.contacts.all()}")
+                instance.contacts.all().delete()
+                for contact_data in contacts_data:
+                    logger.info(f"Creating contact: {contact_data}")
+                    OrganizationContact.objects.create(
+                        organization=instance,
+                        **contact_data
+                    )
         instance.save()
+        logger.info(f"Updated organization: {instance.name}")
         return instance
     
 class ActiveOrganizationSerializer(serializers.ModelSerializer):
