@@ -130,6 +130,64 @@ class TeamSerializer(serializers.ModelSerializer):
 
             team.save()
             return team
+
+    def update(self, instance, validated_data):
+        logger.info(f"Updating team with data: {validated_data}")
+        
+        # Extract related data
+        sponsors_data = validated_data.pop('sponsors', None)
+        coaches_data = validated_data.pop('coach', None)
+        social_media_data = validated_data.pop('social_media', None)
+        previous_competition_data = validated_data.pop('previous_competition', None)
+        members_data = validated_data.pop('members', None)
+
+        with transaction.atomic():
+            # Update basic team fields
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
+
+            # Update sponsors
+            if sponsors_data is not None:
+                # Delete existing sponsors
+                instance.sponsors.all().delete()
+                # Create new sponsors
+                for sponsor_data in sponsors_data:
+                    instance.sponsors.create(**sponsor_data)
+
+            # Update coaches
+            if coaches_data is not None:
+                # Delete existing coaches
+                instance.coach.all().delete()
+                # Create new coaches
+                for coach_data in coaches_data:
+                    instance.coach.create(**coach_data)
+
+            # Update social media
+            if social_media_data is not None:
+                # Delete existing social media
+                instance.social_media.all().delete()
+                # Create new social media
+                for media_data in social_media_data:
+                    instance.social_media.create(**media_data)
+
+            # Update previous competitions
+            if previous_competition_data is not None:
+                # Delete existing previous competitions
+                instance.previous_competition.all().delete()
+                # Create new previous competitions
+                for comp_data in previous_competition_data:
+                    instance.previous_competition.create(**comp_data)
+
+            # Update members
+            if members_data is not None:
+                # Delete existing members
+                instance.members.all().delete()
+                # Create new members
+                for member_data in members_data:
+                    instance.members.create(**member_data)
+
+            return instance
     
     def get_competition_event(self,obj):
         try:

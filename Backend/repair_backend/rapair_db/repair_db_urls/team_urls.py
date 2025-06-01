@@ -10,24 +10,17 @@ from ..views.team_views.team_views import (
 )
 
 from ..views.user_views.user_team_views import(
-    UserCreateTeamView,
-    UserTeamListView,
-    UserTeamEditTeamProfileView,
-    UserChangeTeamOrganizationView,
-    UserDeleteTeamView,
-    UserTeamRetrieveView
+    UserTeamListCreateView,
+    UserTeamRetrieveUpdateDestroyView,
+
 )
 
 
 urlpatterns = [
 
     # User Team APIs
-    path('create/', UserCreateTeamView.as_view(), name='create-team'),
-    path('user/', UserTeamListView.as_view(), name='team-profile'),
-    path('user/<str:team_name>/', UserTeamRetrieveView.as_view(), name='retrieve-team'),  # Retrieve a team API  # TODO: Add notification and email functionality for judges.   # TODO: Add leaderboard functionality.   # TODO: Add team registration functionality.   # TODO: Add team submission functionality.   # TODO: Add team history functionality.   # TODO: Add team scorecard functionality.   # TODO: Add team game statistics functionality
-    path('<str:team_name>/edit/', UserTeamEditTeamProfileView.as_view(), name='edit-team'),
-    path('<str:team_name>/change-organization/', UserChangeTeamOrganizationView.as_view(), name='change-team-organization'),
-    path('<str:team_name>/delete/', UserDeleteTeamView.as_view(), name='delete-team'),
+    path('user/', UserTeamListCreateView.as_view(), name='team-profile'),
+    path('user/<int:id>/', UserTeamRetrieveUpdateDestroyView.as_view(), name='edit-team'),
 
     # Team APIs
     path('list/', TeamListView.as_view(), name='teams-list'),  # List all teams API  # TODO: Add pagination and search functionality.
