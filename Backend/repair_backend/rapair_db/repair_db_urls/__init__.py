@@ -6,6 +6,7 @@ from .competiotion_urls import (
 from . import (
     tokens_ulrs , user_urls , team_urls , 
     competition_urls , admin_dashboard_urls ,
+    arduino,flutter
     )
 
 urlpatterns = (
@@ -17,5 +18,7 @@ urlpatterns = (
     admin_dashboard_urls.urlpatterns +
     event_urls.urlpatterns +
     team_event_urls.urlpatterns +
-    game_urls.urlpatterns
+    game_urls.urlpatterns +
+    arduino.urlpatterns +
+    flutter.urlpatterns
 )

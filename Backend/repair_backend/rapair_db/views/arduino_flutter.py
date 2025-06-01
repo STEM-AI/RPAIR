@@ -1,0 +1,46 @@
+from rest_framework.generics import ListAPIView,UpdateAPIView
+from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
+from rapair_db.serializers.arduino_flutter import TeamCompetitionEventSerializer,TeamCompetitionEventRankingSerializer
+from rapair_db.models import TeamCompetitionEvent
+from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
+class TeamAttachmentListView(ListAPIView):
+    serializer_class = TeamCompetitionEventSerializer
+    queryset = TeamCompetitionEvent.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return TeamCompetitionEvent.objects.filter(competition_event__name=self.kwargs['event_name'])
+
+
+@extend_schema(
+    request={
+        'multipart/form-data': {
+            'type': 'object',
+            'properties': {
+                'score': {'type': 'number'},
+                'attachment': {'type': 'string', 'format': 'binary'},
+            }
+        }
+    },
+    responses={200: TeamCompetitionEventSerializer}
+)
+class TeamAttachmentUpdateView(UpdateAPIView):
+    serializer_class = TeamCompetitionEventSerializer
+    queryset = TeamCompetitionEvent.objects.all()
+    parser_classes = [MultiPartParser, FormParser,JSONParser]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'team_id'
+    lookup_url_kwarg = 'team_id'
+
+    def get_queryset(self):
+        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['team_id'],competition_event__name=self.kwargs['event_name'])
+    
+class TeamAttachmentRankingView(ListAPIView):
+    serializer_class = TeamCompetitionEventRankingSerializer
+    queryset = TeamCompetitionEvent.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = TeamCompetitionEvent.objects.filter(competition_event__name=self.kwargs['event_name'])
+        return queryset.order_by('-score')

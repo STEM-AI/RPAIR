@@ -4,7 +4,8 @@ from django.conf.urls.static import static
 
 from rapair_db.repair_db_urls import (
     tokens_ulrs ,user_urls ,team_urls , 
-    competition_urls , admin_dashboard_urls
+    competition_urls , admin_dashboard_urls,
+    arduino,flutter
 )
 from rapair_db.repair_db_urls.competiotion_urls import (
     event_urls, organization_urls , 
@@ -29,6 +30,8 @@ urlpatterns = [
     path('vex-go/', include('vex_go.urls')),
     path('vex-123/', include('vex_123.urls')),
     path('core/', include('core.urls')),
+    path('arduino/', include(arduino)),
+    path('flutter/', include(flutter)),
 
 ]
 

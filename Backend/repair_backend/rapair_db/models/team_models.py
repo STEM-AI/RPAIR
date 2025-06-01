@@ -56,6 +56,7 @@ class TeamCompetitionEvent(models.Model):
     interview_score = models.IntegerField(null=True, blank=True,default=0)
     inspect_score = models.IntegerField(null=True, blank=True,default=0)
     eng_notebook_score = models.IntegerField(null=True, blank=True,default=0)
+    attachment = models.FileField(upload_to='team_competition_event_attachments/', null=True, blank=True,default=None)
     class Meta:
         constraints = [
             models.UniqueConstraint(
