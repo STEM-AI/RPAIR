@@ -1,7 +1,7 @@
 from django.urls import path
 
 from ...views.competition_views.team_event_views import(
-    SetTeamScoresFieldsView,TeamNonTechScoreUpdateView
+    TeamNonTechScoreUpdateView
 )
 
 urlpatterns = [

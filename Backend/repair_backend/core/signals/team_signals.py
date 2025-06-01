@@ -1,9 +1,12 @@
-from django.db.models.signals import pre_save ,post_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rapair_db.models import (
     Team , TeamSponsor , TeamCoach , 
     TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame,
+    TeamCompetitionEvent
     )
+import logging
+logger = logging.getLogger(__name__)
 
 @receiver(post_save , sender=Team)
 def get_or_create_sponsor(sender, instance, created, **kwargs):
@@ -62,12 +65,21 @@ def add_team_members(sender, instance, created, **kwargs):
                     **member_data
                 )
 
+@receiver(post_save , sender=Team)
+def add_team_competition_event(sender, instance, created, **kwargs):
+    if created and hasattr(instance , 'event'):
+        event = instance.event
+        if event :
+            TeamCompetitionEvent.objects.create(
+                team=instance,
+                competition_event=event
+            )
 
 @receiver(post_save , sender=EventGame)
 def add_team_score(sender, instance, created, **kwargs):
-    print("event game signalss")
-    print("created" , created)
-    print("")
+    logger.info(f"event game signalss {instance}")
+    logger.info(f"created {created}")
+    logger.info(f"instance {instance}")
     if created :
         return
     if hasattr(instance, 'operation') and instance.operation == 'set_teamwork_game_score':
@@ -75,43 +87,43 @@ def add_team_score(sender, instance, created, **kwargs):
         instance.team2.teamwork_scores.create(score = instance.score,game=instance)
 
     if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
-        print("setting team skills score sginals")
+        logger.info("setting team skills score sginals")
         if instance.stage in ['driver_iq','driver_go']:
-            print("Setting driver scores")
+            logger.info("Setting driver scores")
             # Try to find an existing record with driver_score = 0
             existing_score = instance.team1.skills_scores.filter(
                 driver_score=0
             ).first()
             
             if existing_score:
-                print("Updating existing driver score")
+                logger.info("Updating existing driver score")
                 existing_score.driver_score = instance.driver_score
                 existing_score.save()
             else:
-                print("Creating new skills score with driver score")
+                logger.info("Creating new skills score with driver score")
                 instance.team1.skills_scores.create(
                     driver_score=instance.driver_score,
                     autonomous_score=0
                 )
         elif instance.stage in ['auto','coding']:
-            print("Setting autonomous scores")
+            logger.info("Setting autonomous scores")
             # Try to find an existing record with autonomous_score = 0
             existing_score = instance.team1.skills_scores.filter(
                 autonomous_score=0
             ).first()
             
             if existing_score:
-                print("Updating existing autonomous score")
+                logger.info("Updating existing autonomous score")
                 existing_score.autonomous_score = instance.autonomous_score
                 existing_score.save()
             else:
-                print("Creating new skills score with autonomous score")
+                logger.info("Creating new skills score with autonomous score")
                 instance.team1.skills_scores.create(
                     autonomous_score=instance.autonomous_score,
                     driver_score=0
                 )
         elif instance.stage in ['vex_123']:
-            print("Setting vex 123 scores") 
+            logger.info("Setting vex 123 scores") 
             instance.team1.skills_scores.create(
                 driver_score=instance.driver_score,
                 autonomous_score=0

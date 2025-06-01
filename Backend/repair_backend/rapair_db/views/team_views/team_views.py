@@ -34,9 +34,10 @@ class TeamProfileView(RetrieveAPIView):
             'social_media',
             'previous_competition',
             'coach',
-            'members'
+            'members',
+            'competition_event'
             )
-            .select_related('organization' , 'competition_event')
+            .select_related('organization')
             )
     
 

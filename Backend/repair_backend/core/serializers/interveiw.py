@@ -1,10 +1,12 @@
 from rest_framework import serializers
-from rapair_db.models import Team
+from rapair_db.models import TeamCompetitionEvent
 
 class TeamInterviewSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='team.id',read_only=True)
+    name = serializers.CharField(source='team.name',read_only=True)
     class Meta:
-        model = Team
-        fields = ['interview_score','id']
+        model = TeamCompetitionEvent
+        fields = ['interview_score','id','name']
 
         extra_kwargs = {
             'name': {'required': False},

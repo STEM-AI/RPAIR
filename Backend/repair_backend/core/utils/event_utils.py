@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Avg
 from django.db import IntegrityError
-
+import logging
+logger = logging.getLogger(__name__)
 def get_object(competition_name = None , event_name = None):
         if competition_name :
             try:
@@ -29,9 +30,9 @@ def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
     return games
 
 def skills_schedule(event , game_time , stage, schedule):
-    print("create skills")
+    logger.info("create skills")
     event_teams = event.teams.order_by('?')
-    print("event teams" ,event_teams)
+    logger.info(f"event teams {event_teams}")
     games = []
     if stage == 'driver_go':
         paused_time = 120
@@ -47,9 +48,9 @@ def skills_schedule(event , game_time , stage, schedule):
         
 
 def create_schedule(event, stage=None , time=None, schedule=None):
-    print("create schedule")
+    logger.info("create schedule")
     game_time = time
-    print("game_time",game_time)
+    logger.info(f"game_time {game_time}")
     try:
         game_time = datetime.strptime(game_time, "%H:%M")
     except ValueError:
@@ -57,14 +58,16 @@ def create_schedule(event, stage=None , time=None, schedule=None):
 
     try:
         if stage in ['driver_iq','driver_go','auto','coding']:
-            print("driver , auto")
+            logger.info(f"driver , auto")
             games = skills_schedule(event, game_time, stage, schedule)
 
         elif stage == 'final':
             teams = (
                 Team.objects
-                .select_related('competition_event')
-                .prefetch_related('teamwork_scores')
+                .prefetch_related(
+                    'teamwork_scores',
+                    'team_competition_events'
+                )
                 .filter(competition_event__name=event.name)
                 .annotate(avg_score=Avg('teamwork_scores__score'))
                 .order_by('-avg_score')[:3]
@@ -74,10 +77,10 @@ def create_schedule(event, stage=None , time=None, schedule=None):
             
 
         elif stage in ['teamwork','coop']:
-            print("teamwork , coop")
+            logger.info(f"teamwork , coop")
             teams = event.teams.all()
             games = teamwork_schedule(event, teams, game_time, stage, schedule)
-            print("games", games)
+            logger.info(f"games {games}")
 
         else:
             return Response({"error": "Invalid stage provided."}, status=status.HTTP_400_BAD_REQUEST)

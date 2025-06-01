@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ...models import SkillsTeamScore , Team
+from ...models import SkillsTeamScore ,TeamCompetitionEvent
 
 class SkillsTeamScoreSerializer(serializers.Serializer):
     team_name = serializers.SerializerMethodField()
@@ -28,11 +28,15 @@ class SkillsRankSerializer(serializers.Serializer):
         fields = ['team','team_name','total_score']
 
 class TeamInterviewScoreSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source='team.id',read_only=True)
+    name = serializers.CharField(source='team.name',read_only=True)
     class Meta:
-        model = Team
+        model = TeamCompetitionEvent
         fields = ['id' , 'name' , 'interview_score']
 
 class TeamEngNotebookScoreSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source='team.id',read_only=True)
+    name = serializers.CharField(source='team.name',read_only=True)
     class Meta:
-        model = Team
+        model = TeamCompetitionEvent
         fields = ['id' , 'name' , 'eng_notebook_score']

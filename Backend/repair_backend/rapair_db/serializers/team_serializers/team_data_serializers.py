@@ -13,10 +13,21 @@ import logging
 logger = logging.getLogger(__name__)
 
 class TeamMinimalSerializer(serializers.ModelSerializer):
-    is_completed = serializers.BooleanField(source='competition_event.is_completed',read_only=True)
+    is_completed = serializers.SerializerMethodField()
     class Meta:
         model = Team
         fields = ['id','name','is_completed']
+
+    def get_is_completed(self,obj):
+        if obj.competition_event.count() > 0:
+            return [
+                {
+                    'id': event.id,
+                    'name': event.name,
+                    'is_completed': event.is_completed
+                } for event in obj.competition_event.all()
+            ]
+        return []
 
 class TeamSerializer(serializers.ModelSerializer):
     organization = OrganizationTeamSerializer(read_only=True)
@@ -68,10 +79,10 @@ class TeamSerializer(serializers.ModelSerializer):
         previous_competition_info = validated_data.pop('previous_competition', None)
         members_info = validated_data.pop('members', None)
         
-        event = self.context["event"]
         with transaction.atomic():
             team = self.Meta.model(**validated_data)
-            team.competition_event = event
+            if self.context["event"]:
+                team.event = self.context["event"]
 
             if sponsors_info:
                 logger.info(f"sponsors_info :{sponsors_info}")
@@ -122,8 +133,18 @@ class TeamSerializer(serializers.ModelSerializer):
     
     def get_competition_event(self,obj):
         try:
-            if obj.competition_event:
-                return obj.competition_event.competition.name
+            if obj.competition_event.count() > 0:
+                return [
+                    {
+                        'id': event.id,
+                        'name': event.name,
+                        'competition': event.competition.name,
+                        'start_date': event.start_date,
+                        'end_date': event.end_date,
+                        'location': event.location,
+                        'is_live': event.is_live,
+                    } for event in obj.competition_event.all()
+                ]
             return None
         except Exception as e:
             return str(e)

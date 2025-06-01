@@ -2,7 +2,7 @@ from django.db import models
 from .organization_models import Organization
 from .competitions_models import CompetitionEvent,EventGame
 from ..validators import phone_validator
-
+import uuid
 
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
@@ -14,11 +14,8 @@ class Team(models.Model):
     team_leader_name = models.CharField(max_length=255)
     team_leader_email = models.EmailField(unique=True)
     team_leader_phone_number = models.CharField(validators=[phone_validator] , max_length=255 , unique=True)
-    interview_score = models.IntegerField(null=True, blank=True,default=0)
-    inspect_score = models.IntegerField(null=True, blank=True,default=0)
-    eng_notebook_score = models.IntegerField(null=True, blank=True,default=0)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='team_organization')
-    competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.SET_NULL, null=True, blank=True , related_name='teams')
+    competition_event = models.ManyToManyField(CompetitionEvent, through='TeamCompetitionEvent', related_name='teams')
     note = models.CharField(max_length=255 , null=True, blank=True , default='')
     teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
     skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
@@ -48,9 +45,30 @@ class Team(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.team_number:
-            self.team_number = f"{self.competition_event.competition.name}-{self.competition_event.start_date.year}-{self.id}"
+            self.team_number = f"T - {uuid.uuid4()}"
             super().save(update_fields=['team_number'])
-    
+
+class TeamCompetitionEvent(models.Model):
+    id = models.AutoField(primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="team_competition_events")
+    competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE , related_name="team_competition_events")
+    score = models.IntegerField(default=0,null=True, blank=True)
+    interview_score = models.IntegerField(null=True, blank=True,default=0)
+    inspect_score = models.IntegerField(null=True, blank=True,default=0)
+    eng_notebook_score = models.IntegerField(null=True, blank=True,default=0)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['team', 'competition_event'],
+                name='unique_team_competition_event'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.team.name} {self.competition_event.name}"
+
+
+
 class TeamworkTeamScore(models.Model):
     id = models.AutoField(primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE , related_name="teamwork_scores")

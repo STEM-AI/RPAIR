@@ -1,4 +1,4 @@
-from rapair_db.models import Team
+from rapair_db.models import Team,TeamCompetitionEvent
 from rest_framework.generics import UpdateAPIView,ListAPIView
 from core.serializers import TeamInterviewSerializer
 from rapair_db.permissions import IsJudgeUser
@@ -19,9 +19,9 @@ class TeamInterviewRankListView(ListAPIView):
     def get_queryset(self):
         event_name = self.kwargs.get('event_name')
         if not event_name:
-            return Team.objects.none()
+            return TeamCompetitionEvent.objects.none()
         return (
-            Team.objects
+            TeamCompetitionEvent.objects
             .select_related('competition_event')
             .filter(competition_event__name=event_name)
             .order_by('-interview_score')

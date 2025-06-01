@@ -11,6 +11,8 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import json
 from django_filters.rest_framework import DjangoFilterBackend
+import logging
+logger = logging.getLogger(__name__)
 
 class UserCreateTeamView(APIView):
 
@@ -207,9 +209,9 @@ class UserCreateTeamView(APIView):
                         # Already a parsed object
                         processed_data[field] = raw_value
                         
-                    print(f"Processed {field}: {processed_data[field]}")
+                    logger.info(f"Processed {field}: {processed_data[field]}")
                 except json.JSONDecodeError as e:
-                    print(f"JSON decode error for {field}: {str(e)}")
+                    logger.error(f"JSON decode error for {field}: {str(e)}")
                     return Response(
                         {"error": f"Invalid JSON format for {field}: {str(e)}"}, 
                         status=status.HTTP_400_BAD_REQUEST
@@ -248,6 +250,7 @@ class UserTeamListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TeamMinimalSerializer
     filter_backends = [DjangoFilterBackend]
+    queryset = Team.objects.all()
     filterset_fields = ['competition_event__name','competition_event__competition__name']
 
     def get_queryset(self):
