@@ -5,7 +5,7 @@ from rest_framework.generics import UpdateAPIView
 from ...permissions import  IsJudgeUser
 # from core.utils import event_utils,set_team_score
 from rapair_db.serializers import TeamNonTechScoreSerializer
-from rapair_db.models import Team,CompetitionEvent,TeamCompetitionEvent
+from rapair_db.models import CompetitionEvent,TeamCompetitionEvent
 from rest_framework.exceptions import ValidationError
 import logging
 logger = logging.getLogger(__name__)

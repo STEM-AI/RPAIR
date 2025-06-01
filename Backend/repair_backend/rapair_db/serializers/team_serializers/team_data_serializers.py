@@ -216,10 +216,24 @@ class TeamMemberCertificationSerializer(serializers.ModelSerializer):
 
 class TeamCertificationSerializer(serializers.ModelSerializer):
     members = TeamMemberCertificationSerializer(many=True,read_only=True)
-    competition_name = serializers.CharField(source='competition_event.competition.name')
-    start_date = serializers.CharField(source='competition_event.start_date')   
+    competition_name = serializers.SerializerMethodField()
+    start_date = serializers.SerializerMethodField()   
     class Meta:
         model = Team
         fields = ['id','name','members','competition_name','start_date','team_leader_name']
+
+    def get_competition_name(self,obj):
+        try:
+            event = obj.competition_event.filter(id=self.context['event_id']).first()
+            return event.competition.name
+        except:
+            return None
+
+    def get_start_date(self,obj):
+        try:
+            event = obj.competition_event.filter(id=self.context['event_id']).first()
+            return event.start_date
+        except:
+            return None
 
 

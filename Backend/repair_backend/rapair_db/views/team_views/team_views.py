@@ -64,7 +64,6 @@ class TeamCertificationView(RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = TeamCertificationSerializer
     lookup_field = 'id'
-    lookup_url_kwarg = 'team_id'
 
     def get_queryset(self):
-        return Team.objects.filter(id=self.kwargs.get('team_id'))
+        return Team.objects.filter(id=self.kwargs.get('id'))

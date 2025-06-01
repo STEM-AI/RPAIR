@@ -1,8 +1,8 @@
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated 
 from rest_framework import status
-from ...serializers.team_serializers.team_data_serializers import TeamSerializer,TeamMinimalSerializer
-from ...models import Team
+from rest_framework.permissions import IsAuthenticated 
+from ...serializers.team_serializers import TeamSerializer,TeamMinimalSerializer,UserTeamCompetitionEventSerializer
+from ...models import Team,TeamCompetitionEvent
 from core.utils import event_utils
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
 from drf_spectacular.utils import extend_schema
@@ -282,5 +282,14 @@ class UserTeamRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
         return queryset
     
     
-
+class UserTeamCompetitionEventListCreateView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserTeamCompetitionEventSerializer
+    def get_queryset(self):
+        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['id']).select_related('competition_event')
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['id'] = self.kwargs['id']
+        return context
         
