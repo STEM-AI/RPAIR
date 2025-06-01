@@ -4,7 +4,7 @@ from rapair_db.permissions import IsJudgeUser , IsSuperUser
 from rest_framework import status
 from rapair_db.serializers import TeamSerializer,TeamMinimalSerializer,EventGameSerializer,TeamCertificationSerializer
 from rapair_db.models import Team ,EventGame
-from rest_framework.generics import RetrieveAPIView , ListAPIView 
+from rest_framework.generics import RetrieveAPIView, ListAPIView, RetrieveDestroyAPIView
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
 from rest_framework.filters import SearchFilter
@@ -20,38 +20,30 @@ class TeamListView(ListAPIView):
     search_fields = ['name']
         
 
-class TeamProfileView(RetrieveAPIView):
+class TeamRetrieveDestroyView(RetrieveDestroyAPIView):
     permission_classes = [IsSuperUser]
     serializer_class = TeamSerializer
-    lookup_url_kwarg = 'team_name'
-    lookup_field = 'name'  # Lookup by team name instead of the default 'pk'
+    lookup_field = 'id'  # Lookup by team name instead of the default 'pk'
 
     def get_queryset(self):
         return (
             Team.objects
             .prefetch_related(
-            'sponsors', 
-            'social_media',
-            'previous_competition',
-            'coach',
-            'members',
-            'competition_event'
+                'sponsors', 
+                'social_media',
+                'previous_competition',
+                'coach',
+                'members',
+                'competition_event'
             )
             .select_related('organization')
-            )
-    
+        )
 
-class DeleteTeam(APIView):
-    ##Admin view
-    permission_classes = [IsSuperUser]
-    def delete(self, request, team_name):
-        team = Team.objects.filter(name=team_name).first()
-        if team:
-            team.delete()
-            return Response({"message": "Team deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({"message": "Team not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"message": "Team deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
 
 class TeamGamesListView(ListAPIView):
     permission_classes = [AllowAny]
