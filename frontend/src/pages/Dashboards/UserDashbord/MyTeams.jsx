@@ -15,7 +15,24 @@ const MyTeams = () => {
   const [alertType, setAlertType] = useState("");
   const [teamDetails, setTeamDetails] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState({});
   const token = localStorage.getItem("access_token");
+
+  
+  const handleEventChange = (teamId, eventId) => {
+    setSelectedEvent(prev => ({
+      ...prev,
+      [teamId]: eventId
+    }));
+  };
+
+  const hasCompletedEvents = (team) => {
+    return Array.isArray(team.is_completed) && 
+           team.is_completed.length > 0 && 
+           team.is_completed.some(event => event.is_completed);
+  };
+
+
 
   useEffect(() => {
     if (!token) {
@@ -136,37 +153,71 @@ const MyTeams = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTeams.map((team) => (
-          <div className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out group hover:-translate-y-1.5 border border-gray-100">
-    <div className="px-6 py-5">
-      <div className="flex items-start mb-4">
-        <div className="bg-cyan-100 p-3 rounded-lg mr-4">
-          <Groups className="text-cyan-600 text-2xl" />
-        </div>
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800 truncate">
-            {team.name || "Unnamed Team"}
-          </h3>
-         
-        </div>
-      </div>
-
-      <div className="mt-6 flex justify-between border-t border-gray-100 pt-4">
-      {team.is_completed && (
-        <Link to={`/Dashboard/User/Certificate/${team.id}`} className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-2 rounded-lg mr-2 flex items-center">
-          Certificate
-        </Link>
-      )}
-        <Link
-          to={`/Dashboard/Teams/User/${team.name}`}
-          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-medium rounded-lg transition-all hover:from-cyan-700 hover:to-teal-600 shadow-sm hover:shadow-md"
-        >
-          <span>View Details</span>
-        </Link>
-      </div>
-    </div>
-  </div>
-        ))}
+      {filteredTeams.map((team) => {
+          // Get completed events for this team
+          const completedEvents = Array.isArray(team.is_completed) 
+            ? team.is_completed.filter(event => event.is_completed)
+            : [];
+          
+          // Set default selected event
+          const defaultEventId = completedEvents[0]?.id;
+          const selectedEventId = selectedEvent[team.id] || defaultEventId;
+          
+          return (
+            <div className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out group hover:-translate-y-1.5 border border-gray-100">
+            <div className="px-6 py-5">
+              <div className="flex items-start mb-4">
+                <div className="bg-cyan-100 p-3 rounded-lg mr-4">
+                  <Groups className="text-cyan-600 text-2xl" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 truncate">
+                    {team.name || "Unnamed Team"}
+                  </h3>
+                 
+                </div>
+              </div>
+        
+              <div className="mt-6 flex flex-wrap gap-2 justify-between border-t border-gray-100 pt-4">
+                  {hasCompletedEvents(team) && (
+                    <div className="flex flex-col w-full mb-2">
+                      <label htmlFor={`event-select-${team.id}`} className="text-sm text-gray-600 mb-1">
+                        Select event for certificate:
+                      </label>
+                      <div className="flex gap-2">
+                        <select
+                          id={`event-select-${team.id}`}
+                          value={selectedEventId}
+                          onChange={(e) => handleEventChange(team.id, parseInt(e.target.value))}
+                          className="flex-grow appearance-none bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                        >
+                          {completedEvents.map(event => (
+                            <option key={event.id} value={event.id}>
+                              {event.name}
+                            </option>
+                          ))}
+                        </select>
+                        <Link 
+                          to={`/Dashboard/User/Certificate/${team.id}?event=${encodeURIComponent(selectedEventId)}`}
+                          className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-2 rounded-lg flex items-center whitespace-nowrap"
+                        >
+                          <Done className="mr-1" /> Certificate
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <Link
+                    to={`/Dashboard/Teams/User/${team.id}`}
+                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-medium rounded-lg transition-all hover:from-cyan-700 hover:to-teal-600 shadow-sm hover:shadow-md"
+                  >
+                    <span>View Details</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {filteredTeams.length === 0 && !isLoading && (

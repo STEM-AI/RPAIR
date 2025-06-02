@@ -181,10 +181,11 @@ import {
 import { Link } from "react-router-dom";
 
 const MyTeamDetails = () => {
-  const { team_name } = useParams();
+  const { id } = useParams();  
   const [team, setTeam] = useState(null);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("access_token");
+  
 
   useEffect(() => {
     if (!token) {
@@ -195,7 +196,7 @@ const MyTeamDetails = () => {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/user/${team_name}`,
+          `${process.env.REACT_APP_API_URL}/team/user/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -207,7 +208,7 @@ const MyTeamDetails = () => {
     };
 
     fetchTeamDetails();
-  }, [team_name, token]);
+  }, [id, token]);
 
   if (error) {
     return (
@@ -256,7 +257,11 @@ const MyTeamDetails = () => {
         <h2 className="text-4xl font-bold mb-2 drop-shadow-md">{team.name}</h2>
         <div className="flex items-center justify-center gap-2">
           <EmojiEvents className="text-yellow-300" />
-          <p className="text-xl font-medium">{team.competition_event}</p>
+          <p className="text-xl font-medium">
+            {typeof team.competition_event === 'object' 
+              ? team.competition_event.name 
+              : team.competition_event}
+          </p>
         </div>
       </div>
 

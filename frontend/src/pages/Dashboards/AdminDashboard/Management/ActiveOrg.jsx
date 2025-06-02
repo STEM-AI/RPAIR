@@ -7,11 +7,16 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { IoDocumentText } from "react-icons/io5";
+import OrgDetails from "../OrgDetails"
+
 
 
 
 
 export default function ActiveOrg() {
+    const [viewOrg, setViewOrg] = useState(false);
+    const [selectedOrganization, setSelectedOrganization] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [organizations, setOrganizations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -38,7 +43,7 @@ export default function ActiveOrg() {
         try {
             setLoading(true);
             const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/organization/list-organizations/`,
+                `${process.env.REACT_APP_API_URL}/organization/`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                     params
@@ -105,46 +110,56 @@ export default function ActiveOrg() {
         org.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const handleDeleteOrganization = async (org) => {
-    // التحقق من وجود فرق أو أحداث مرتبطة بالمنظمة
+    let warningMessage = "";
+    let hasDependencies = false;
+    
     if (org.has_teams || org.has_events) {
-      let errorMessage = "Cannot delete organization because it has ";
+      hasDependencies = true;
+      warningMessage = "WARNING: This organization has ";
       const issues = [];
       
       if (org.has_teams) issues.push("teams");
       if (org.has_events) issues.push("events");
       
-      errorMessage += issues.join(" and ") + " associated with it.";
-      
-      Swal.fire({
-        icon: "error",
-        title: "Delete Failed",
-        text: errorMessage,
-        footer: "You must remove all teams and events first."
-      });
-      return;
+      warningMessage += issues.join(" and ") + " associated with it. ";
+      warningMessage += "Deleting it will remove ALL associated data permanently!";
     }
-  
+    
+    const confirmationTitle = hasDependencies 
+      ? "Proceed with deletion?" 
+      : 'Are you sure?';
+      
+    const confirmationText = hasDependencies
+      ? warningMessage + `\n\nAre you sure you want to delete the "${org.name}" organization? \nThis action cannot be undone!`
+      : `Are you sure you want to delete the "${org.name}" organization? \nYou won't be able to revert this!`;
+    
+    const confirmationIcon = hasDependencies ? 'warning' : 'question';
+    
     const confirmation = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Are you sure you want to delete the "${org.name}" organization? \n You won't be able to revert this!`,
-      icon: 'warning',
+      title: confirmationTitle,
+      html: `<div class="text-left">${confirmationText.replace(/\n/g, '<br>')}</div>`,
+      icon: confirmationIcon,
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonColor: '#d9534f' ,
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        popup: 'border-2 border-red-300 rounded-xl',
+        confirmButton: 'hover:shadow-lg transition-all'
+      },
+      focusCancel: true
     });
   
     if (!confirmation.isConfirmed) return;
   
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/organization/delete-organization/${org.id}/`,
+        `${process.env.REACT_APP_API_URL}/organization/${org.id}/`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
   
-      // تحديث قائمة المنظمات بعد الحذف
       setOrganizations(organizations.filter(organization => organization.id !== org.id));
       
       Swal.fire({
@@ -152,17 +167,26 @@ export default function ActiveOrg() {
         title: "Deleted!",
         text: "Organization has been deleted.",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
+        background: '#f0fdf4',
+        iconColor: '#10b981'
       });
     } catch (err) {
       Swal.fire({
         icon: "error",
         title: "Delete Failed",
         text: err.response?.data?.detail || "Could not delete organization",
+        customClass: {
+          popup: 'border-2 border-red-200 rounded-xl'
+        }
       });
     }
-  };
+    };
 
+    const handleViewOrganization = (orgId) => {
+        setSelectedOrganization(orgId);
+        setViewOrg(true);
+      };
 
     return (
         <div className="container max-w-7xl mx-auto px-4 py-8">
@@ -291,6 +315,17 @@ export default function ActiveOrg() {
                                                         Delete
                                                     </span>
                                                 </motion.button>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => handleViewOrganization(org.id)}
+                                                    className="p-4 rounded-lg hover:bg-red-100 transition-colors relative group"
+                                                >
+                                                    <IoDocumentText className="w-5 h-5 text-blue-600" />
+                                                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-cyan-700 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                                                        View
+                                                    </span>
+                                                </motion.button>
                                             </div>
                                         </td>
                                     </motion.tr>
@@ -339,12 +374,22 @@ export default function ActiveOrg() {
                                     </motion.button>
                                     <motion.button
                                         whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleViewOrganization(org.id)}
+                                        className="flex items-center justify-center px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors"
+                                    >
+                                                    <IoDocumentText className="w-5 h-5 text-blue-600" />
+                                                    View Details Organization
+                                    </motion.button>
+                                    <motion.button
+                                        whileTap={{ scale: 0.95 }}
                                         onClick={() => handleDeleteOrganization(org)}
                                         className="flex items-center justify-center px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 transition-colors"
                                     >
                                         <FiTrash2 className="w-4 h-4 mr-2" />
                                         Delete Organization
                                     </motion.button>
+                                   
+                                   
                                 </div>
                             </motion.div>
                         ))}
@@ -379,6 +424,13 @@ export default function ActiveOrg() {
                     )}
                 </div>
             )}
+
+           {viewOrg && (
+                <OrgDetails 
+                    orgID={selectedOrganization} 
+                    onClose={() => setViewOrg(false)}
+                />
+                )}
         </div>
     );
 }

@@ -90,11 +90,16 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                     {/* Management Sub-menu */}
                     {isManagementOpen && (
                       <ul className="pl-6 mt-2">
-                        {/* <Link to="/Dashboard/Admin/CreateCompetition">
+                        <Link to="/Dashboard/Admin/CreateCompetition">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Create Competitions
                           </li>
-                        </Link> */}
+                        </Link>
+                        <Link to="/Dashboard/Admin/Upload_QuestionsFile">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Upload Questions File 
+                          </li>
+                        </Link>
                         <Link to="/Dashboard/Admin/CreateEvent">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Create Event

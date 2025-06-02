@@ -129,6 +129,7 @@ const CreateEvent = ({orgID}) => {
     { value: "vex_iq", label: "VEX IQ" },
     { value: "vex_123", label: "VEX 123" },
     { value: "vex_go", label: "Vex GO" },
+    { value: "arduino", label: "Arduino" },
   ];
 
   return (

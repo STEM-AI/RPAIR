@@ -10,13 +10,13 @@ const options = [
   { value: "vex_123", label: "VEX 123" },
     { value: "vex_go", label: "Vex GO" },
     { value: "web_design", label: "Web Design" },
-    { value: "open_source", label: "Open Source" },
-    { value: "mobile_application", label: "Mobile Application" },
+    { value: "arduino", label: "Arduino" },
+    { value: "flutter", label: "Flutter" },
     { value: "programming", label: "Programming" },
-    { value: "artificial_intelligence", label: "Artificial Intelligence" },
-    { value: "fablab", label: "Fablab" },
-    { value: "st_math", label: "ST Math" },
-    { value: "graphic_design", label: "Graphic Design" },
+    // { value: "artificial_intelligence", label: "Artificial Intelligence" },
+    // { value: "fablab", label: "Fablab" },
+    // { value: "st_math", label: "ST Math" },
+    // { value: "graphic_design", label: "Graphic Design" },
 ];
 const CreateCompetition = () => {
   const [formData, setFormData] = useState({

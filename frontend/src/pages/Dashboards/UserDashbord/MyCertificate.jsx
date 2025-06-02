@@ -262,13 +262,15 @@
 import html2canvas from "html2canvas";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Certificate from "../../../components/Certificate/Certificate";
 
 export default function MyCertificate() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get('event');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   useEffect(() => {
@@ -336,7 +338,7 @@ export default function MyCertificate() {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/${id}/certification/`,
+          `${process.env.REACT_APP_API_URL}/team/${id}/${eventId}/certification/`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const teamData = response.data;

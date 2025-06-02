@@ -114,7 +114,7 @@ const CreateTeam = () => {
   
           try {
               const response = await axios.get(
-                  `${process.env.REACT_APP_API_URL}/organization/list-organizations/`,
+                  `${process.env.REACT_APP_API_URL}/organization/`,
                   {
                       headers: { Authorization: `Bearer ${token}` }
                   }
@@ -301,7 +301,7 @@ const handleSubmit = async (event) => {
     formDataToSend.append("members", JSON.stringify(formData.members));
 
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/team/create/`,
+      `${process.env.REACT_APP_API_URL}/team/user/`,
       formDataToSend,
       {
         headers: {
@@ -426,9 +426,12 @@ const handleSubmit = async (event) => {
               required
             >
               <option value="">Select Competition</option>
-              <option value="vex_iq">VEX IQ</option>
-              <option value="vex_go">VEX GO</option>
-              <option value="vex_123">VEX 123</option>
+                  <option value="vex_iq">Vex IQ</option>
+                  <option value="vex_go">Vex GO</option>
+                  <option value="vex_123">Vex 123</option>
+                  <option value="arduino">Arduino</option>                                        
+                  <option value="flutter">Flutter</option>                                        
+                  <option value="programming">Programming</option> 
             </select>
           </div>
           <div className="w-full md:w-1/2">

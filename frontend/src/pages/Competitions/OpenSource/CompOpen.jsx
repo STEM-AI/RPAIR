@@ -1,21 +1,23 @@
+
 // import React, { useState, useRef } from 'react';
 // import { useParams, useNavigate } from 'react-router-dom';
-// import { motion, AnimatePresence } from 'framer-motion';
+// import { motion } from 'framer-motion';
 // import logo from "../../../assets/Static/logoWrite-re.png";
 
 // const CompOpen = () => {
 //   const { competition } = useParams();
 //   const navigate = useNavigate();
-//   const [selectedFile, setSelectedFile] = useState(null);
+//   const [selectedFiles, setSelectedFiles] = useState([]);
 //   const [uploadStatus, setUploadStatus] = useState('');
 //   const fileInputRef = useRef(null);
 
 //   const competitionDetails = {
 //     arduino: {
 //       title: "Arduino",
-//       description: "Join the Arduino challenge and showcase your electronics and programming skills by building innovative projects.",
+//       description: "Showcase your embedded systems skills with innovative Arduino projects",
 //       color: "from-emerald-500 to-emerald-700",
-//       allowedTypes: ['.ino', '.zip', '.pdf']
+//       allowedTypes: ['.zip','.rar'],
+//       maxSize: 200
 //     },
 //   };
 
@@ -26,31 +28,39 @@
 //   };
 
 //   const handleFileChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       setSelectedFile(file);
-//       setUploadStatus('');
+//     const files = Array.from(e.target.files);
+    
+//     if (files.length > 0) {
+//       const oversizedFiles = files.filter(file =>
+//         file.size > details.maxSize * 1024 * 1024
+//       );
+      
+//       if (oversizedFiles.length > 0) {
+//         setUploadStatus(`Some files exceed ${details.maxSize}MB limit`);
+//         return;
+//       }
+      
+//       setSelectedFiles(files);
+//       setUploadStatus(`${files.length} file(s) selected`);
 //     }
 //   };
 
-//   const handleUpload = async () => {
-//     if (!selectedFile) {
-//       setUploadStatus('Please select a file first!');
+//   const handleSubmission = async () => {
+//     if (selectedFiles.length === 0) {
+//       setUploadStatus('Please select files first!');
 //       return;
 //     }
 
-//     // Add your upload logic here
 //     try {
-//       // Simulated upload delay
+//       setUploadStatus('Uploading...');
 //       await new Promise(resolve => setTimeout(resolve, 1500));
-//       setUploadStatus('Upload successful!');
+      
+//       setUploadStatus('Upload successful! Redirecting...');
 //       setTimeout(() => navigate(`/Dashboard/Competitions`), 2000);
 //     } catch (error) {
 //       setUploadStatus('Upload failed. Please try again.');
 //     }
 //   };
-
-
 
 //   return (
 //     <motion.div
@@ -60,7 +70,7 @@
 //       exit={{ opacity: 0 }}
 //       transition={{ duration: 0.5 }}
 //     >
-//       {/* Animated background elements - kept as requested */}
+//       {/* Animated background elements */}
 //       <div className="fixed inset-0 -z-10 overflow-hidden">
 //         {[...Array(8)].map((_, i) => (
 //           <motion.div
@@ -109,7 +119,7 @@
 //             <motion.h1
 //               className="text-3xl pb-3 sm:text-4xl font-extrabold bg-gradient-to-r from-gray-50 to-gray-100 bg-clip-text text-transparent"
 //             >
-//             {details.title} Competition
+//               {details.title} Competition
 //             </motion.h1>
 //           </motion.div>
 //           <motion.p
@@ -122,7 +132,7 @@
 //           </motion.p>
 //         </motion.div>
 
-//         {/* Competition Info Card */}
+//         {/* File Upload Section */}
 //         <motion.div
 //           className="bg-gray-100 bg-opacity-90 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-10 border border-gray-200 border-opacity-30"
 //           initial={{ scale: 0.95, opacity: 0 }}
@@ -135,41 +145,59 @@
 //               <p className="text-gray-600">Allowed formats: {details.allowedTypes.join(', ')}</p>
 //             </div>
 
-//             <div className="border-2 border-dashed border-cyan-200 rounded-xl p-8 text-center bg-cyan-50/50">
+//             <motion.div
+//               className="border-2 border-dashed border-cyan-200 rounded-xl p-8 text-center bg-cyan-50/50 hover:bg-cyan-50/70 transition-colors cursor-pointer"
+//               onClick={handleFileSelect}
+//               whileHover={{ scale: 1.02 }}
+//               whileTap={{ scale: 0.98 }}
+//             >
 //               <input
 //                 type="file"
 //                 ref={fileInputRef}
 //                 onChange={handleFileChange}
 //                 className="hidden"
 //                 accept={details.allowedTypes.join(',')}
+//                 multiple
 //               />
-              
 //               <div className="space-y-4">
-//                 <button
-//                   onClick={handleFileSelect}
-//                   className="px-6 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
+//                 <svg
+//                   className="w-12 h-12 mx-auto text-cyan-500"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   viewBox="0 0 24 24"
 //                 >
-//                   Choose File
-//                 </button>
-//                 <p className="text-gray-600">
-//                   {selectedFile ? selectedFile.name : "No file selected"}
-//                 </p>
+//                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+//                 </svg>
+//                 <div className="text-gray-600">
+//                   {selectedFiles.length > 0 ? (
+//                     <div className="space-y-2">
+//                       <p className="text-cyan-700 font-medium">{selectedFiles.length} file(s) selected</p>
+//                       <ul className="text-sm list-disc pl-4">
+//                         {selectedFiles.map((file, index) => (
+//                           <li key={index} className="text-cyan-600 text-left">{file.name}</li>
+//                         ))}
+//                       </ul>
+//                     </div>
+//                   ) : (
+//                     "Click to select files"
+//                   )}
+//                 </div>
 //                 {uploadStatus && (
 //                   <p className={`text-sm ${uploadStatus.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
 //                     {uploadStatus}
 //                   </p>
 //                 )}
 //               </div>
-//             </div>
+//             </motion.div>
 
-//             <div className="mt-6 text-sm text-gray-500">
-//               <p>• Max file size: 25MB</p>
-//               <p>• Make sure to include all required documentation</p>
+//             <div className="mt-4 text-sm text-gray-500 text-center">
+//               <p>Max file size: {details.maxSize}MB per file</p>
+//               <p className="text-xs opacity-75 mt-1">Please compress files to ZIP archive if needed</p>
 //             </div>
 //           </div>
 //         </motion.div>
 
-//         {/* Updated Action Buttons */}
+//         {/* Action Buttons */}
 //         <motion.div
 //           className="text-center space-x-4"
 //           initial={{ opacity: 0 }}
@@ -177,23 +205,25 @@
 //           transition={{ delay: 0.9 }}
 //         >
 //           <motion.button
-//             onClick={handleUpload}
+//             onClick={handleSubmission}
 //             whileHover={{
 //               scale: 1.05,
 //               boxShadow: "0 20px 40px -10px rgba(6, 182, 212, 0.4)"
 //             }}
 //             whileTap={{ scale: 0.98 }}
-//             className="px-12 py-4 rounded-xl font-bold text-2xl text-white bg-gradient-to-r from-cyan-400 to-cyan-600 shadow-lg shadow-cyan-500/50"
+//             className="px-12 py-4 rounded-xl font-bold text-2xl text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 shadow-lg shadow-cyan-500/50"
 //           >
-//             Upload Project
+//             Upload Files
 //           </motion.button>
 
-//           <button
+//           <motion.button
 //             onClick={() => navigate(-1)}
-//             className="px-8 py-4 rounded-xl font-bold text-2xl text-cyan-100 hover:text-white bg-cyan-700/30 hover:bg-cyan-700/50 transition-colors"
+//             whileHover={{ scale: 1.05 }}
+//             whileTap={{ scale: 0.95 }}
+//             className="px-8 py-4 rounded-xl font-bold text-2xl text-cyan-100 bg-cyan-700/30 hover:bg-cyan-700/50 transition-colors"
 //           >
 //             Cancel
-//           </button>
+//           </motion.button>
 //         </motion.div>
 //       </div>
 //     </motion.div>
@@ -201,6 +231,7 @@
 // };
 
 // export default CompOpen;
+
 
 import React, { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -210,7 +241,7 @@ import logo from "../../../assets/Static/logoWrite-re.png";
 const CompOpen = () => {
   const { competition } = useParams();
   const navigate = useNavigate();
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
   const fileInputRef = useRef(null);
 
@@ -219,7 +250,7 @@ const CompOpen = () => {
       title: "Arduino",
       description: "Showcase your embedded systems skills with innovative Arduino projects",
       color: "from-emerald-500 to-emerald-700",
-      allowedTypes: ['.ino', '.zip', '.pdf', '.rar','.doc', '.docx','.ppt', '.pptx'],
+      allowedTypes: ['.zip','.rar'],
       maxSize: 200
     },
   };
@@ -231,26 +262,33 @@ const CompOpen = () => {
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const file = e.target.files[0];
     
-    if (files.length > 0) {
-      const oversizedFiles = files.filter(file => 
-        file.size > details.maxSize * 1024 * 1024
-      );
-      
-      if (oversizedFiles.length > 0) {
-        setUploadStatus(`Some files exceed ${details.maxSize}MB limit`);
+    if (file) {
+      // Check file type
+      const fileExtension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+      if (!details.allowedTypes.includes(fileExtension)) {
+        setUploadStatus(`Invalid file type. Only ${details.allowedTypes.join(', ')} allowed`);
         return;
       }
       
-      setSelectedFiles(files);
-      setUploadStatus(`${files.length} file(s) selected`);
+      // Check file size
+      if (file.size > details.maxSize * 1024 * 1024) {
+        setUploadStatus(`File exceeds ${details.maxSize}MB limit`);
+        return;
+      }
+      
+      setSelectedFile(file);
+      setUploadStatus('File selected and ready to upload');
+    } else {
+      setSelectedFile(null);
+      setUploadStatus('No file selected');
     }
   };
 
   const handleSubmission = async () => {
-    if (selectedFiles.length === 0) {
-      setUploadStatus('Please select files first!');
+    if (!selectedFile) {
+      setUploadStatus('Please select a file first!');
       return;
     }
 
@@ -345,7 +383,7 @@ const CompOpen = () => {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-cyan-800 mb-2">Project Submission</h2>
-              <p className="text-gray-600">Allowed formats: {details.allowedTypes.join(', ')}</p>
+              <p className="text-gray-600">Upload a single compressed file ({details.allowedTypes.join(', ')})</p>
             </div>
 
             <motion.div 
@@ -360,7 +398,6 @@ const CompOpen = () => {
                 onChange={handleFileChange}
                 className="hidden"
                 accept={details.allowedTypes.join(',')}
-                multiple
               />
               <div className="space-y-4">
                 <svg 
@@ -372,21 +409,21 @@ const CompOpen = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <div className="text-gray-600">
-                  {selectedFiles.length > 0 ? (
+                  {selectedFile ? (
                     <div className="space-y-2">
-                      <p className="text-cyan-700 font-medium">{selectedFiles.length} file(s) selected</p>
-                      <ul className="text-sm list-disc pl-4">
-                        {selectedFiles.map((file, index) => (
-                          <li key={index} className="text-cyan-600 text-left">{file.name}</li>
-                        ))}
-                      </ul>
+                      <div className="text-cyan-700 font-medium truncate" title={selectedFile.name}>
+                        {selectedFile.name}
+                      </div>
+                      <div className="text-sm text-cyan-600">
+                        {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </div>
                     </div>
                   ) : (
-                    "Click to select files"
+                    "Click to select a compressed file"
                   )}
                 </div>
                 {uploadStatus && (
-                  <p className={`text-sm ${uploadStatus.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+                  <p className={`text-sm ${uploadStatus.includes('success') ? 'text-green-600' : uploadStatus.includes('ready') ? 'text-cyan-600' : 'text-red-600'}`}>
                     {uploadStatus}
                   </p>
                 )}
@@ -394,8 +431,8 @@ const CompOpen = () => {
             </motion.div>
 
             <div className="mt-4 text-sm text-gray-500 text-center">
-              <p>Max file size: {details.maxSize}MB per file</p>
-              <p className="text-xs opacity-75 mt-1">Please compress files to ZIP archive if needed</p>
+              <p>Max file size: {details.maxSize}MB</p>
+              <p className="text-xs opacity-75 mt-1">Please compress your project to a single ZIP/RAR file</p>
             </div>
           </div>
         </motion.div>
@@ -416,7 +453,7 @@ const CompOpen = () => {
             whileTap={{ scale: 0.98 }}
             className="px-12 py-4 rounded-xl font-bold text-2xl text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 shadow-lg shadow-cyan-500/50"
           >
-            Upload Files
+            Upload File
           </motion.button>
 
           <motion.button

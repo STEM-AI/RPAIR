@@ -131,6 +131,8 @@ import RegisterOrg from "./pages/Auth/RegisterOrg";
 import OrganizerDash from "./pages/Dashboards/OrganizerDash/OrganizerDash";
 import ActiveOrg from "./pages/Dashboards/AdminDashboard/Management/ActiveOrg";
 import Python from "./pages/Dashboards/Judge/JudgeComp/Programming/Python";
+import FileComp from "./pages/Dashboards/Judge/JudgeComp/OpenSource/FileComp";
+import UploadFileMcq from "./pages/Dashboards/AdminDashboard/Management/UploedFileMcq";
 
 
 const App = () => {
@@ -418,6 +420,17 @@ const App = () => {
           }
         />
         <Route
+          path="/Dashboard/Admin/Upload_QuestionsFile"
+          element={
+            
+             <Layout hideNavbar>
+             <LayoutDashboard>
+             <UploadFileMcq />
+             </LayoutDashboard>
+           </Layout>
+          }
+        />
+        <Route
           path="/Dashboard/Admin/ActiveOrganization"
           element={
             <Layout hideNavbar>
@@ -482,7 +495,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Teams/:team_name"
+          path="/Dashboard/Teams/:id"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -599,7 +612,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/teams/User/:team_name"
+          path="/Dashboard/teams/User/:id"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -694,6 +707,17 @@ const App = () => {
             </Layout>
           }
         />
+       <Route
+  path="/Dashboard/JudgeEvent/:competition_name"
+  element={
+    <Layout hideNavbar>
+      <LayoutDashboard>
+        <FileComp />
+      </LayoutDashboard>
+    </Layout>
+  }
+/>
+        
        
 
         <Route

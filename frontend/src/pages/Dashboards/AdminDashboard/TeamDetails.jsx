@@ -6,18 +6,20 @@ import axios from "axios";
 
 
 const TeamDetails = () => {
-  const { team_name } = useParams();
+    const { id } = useParams();
   const navigate = useNavigate();
   const [teamDetails, setTeamDetails] = useState(null);
   const [error, setError] = useState(null);
   const [deletionError, setDeletionError] = useState(null);
   const token = localStorage.getItem("access_token");
+  console.log("Team ID:", id);
+  
 
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/${team_name}/team-profile/`,
+          `${process.env.REACT_APP_API_URL}/team/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -31,12 +33,12 @@ const TeamDetails = () => {
     };
 
     fetchTeamDetails();
-  }, [team_name, token]);
+  }, [id, token]);
 
   const handleDeleteTeam = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/admin/${team_name}/delete-team/`,
+        `${process.env.REACT_APP_API_URL}/admin/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,7 +68,9 @@ const TeamDetails = () => {
       {/* Basic Information */}
       <div className="space-y-4">
         <p className="text-lg font-semibold text-gray-700">
-          Competition: <span className="font-normal">{teamDetails.competition_event || "N/A"}</span>
+          Competition: <span className="font-normal"> {typeof teamDetails.competition_event === 'object' 
+              ? teamDetails.competition_event.name 
+              : teamDetails.competition_event}</span>
         </p>
         <p className="text-lg text-gray-700">
           Organization: <span className="font-medium">{teamDetails.organization?.name || "N/A"}</span>
