@@ -201,9 +201,12 @@ const MyTeamDetails = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        if (!response.data) {
+          throw new Error("No team data received");
+        }
         setTeam(response.data);
       } catch (err) {
-        setError("Failed to fetch team details. Please try again.");
+        setError(err.message || "Failed to fetch team details. Please try again.");
       }
     };
 
@@ -258,9 +261,11 @@ const MyTeamDetails = () => {
         <div className="flex items-center justify-center gap-2">
           <EmojiEvents className="text-yellow-300" />
           <p className="text-xl font-medium">
-            {typeof team.competition_event === 'object' 
-              ? team.competition_event.name 
-              : team.competition_event}
+            {team.competition_event ? 
+              (typeof team.competition_event === 'object' 
+                ? team.competition_event.name 
+                : team.competition_event)
+              : "No event specified"}
           </p>
         </div>
       </div>

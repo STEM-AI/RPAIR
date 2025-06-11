@@ -17,7 +17,7 @@ const ListCompetitions = () => {
     { name: "Robotics ", apiName: "robotics", image: robotics },
     { name: "Open Source", apiName: "OpenSource", image: OpenSource },
     { name: "Web Design", apiName: "web_development", image: Web },
-    { name: "Programming", apiName: "python_programming", image: programming },
+    { name: "Programming", apiName: "programming", image: programming },
     { name: "Artificial Intelligence", apiName: "ai_ml", image: AI },
     { name: "Mobile Application", apiName: "mobile_development", image: mobile},
     { name: "FabLab competitions", apiName: "fabLab", image: fablab },

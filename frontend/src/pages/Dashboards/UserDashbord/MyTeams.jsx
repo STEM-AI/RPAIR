@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import { Icon } from "@mui/material";
 import { Groups, Engineering, School, Person, Phone, SmartToy, Search, Done } from "@mui/icons-material";
 const MyTeams = () => {
-  const { team_name } = useParams();
+  const { id } = useParams();
   const [teams, setTeams] = useState([]);
   const [filteredTeams, setFilteredTeams] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -77,7 +77,7 @@ const MyTeams = () => {
     };
 
     fetchData();
-  }, [token, team_name]);
+  }, [token, id]);
 
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();

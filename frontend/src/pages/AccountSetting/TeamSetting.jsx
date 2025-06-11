@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 
 function TeamSetting() {
-  const { team_name } = useParams();
+  const { id } = useParams();
   const [userData, setUserData] = useState({
     name: "",
     robot_name: "",
@@ -45,7 +45,7 @@ function TeamSetting() {
 
       try {
         const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/user/${team_name}/`,
+          `${process.env.REACT_APP_API_URL}/team/user/${id}/`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -58,7 +58,7 @@ function TeamSetting() {
         };
 
         setUserData(initialData);
-        setOriginalData(JSON.parse(JSON.stringify(initialData))); // Deep copy
+        setOriginalData(JSON.parse(JSON.stringify(initialData)));
       } catch (err) {
         setError("Failed to load user data");
         console.error("Fetch error:", err);
@@ -68,7 +68,7 @@ function TeamSetting() {
     };
 
     fetchUserData();
-  }, [token, team_name]);
+  }, [token, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -116,19 +116,16 @@ function TeamSetting() {
 
     const changes = {};
     
-    // Compare top-level fields
     Object.keys(userData).forEach(key => {
       if (typeof userData[key] !== 'object' && userData[key] !== originalData[key]) {
         changes[key] = userData[key];
       }
     });
 
-    // Compare organization
     if (JSON.stringify(userData.organization) !== JSON.stringify(originalData.organization)) {
       changes.organization = userData.organization;
     }
 
-    // Compare arrays (coach and members)
     ['coach', 'members'].forEach(arrayName => {
       if (JSON.stringify(userData[arrayName]) !== JSON.stringify(originalData[arrayName])) {
         changes[arrayName] = userData[arrayName];
@@ -141,12 +138,10 @@ function TeamSetting() {
   const validateEmails = () => {
     const emails = new Set();
     
-    // Check team leader email
     if (userData.team_leader_email) {
       emails.add(userData.team_leader_email.toLowerCase());
     }
 
-    // Check coaches emails
     for (const coach of userData.coach) {
       if (!coach.email) continue;
       const lowerEmail = coach.email.toLowerCase();
@@ -156,7 +151,6 @@ function TeamSetting() {
       emails.add(lowerEmail);
     }
 
-    // Check members emails
     for (const member of userData.members) {
       if (!member.email) continue;
       const lowerEmail = member.email.toLowerCase();
@@ -190,7 +184,7 @@ function TeamSetting() {
       const dataToSend = getChangedData();
       
       await axios.patch(
-        `${process.env.REACT_APP_API_URL}/team/${team_name}/edit/`,
+        `${process.env.REACT_APP_API_URL}/team/${id}/edit/`,
         dataToSend,
         {
           headers: {
@@ -200,7 +194,6 @@ function TeamSetting() {
         }
       );
 
-      // Update original data after successful save
       setOriginalData(JSON.parse(JSON.stringify(userData)));
       
       Swal.fire({
@@ -230,209 +223,291 @@ function TeamSetting() {
     }
   };
 
-  if (loading) return <p className="text-center text-cyan-600">Loading...</p>;
-  if (error) return <p className="text-center text-red-600">{error}</p>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-600"></div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-red-200">
+      <div className="text-center text-red-600 p-4 rounded-lg bg-red-50">
+        {error}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-gray-200">
+    <div className="max-w-4xl mx-auto bg-white p-6 md:p-8 shadow-sm rounded-lg mt-6 border border-gray-100">
       <Helmet>
         <title>Team Settings</title>
       </Helmet>
-      <h2 className="text-3xl font-bold text-cyan-600 mb-6 text-center">Team Settings</h2>
       
-      <div className="space-y-6">
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Team Settings</h2>
+        <p className="text-gray-600">Manage your team's information and members</p>
+      </div>
+      
+      <div className="space-y-8 divide-y divide-gray-200">
         {/* Basic Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Team Name</label>
-            <input
-              type="text"
-              name="name"
-              value={userData.name}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Robot Name</label>
-            <input
-              type="text"
-              name="robot_name"
-              value={userData.robot_name}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-            />
+        <div className="pt-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Basic Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
+              <input
+                type="text"
+                name="name"
+                value={userData.name}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Robot Name</label>
+              <input
+                type="text"
+                name="robot_name"
+                value={userData.robot_name}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
+              />
+            </div>
           </div>
         </div>
 
         {/* Team Leader */}
-        <div className="border-t pt-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Team Leader</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="pt-8">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Team Leader</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
               <input
                 type="text"
                 name="team_leader_name"
                 value={userData.team_leader_name}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 type="email"
                 name="team_leader_email"
                 value={userData.team_leader_email}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
               <input
                 type="tel"
                 name="team_leader_phone_number"
                 value={userData.team_leader_phone_number}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
               />
             </div>
           </div>
         </div>
 
         {/* Organization */}
-        <div className="border-t pt-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Organization</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="pt-8">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Organization</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Organization Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
               <input
                 type="text"
                 name="organization.name"
                 value={userData.organization.name}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Organization Type</label>
-              <input
-                type="text"
+              <label className="block text-sm font-medium text-gray-700 mb-1">Organization Type</label>
+              <select
                 name="organization.type"
                 value={userData.organization.type}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-              />
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border"
+              >
+                <option value="">Select type</option>
+                <option value="school">School</option>
+                <option value="club">Club</option>
+                <option value="non-profit">Non-profit</option>
+                <option value="other">Other</option>
+              </select>
             </div>
           </div>
         </div>
 
         {/* Coaches */}
-        <div className="border-t pt-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Coaches</h3>
-          {userData.coach.map((coach, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <input
-                type="text"
-                placeholder="Name"
-                value={coach.name}
-                onChange={(e) => handleArrayChange("coach", index, "name", e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={coach.email}
-                onChange={(e) => handleArrayChange("coach", index, "email", e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-              />
-              <input
-                type="tel"
-                placeholder="Phone"
-                value={coach.phone_number}
-                onChange={(e) => handleArrayChange("coach", index, "phone_number", e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-              />
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Position"
-                  value={coach.position}
-                  onChange={(e) => handleArrayChange("coach", index, "position", e.target.value)}
-                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-                />
-                <button
-                  onClick={() => removeArrayItem("coach", index)}
-                  className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                >
-                  ×
-                </button>
-              </div>
+        <div className="pt-8">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Coaches</h3>
+            <button
+              onClick={() => addArrayItem("coach", { name: "", email: "", phone_number: "", position: "" })}
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+            >
+              Add Coach
+            </button>
+          </div>
+          
+          {userData.coach.length === 0 ? (
+            <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
+              No coaches added yet
             </div>
-          ))}
-          <button
-            onClick={() => addArrayItem("coach", { name: "", email: "", phone_number: "", position: "" })}
-            className="mt-2 text-cyan-600 hover:text-cyan-700 text-sm"
-          >
-            + Add Coach
-          </button>
+          ) : (
+            <div className="space-y-4">
+              {userData.coach.map((coach, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 p-4 bg-gray-50 rounded-lg">
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Name</label>
+                    <input
+                      type="text"
+                      placeholder="Coach name"
+                      value={coach.name}
+                      onChange={(e) => handleArrayChange("coach", index, "name", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={coach.email}
+                      onChange={(e) => handleArrayChange("coach", index, "email", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      placeholder="Phone number"
+                      value={coach.phone_number}
+                      onChange={(e) => handleArrayChange("coach", index, "phone_number", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Position</label>
+                    <input
+                      type="text"
+                      placeholder="Position"
+                      value={coach.position}
+                      onChange={(e) => handleArrayChange("coach", index, "position", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-1 flex items-end">
+                    <button
+                      onClick={() => removeArrayItem("coach", index)}
+                      className="w-full py-2 px-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Members */}
-        <div className="border-t pt-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Team Members</h3>
-          {userData.members.map((member, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <input
-                type="text"
-                placeholder="Name"
-                value={member.name}
-                onChange={(e) => handleArrayChange("members", index, "name", e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={member.email}
-                onChange={(e) => handleArrayChange("members", index, "email", e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-              />
-              <div className="flex gap-2">
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  value={member.phone_number}
-                  onChange={(e) => handleArrayChange("members", index, "phone_number", e.target.value)}
-                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
-                />
-                <button
-                  onClick={() => removeArrayItem("members", index)}
-                  className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                >
-                  ×
-                </button>
-              </div>
+        <div className="pt-8">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Team Members</h3>
+            <button
+              onClick={() => addArrayItem("members", { name: "", email: "", phone_number: "" })}
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+            >
+              Add Member
+            </button>
+          </div>
+          
+          {userData.members.length === 0 ? (
+            <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
+              No members added yet
             </div>
-          ))}
-          <button
-            onClick={() => addArrayItem("members", { name: "", email: "", phone_number: "" })}
-            className="mt-2 text-cyan-600 hover:text-cyan-700 text-sm"
-          >
-            + Add Member
-          </button>
+          ) : (
+            <div className="space-y-4">
+              {userData.members.map((member, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-10 gap-3 p-4 bg-gray-50 rounded-lg">
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Name</label>
+                    <input
+                      type="text"
+                      placeholder="Member name"
+                      value={member.name}
+                      onChange={(e) => handleArrayChange("members", index, "name", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={member.email}
+                      onChange={(e) => handleArrayChange("members", index, "email", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      placeholder="Phone number"
+                      value={member.phone_number}
+                      onChange={(e) => handleArrayChange("members", index, "phone_number", e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2 border text-sm"
+                    />
+                  </div>
+                  <div className="md:col-span-1 flex items-end">
+                    <button
+                      onClick={() => removeArrayItem("members", index)}
+                      className="w-full py-2 px-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Save Button */}
-        <div className="border-t pt-6">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full bg-cyan-600 text-white py-2 px-4 rounded-md hover:bg-cyan-700 disabled:bg-gray-400 transition-colors"
-          >
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
+        <div className="pt-8">
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:bg-cyan-400"
+            >
+              {saving ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </>
+              ) : "Save Changes"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ export default function UploadFileMcq() {
       formData.append('file', selectedFile); // 'file' should match backend expectation
 
       await axios.post(
-        `${process.env.REACT_APP_API_URL_AUTH}/programming/upload-questions/`,
+        `${process.env.REACT_APP_API_URL}/programming/upload-questions/`,
         formData,
         {
           headers: {
