@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class UserTeamListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
+    queryset = Team.objects.all()
     parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['competition_event__name', 'competition_event__competition__name']

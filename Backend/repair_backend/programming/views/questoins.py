@@ -46,26 +46,31 @@ class QuestionListAPIView(ListAPIView):
         compiler_count = int(num_questions * 0.25)  # 25% for compiler
         problem_solving_count = num_questions - session_count - compiler_count  # Remaining 50% for problem solving
         
-        # Get questions from each category
-        session_questions = Question.objects.filter(
-            category='session'
-        ).order_by('?')[:session_count]
+        # Get base queryset with filters applied
+        base_queryset = Question.objects.all()
         
-        compiler_questions = Question.objects.filter(
-            category='compiler'
-        ).order_by('?')[:compiler_count]
+        # Apply any filters from request parameters
+        if self.request.query_params:
+            base_queryset = self.filter_queryset(base_queryset)
         
-        problem_solving_questions = Question.objects.filter(
-            category='problem_solving'
-        ).order_by('?')[:problem_solving_count]
+        # Get questions from each category with filters already applied
+        session_questions = base_queryset.filter(category='session').order_by('?')[:session_count]
+        compiler_questions = base_queryset.filter(category='compiler').order_by('?')[:compiler_count]
+        problem_solving_questions = base_queryset.filter(category='problem_solving').order_by('?')[:problem_solving_count]
         
-        # Combine all questions
-        combined_questions = list(session_questions) + list(compiler_questions) + list(problem_solving_questions)
-        
-        # Shuffle the combined list to randomize the order
-        random.shuffle(combined_questions)
+        # Combine all questions using union
+        combined_questions = session_questions.union(
+            compiler_questions,
+            problem_solving_questions
+        )
         
         return combined_questions
+
+    def filter_queryset(self, queryset):
+        """
+        Override filter_queryset to prevent filtering after union
+        """
+        return queryset
     
 class QuestionDetailAPIView(RetrieveAPIView):
     serializer_class = QuestionSerializer

@@ -5,7 +5,7 @@ from rapair_db.models import CompetitionEvent
 class QuestionMinimalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['id', 'text','category']
+        fields = ['id', 'text','category','type']
 
 class QuestionSerializer(serializers.ModelSerializer):
     answers = AnswerMinimalSerializer(many=True)
