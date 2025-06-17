@@ -5,6 +5,7 @@ class Question(models.Model):
     difficulty = models.CharField(max_length=20,choices=[('easy','easy'),('medium','medium'),('hard','hard')],default='easy')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # type = models.CharField(max_length=20,choices=[('python','python'),('cpp','cpp'),('tinkery','tinkery'),('flutter','flutter'),('arduino','arduino'),('tinkercad','tinkercad')],default='python')
     category = models.CharField(max_length=20,choices=[('session','session'),('compiler','compiler'),('problem_solving','problem_solving')],default='session')
 
     def __str__(self):

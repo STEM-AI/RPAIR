@@ -23,3 +23,4 @@ class UserTeamCompetitionEventSerializer(serializers.ModelSerializer):
         validated_data['team'] = team
         return super().create(validated_data)
 
+

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from ...serializers.team_serializers import TeamSerializer,TeamMinimalSerializer,UserTeamCompetitionEventSerializer
 from ...models import Team,TeamCompetitionEvent
 from core.utils import event_utils
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,ListAPIView
 from drf_spectacular.utils import extend_schema
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import json
@@ -292,4 +292,8 @@ class UserTeamCompetitionEventListCreateView(ListCreateAPIView):
         context = super().get_serializer_context()
         context['id'] = self.kwargs['id']
         return context
-        
+class UserTeamLiveCompetitionEventListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserTeamCompetitionEventSerializer
+    def get_queryset(self):
+        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['id'],competition_event__is_live=True).select_related('competition_event')
