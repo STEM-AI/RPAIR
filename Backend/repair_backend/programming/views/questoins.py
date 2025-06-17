@@ -30,8 +30,8 @@ class NumberOfQuestionsUpdateView(UpdateAPIView):
 )
 class QuestionListAPIView(ListAPIView):
     serializer_class = QuestionMinimalSerializer
-    queryset = Question.objects.all()
     permission_classes = [AllowAny]
+    queryset = Question.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category','type']
 
