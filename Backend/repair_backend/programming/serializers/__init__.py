@@ -1,2 +1,2 @@
-from .questions import QuestionSerializer,QuestionMinimalSerializer
+from .questions import QuestionSerializer,QuestionMinimalSerializer,ProgrammingCompetitionEventSerializer
 from .answers import AnswerSerializer

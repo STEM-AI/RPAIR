@@ -11,7 +11,8 @@ def add_questoins_from_csv(reader):
                 question, created = Question.objects.get_or_create(
                     text=row['question'],
                     category=row['category'],
-                    difficulty=row['difficulty']
+                    difficulty=row['difficulty'],
+                    type=row['type']
                 )
                 logger.info(f"Question created:{question} {created}")
 

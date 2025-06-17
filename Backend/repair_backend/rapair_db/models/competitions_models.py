@@ -51,6 +51,7 @@ class CompetitionEvent(models.Model):
     is_active = models.BooleanField(default=True)
     is_live = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
+    number_of_questions = models.IntegerField(default=0)
     organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='events', null=True, blank=True)
 
     MINI_EVENT = 'Mini'
