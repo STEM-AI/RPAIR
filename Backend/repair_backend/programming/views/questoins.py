@@ -101,7 +101,25 @@ class UploadQuestionsCSV(APIView):
         if not file.name.endswith('.csv'):
             return Response({"detail": "Only CSV files are allowed."}, status=status.HTTP_400_BAD_REQUEST)
         
-        decoded_file = file.read().decode('utf-8').splitlines()
+        # Try different encodings
+        encodings = ['utf-8', 'latin-1', 'windows-1252', 'cp1252']
+        decoded_file = None
+        
+        for encoding in encodings:
+            try:
+                file_content = file.read()
+                decoded_file = file_content.decode(encoding).splitlines()
+                break
+            except UnicodeDecodeError:
+                file.seek(0)  # Reset file pointer for next attempt
+                continue
+        
+        if decoded_file is None:
+            return Response(
+                {"detail": "Could not decode the file. Please ensure it's a valid CSV file with proper encoding."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         reader = csv.DictReader(decoded_file)
         try:
             add_questoins_from_csv(reader)
