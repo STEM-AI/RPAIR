@@ -1,5 +1,7 @@
 from django.db import models
 from core.models import Schedule
+from django.utils import timezone
+
 class Competition(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -83,6 +85,30 @@ class CompetitionEvent(models.Model):
                 name='unique_event'
             )
         ]
+
+    def save(self, *args, **kwargs):
+        today = timezone.now().date()
+        if self.start_date > self.end_date:
+            raise ValueError("Start date cannot be greater than end date")
+        if self.start_date < today:
+            raise ValueError("Start date cannot be in the past")
+        if self.end_date < today:
+            raise ValueError("End date cannot be in the past")
+        if self.start_date > self.end_date:
+            raise ValueError("Start date cannot be greater than end date")
+        if today > self.start_date and today < self.end_date:
+            self.is_live = True
+        else:
+            self.is_live = False
+        if today > self.end_date:
+            self.is_completed = True
+        else:
+            self.is_completed = False
+        if today < self.start_date:
+            self.is_active = True
+        else:
+            self.is_active = False
+        super().save(*args, **kwargs)
 
 class EventGame(models.Model):
     id = models.AutoField(primary_key=True)
