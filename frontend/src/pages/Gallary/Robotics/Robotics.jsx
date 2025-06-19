@@ -33,7 +33,7 @@ const roboticsVex = [
     logo: vexGoLogo,
     bgColor: 'bg-vexGo',
     textColor: 'text-teal-900',
-    path: '/gallery/Robotics/VexGo'
+    path: '/gallery/Robotics/VexGO'
   },
   {
     id: 3,
@@ -51,7 +51,6 @@ const roboticsVex = [
     logo: vexV5Logo,
     bgColor: 'bg-vexV5',
     textColor: 'text-red-900',
-    // path: '/gallery/Robotics/VexV5'
     path: '/competitions/ComingSoon'
   },
 ];

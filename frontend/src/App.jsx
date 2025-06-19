@@ -108,6 +108,7 @@ import MyTeamDetails from "./pages/Dashboards/UserDashbord/MyTeamDetails";
 
 //                          Misc                           //
 import AllSetting from "./pages/AccountSetting/AllSetting";
+import TeamSetting from "./pages/AccountSetting/TeamSetting";
 
 //                      Home pages              //
 import Gallery from "./pages/Gallary/Gallary";
@@ -126,6 +127,14 @@ import SourcePage from "./pages/Dashboards/AdminDashboard/OpenSource/Source";
 import InterviewSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/JudgeGO/InterviewGo";
 import LiveCoop from "./pages/LiveEvents/LiveMatches/LiveVexGO/LiveCoopGO/LiveCoop";
 import CompOpen from "./pages/Competitions/OpenSource/CompOpen";
+import RegisterOrg from "./pages/Auth/RegisterOrg";
+import OrganizerDash from "./pages/Dashboards/OrganizerDash/OrganizerDash";
+import ActiveOrg from "./pages/Dashboards/AdminDashboard/Management/ActiveOrg";
+import Python from "./pages/Dashboards/Judge/JudgeComp/Programming/Python";
+import FileComp from "./pages/Dashboards/Judge/JudgeComp/OpenSource/FileComp";
+import UploadFileMcq from "./pages/Dashboards/AdminDashboard/Management/UploedFileMcq";
+import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
+import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
 
 
 const App = () => {
@@ -201,6 +210,14 @@ const App = () => {
           element={
             <Layout>
               <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/register/organization"
+          element={
+            <Layout>
+              <RegisterOrg />
             </Layout>
           }
         />
@@ -372,13 +389,55 @@ const App = () => {
             </Layout>
           }
         />
+         <Route
+          path="/Dashboard/TeamSetting/:id"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <TeamSetting />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+              {/* Organizer Dashboard Routes */}
+         <Route
+          path="/Dashboard/OrganizerEvent"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <OrganizerDash />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+              
+
         {/* Admin Dashboard Routes */}
         <Route
           path="/Dashboard/Certificate"
           element={
             <Layout hideNavbar>
-              <LayoutDashboard>
                 <Certificate />
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/Upload_QuestionsFile"
+          element={
+            
+             <Layout hideNavbar>
+             <LayoutDashboard>
+             <UploadFileMcq />
+             </LayoutDashboard>
+           </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/Admin/ActiveOrganization"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <ActiveOrg />
               </LayoutDashboard>
             </Layout>
           }
@@ -393,7 +452,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
+        {/* <Route
           path="/Dashboard/Admin"
           element={
             <Layout hideNavbar>
@@ -402,7 +461,7 @@ const App = () => {
               </LayoutDashboard>
             </Layout>
           }
-        />
+        /> */}
        
 
         <Route
@@ -438,7 +497,7 @@ const App = () => {
         />
 
         <Route
-          path="/Dashboard/Teams/:team_name"
+          path="/Dashboard/Teams/:id"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -536,7 +595,17 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <UADashboard />
+                <UserDashbord />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/User/LiveEvent/:id"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <TeamEventLive />
               </LayoutDashboard>
             </Layout>
           }
@@ -555,7 +624,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Dashboard/teams/User/:team_name"
+          path="/Dashboard/teams/User/:id"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -640,6 +709,27 @@ const App = () => {
             </Layout>
           }
         />
+         <Route
+          path="/Dashboard/JudgeEvent/python"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <Python />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+       <Route
+  path="/Dashboard/JudgeEvent/:competition_name"
+  element={
+    <Layout hideNavbar>
+      <LayoutDashboard>
+        <FileComp />
+      </LayoutDashboard>
+    </Layout>
+  }
+/>
+        
        
 
         <Route
@@ -786,7 +876,7 @@ const App = () => {
         {/* PROGRAMMING */}
 
         <Route
-          path="/Programming"
+          path="/Programming/:competition_id"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}
@@ -807,7 +897,7 @@ const App = () => {
           />
 
         <Route
-          path="/Competition-start/:competition"
+          path="/Competition-start/:competition/:id"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}

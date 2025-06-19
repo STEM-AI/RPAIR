@@ -12,6 +12,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 
 
 
+
 const Sidebar = ({isOpen, setIsOpen}) => {
   // const [isOpen, setIsOpen] = useState(false);
   const [isManagementOpen, setIsManagementOpen] = useState(false);
@@ -31,6 +32,8 @@ const Sidebar = ({isOpen, setIsOpen}) => {
           setUserRole('admin');
         } else if (decodedToken.is_staff) {
           setUserRole('judge');
+        } else if (decodedToken.organization) {
+          setUserRole('organization');
         } else {
           setUserRole('user');
         }
@@ -87,11 +90,16 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                     {/* Management Sub-menu */}
                     {isManagementOpen && (
                       <ul className="pl-6 mt-2">
-                        {/* <Link to="/Dashboard/Admin/CreateCompetition">
+                        <Link to="/Dashboard/Admin/CreateCompetition">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Create Competitions
                           </li>
-                        </Link> */}
+                        </Link>
+                        <Link to="/Dashboard/Admin/Upload_QuestionsFile">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Upload Questions File 
+                          </li>
+                        </Link>
                         <Link to="/Dashboard/Admin/CreateEvent">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Create Event
@@ -105,6 +113,11 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                         <Link to="/Dashboard/Admin/Schedule">
                           <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             Schedule Management
+                          </li>
+                        </Link>
+                        <Link to="/Dashboard/Admin/ActiveOrganization">
+                          <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            Active Organization
                           </li>
                         </Link>
                         
@@ -131,20 +144,14 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                             Event Details
                           </li>
                         </Link>
-                        {/* <Link to="/Dashboard/JudgeEvent/vex_go">
+                       
+                        <Link to="/Dashboard/JudgeEvent/python">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
-                            Vex GO
+                            Python
                           </li>
                           
                         </Link>
-
-                        <Link to="/Dashboard/JudgeEvent/vex_123">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineEventNote className="mr-2" />
-                            Vex 123
-                          </li>
-                        </Link> */}
 
                         {/* Event */}
                           {/* <li
@@ -185,6 +192,26 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                               
                             </ul>
                           )} */}
+          </>
+        );
+      case 'organization':
+        return (
+          <>
+             {/* Dashboard */}
+                        <Link to="/Dashboard/Competitions">
+                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <MdOutlineDashboard className="mr-2" />
+                            Dashboard
+                          </li>
+                        </Link>
+                        <Link to="/Dashboard/OrganizerEvent">
+                        <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                        <TbCalendarEvent className="mr-2" />
+                            Create Event
+                          </li>
+                        </Link>
+                  
+                       
           </>
         );
 

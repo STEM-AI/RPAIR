@@ -1,11 +1,9 @@
 import React from 'react'
 
-function Management() {
+export default function Python() {
   return (
     <div>
       
     </div>
   )
 }
-
-export default Management

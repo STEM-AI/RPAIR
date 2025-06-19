@@ -85,7 +85,7 @@ export default function AllEventDetails() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-4 text-center">
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-            {formattedEventName}
+          {events.name}
           </h1>
           <div className="mt-2 flex justify-center items-center space-x-2">
             <span className="inline-flex items-center px-3 py-0.5 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
@@ -107,7 +107,7 @@ export default function AllEventDetails() {
           </button>
         </div>
         {showResults ? (
-          <Rank eventName={event_name}  eventCategory={events.competition_name}/>
+          <Rank eventName={events.name}  eventCategory={events.competition_name}/>
         ) : (
 
           <div className="bg-white overflow-hidden shadow-xl rounded-2xl">

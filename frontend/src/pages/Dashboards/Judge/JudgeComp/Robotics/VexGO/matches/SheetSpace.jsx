@@ -8,7 +8,7 @@ export  const tasks = [
     { title: "Clear the debris from the landing site", points: 1 },
     { title: "Place the helicopter by hand on the landing site", points: 1 },
     { title: "Lift the Rocket Ship", points: 1 },
-    { title: "Release a Fuel Cell from the cradle", points: "1 per Fuel Cell" },
+    { title: "Release a Fuel Cell from the cradle", points: "1 per Fuel Cell" , isDynamic: true },
     { title: "Deliver a Fuel Cell to the Rocket Ship", points: 1 },
     { title: "Deliver a Fuel Cell to the Landing Site", points: 1 },
     { title: "End with the robot touching the red Tile", points: 1 }

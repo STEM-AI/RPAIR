@@ -126,7 +126,7 @@ const CompEvents = () => {
                       {status}
                     </span>
                     <button className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
-                      onClick={() => handleCompetitionClick(event.name)}> 
+                      onClick={() => handleCompetitionClick(event.id)}> 
                     View Details
                       <svg
                       className="w-4 h-4 ml-1"

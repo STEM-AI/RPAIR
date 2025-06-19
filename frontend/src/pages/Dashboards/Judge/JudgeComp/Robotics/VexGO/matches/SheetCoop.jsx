@@ -12,7 +12,7 @@ import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
 import { tasks as oceanTasks } from './SheetOcean';
 import { tasks as spaceTasks } from './SheetSpace';
-export default function SheetCoop({ eventName, onClose }) {
+export default function SheetCoop({ eventName, onClose ,sheetType}) {
 
   const { currentMatch, updateMatch } = useMatchContext();
   const [scores, setScores] = useState({});
@@ -37,10 +37,11 @@ export default function SheetCoop({ eventName, onClose }) {
   const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
   const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
 
-  const handleChallengeChange = (type) => {
-    setSelectedChallenge(type);
-    setTasks(type === 'ocean' ? oceanTasks : spaceTasks);
-  };
+   
+  useEffect(() => {
+    setTasks(sheetType === 'Ocean' ? oceanTasks : spaceTasks);
+  }, [sheetType]);
+
 
   useEffect(() => {
     if (currentMatch?.type === 'coop') {
@@ -347,32 +348,11 @@ const formatTime = (seconds) => {
         >
           <FaTimes className="text-xl sm:text-2xl" />
       </button>
-      <div className="flex gap-4 justify-center mb-6">
-        <button 
-          onClick={() => handleChallengeChange('ocean')}
-          className={`px-4 py-2 rounded-lg ${
-            selectedChallenge === 'ocean' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-200 text-gray-700'
-          }`}
-        >
-          🌊 Ocean Challenge
-        </button>
-        <button
-          onClick={() => handleChallengeChange('space')}
-          className={`px-4 py-2 rounded-lg ${
-            selectedChallenge === 'space' 
-              ? 'bg-gray-800 text-white' 
-              : 'bg-gray-200 text-gray-700'
-          }`}
-        >
-          🚀 Space Challenge
-        </button>
-      </div>
+     
       <div className="text-center mb-4 sm:mb-8">
-        <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
-          {selectedChallenge === 'ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
-        </h1>
+      <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
+        {sheetType === 'Ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
+      </h1>
         <p className="text-sm sm:text-lg text-gray-600">Coop Match Score Sheet</p>
       </div>
 

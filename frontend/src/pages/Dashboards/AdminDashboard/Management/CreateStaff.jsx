@@ -289,6 +289,7 @@ const CreateStaff = () => {
             pattern="^\+20\d{10}$"
             title="Phone number must start with +2 and contain 11 digits."
             value={formData.phone_number}
+            
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
             required

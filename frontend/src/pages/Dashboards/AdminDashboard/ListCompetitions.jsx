@@ -17,9 +17,9 @@ const ListCompetitions = () => {
     { name: "Robotics ", apiName: "robotics", image: robotics },
     { name: "Open Source", apiName: "OpenSource", image: OpenSource },
     { name: "Web Design", apiName: "web_development", image: Web },
-    { name: "Programming", apiName: "python_programming", image: programming },
+    { name: "Programming", apiName: "programming", image: programming },
     { name: "Artificial Intelligence", apiName: "ai_ml", image: AI },
-    { name: "Mobile Application", apiName: "mobile_development", image: mobile},
+    { name: "Mobile Application", apiName: "flutter", image: mobile},
     { name: "FabLab competitions", apiName: "fabLab", image: fablab },
     { name: "Graphic Design competitions", apiName: "graphic_design", image: graphic },
     { name: "ST egy Math competitions", apiName: "ST-math", image: math },
@@ -34,7 +34,7 @@ const ListCompetitions = () => {
     <div className="px-4 sm:px-6 lg:px-8">
      
           <h2 className="mb-12 text-center">
-        <span className="text-5xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+        <span className="md:text-5xl text-4xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
           ALL COMPETITIONS
         </span>
       </h2>

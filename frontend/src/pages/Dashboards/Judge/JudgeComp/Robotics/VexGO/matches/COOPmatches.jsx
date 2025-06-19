@@ -7,9 +7,11 @@ import axios from "axios";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule";
 import SheetCoop from "./SheetCoop";
-import Back from "../../../../../../../components/Back/Back";
+import ChoiseSheet from "./ChoiseSheet";
+
 
 const COOPMatch = () => {
+  const [selectedChallenge, setSelectedChallenge] = useState(null);
   const { matches, setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [scores, setScores] = useState({});
@@ -150,12 +152,13 @@ const [searchParams] = useSearchParams();
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {!selectedMatch ? (
+       {!selectedChallenge ? ( 
+              <ChoiseSheet onChallengeSelect={setSelectedChallenge} />
+            ) : !selectedMatch ? ( 
         <>
           {/* Header Section */}
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Back className="text-indigo-600 hover:text-indigo-700" />
               <div>
                 <h1 className="text-3xl font-bold text-indigo-700 flex items-center gap-3">
                   <FaUsers className="w-8 h-8" />
@@ -344,7 +347,8 @@ const [searchParams] = useSearchParams();
         <SheetCoop
           selectedMatch={selectedMatch}
           eventName={event_name}
-          onClose={() => setSelectedMatch(null)}
+              onClose={() => setSelectedMatch(null)}
+              sheetType={selectedChallenge}
         />
       )}
     </div>

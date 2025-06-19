@@ -548,6 +548,10 @@ useEffect(() => {
                                         <option value="vex_iq">Vex IQ</option>
                                         <option value="vex_go">Vex GO</option>
                                         <option value="vex_123">Vex 123</option>
+                                        <option value="arduino">Arduino</option>                                        
+                                        <option value="flutter">Flutter</option>                                        
+                                        <option value="programming">Programming</option> 
+   
 
                                         
 
