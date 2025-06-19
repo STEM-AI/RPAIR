@@ -6,11 +6,12 @@ import logo from "../../../../assets/Static/logoWrite-re.png";
 
 const ProgInfo = () => {
   const { competition } = useParams();
-  console.log("Competition:", competition);
+  const { id } = useParams();
+  console.log("Competition:", competition );
+  console.log("Competition:", id );
   
   const navigate = useNavigate();
 
-  // Competition details based on competition type
   const competitionDetails = {
     python: {
       questions: 14,
@@ -33,7 +34,7 @@ const ProgInfo = () => {
   const details = competitionDetails[competition] || competitionDetails.python;
 
   const handleStartCompetition = () => {
-    navigate(`/competition/${competition}`);
+    navigate(`/competition/${competition}/?id=${encodeURIComponent(id)}`);
   };
 
   return (

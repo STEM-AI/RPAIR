@@ -19,7 +19,7 @@ const ListCompetitions = () => {
     { name: "Web Design", apiName: "web_development", image: Web },
     { name: "Programming", apiName: "programming", image: programming },
     { name: "Artificial Intelligence", apiName: "ai_ml", image: AI },
-    { name: "Mobile Application", apiName: "mobile_development", image: mobile},
+    { name: "Mobile Application", apiName: "flutter", image: mobile},
     { name: "FabLab competitions", apiName: "fabLab", image: fablab },
     { name: "Graphic Design competitions", apiName: "graphic_design", image: graphic },
     { name: "ST egy Math competitions", apiName: "ST-math", image: math },

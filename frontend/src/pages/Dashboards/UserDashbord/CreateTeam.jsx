@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import { IoAddCircle } from "react-icons/io5";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 
 const CreateTeam = () => {
   const [hasGlobalNumber, setHasGlobalNumber] = useState(null);
@@ -15,6 +16,7 @@ const CreateTeam = () => {
   const [isManualOrgEntry, setIsManualOrgEntry] = useState(false); // إضافة حالة جديدة
   const [hasCoach, setHasCoach] = useState(false); // هل يريد إضافة كوتش؟
   const [showCoachForm, setShowCoachForm] = useState(false); // هل نعرض حقول الكوتش؟
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     event_name: "",
@@ -107,7 +109,9 @@ const CreateTeam = () => {
 
    const fetchOrganizations = async () => {
           if (!token) {
-              setResponseMessage("You are not authorized. Please log in.");
+            setResponseMessage("You are not authorized. Please log in.");
+            navigate(`/login`);
+
             
               return;
           }

@@ -8,6 +8,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { useParams, useSearchParams } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaRegFileCode } from "react-icons/fa";
+
+
 
 export default function FileComp() {
   const { competition_name } = useParams();
@@ -359,7 +362,7 @@ export default function FileComp() {
                             target="_blank" 
                             rel="noopener noreferrer"
                           >
-                            <span className="mr-2">📄</span> View File
+                            <span className="mr-2"><FaRegFileCode className="text-black text-xl"/></span> View File
                           </a>
                         ) : (
                           <span className="text-gray-400">—</span>
@@ -413,7 +416,7 @@ export default function FileComp() {
       <div className="mt-8">
         <button
           onClick={handleToggleRanking}
-          className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl shadow-md flex items-center font-medium"
+          className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl shadow-md flex items-center font-medium mx-auto"
         >
           <FaTrophy className="mr-2" />
           {showRanking ? "Hide Rankings" : "View Rankings"}

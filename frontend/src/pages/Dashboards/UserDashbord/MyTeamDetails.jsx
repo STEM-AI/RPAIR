@@ -166,6 +166,7 @@ import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { IoSettingsOutline } from "react-icons/io5";
+
 import { 
   Group, 
   Person, 
@@ -176,7 +177,8 @@ import {
   CorporateFare,
   EmojiEvents,
   Badge,
-  Image
+  Image,
+  Event
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
@@ -228,6 +230,11 @@ const MyTeamDetails = () => {
     return <div className="flex justify-center items-center h-screen text-xl font-semibold">Loading...</div>;
   }
 
+  const competitionEvents = Array.isArray(team.competition_event) 
+  ? team.competition_event 
+  : team.competition_event ? [team.competition_event] : [];
+
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10 mb-10 transition-all hover:shadow-2xl">
      
@@ -252,7 +259,7 @@ const MyTeamDetails = () => {
         <div className="absolute -top-4 right-8 bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-1">
           <Badge className="!text-sm" />
           <span>{team.team_number || "TBD"}</span>
-          <Link to={`/Dashboard/TeamSetting/${team.name}`}><IoSettingsOutline />
+          <Link to={`/Dashboard/TeamSetting/${team.id}`}><IoSettingsOutline />
           </Link>
         </div>
 
@@ -306,6 +313,47 @@ const MyTeamDetails = () => {
             </div>
           </div>
         </div>
+
+
+        {competitionEvents.length > 0 && (
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 text-cyan-700">
+            <Event className="!text-2xl" /> Competition Events
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {competitionEvents.map((event, index) => (
+              <div key={index} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-bold text-lg text-gray-800">{event.name}</h4>
+                  <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                    {event.competition}
+                  </span>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="font-medium">Location:</span>
+                    <span>{event.location || "Not specified"}</span>
+                  </div>
+                  
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <span className="font-medium">Date:</span>
+                      <span>{event.start_date}</span>
+                    </div>
+                    
+                                      
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="font-medium">Status:</span>
+                    <span className={`font-semibold ${event.is_live ? "text-green-600" : "text-gray-500"}`}>
+                      {event.is_live ? "Live Now" : "Completed"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
         {/* Team Image Section (if available) */}
         {team.image && (

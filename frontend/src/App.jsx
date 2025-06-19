@@ -133,6 +133,8 @@ import ActiveOrg from "./pages/Dashboards/AdminDashboard/Management/ActiveOrg";
 import Python from "./pages/Dashboards/Judge/JudgeComp/Programming/Python";
 import FileComp from "./pages/Dashboards/Judge/JudgeComp/OpenSource/FileComp";
 import UploadFileMcq from "./pages/Dashboards/AdminDashboard/Management/UploedFileMcq";
+import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
+import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
 
 
 const App = () => {
@@ -450,7 +452,7 @@ const App = () => {
             </Layout>
           }
         />
-        <Route
+        {/* <Route
           path="/Dashboard/Admin"
           element={
             <Layout hideNavbar>
@@ -459,7 +461,7 @@ const App = () => {
               </LayoutDashboard>
             </Layout>
           }
-        />
+        /> */}
        
 
         <Route
@@ -593,7 +595,17 @@ const App = () => {
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
-                <UADashboard />
+                <UserDashbord />
+              </LayoutDashboard>
+            </Layout>
+          }
+        />
+        <Route
+          path="/Dashboard/User/LiveEvent/:id"
+          element={
+            <Layout hideNavbar>
+              <LayoutDashboard>
+                <TeamEventLive />
               </LayoutDashboard>
             </Layout>
           }
@@ -864,7 +876,7 @@ const App = () => {
         {/* PROGRAMMING */}
 
         <Route
-          path="/Programming"
+          path="/Programming/:competition_id"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}
@@ -885,7 +897,7 @@ const App = () => {
           />
 
         <Route
-          path="/Competition-start/:competition"
+          path="/Competition-start/:competition/:id"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}
