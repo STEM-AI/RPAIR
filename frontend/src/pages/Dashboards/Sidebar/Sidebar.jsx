@@ -232,12 +232,6 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                       <GiLaurelsTrophy className="mr-2" />
                       Competitions
                     </li>
-                    <Link to="/Programming">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineEventNote className="mr-2" />
-                            Programming
-                          </li>
-                        </Link>
                     <Link to="/OpenSource">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <MdOutlineEventNote className="mr-2" />
