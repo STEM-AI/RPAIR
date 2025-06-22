@@ -247,6 +247,12 @@ useEffect(() => {
         }
     };
 
+    const today = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
+
+    const upcomingCompetitions = events.filter(
+      (comp) => comp.start_date >= today
+    );
+
     // Handle judge deletion
     const handleDeleteJudge = async (judgeUsername) => {
         if (!token) {
@@ -569,7 +575,7 @@ useEffect(() => {
                                         required
                                     >
                                         <option value="">Select an event</option>
-                                        {events.map((event) => (
+                                        {upcomingCompetitions.map((event) => (
                                             <option key={event.id} value={event.name}>
                                                 {event.name}
                                             </option>

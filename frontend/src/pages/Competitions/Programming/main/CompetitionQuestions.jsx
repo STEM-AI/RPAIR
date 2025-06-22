@@ -8,13 +8,16 @@ import { useResult } from '../../../../context/CompetitionContext';
 import { useMediaQuery } from 'react-responsive';
 import useQuestion from '../../../../hooks/Questions/QuestionId';
 import useAllQuestion from '../../../../hooks/Questions/AllQuestion';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 
 const CompetitionPage = () => {
   const { competition } = useParams();
   const [searchParams] = useSearchParams();
   const competition_id = searchParams.get('id');
-  const navigate = useNavigate();
+  const [formattedQuestion, setFormattedQuestion] = useState('');
+  const [formattedCode, setFormattedCode] = useState('');  const navigate = useNavigate();
   
   const [currentQuestionId, setCurrentQuestionId] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -22,11 +25,28 @@ const CompetitionPage = () => {
   const { updateResults, incrementAttempts } = useResult();
   const startTime = useRef(Date.now());
   
-  // جلب قائمة الأسئلة
   const { questions: allQuestions, loading: allLoading, error: allError } = useAllQuestion(competition_id, competition);
   
-  // جلب السؤال الحالي بالتفصيل
   const { question: detailedQuestion, loading: detailLoading, error: detailError } = useQuestion(currentQuestionId);
+  
+  
+const formatSingleLineCode = (text) => {
+  if (!text) return { question: '', code: '' };
+  const questionEnd = text.indexOf('?');
+  const question = text.substring(0, questionEnd + 1);
+  let code = text.substring(questionEnd + 1).trim();
+  code = code
+  .replace(/;\s*/g, ';\n')   
+  .replace(/^;\n/, '') 
+    .replace(/:\s*/g, ':\n    ')
+    .replace(/\breturn\s+/g, 'return ')
+    .replace(/\bif\s+/g, 'if ')
+    .replace(/\bdef\s+/g, 'def ');
+    setFormattedCode(code);
+  return { question, code };
+};
+
+
   
   // Media queries for responsive design
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -34,10 +54,18 @@ const CompetitionPage = () => {
   const showSidebar = !isMobile && !isTablet;
 
   useEffect(() => {
+    if (detailedQuestion?.text) {
+      const { question } = formatSingleLineCode(detailedQuestion.text);
+      setFormattedQuestion(question);
+    }
+  }, [detailedQuestion]);
+ 
+
+
+  useEffect(() => {
     incrementAttempts();
   }, []);
 
-  // عند تغيير قائمة الأسئلة، نحدد السؤال الأول
   useEffect(() => {
     if (allQuestions && allQuestions.length > 0 && !currentQuestionId) {
       setCurrentQuestionId(allQuestions[0].id);
@@ -52,7 +80,6 @@ const CompetitionPage = () => {
     }
   }, [allQuestions]);
 
-  // عند تغيير السؤال الحالي من خلال التنقل
   useEffect(() => {
     if (allQuestions && allQuestions.length > 0) {
       setCurrentQuestionId(allQuestions[currentQuestionIndex].id);
@@ -75,7 +102,8 @@ const CompetitionPage = () => {
         return count + (sortedUser === sortedCorrect ? 1 : 0);
       }
       
-      return count + (userAnswer === correctAnswer ? 1 : 0);
+      return count + (userAnswer ? 1 : 0);
+      // return count + (userAnswer === correctAnswer ? 1 : 0);
     }, 0);
   
     const totalQuestions = allQuestions.length;
@@ -103,7 +131,7 @@ const CompetitionPage = () => {
       confirmButtonText: 'Show Results'
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate(`/competition/${competition}/results`);
+        navigate(`/competition/${competition}/results`, { replace: true });
       }
     });
   }, [updateResults, navigate, competition, calculateResults]);
@@ -150,7 +178,8 @@ const CompetitionPage = () => {
           confirmButtonText: 'Show Results'
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate(`/competition/${competition}/results`);
+            navigate(`/competition/${competition}/results`, { replace: true });
+            ;
           }
         });
       }
@@ -164,12 +193,10 @@ const CompetitionPage = () => {
     }
   };
 
-  // عند النقر على سؤال في القائمة الجانبية
   const handleQuestionSelect = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // حالات التحميل
   if (allLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -184,7 +211,7 @@ const CompetitionPage = () => {
         <div className="text-red-500 text-center">
           <h2 className="text-xl font-bold">Error</h2>
           <p>Failed to load questions: {allError.message}</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="mt-4 px-4 py-2 bg-cyan-600 text-white rounded-lg"
           >
@@ -206,7 +233,6 @@ const CompetitionPage = () => {
     );
   }
 
-  // إذا كان السؤال الحالي لا يزال في طور التحميل
   if (detailLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -221,7 +247,7 @@ const CompetitionPage = () => {
         <div className="text-red-500 text-center">
           <h2 className="text-xl font-bold">Error</h2>
           <p>Failed to load question: {detailError.message}</p>
-          <button 
+          <button
             onClick={() => setCurrentQuestionId(allQuestions[currentQuestionIndex].id)}
             className="mt-4 px-4 py-2 bg-cyan-600 text-white rounded-lg"
           >
@@ -231,43 +257,78 @@ const CompetitionPage = () => {
       </div>
     );
   }
+ 
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row">
       {/* Sidebar - only shown on desktop */}
-      {showSidebar && (
-        <div className="w-64 bg-cyan-700 text-white p-6 flex flex-col justify-between">
-          <div>
-            <img src={logo} alt="Logo" className="w-28 mb-6 flex mx-auto" />
-            <div className="flex justify-center mb-4">
-              <CircularTimer
-                duration={0.5 * 60}
-                onEnd={handleTimeUp}
-                current={currentQuestionIndex + 1}
-                total={allQuestions.length}
-              />
+        {showSidebar && (
+          <div className="w-64 bg-cyan-700 text-white flex flex-col h-screen sticky top-0">
+            {/* Fixed Header */}
+            <div className="p-6 pb-4 border-b border-cyan-600">
+              <img src={logo} alt="Logo" className="w-28 mb-4 mx-auto" />
+              <div className="flex justify-center">
+                <CircularTimer
+                  duration={(allQuestions.length +20 ) *60}
+                  onEnd={handleTimeUp}
+                  current={currentQuestionIndex + 1}
+                  total={allQuestions.length}
+                />
+              </div>
             </div>
 
-            <div>
-              <h4 className="font-semibold mb-2">Questions</h4>
-              <ul className="space-y-2">
-                {allQuestions.map((q, i) => (
-                  <li
-                    key={q.id}
-                    onClick={() => handleQuestionSelect(i)}
-                    className={`cursor-pointer px-3 py-1 rounded-lg transition-all ${i === currentQuestionIndex ? 'bg-white text-cyan-700' : selectedOptions[q.id] ? 'bg-cyan-900' : 'hover:bg-cyan-600'}`}
-                  >
-                    {i + 1}. {q.text.substring(0, 20)}...
-                  </li>
-                ))}
-              </ul>
+            {/* Scrollable Questions List */}
+            <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
+              <div className="px-6">
+                <h4 className="font-semibold mb-3 text-lg">Questions</h4>
+                <ul className="space-y-2">
+                  {allQuestions.map((q, i) => (
+                    <li
+                      key={q.id}
+                      onClick={() => handleQuestionSelect(i)}
+                      className={`cursor-pointer px-3 py-2 rounded-lg transition-all flex items-start relative group ${
+                        i === currentQuestionIndex
+                          ? 'bg-white text-cyan-700 font-medium'
+                          : selectedOptions[q.id] 
+                            ? 'bg-cyan-800'
+                            : 'hover:bg-cyan-600'
+                      }`}
+                    >
+                      <span className="min-w-[24px] font-medium">{i + 1}.</span>
+                      <span className="ml-1 line-clamp-1 text-left">
+                        {q.text.substring(0, 30)}
+                        {q.text.length > 30 && "..."}
+                      </span>
+                      
+                      {/* Internal Hover Tooltip */}
+                      <div className="absolute top-full left-0 w-full mt-1 p-3 bg-white text-cyan-800 text-sm rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                        <div className="font-semibold mb-1">Question {i + 1}</div>
+                        <div className="max-h-32 overflow-y-auto">
+                          <div>{formattedQuestion}</div>
+                          <div>{formattedCode}</div>
+                        </div>
+                        <div className="absolute -top-2 left-4 w-4 h-4 bg-white transform rotate-45"></div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Fixed Footer */}
+            <div className="p-4 border-t border-cyan-600 text-center text-sm">
+              {Object.values(selectedOptions).filter(opt => 
+                opt !== null && 
+                (!Array.isArray(opt) || opt.length > 0)
+              ).length}
+              /{allQuestions.length} answered
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Main content */}
-      <div className="flex-1 p-4 md:p-8 bg-gray-50">
+      <div className="flex-1 p-4 bg-gray-50 flex justify-center items-center">
+      <div className="w-full max-w-4xl">
         {/* Mobile/Tablet Header with Timer */}
         {(isMobile || isTablet) && (
           <div className="bg-cyan-700 text-white p-4 rounded-lg mb-6 flex items-center justify-between">
@@ -277,7 +338,7 @@ const CompetitionPage = () => {
                 Q: {currentQuestionIndex + 1}/{allQuestions.length}
               </span>
               <CircularTimer
-                duration={0.5 * 60}
+                duration={(allQuestions.length +20 ) *60}
                 onEnd={handleTimeUp}
                 current={currentQuestionIndex + 1}
                 total={allQuestions.length}
@@ -298,9 +359,9 @@ const CompetitionPage = () => {
                   className={`min-w-8 h-8 rounded-full flex items-center justify-center text-sm ${
                     i === currentQuestionIndex
                       ? 'bg-cyan-600 text-white'
-                      : selectedOptions[q.id] && 
-                        (q.type === 'multiple' 
-                          ? selectedOptions[q.id].length > 0 
+                      : selectedOptions[q.id] &&
+                        (q.type === 'multiple'
+                          ? selectedOptions[q.id].length > 0
                           : selectedOptions[q.id] !== null)
                       ? 'bg-cyan-200 text-cyan-800'
                       : 'bg-gray-200 text-gray-700'
@@ -323,14 +384,23 @@ const CompetitionPage = () => {
               className="bg-white shadow-xl rounded-2xl p-4 md:p-6"
             >
               <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4">
-                {currentQuestionIndex + 1}. {detailedQuestion.text}
+                {currentQuestionIndex + 1}. {formattedQuestion}
               </h2>
               
               {/* Display code if available */}
-              {detailedQuestion.code && (
-                <div className="mb-4 md:mb-6 p-3 md:p-4 bg-gray-800 text-gray-100 rounded-lg font-mono text-sm overflow-x-auto">
-                  <pre className="whitespace-pre-wrap">{detailedQuestion.code}</pre>
-                </div>
+              {formattedCode && (
+                
+            <div className="mb-6">
+            <SyntaxHighlighter 
+              language="python" 
+              style={tomorrow}
+              showLineNumbers={true}
+              wrapLines={true}
+              className="rounded-md text-sm"
+            >
+              {formattedCode}
+            </SyntaxHighlighter>
+          </div>
               )}
 
               <div className="space-y-2 md:space-y-3">
@@ -340,7 +410,7 @@ const CompetitionPage = () => {
                     onClick={() => handleOptionSelect(detailedQuestion.id, option.id, detailedQuestion.type === 'multiple')}
                     className={`p-3 md:p-4 border rounded-lg cursor-pointer transition-colors ${
                       (selectedOptions[detailedQuestion.id] === option.id) ||
-                      (Array.isArray(selectedOptions[detailedQuestion.id]) && 
+                      (Array.isArray(selectedOptions[detailedQuestion.id]) &&
                        selectedOptions[detailedQuestion.id].includes(option.id))
                         ? 'border-cyan-500 bg-cyan-50'
                         : 'border-gray-200 hover:border-gray-300'
@@ -369,6 +439,7 @@ const CompetitionPage = () => {
             </motion.div>
           </AnimatePresence>
         )}
+      </div>
       </div>
     </div>
   );

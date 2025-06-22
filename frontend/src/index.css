@@ -2,3 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* In your global CSS */
+@layer utilities {
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: #075985;
+        /* cyan-800 */
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #0891b2;
+        /* cyan-600 */
+        border-radius: 3px;
+    }
+
+    .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+        background: #06b6d4;
+        /* cyan-500 */
+    } }
+
+        /* Custom scrollbar styles */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+    
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #075985;
+            /* cyan-800 */
+        }
+    
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0891b2;
+            /* cyan-600 */
+            border-radius: 3px;
+        }
+    
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+            /* cyan-500 */ }

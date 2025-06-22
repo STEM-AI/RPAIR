@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaRocket } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-
+import flutterlogo from '../../assets/cards/flutterpng.png';
+import arduinologo from '../../assets/cards/arduinoLogo.png';
+import flutterimg from '../../assets/cards/mobile.jpg';
+import arduino from '../../assets/cards/arduino.jpg';
 import vexGoLogo from '../../assets/cards/vex-go-logo.webp';
 import vexGo from '../../assets/cards/vex-go.webp';
 import vexIqLogo from '../../assets/cards/vex-iq-logo.webp';
@@ -68,6 +71,28 @@ function LiveEvents() {
                 accentColor: 'bg-purple-400'
               };
               break;
+              case 'arduino':
+                eventConfig = {
+                  ...eventConfig,
+                  image: arduino,
+                  logo: arduinologo,
+                  link: '/arduino',
+                  bgColor: 'from-cyan-600 to-teal-800',
+                  textColor: 'text-white',
+                  accentColor: 'bg-teal-400'
+                };
+                break;  
+              case 'flutter':
+                eventConfig = {
+                  ...eventConfig,
+                  image: flutterimg,
+                  logo: flutterlogo,
+                  link: '/flutter',
+                  bgColor: 'from-cyan-500 to-blue-600',
+                  textColor: 'text-white',
+                  accentColor: 'bg-cyan-400'
+                };
+                break;
             default:
               eventConfig = {
                 ...eventConfig,

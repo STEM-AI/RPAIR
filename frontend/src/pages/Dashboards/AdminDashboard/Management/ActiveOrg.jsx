@@ -78,7 +78,6 @@ export default function ActiveOrg() {
         try {
             await axios.patch(
                 `${process.env.REACT_APP_API_URL}/admin/active-organization/${orgId}/`,
-                {}, // Empty request body
                 { headers: { Authorization: `Bearer ${token}` } } // Correct headers position
             );
     
@@ -301,7 +300,7 @@ export default function ActiveOrg() {
                                                         <FiToggleLeft className="w-6 h-6 text-red-500" />
                                                     )}
                                                     <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-cyan-700 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
-                                                        {org.is_active ? "Deactivate" : "Activate"}
+                                                        {org.is_active ? "" : "Activate"}
                                                     </span>
                                                 </motion.button>
                                                 <motion.button

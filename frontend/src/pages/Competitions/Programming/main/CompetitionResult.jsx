@@ -121,7 +121,7 @@ const CompetitionResult = () => {
           transition={{ delay: 0.9 }}
         >
           <button
-            onClick={() => navigate(`/competition/${competition}`)}
+            onClick={() => navigate(`/competition/rank/${competition}`)}
             className={`px-8 py-3 rounded-xl text-white font-bold text-lg bg-gradient-to-r ${resultData.color} shadow-lg`}
           >
             Show Rank

@@ -344,30 +344,30 @@ const formatTime = (seconds) => {
     <div className="relative max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
        <button
           onClick={onClose}
-          className="absolute top-0 left-0 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+          className="absolute top-0 left-0 p-2 text-gray-400 hover:text-teal-600 transition-colors"
         >
           <FaTimes className="text-xl sm:text-2xl" />
       </button>
      
       <div className="text-center mb-4 sm:mb-8">
-      <h1 className="text-xl sm:text-3xl font-bold text-indigo-700 mb-1 sm:mb-2">
+      <h1 className="text-xl sm:text-3xl font-bold text-teal-700 mb-1 sm:mb-2">
         {sheetType === 'Ocean' ? '🌊 Ocean' : '🚀 Space'} Science Exploration
       </h1>
         <p className="text-sm sm:text-lg text-gray-600">Coop Match Score Sheet</p>
       </div>
 
       {/* Match Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6 bg-indigo-50 p-2 sm:p-4 rounded-lg sm:rounded-xl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6 bg-teal-50 p-2 sm:p-4 rounded-lg sm:rounded-xl">
         <div>
-          <h3 className="text-xs sm:text-sm font-medium text-indigo-700 mb-1">Match ID</h3>
+          <h3 className="text-xs sm:text-sm font-medium text-teal-700 mb-1">Match ID</h3>
           <p className="text-base sm:text-xl font-bold">{currentMatch?.id || 'N/A'}</p>
         </div>
         <div>
-          <h3 className="text-xs sm:text-sm font-medium text-indigo-700 mb-1">Team 1</h3>
+          <h3 className="text-xs sm:text-sm font-medium text-teal-700 mb-1">Team 1</h3>
           <p className="text-base sm:text-xl font-bold">{currentMatch?.team1_name || 'N/A'}</p>
         </div>
         <div>
-          <h3 className="text-xs sm:text-sm font-medium text-indigo-700 mb-1">Team 2</h3>
+          <h3 className="text-xs sm:text-sm font-medium text-teal-700 mb-1">Team 2</h3>
           <p className="text-base sm:text-xl font-bold">{currentMatch?.team2_name || 'N/A'}</p>
         </div>
       </div>
@@ -375,7 +375,7 @@ const formatTime = (seconds) => {
 
       <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-100 p-2 sm:p-4 rounded-lg mb-4 sm:mb-6">
         <div className="flex items-center mb-2 sm:mb-0">
-          <FaClock className="text-indigo-600 mr-2 text-lg sm:text-xl" />
+          <FaClock className="text-teal-600 mr-2 text-lg sm:text-xl" />
           <span className="text-lg sm:text-xl font-semibold">
             {gamePaused
                 ? "Game Paused"
@@ -435,7 +435,7 @@ const formatTime = (seconds) => {
       <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm sm:shadow-md">
         <tbody>
           {tasks.map((task, index) => (
-            <tr key={index} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-indigo-50'}`}>
+            <tr key={index} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-teal-50'}`}>
               <td className="px-4 py-2 text-sm">{task.title}</td>
               <td className="px-4 py-2 text-center text-sm font-medium">{task.points}</td>
               <td className="px-4 py-2 text-center text-sm hidden sm:table-cell">
@@ -452,7 +452,7 @@ const formatTime = (seconds) => {
                  max="5"
                  value={turbines[index] || 0}
                  onChange={(e) => handleTurbineChange(index, e.target.value)}
-                 className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-indigo-400 text-sm"
+                 className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-teal-400 text-sm"
                  disabled={!gameActive || gamePaused || timeUp}
                />
                 ) : (
@@ -472,10 +472,10 @@ const formatTime = (seconds) => {
       </table>
 
       {/* Total Score and Buttons */}
-      <div className="bg-indigo-50 p-4 rounded-xl mb-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div className="bg-teal-50 p-4 rounded-xl mb-6 flex flex-col sm:flex-row justify-between items-center gap-3">
         <div className="text-center sm:text-left">
-          <h3 className="text-sm font-medium text-indigo-700">Total Score</h3>
-          <p className="text-3xl font-bold text-indigo-600">{totalScore}</p>
+          <h3 className="text-sm font-medium text-teal-700">Total Score</h3>
+          <p className="text-3xl font-bold text-teal-600">{totalScore}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <button
@@ -487,7 +487,7 @@ const formatTime = (seconds) => {
           </button>
           <button
             onClick={handleDownloadPDF}
-            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg flex items-center justify-center shadow-md hover:shadow-lg"
+            className="px-5 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg flex items-center justify-center shadow-md hover:shadow-lg"
           >
             <FaDownload className="mr-2" /> Download PDF
           </button>

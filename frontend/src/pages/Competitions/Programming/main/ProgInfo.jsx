@@ -3,35 +3,57 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from "../../../../assets/Static/logoWrite-re.png";
+import useAllQuestion from '../../../../hooks/Questions/AllQuestion';
 
 const ProgInfo = () => {
   const { competition } = useParams();
   const { id } = useParams();
-  console.log("Competition:", competition );
-  console.log("Competition:", id );
+  
+    const { questions: allQuestions, loading: allLoading, error: allError ,type} = useAllQuestion(id, competition);
+  
   
   const navigate = useNavigate();
+  let score = 0;
+  
+  
+  for (let i = 0; i < allQuestions.length; i++){
+    if (allQuestions[i].category === 'problem_solving') {
+      score += 5;
+    }else if (allQuestions[i].category === 'compiler') {
+      score += 3;
+    }
+    else  {
+      score += 2;
+    }
+  }
 
   const competitionDetails = {
-    python: {
-      questions: 14,
-      score: 125,
-      time: 6,
-      title: "Python",
-      description: "Test your Python programming skills with algorithmic challenges",
-      color: "from-emerald-500 to-emerald-700"
-    },
-    tynker: {
-      questions: 10,
-      score: 100,
-      time: 8,
-      title: "Tynker",
-      description: "Creative coding with block-based programming challenges",
-      color: "from-cyan-500 to-cyan-700"
-    }
+    questions: allQuestions.length,
+    score,
+    time: allQuestions.length +20 ,
+    title: type,
+    description: "Test your Python programming skills with algorithmic challenges",
+    color: "from-emerald-500 to-emerald-700"
+
+    // python: {
+      // questions: allQuestions.length,
+      // score: 125,
+      // time: 6,
+      // title: type,
+      // description: "Test your Python programming skills with algorithmic challenges",
+      // color: "from-emerald-500 to-emerald-700"
+    // },
+    // tynker: {
+    //   questions: 10,
+    //   score: 100,
+    //   time: 8,
+    //   title: "Tynker",
+    //   description: "Creative coding with block-based programming challenges",
+    //   color: "from-cyan-500 to-cyan-700"
+    // }
   };
 
-  const details = competitionDetails[competition] || competitionDetails.python;
+  const details = competitionDetails;
 
   const handleStartCompetition = () => {
     navigate(`/competition/${competition}/?id=${encodeURIComponent(id)}`);

@@ -423,23 +423,82 @@ export default function FileComp() {
         </button>
 
         {showRanking && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="bg-white rounded-2xl shadow-lg overflow-hidden mt-5 border border-amber-50"
-          >
-            <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-4">
-              <div className="flex items-center gap-3">
-                <FaTrophy className="text-white text-xl" />
-                <h2 className="text-white text-lg font-bold">Current Rankings</h2>
+          <div className="p-6">
+            {isLoading ? (
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg" />
+                ))}
               </div>
-            </div>
-            
-            <div className="overflow-x-auto">
-              {/* ... ranking table remains similar but with improved styling ... */}
-              {/* Recommend adding: rounded corners, better spacing, medal icons */}
-            </div>
-          </motion.div>
+            ) : error ? (
+              <div className="text-center py-6 text-red-500">
+                ⚠️ Error loading rankings: {error}
+              </div>
+            ) : rankings.length === 0 ? (
+              <div className="text-center py-6 text-gray-500">
+                🏟️ No rankings available yet
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {rankings.map((team, index) => {
+                  const rank = index + 1;
+                  return (
+                    <div
+                      key={team.team}
+                      className={`flex items-center justify-between p-4 rounded-lg ${
+                        rank <= 3 ? 'border-2' : 'border hover:border-indigo-200'
+                      } ${
+                        rank === 1
+                          ? 'border-yellow-300 bg-yellow-50'
+                          : rank === 2
+                          ? 'border-gray-300 bg-gray-50'
+                          : rank === 3
+                          ? 'border-amber-400 bg-amber-50'
+                          : 'border-gray-200 bg-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <span
+                          className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                            rank <= 3
+                              ? rank === 1
+                                ? 'bg-yellow-400 text-white'
+                                : rank === 2
+                                ? 'bg-gray-400 text-white'
+                                : 'bg-amber-500 text-white'
+                              : 'bg-indigo-100 text-indigo-600'
+                          }`}
+                        >
+                          {rank}
+                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-800">{team.team__name}</span>
+                          <span className="text-xs text-gray-500">Team #{team.team}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4">
+                        <span className="text-lg font-bold text-indigo-600">
+                          {typeof team.score === 'number' 
+                            ? team.score.toFixed(2)
+                            : 'N/A'}
+                        </span>
+                        {rank <= 3 && (
+                          <span className={`text-sm px-2 py-1 rounded-full ${
+                            rank === 1 ? 'bg-yellow-100 text-yellow-800' :
+                            rank === 2 ? 'bg-gray-100 text-gray-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

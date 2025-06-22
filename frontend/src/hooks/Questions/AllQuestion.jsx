@@ -79,7 +79,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function useQuestions(id, type = null) {
+export default function useQuestions(id, type = null ) {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -113,5 +113,5 @@ export default function useQuestions(id, type = null) {
     else setLoading(false);
   }, [id, type]);
 
-  return { questions, loading, error };
+  return { questions, loading, error ,type};
 }

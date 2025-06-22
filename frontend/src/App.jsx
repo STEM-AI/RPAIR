@@ -710,7 +710,7 @@ const App = () => {
           }
         />
          <Route
-          path="/Dashboard/JudgeEvent/python"
+          path="/Dashboard/JudgeEvent/programming"
           element={
             <Layout hideNavbar>
               <LayoutDashboard>
@@ -897,7 +897,7 @@ const App = () => {
           />
 
         <Route
-          path="/Competition-start/:competition/:id"
+          path="/Competition-start/programming/:id"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}
@@ -907,7 +907,7 @@ const App = () => {
           }
           />
         <Route
-          path="/CompetitionOpenSource-start/:competition"
+          path="/Competition-start/:competition/:id"
           element={
             <Layout hideNavbar>
               {/* <LayoutDashboard> */}

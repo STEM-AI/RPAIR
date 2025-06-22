@@ -7,6 +7,7 @@ import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule"
 import { useSearchParams } from "react-router-dom";
 
+
 const Teamwork = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [scores, setScores] = useState({});
@@ -111,7 +112,7 @@ const Td = ({ children, className }) => (
       {/* Header Section */}
       <div className="mb-8 flex items-center justify-between border-b border-gray-200 pb-6">
         <div>
-          <h1 className="text-3xl font-bold text-indigo-700 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-blue-700 flex items-center gap-3">
             <FaUsers className="w-8 h-8" />
             Teamwork Matches
           </h1>
@@ -119,7 +120,7 @@ const Td = ({ children, className }) => (
         </div>
         <button
           onClick={handleRefreshSchedule}
-          className="h-fit flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+          className="h-fit flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
         >
           <FaSync className="w-4 h-4" />
           <span className="hidden sm:inline">Refresh Schedule</span>
@@ -129,7 +130,7 @@ const Td = ({ children, className }) => (
       {/* Matches Table */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
         <table className="w-full divide-y divide-gray-200">
-          <thead className="bg-indigo-600">
+          <thead className="bg-blue-600">
             <tr>
               {['Match', 'Team 1', 'Team 2', 'Score', 'Actions'].map((header) => (
                 <th
@@ -144,7 +145,7 @@ const Td = ({ children, className }) => (
           <tbody className="bg-white divide-y divide-gray-200">
             {(scheduleDetails?.games || []).map((match) => (
               <tr key={match.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3 text-center font-medium text-indigo-600">#{match.id}</td>
+                <td className="px-4 py-3 text-center font-medium text-blue-600">#{match.id}</td>
                 
                 <td className="px-4 py-3">
                   <div className="flex flex-col space-y-1">
@@ -160,14 +161,14 @@ const Td = ({ children, className }) => (
                   </div>
                 </td>
                 
-                <td className="px-4 py-3 text-center font-bold text-indigo-600 text-xl">
+                <td className="px-4 py-3 text-center font-bold text-blue-600 text-xl">
                   {tempScores[match.id] ?? scores[match.id] ?? 0}
                 </td>
                 
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => handleOpenCalculator(match.id)}
-                    className="p-2 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-600 transition-colors"
+                    className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors"
                   >
                     <AiOutlineCalculator className="w-6 h-6" />
                   </button>
@@ -196,7 +197,7 @@ const Td = ({ children, className }) => (
 
       {/* Ranking Section */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 bg-indigo-600">
+        <div className="flex items-center justify-between px-6 py-4 bg-blue-600">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <FaTrophy className="w-6 h-6" />
             Team Rankings
@@ -234,7 +235,7 @@ const Td = ({ children, className }) => (
                     <div
                       key={team.team}
                       className={`flex items-center justify-between p-4 rounded-lg ${
-                        rank <= 3 ? 'border-2' : 'border hover:border-indigo-200'
+                        rank <= 3 ? 'border-2' : 'border hover:border-blue-200'
                       } ${
                         rank === 1
                           ? 'border-yellow-300 bg-yellow-50'
@@ -254,7 +255,7 @@ const Td = ({ children, className }) => (
                                 : rank === 2
                                 ? 'bg-gray-400 text-white'
                                 : 'bg-amber-500 text-white'
-                              : 'bg-indigo-100 text-indigo-600'
+                              : 'bg-blue-100 text-blue-600'
                           }`}
                         >
                           {rank}
@@ -266,7 +267,7 @@ const Td = ({ children, className }) => (
                       </div>
                       
                       <div className="flex items-center gap-4">
-                        <span className="text-lg font-bold text-indigo-600">
+                        <span className="text-lg font-bold text-blue-600">
                           {typeof team.avg_score === 'number' 
                             ? team.avg_score.toFixed(2)
                             : 'N/A'}
@@ -296,7 +297,8 @@ const Td = ({ children, className }) => (
           onClose={() => setSelectedMatch(null)}
           gameId={selectedMatch}
           mode="manual"
-          eventName={event_name}
+         eventName={event_name}
+         
         />
       )}
     </div>
