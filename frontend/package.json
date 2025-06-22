@@ -38,6 +38,7 @@
     "react-scripts": "^5.0.1",
     "react-slick": "^0.30.3",
     "react-spinners": "^0.17.0",
+    "react-syntax-highlighter": "^15.6.1",
     "react-toastify": "^11.0.3",
     "slick-carousel": "^1.8.1",
     "socket.io": "^4.8.1",

@@ -145,53 +145,6 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                           </li>
                         </Link>
                        
-                        <Link to="/Dashboard/JudgeEvent/python">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineEventNote className="mr-2" />
-                            Python
-                          </li>
-                          
-                        </Link>
-
-                        {/* Event */}
-                          {/* <li
-                            className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                            onClick={() => setIsEventOpen(!isEventOpen)} // Toggle the management sub-menu
-                          >
-                            <TbCalendarEvent className="mr-2" />
-                            Event
-                            {isEventOpen ? (
-                              <LiaAngleDoubleUpSolid className="ml-2" /> // Show double up icon when open
-                            ) : (
-                              <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
-                            )}
-                          </li> */}
-                          {/* Management Sub-menu */}
-                          {/* {isEventOpen && (
-                            <ul className="pl-6 mt-2">
-                              <Link to="/Dashboard/Judge/inspection">
-                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                                    Robot Inspection
-                                </li>
-                              </Link>
-                              <Link to="/Dashboard/Judge/matches">
-                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                                  Matches
-                                </li>
-                              </Link>
-                              <Link to="/Dashboard/Judge/Notebook">
-                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                                  Engineering Notebook
-                                </li>
-                              </Link>
-                              <Link to="/Dashboard/Judge/interview">
-                                <li className="hover:text-gray-800 p-2 text-md font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                                  Team Interview
-                                </li>
-                              </Link>
-                              
-                            </ul>
-                          )} */}
           </>
         );
       case 'organization':
@@ -232,18 +185,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                       <GiLaurelsTrophy className="mr-2" />
                       Competitions
                     </li>
-                    <Link to="/Programming">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineEventNote className="mr-2" />
-                            Programming
-                          </li>
-                        </Link>
-                    <Link to="/OpenSource">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineEventNote className="mr-2" />
-                            Open Source
-                          </li>
-                        </Link>
+                    
                         <Link to="/Dashboard/User/Teams">
                           <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
                             <FaPeopleGroup className="mr-2" />

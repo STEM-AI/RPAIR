@@ -150,6 +150,12 @@ const CreateTeam = () => {
     }
   };
 
+  const today = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
+
+  const upcomingCompetitions = events.filter(
+    (comp) => comp.start_date >= today
+  );
+
   const handleChange = (e, section, index, key, subSection) => {
     const value = e.target.value;
 
@@ -449,7 +455,7 @@ const handleSubmit = async (event) => {
               disabled={!formData.competition}
             >
               <option value="">Select Event</option>
-              {events.map((event, index) => (
+              {upcomingCompetitions.map((event, index) => (
                 <option key={index} value={event.name}>
                   {event.name}
                 </option>

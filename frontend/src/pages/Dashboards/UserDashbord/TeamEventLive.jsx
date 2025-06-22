@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaRocket } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-
+import flutterlogo from '../../../assets/cards/flutterpng.png';
+import arduinologo from '../../../assets/cards/arduinoLogo.png';
+import flutterimg from '../../../assets/cards/mobile.jpg';
+import arduino from '../../../assets/cards/arduino.jpg';
 import vexGoLogo from '../../../assets/cards/vex-go-logo.webp';
 import vexGo from '../../../assets/cards/vex-go.webp';
 import vexIqLogo from '../../../assets/cards/vex-iq-logo.webp';
@@ -47,7 +50,7 @@ function TeamEventLive() {
             id: event.id,
             competition_name: event.competition_name,
             name: event.name,
-            date: event.date || 'TBD',
+            date: event.start_date || 'TBD',
             location: event.location || 'TBD'
           };
 
@@ -89,23 +92,23 @@ function TeamEventLive() {
             case 'arduino':
               eventConfig = {
                 ...eventConfig,
-                image: vex123,
-                logo: vex123Logo,
+                image: arduino,
+                logo: arduinologo,
                 link: '/arduino',
-                bgColor: 'from-purple-500 to-violet-600',
+                bgColor: 'from-cyan-600 to-teal-800',
                 textColor: 'text-white',
-                accentColor: 'bg-purple-400'
+                accentColor: 'bg-sky-400'
               };
-              break;
+              break;  
             case 'flutter':
               eventConfig = {
                 ...eventConfig,
-                image: vex123,
-                logo: vex123Logo,
+                image: flutterimg,
+                logo: flutterlogo,
                 link: '/flutter',
-                bgColor: 'from-purple-500 to-violet-600',
+                bgColor: 'from-cyan-500 to-blue-600',
                 textColor: 'text-white',
-                accentColor: 'bg-purple-400'
+                accentColor: 'bg-cyan-400'
               };
               break;
             default:
@@ -169,7 +172,7 @@ function TeamEventLive() {
         <span className="inline-block ml-2">⚡</span>
       </motion.h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      <div className="max-w-2xl mx-auto  ">
         {competitions.map((comp, index) => (
           <motion.div
             key={comp.id}
@@ -215,7 +218,7 @@ function TeamEventLive() {
                 <img 
                   src={comp.logo} 
                   alt={`${comp.name} Logo`} 
-                  className="h-16 object-contain drop-shadow-lg" 
+                  className="h-20 object-contain drop-shadow-lg" 
                 />
               </motion.div>
               
@@ -300,7 +303,7 @@ function TeamEventLive() {
                   transition={{ delay: 0.7 }}
                 >
                   <Link
-                    to={`/Competition-start/${comp.name}/${comp.id}/`}
+                    to={`/Competition-start${comp.link}/${comp.id}/?eventName=${encodeURIComponent(comp.name)}`}
                     className={`block text-center font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${comp.accentColor} hover:bg-opacity-90`}
                   >
                     <motion.span
