@@ -49,6 +49,25 @@ const Skills = () => {
     refetch: refetchScheduleDetails 
   } = useSchedule(lastScheduleId);
 
+  // const handleTabChange = async (tabId) => {
+  //   setActiveTab(tabId);
+  //   await refetchSchedules(); 
+  //   if (eventSchedules[0]?.id) {
+  //     await refetchScheduleDetails();
+  //   }
+  // };
+
+  useEffect(() => {
+    if (lastScheduleId) {
+      refetchScheduleDetails();
+    }
+  }, [lastScheduleId, refetchScheduleDetails]);
+
+  const handleTabChange = async (tabId) => {
+    setActiveTab(tabId);
+    await refetchSchedules();
+  };
+
   const fetchRankings = async () => {
     setIsLoading(true);
     setError(null);
@@ -145,7 +164,7 @@ const Td = ({ children, className }) => (
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`px-6 py-2 rounded-lg flex items-center gap-2 ${
                 activeTab === tab.id ? 'bg-black text-white' : 'bg-gray-200'
               }`}

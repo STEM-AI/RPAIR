@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdAddBox } from "react-icons/md";
-import { FaTrophy, FaSearch } from "react-icons/fa";
+import { FaTrophy, FaSearch, FaMedal } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
@@ -9,8 +9,28 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaRegFileCode } from "react-icons/fa";
+import AddScore from "./AddScore";
 
-
+const theme = {
+  primary: {
+    light: "#06b6d4",
+    main: "#0891b2",
+    dark: "#0e7490"
+  },
+  secondary: {
+    light: "#f59e0b",
+    main: "#d97706",
+    dark: "#b45309"
+  },
+  text: {
+    primary: "#1e293b",
+    secondary: "#64748b"
+  },
+  background: {
+    light: "#f8fafc",
+    paper: "#ffffff"
+  }
+};
 
 export default function FileComp() {
   const { competition_name } = useParams();
@@ -19,6 +39,7 @@ export default function FileComp() {
   const [rankings, setRankings] = useState([]);
   const event_name = searchParams.get('eventName');
   const [searchQuery, setSearchQuery] = useState("");
+    const [tempScores, setTempScores] = useState({});
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,6 +54,17 @@ export default function FileComp() {
   const token = localStorage.getItem("access_token");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
+  const handleScore = (score) => {
+    setTempScores((prev) => ({
+      ...prev,
+      [selectedTeam]: score,
+    }));
+    setSelectedTeam(null);
+  };
+
+
+
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -197,41 +229,64 @@ export default function FileComp() {
   });
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 py-6">
-      {/* Header Section with improved gradient */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-500 bg-clip-text text-transparent">
+    <div className="container max-w-7xl mx-auto px-4 py-8">
+      {/* Enhanced Header Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-10 text-center"
+      >
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-600 to-teal-500 bg-clip-text text-transparent pb-2">
           {event_name?.replace(/_/g, ' ')} Submissions
         </h1>
-        <div className="mt-3 h-1 bg-gradient-to-r from-cyan-400 to-teal-400 w-20 mx-auto rounded-full" />
-      </div>
+        <div className="mt-4 h-1.5 bg-gradient-to-r from-cyan-400 to-teal-400 w-24 mx-auto rounded-full opacity-80" />
+        <p className="mt-4 text-slate-500 max-w-2xl mx-auto">
+          Manage team submissions and scores for this competition event
+        </p>
+      </motion.div>
 
-      {/* Search Bar with improved styling */}
-      <div className="mb-6">
-        <div className="relative max-w-xl mx-auto">
+      {/* Improved Search Bar with Floating Label */}
+      <div className="mb-8 max-w-2xl mx-auto">
+        <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <FaSearch className="text-cyan-500" />
           </div>
           <input
             type="text"
-            placeholder="Search teams..."
-            className="w-full pl-12 pr-5 py-3 rounded-xl border border-cyan-100 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:border-transparent transition-all shadow-sm"
+            placeholder=" "
+            className="w-full pl-12 pr-5 py-4 rounded-xl border-2 border-cyan-100 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:border-transparent transition-all shadow-sm peer"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          <label className="absolute left-12 top-3 text-slate-400 pointer-events-none transition-all duration-200 peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-3 peer-focus:text-sm peer-focus:text-cyan-600">
+            Search teams...
+          </label>
         </div>
       </div>
 
-      {/* Status Messages with animation */}
+      {/* Enhanced Status Messages */}
       <AnimatePresence>
         {responseMessage && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mb-5"
+            className="mb-6 mx-auto max-w-4xl"
           >
-            <Alert severity={alertType} className="rounded-xl shadow-md">
+            <Alert 
+              severity={alertType} 
+              className="rounded-xl shadow-lg border-l-4 border-cyan-500"
+              sx={{
+                '&.MuiAlert-filledSuccess': {
+                  backgroundColor: '#ecfdf5',
+                  color: '#065f46'
+                },
+                '&.MuiAlert-filledError': {
+                  backgroundColor: '#fef2f2',
+                  color: '#b91c1c'
+                }
+              }}
+            >
               <AlertTitle className="capitalize font-medium">{alertType}</AlertTitle>
               {responseMessage}
             </Alert>
@@ -239,60 +294,120 @@ export default function FileComp() {
         )}
       </AnimatePresence>
 
-      {/* Loading State with modern spinner */}
+      {/* Enhanced Loading State */}
       {loading && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="relative w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-4 border-cyan-500 border-t-transparent animate-spin"></div>
-            <div className="absolute inset-4 rounded-full border-4 border-cyan-300 border-b-transparent animate-spin-reverse"></div>
-          </div>
-          <p className="mt-5 text-gray-600 font-medium">Loading submissions...</p>
+        <div className="flex flex-col items-center justify-center py-20">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 rounded-full border-4 border-cyan-500 border-t-transparent"
+          />
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-6 text-slate-600 font-medium"
+          >
+            Loading submissions...
+          </motion.p>
         </div>
       )}
 
-      {/* Error State */}
-      {error && !loading && (
-        <Alert severity="error" className="rounded-xl shadow-md mb-6">
-          <AlertTitle className="font-medium">Error</AlertTitle>
-          {responseMessage}
-        </Alert>
-      )}
-
-      {/* Content Section */}
-      {!loading && !error && (
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-cyan-50">
-          {/* Mobile View - Enhanced card design */}
-          <div className="block md:hidden">
-            {filteredTeams.map((team) => (
-              <motion.div
-                key={team.team}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-5 border-b border-cyan-50 last:border-b-0 hover:bg-cyan-50/50 transition-colors"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-cyan-800">{team.team_name}</h3>
-                    <div className="flex items-center mt-2">
-                      <span className="bg-cyan-100 text-cyan-800 text-xs px-2 py-1 rounded-full">
-                        ID: {team.team}
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => openScoreModal(team.team, team.team_name)}
-                    className="ml-3 p-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white transition-colors"
-                    aria-label="Add score"
-                  >
-                    <MdAddBox size={20} />
-                  </button>
+      {/* Enhanced Mobile Cards */}
+      <div className="block md:hidden space-y-4">
+        {filteredTeams.map((team) => (
+          
+          <motion.div
+            key={team.team}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -2 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all"
+          >
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-slate-800">{team.team_name}</h3>
+                <div className="flex items-center mt-2 space-x-2">
+                  <span className="bg-cyan-100 text-cyan-800 text-xs px-2.5 py-1 rounded-full font-medium">
+                    ID: {team.team}
+                  </span>
                 </div>
-                
-                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <div className="text-gray-500 flex items-center">
-                    <span className="mr-2">📁 File:</span>
-                  </div>
-                  <div className="font-medium">
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => openScoreModal(team.team, team.team_name)}
+                className="ml-3 p-2.5 bg-gradient-to-br from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 rounded-xl text-white shadow-sm transition-all"
+                aria-label="Add score"
+              >
+                <MdAddBox size={20} />
+              </motion.button>
+            </div>
+            
+            <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
+              <div className="text-slate-500">Submission</div>
+              <div className="font-medium">
+                {team.attachment ? (
+                  <a 
+                    href={team.attachment} 
+                    className="text-cyan-600 hover:text-cyan-800 font-medium flex items-center"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <FaRegFileCode className="mr-2 text-slate-700" />
+                    View File
+                  </a>
+                ) : (
+                  <span className="text-slate-400">Not submitted</span>
+                )}
+              </div>
+              
+              <div className="text-slate-500">Score</div>
+              <div className="font-medium">
+              <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                  tempScores[team.team] || team.score
+                    ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
+                    : "bg-slate-100 text-slate-600"
+                }`}>
+                  {tempScores[team.team] || team.score || "Pending"}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Enhanced Desktop Table */}
+      <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gradient-to-r from-cyan-50 to-cyan-100">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Team</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">ID</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Submission</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Score</th>
+                <th className="px-6 py-4 text-center text-sm font-bold text-cyan-800 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filteredTeams.map((team) => (
+                <motion.tr
+                  key={team.team}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  whileHover={{ backgroundColor: "rgba(8, 145, 178, 0.05)" }}
+                  className="transition-colors"
+                >
+                  <td className="px-6 py-4 font-semibold text-slate-800">
+                    <div className="flex items-center">
+                      <div className="bg-cyan-100 rounded-lg w-10 h-10 flex items-center justify-center mr-3 text-cyan-700 font-bold shadow-inner">
+                        {team.team_name.charAt(0)}
+                      </div>
+                      {team.team_name}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-slate-600">{team.team}</td>
+                  <td className="px-6 py-4">
                     {team.attachment ? (
                       <a 
                         href={team.attachment} 
@@ -300,274 +415,185 @@ export default function FileComp() {
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
-                        View Submission
+                        <FaRegFileCode className="mr-2 text-slate-700" />
+                        View File
                       </a>
                     ) : (
-                      <span className="text-gray-400">Not submitted</span>
+                      <span className="text-slate-400">—</span>
                     )}
-                  </div>
-                  
-                  <div className="text-gray-500 flex items-center">
-                    <span className="mr-2">⭐ Score:</span>
-                  </div>
-                  <div className="font-medium">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      team.score 
-                        ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white" 
-                        : "bg-gray-100 text-gray-600"
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                      tempScores[team.id]
+                        ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
+                        : "bg-slate-100 text-slate-600"
                     }`}>
-                      {team.score || "Pending"}
+                     {tempScores[team.id] || 0}
                     </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Desktop View - Enhanced table design */}
-          <div className="hidden md:block">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gradient-to-r from-cyan-50 to-cyan-100">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Team</th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">ID</th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Submission</th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Score</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-cyan-800 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-cyan-50">
-                  {filteredTeams.map((team) => (
-                    <motion.tr
-                      key={team.team}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="hover:bg-cyan-50/30 transition-colors"
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => openScoreModal(team.team, team.team_name)}
+                      className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 transition-all"
                     >
-                      <td className="px-6 py-4 font-semibold text-cyan-900">
-                        <div className="flex items-center">
-                          <div className="bg-cyan-100 rounded-lg w-8 h-8 flex items-center justify-center mr-3 text-cyan-700">
-                            {team.team_name.charAt(0)}
-                          </div>
-                          {team.team_name}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium text-cyan-700">{team.team}</td>
-                      <td className="px-6 py-4">
-                        {team.attachment ? (
-                          <a 
-                            href={team.attachment} 
-                            className="text-cyan-600 hover:text-cyan-800 font-medium flex items-center"
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                          >
-                            <span className="mr-2"><FaRegFileCode className="text-black text-xl"/></span> View File
-                          </a>
-                        ) : (
-                          <span className="text-gray-400">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
-                          team.score 
-                            ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white" 
-                            : "bg-gray-100 text-gray-600"
-                        }`}>
-                          {team.score || "—"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => openScoreModal(team.team, team.team_name)}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 transition-all"
-                        >
-                          <MdAddBox className="mr-1.5" size={16} />
-                          Add Score
-                        </button>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Empty State - Enhanced design */}
-          {filteredTeams.length === 0 && !loading && (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cyan-100 text-cyan-500 mb-5">
-                <FaSearch size={36} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                {searchQuery ? "No matches found" : "No submissions yet"}
-              </h3>
-              <p className="text-gray-500 max-w-md mx-auto">
-                {searchQuery 
-                  ? "Try adjusting your search query" 
-                  : "Teams haven't submitted their files for this event"}
-              </p>
-            </div>
-          )}
+                      <MdAddBox className="mr-2" size={16} />
+                      Add Score
+                    </motion.button>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+      </div>
+
+      {/* Enhanced Empty State */}
+      {filteredTeams.length === 0 && !loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-16 bg-white rounded-xl shadow-sm border border-slate-100"
+        >
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-cyan-50 text-cyan-500 mb-6">
+            <FaSearch size={40} />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-700 mb-3">
+            {searchQuery ? "No matches found" : "No submissions yet"}
+          </h3>
+          <p className="text-slate-500 max-w-md mx-auto mb-6">
+            {searchQuery 
+              ? "Try adjusting your search query" 
+              : "Teams haven't submitted their files for this event"}
+          </p>
+          {!searchQuery && (
+            <button
+              onClick={fetchTeams}
+              className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white rounded-xl shadow-sm font-medium transition-all"
+            >
+              Refresh
+            </button>
+          )}
+        </motion.div>
       )}
 
-      {/* Rankings Section - Improved design */}
-      <div className="mt-8">
-        <button
+      {/* Enhanced Rankings Section */}
+      <div className="mt-12">
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleToggleRanking}
-          className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl shadow-md flex items-center font-medium mx-auto"
+          className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl shadow-md flex items-center font-medium mx-auto transition-all"
         >
           <FaTrophy className="mr-2" />
           {showRanking ? "Hide Rankings" : "View Rankings"}
-        </button>
+        </motion.button>
 
         {showRanking && (
-          <div className="p-6">
-            {isLoading ? (
-              <div className="space-y-4">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg" />
-                ))}
-              </div>
-            ) : error ? (
-              <div className="text-center py-6 text-red-500">
-                ⚠️ Error loading rankings: {error}
-              </div>
-            ) : rankings.length === 0 ? (
-              <div className="text-center py-6 text-gray-500">
-                🏟️ No rankings available yet
-              </div>
-            ) : (
-              <div className="grid gap-3">
-                {rankings.map((team, index) => {
-                  const rank = index + 1;
-                  return (
-                    <div
-                      key={team.team}
-                      className={`flex items-center justify-between p-4 rounded-lg ${
-                        rank <= 3 ? 'border-2' : 'border hover:border-indigo-200'
-                      } ${
-                        rank === 1
-                          ? 'border-yellow-300 bg-yellow-50'
-                          : rank === 2
-                          ? 'border-gray-300 bg-gray-50'
-                          : rank === 3
-                          ? 'border-amber-400 bg-amber-50'
-                          : 'border-gray-200 bg-white'
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <span
-                          className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                            rank <= 3
-                              ? rank === 1
-                                ? 'bg-yellow-400 text-white'
-                                : rank === 2
-                                ? 'bg-gray-400 text-white'
-                                : 'bg-amber-500 text-white'
-                              : 'bg-indigo-100 text-indigo-600'
-                          }`}
-                        >
-                          {rank}
-                        </span>
-                        <div className="flex flex-col">
-                          <span className="font-medium text-gray-800">{team.team__name}</span>
-                          <span className="text-xs text-gray-500">Team #{team.team}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4">
-                        <span className="text-lg font-bold text-indigo-600">
-                          {typeof team.score === 'number' 
-                            ? team.score.toFixed(2)
-                            : 'N/A'}
-                        </span>
-                        {rank <= 3 && (
-                          <span className={`text-sm px-2 py-1 rounded-full ${
-                            rank === 1 ? 'bg-yellow-100 text-yellow-800' :
-                            rank === 2 ? 'bg-gray-100 text-gray-800' :
-                            'bg-amber-100 text-amber-800'
-                          }`}>
-                            {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-6 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden"
+          >
+            <div className="p-6">
+              {isLoading ? (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="h-14 bg-slate-100 animate-pulse rounded-lg" />
+                  ))}
+                </div>
+              ) : error ? (
+                <div className="text-center py-8 text-red-500 bg-red-50 rounded-lg">
+                  ⚠️ Error loading rankings: {error}
+                </div>
+              ) : rankings.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 bg-slate-50 rounded-lg">
+                  🏟️ No rankings available yet
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {rankings.map((team, index) => {
+                    const rank = index + 1;
+                    return (
+                      <motion.div
+                        key={team.team}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className={`flex items-center justify-between p-5 rounded-lg ${
+                          rank <= 3 ? 'border-2 shadow-sm' : 'border hover:border-cyan-200'
+                        } ${
+                          rank === 1
+                            ? 'border-amber-300 bg-amber-50'
+                            : rank === 2
+                            ? 'border-slate-300 bg-slate-50'
+                            : rank === 3
+                            ? 'border-amber-500 bg-amber-50'
+                            : 'border-slate-200 bg-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-5">
+                          <span
+                            className={`w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold ${
+                              rank <= 3
+                                ? rank === 1
+                                  ? 'bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-md'
+                                  : rank === 2
+                                  ? 'bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-md'
+                                  : 'bg-gradient-to-br from-amber-600 to-amber-700 text-white shadow-md'
+                                : 'bg-cyan-100 text-cyan-600'
+                            }`}
+                          >
+                            {rank}
                           </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-slate-800">{team.team_name}</span>
+                            <span className="text-xs text-slate-500">Team #{team.team}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-5">
+                          <span className="text-xl font-bold text-cyan-600">
+                            {typeof team.score === 'number' 
+                              ? team.score.toFixed(2)
+                              : 'N/A'}
+                          </span>
+                          {rank <= 3 && (
+                            <span className={`flex items-center text-sm px-3 py-1 rounded-full ${
+                              rank === 1 ? 'bg-amber-100 text-amber-800' :
+                              rank === 2 ? 'bg-slate-100 text-slate-800' :
+                              'bg-amber-100 text-amber-800'
+                            }`}>
+                              {rank === 1 ? <FaMedal className="mr-1 text-amber-500" /> : 
+                               rank === 2 ? <FaMedal className="mr-1 text-slate-400" /> : 
+                               <FaMedal className="mr-1 text-amber-600" />}
+                              {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </motion.div>
         )}
       </div>
 
-      {/* Add Score Modal - Enhanced design */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-cyan-100"
-          >
-            <div className="bg-gradient-to-r from-cyan-600 to-teal-500 p-5 text-white">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-xl font-bold">Add Score</h3>
-                  <p className="text-sm opacity-90 mt-1">Team: {selectedTeamName}</p>
-                </div>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-white/80 hover:text-white p-1 rounded-full transition-colors"
-                  aria-label="Close"
-                >
-                  <IoClose size={24} />
-                </button>
-              </div>
-            </div>
-
-            <form onSubmit={addScore} className="p-6">
-              <div className="mb-6">
-                <label htmlFor="score" className="block text-sm font-medium text-gray-700 mb-2">
-                  Score Value
-                </label>
-                <input
-                  id="score"
-                  type="number"
-                  value={score}
-                  onChange={handleScoreChange}
-                  className="w-full px-4 py-3 border border-cyan-200 rounded-xl bg-cyan-50 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:border-transparent transition-all"
-                  placeholder="Enter score (0-100)"
-                  min="0"
-                  max="100"
-                  required
-                  autoFocus
-                />
-                <div className="mt-2 text-xs text-gray-500">
-                  Enter a value between 0 and 100
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-cyan-600 to-teal-500 rounded-xl hover:from-cyan-700 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 disabled:opacity-70 transition-colors shadow-md"
-                >
-                  {isSubmitting ? "Saving..." : "Save Score"}
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
+   
+      {showModal && selectedTeam && (
+        <AddScore
+          onClose={() => setShowModal(false)}
+          onScore={handleScore}
+          eventName={event_name}
+          competition_name={competition_name}
+          selectedTeam={selectedTeam}
+          selectedTeamName={selectedTeamName}
+          onScoreAdded={fetchTeams} // Add this to refresh the list after adding a score
+        />
       )}
     </div>
   );

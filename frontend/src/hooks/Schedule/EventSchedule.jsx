@@ -13,7 +13,10 @@ const useEventSchedules = (eventName, stage = '', ordering = "-id") => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/core/event/${eventName}/schedule/`,
         {
-          params: { ordering, stage }, // الباراميترات
+          params: {
+            ordering,
+            stage: stage === 'driver_iq' ? 'driver_iq' : 'auto'
+          }, // الباراميترات
           headers: { // إضافة الهيدر المطلوب
             Authorization: `Bearer ${token}`,
           },
