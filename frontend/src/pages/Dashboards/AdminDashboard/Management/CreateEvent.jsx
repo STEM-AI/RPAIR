@@ -125,21 +125,33 @@ const CreateEvent = ({orgID}) => {
     }
   };
 
+
   const renderEventNameInput = () => {
     if (!competition_name) return null;
-// console.log(competition_name);
-
-    const competition = comp.find(c => c.id === competition_name);
-    const compName = competition?.name;
-    console.log(competition);
     
-    // console.log(compName);
+    const competition = comp.find(c => c.id.toString() === competition_name.toString());
     
+    if (!competition) {
+      return (
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Enter Event name"
+          value={formData.name}
+          onChange={handleChange}
+          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
+          required
+        />
+      );
+    }
+  
+    const compName = competition.name;
+  
+    const normalizedCompName = compName.toLowerCase().replace(/_/g, '').replace(/\s/g, '');
 
-    if (!compName) return null;
-
-    switch (compName) {
-      case 'vex_go':
+    switch (normalizedCompName) {
+      case 'vexgo': 
         return (
           <select
             id="name"
@@ -207,7 +219,8 @@ const CreateEvent = ({orgID}) => {
         );
     }
   };
- 
+
+  
 
 
 

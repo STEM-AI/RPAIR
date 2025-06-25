@@ -3,24 +3,19 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logo from "../../../../assets/Static/logoWrite-re.png";
-import { useResult } from '../../../../context/CompetitionContext';
 
-const CompetitionResult = () => {
+const CompetitionFinal = () => {
   const { competition } = useParams();
   
   const navigate = useNavigate();
-  const { 
-    score, 
-    totalQuestions, 
-    timeTakenInSeconds, 
-    passed, 
-    attempts 
-  } = useResult();
+ 
 
-  const minutes = Math.floor(timeTakenInSeconds / 60);
-  const seconds = timeTakenInSeconds % 60;
+  // const minutes = Math.floor(timeTakenInSeconds / 60);
+  // const seconds = timeTakenInSeconds % 60;
+  const minutes = 0
+  const seconds = 0
 
-  const resultData = {
+  const Data = {
     title: competition === "python" ? "Python" : "Tynker",
     description: competition === "python"
       ? "Test your Python programming skills with algorithmic challenges"
@@ -87,7 +82,7 @@ const CompetitionResult = () => {
             <motion.h1
               className="text-3xl pb-3 sm:text-4xl font-extrabold bg-gradient-to-r from-gray-50 to-gray-100 bg-clip-text text-transparent"
             >
-              {resultData.title} Result
+              {Data.title} Compitition
             </motion.h1>
           </div>
           <motion.p
@@ -96,11 +91,10 @@ const CompetitionResult = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            {resultData.description}
+            {Data.description}
           </motion.p>
         </motion.div>
 
-        {/* Result Card */}
         <motion.div
           className="bg-gray-100 bg-opacity-90 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-10 border border-gray-200 border-opacity-30"
           initial={{ scale: 0.95, opacity: 0 }}
@@ -108,8 +102,8 @@ const CompetitionResult = () => {
           transition={{ delay: 0.4, type: 'spring' }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ResultBox title="Questions Solved" value={`${score} / ${totalQuestions}`} />
-            <ResultBox title="Time Taken" value={`${minutes}m ${seconds}s`} />
+            {/* <DataBox title="Questions Solved" value={`${score} / ${totalQuestions}`} /> */}
+            <DataBox title="Time Taken" value={`${minutes}m ${seconds}s`} />
           </div>
         </motion.div>
 
@@ -121,8 +115,8 @@ const CompetitionResult = () => {
           transition={{ delay: 0.9 }}
         >
           <button
-            onClick={() => navigate(`/competition/rank/${competition}`)}
-            className={`px-8 py-3 rounded-xl text-white font-bold text-lg bg-gradient-to-r ${resultData.color} shadow-lg`}
+            onClick={() => navigate(`/LiveProgramming/?eventName=${encodeURIComponent(competition)}`)}
+            className={`px-8 py-3 rounded-xl text-white font-bold text-lg bg-gradient-to-r ${Data.color} shadow-lg`}
           >
             Show Rank
           </button>
@@ -138,7 +132,7 @@ const CompetitionResult = () => {
   );
 };
 
-const ResultBox = ({ title, value }) => (
+const DataBox = ({ title, value }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -149,4 +143,4 @@ const ResultBox = ({ title, value }) => (
   </motion.div>
 );
 
-export default CompetitionResult;
+export default CompetitionFinal;

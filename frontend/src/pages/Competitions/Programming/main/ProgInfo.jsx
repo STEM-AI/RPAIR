@@ -1,62 +1,37 @@
 
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from "../../../../assets/Static/logoWrite-re.png";
-import useAllQuestion from '../../../../hooks/Questions/AllQuestion';
+import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
 
 const ProgInfo = () => {
   const { competition } = useParams();
   const { id } = useParams();
-  
-    const { questions: allQuestions, loading: allLoading, error: allError ,type} = useAllQuestion(id, competition);
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('eventName');
+
+    const { questions: allQuestions, loading: allLoading, error: allError } = useInfoQuestions(id, competition);
   
   
   const navigate = useNavigate();
-  let score = 0;
   
-  
-  for (let i = 0; i < allQuestions.length; i++){
-    if (allQuestions[i].category === 'problem_solving') {
-      score += 5;
-    }else if (allQuestions[i].category === 'compiler') {
-      score += 3;
-    }
-    else  {
-      score += 2;
-    }
-  }
 
   const competitionDetails = {
-    questions: allQuestions.length,
-    score,
-    time: allQuestions.length +20 ,
+    questions:allQuestions.number_of_questions,
+    score:allQuestions.number_of_questions,
+    time: (allQuestions.time_limit) /60 ,
     title: type,
-    description: "Test your Python programming skills with algorithmic challenges",
+    description: `Test your ${type} programming skills with algorithmic challenges`,
     color: "from-emerald-500 to-emerald-700"
 
-    // python: {
-      // questions: allQuestions.length,
-      // score: 125,
-      // time: 6,
-      // title: type,
-      // description: "Test your Python programming skills with algorithmic challenges",
-      // color: "from-emerald-500 to-emerald-700"
-    // },
-    // tynker: {
-    //   questions: 10,
-    //   score: 100,
-    //   time: 8,
-    //   title: "Tynker",
-    //   description: "Creative coding with block-based programming challenges",
-    //   color: "from-cyan-500 to-cyan-700"
-    // }
+
   };
 
   const details = competitionDetails;
 
   const handleStartCompetition = () => {
-    navigate(`/competition/${competition}/?id=${encodeURIComponent(id)}`);
+    navigate(`/competition/${type}/?id=${encodeURIComponent(id)}`);
   };
 
   return (
@@ -138,7 +113,7 @@ const ProgInfo = () => {
         >
           <div className="space-y-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Selected Competition Topic</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider"> Competition Topic</h3>
               <div className="flex items-center mt-3">
                 <motion.p 
                   className="text-2xl font-bold text-cyan-700"
@@ -156,7 +131,7 @@ const ProgInfo = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Questions to attempt</h3>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Number Of Questions </h3>
                 <p className="text-2xl font-bold text-gray-800 mt-2">{details.questions}</p>
               </motion.div>
               
@@ -178,18 +153,10 @@ const ProgInfo = () => {
                 <p className="text-2xl font-bold text-gray-800 mt-2">{details.time} minutes</p>
               </motion.div>
               
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Attempts allowed</h3>
-                <p className="text-2xl font-bold text-gray-800 mt-2">2</p>
-              </motion.div>
+              
             </div>
           </div>
         </motion.div>
-
         {/* Start Button */}
         <motion.div 
           className="text-center"

@@ -23,7 +23,7 @@ import OpenWelcome from "./pages/Competitions/OpenSource/OpenWelcom"
 import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
 import Home from "./components/Home/Home";
 import {ResultProvider } from "../src/context/CompetitionContext" ; 
-import CompetitionResult from "./pages/Competitions/Programming/main/CompetitionResult";
+import CompetitionFinal from "./pages/Competitions/Programming/main/CompetitionFinal";
 import Robotics from "./pages/Gallary/Robotics/Robotics";
 import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
 import LiveEvents from "./pages/LiveEvents/introEvents";
@@ -937,7 +937,7 @@ const App = () => {
           element={
             <Layout hideNavbar>
 
-                <CompetitionResult/>
+                <CompetitionFinal/>
 
             </Layout>
           }
