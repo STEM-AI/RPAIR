@@ -7,7 +7,8 @@ from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-
+import logging
+logger = logging.getLogger(__name__)
 @extend_schema(
     request=GameScheduleSerializer,
     responses={
@@ -73,11 +74,12 @@ class GamesScheduleCreateView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        logger.info(f"serializer.validated_data :{serializer.validated_data}")
         created_instances = serializer.save()
-
+        logger.info(f"created_instances :{created_instances}")
         # If multiple games were created, serialize them all
         serialized_data = GameScheduleSerializer(created_instances, many=True).data
-
+        logger.info(f"serialized_data :{serialized_data}")
         headers = self.get_success_headers(serialized_data)
         return Response(serialized_data, status=status.HTTP_201_CREATED, headers=headers)
 

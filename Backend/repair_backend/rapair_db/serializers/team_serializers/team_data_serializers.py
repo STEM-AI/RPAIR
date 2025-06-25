@@ -223,8 +223,11 @@ class TeamCertificationSerializer(serializers.ModelSerializer):
         fields = ['id','name','members','competition_name','start_date','team_leader_name']
 
     def get_competition_name(self,obj):
+        logger.info(f"self.context['event_id'] :{self.context['event_id']}")
         try:
             event = obj.competition_event.filter(id=self.context['event_id']).first()
+            logger.info(f"event :{event}")
+            logger.info(f"event.competition.name :{event.competition.name}")
             return event.competition.name
         except:
             return None
@@ -232,6 +235,7 @@ class TeamCertificationSerializer(serializers.ModelSerializer):
     def get_start_date(self,obj):
         try:
             event = obj.competition_event.filter(id=self.context['event_id']).first()
+            logger.info(f"event :{event}")
             return event.start_date
         except:
             return None

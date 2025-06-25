@@ -9,7 +9,8 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-
+import logging
+logger = logging.getLogger(__name__)
 
 class TeamListView(ListAPIView):
     permission_classes = [IsJudgeUser]
@@ -66,4 +67,11 @@ class TeamCertificationView(RetrieveAPIView):
     lookup_field = 'id'
 
     def get_queryset(self):
+        logger.info(f"self.kwargs.get('id') :{self.kwargs.get('id')}")
+        logger.info(f"self.kwargs.get('event_id') :{self.kwargs.get('event_id')}")
         return Team.objects.filter(id=self.kwargs.get('id'))
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['event_id'] = self.kwargs.get('event_id')
+        return context

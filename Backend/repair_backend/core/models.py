@@ -8,7 +8,7 @@ class Schedule(models.Model):
     stage = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.event.name} - {self.game.team1.name} vs {self.game.team2.name} at {self.time}"
+        return f"{self.event.name} - {self.stage} at {self.time}"
     class Meta:
         verbose_name = "Schedule"
         verbose_name_plural = "Schedules"

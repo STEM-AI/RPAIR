@@ -54,6 +54,7 @@ class CompetitionEvent(models.Model):
     is_live = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
     number_of_questions = models.IntegerField(default=0)
+    time_limit = models.IntegerField(default=120)
     organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='events', null=True, blank=True)
 
     MINI_EVENT = 'Mini'
@@ -136,9 +137,10 @@ class EventGame(models.Model):
         ('coding', 'Coding'),
         ('final', 'Teamwork Final'),
         ('vex_123', 'VEX 123'),
+        ('programming', 'Programming'),
     )
     stage = models.CharField(
-        max_length=10 ,
+        max_length=15 ,
         choices= STAGE_CHOICES , 
         default='teamwork')
     

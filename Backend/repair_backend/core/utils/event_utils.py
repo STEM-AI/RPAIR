@@ -38,6 +38,10 @@ def skills_schedule(event , game_time , stage, schedule):
         paused_time = 120
     elif stage in ['driver_iq','coding','auto']:
         paused_time = 60
+    elif stage == 'programming':
+        logger.info(f"event in programming:{event}")
+        paused_time = event.time_limit
+        logger.info(f"paused_time in programming:{paused_time}")
 
 
     for i in range(len(event_teams)):
@@ -57,7 +61,7 @@ def create_schedule(event, stage=None , time=None, schedule=None):
         return Response({"error": "Invalid time format. Please use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        if stage in ['driver_iq','driver_go','auto','coding']:
+        if stage in ['driver_iq','driver_go','auto','coding','programming']:
             logger.info(f"driver , auto")
             games = skills_schedule(event, game_time, stage, schedule)
 

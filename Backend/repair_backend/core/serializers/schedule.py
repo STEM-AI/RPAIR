@@ -39,7 +39,7 @@ class ScheduleDetailSerializer(serializers.ModelSerializer):
         # Ensure that the stage is one of the allowed choices
         allowed_stages = [
             'teamwork', 'driver_iq', 'driver_go', 'auto',
-            'coop', 'coding', 'final', 'vex_123'
+            'coop', 'coding', 'final', 'vex_123', 'programming'
         ]
         if attrs.get('stage') not in allowed_stages:
             raise serializers.ValidationError("Invalid stage choice.")

@@ -16,4 +16,4 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ProgrammingCompetitionEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompetitionEvent
-        fields = ['id','number_of_questions']
+        fields = ['id','number_of_questions','time_limit']

@@ -1,10 +1,9 @@
-from rest_framework.generics import ListAPIView,RetrieveAPIView,UpdateAPIView
+from rest_framework.generics import ListAPIView,RetrieveAPIView,RetrieveUpdateAPIView
 from programming.models import Question
 from rapair_db.models import CompetitionEvent
 from programming.serializers import QuestionMinimalSerializer,QuestionSerializer,ProgrammingCompetitionEventSerializer
-import random
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -17,8 +16,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class NumberOfQuestionsUpdateView(UpdateAPIView):
-    permission_classes = [IsJudgeUser]
+class NumberOfQuestionsAndTimeLimitUpdateView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    # permission_required = [IsAdminUser]
     serializer_class = ProgrammingCompetitionEventSerializer
     queryset = CompetitionEvent.objects.all()
     lookup_field = 'id'

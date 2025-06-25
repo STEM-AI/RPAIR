@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rapair_db.models import EventGame
 from core.models import Schedule
-
+import logging
+logger = logging.getLogger(__name__)
 class GamesSerializer(serializers.ModelSerializer):
     team1_name = serializers.CharField(source='team1.name', read_only=True) 
     team2_name = serializers.CharField(source='team2.name', read_only=True)
@@ -36,25 +37,17 @@ class GameScheduleSerializer(serializers.ModelSerializer):
         ('coding', 'Coding'),
         ('final', 'Teamwork Final'),
         ('vex_123', 'VEX 123'),
+        ('programming', 'Programming'),
     ])
     class Meta:
         model = EventGame
-        fields = [
-            'id',
-            'team1',
-            'team1_name',
-            'team2',
-            'team2_name',
-            'stage',
-            'event_name',
-            'game_time',
-            'time'
-        ]
+        fields = ['id','team1','team1_name','team2','team2_name','stage','event_name','game_time','time','score']
         extra_kwargs = {
             'stage': {'required': True},
             'team1':{'required': False},
             'team2':{'required': False},
             'time':{'required': False},
+            'score':{'read_only': True},
         }
 
     def create(self, validated_data):
@@ -64,6 +57,7 @@ class GameScheduleSerializer(serializers.ModelSerializer):
         from django.db import transaction
 
         event_name = self.context['view'].kwargs.get('event_name')
+        logger.info(f"event_name :{event_name}")    
         if not event_name:
             raise ValidationError("Event name is required")
 
@@ -85,13 +79,15 @@ class GameScheduleSerializer(serializers.ModelSerializer):
             with transaction.atomic():
                 # Create the schedule and event games
                 event = CompetitionEvent.objects.get(name=event_name)
+                logger.info(f"event :{event}")
                 schedule = Schedule.objects.create(
                     event=event,
                     time=time,
                     stage=stage
                 )
+                logger.info(f"schedule :{schedule}")
                 event_games = create_schedule(event=event, stage=stage, time=time_str, schedule=schedule)
-
+                logger.info(f"event_games :{event_games}")
                 if isinstance(event_games, list):
                     return event_games
                 return [event_games]
