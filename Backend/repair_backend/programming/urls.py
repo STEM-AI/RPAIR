@@ -8,5 +8,5 @@ urlpatterns = [
     path('number-of-questions-time-limit/<int:id>/', NumberOfQuestionsAndTimeLimitUpdateView.as_view(), name='number-of-questions-time-limit-update'),
     path('answer-question/', AnswerQuestionView.as_view(), name='answer-question'),
     path('game-id/<int:team_id>/<int:event_id>/<str:stage>/', ProgrammingGameIDRetrieveView.as_view(), name='game-id'),
-    path('rank/',ProgrammingRankListView.as_view(),name='programming-rank-list')
+    path('rank/<int:event_id>/',ProgrammingRankListView.as_view(),name='programming-rank-list')
 ]

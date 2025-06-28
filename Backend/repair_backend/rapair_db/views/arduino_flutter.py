@@ -55,3 +55,11 @@ class TeamScoreUpdateView(UpdateAPIView):
 
     def get_queryset(self):
         return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['team_id'],competition_event__name=self.kwargs['event_name'])
+    
+class TeamAttachmentScoreListView(ListAPIView):
+    serializer_class = TeamCompetitionEventScoreSerializer
+    queryset = TeamCompetitionEvent.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return TeamCompetitionEvent.objects.filter(competition_event__name=self.kwargs['event_name']).order_by('-score')

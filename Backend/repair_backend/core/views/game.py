@@ -1,12 +1,13 @@
-from rest_framework.generics import CreateAPIView,ListAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView
 from core.serializers import GameScheduleSerializer,GamesSerializer
+from rapair_db.serializers import EventGameSerializer
 from rapair_db.permissions import IsJudgeUser
 from rapair_db.models import EventGame
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiResponse, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 import logging
 logger = logging.getLogger(__name__)
 @extend_schema(
@@ -93,3 +94,12 @@ class GameListView(ListAPIView):
         stage = self.kwargs.get('stage')
         return EventGame.objects.filter(event__name=event_name, stage=stage)
 
+class GameIDRetrieveView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = EventGameSerializer
+    queryset = EventGame.objects.all()
+    lookup_field = 'team1'
+    lookup_url_kwarg = 'team_id'
+
+    def get_object(self):
+        return self.queryset.filter(event=self.kwargs.get("event_id"),stage=self.kwargs.get("stage")).last()
