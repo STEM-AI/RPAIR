@@ -10,6 +10,7 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import json
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
+from django.db import IntegrityError
 logger = logging.getLogger(__name__)
 
 class UserTeamListCreateView(ListCreateAPIView):
@@ -288,11 +289,27 @@ class UserTeamCompetitionEventListCreateView(ListCreateAPIView):
     serializer_class = UserTeamCompetitionEventSerializer
     def get_queryset(self):
         return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['id']).select_related('competition_event')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except IntegrityError as e:
+            logger.error(f"duplicate entry for team {serializer.data.get('team')} and event {serializer.data.get('competition_event')}")
+            return Response({"error": "duplicate entry for team and event"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        serializer.save()
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['id'] = self.kwargs['id']
         return context
+
 class UserTeamLiveCompetitionEventListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserTeamCompetitionEventSerializer
