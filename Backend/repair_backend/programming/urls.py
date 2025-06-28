@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import QuestionListAPIView,QuestionDetailAPIView,UploadQuestionsCSV,NumberOfQuestionsAndTimeLimitUpdateView,AnswerQuestionView,ProgrammingGameIDRetrieveView,ProgrammingRankListView
+from .views import QuestionListAPIView,QuestionDetailAPIView,UploadQuestionsCSV,NumberOfQuestionsAndTimeLimitUpdateView,AnswerQuestionView,ProgrammingRankListView
 
 urlpatterns = [
     path('questions/<int:competition_event_id>/', QuestionListAPIView.as_view(), name='question-list'),
@@ -7,6 +7,5 @@ urlpatterns = [
     path('upload-questions/', UploadQuestionsCSV.as_view(), name='upload-questions'),
     path('number-of-questions-time-limit/<int:id>/', NumberOfQuestionsAndTimeLimitUpdateView.as_view(), name='number-of-questions-time-limit-update'),
     path('answer-question/', AnswerQuestionView.as_view(), name='answer-question'),
-    path('game-id/<int:team_id>/<int:event_id>/<str:stage>/', ProgrammingGameIDRetrieveView.as_view(), name='game-id'),
     path('rank/<int:event_id>/',ProgrammingRankListView.as_view(),name='programming-rank-list')
 ]
