@@ -11,7 +11,7 @@ class JudgeForCompetitionEventCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         competition_event = self.kwargs.get('competition_event')
-        competition_event = CompetitionEvent.objects.get(name=competition_event)
+        competition_event = CompetitionEvent.objects.get(id=competition_event)
         serializer.save(competition_event=competition_event)
 
 
