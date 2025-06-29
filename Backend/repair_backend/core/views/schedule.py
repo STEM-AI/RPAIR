@@ -29,10 +29,10 @@ class ScheduleListView(ListAPIView):
         },
         parameters=[
             OpenApiParameter(
-                name='event_name',
-                type=OpenApiTypes.STR,
+                name='event_id',
+                type=OpenApiTypes.INT,
                 location=OpenApiParameter.PATH,
-                description='Name of the event',
+                description='ID of the event',
                 required=True
             ),
             OpenApiParameter(
@@ -48,10 +48,10 @@ class ScheduleListView(ListAPIView):
         """
         Get the list of schedules.
         """
-        event_name = self.kwargs.get('event_name')
+        event_id = self.kwargs.get('event_id')
         stage = request.query_params.get('stage')
-        if event_name and stage:
-            self.queryset = self.queryset.filter(event__name=event_name , stage=stage)
+        if event_id and stage:
+            self.queryset = self.queryset.filter(event__id=event_id , stage=stage)
         return super().get(request, *args, **kwargs)
     
 

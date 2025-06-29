@@ -56,10 +56,10 @@ class GameScheduleSerializer(serializers.ModelSerializer):
         from rest_framework.exceptions import ValidationError
         from django.db import transaction
 
-        event_name = self.context['view'].kwargs.get('event_name')
-        logger.info(f"event_name :{event_name}")    
-        if not event_name:
-            raise ValidationError("Event name is required")
+        event_id = self.context['view'].kwargs.get('event_id')
+        logger.info(f"event_id :{event_id}")    
+        if not event_id:
+            raise ValidationError("Event id is required")
 
         stage = validated_data.get('stage')
         from datetime import datetime
@@ -78,7 +78,7 @@ class GameScheduleSerializer(serializers.ModelSerializer):
         try:
             with transaction.atomic():
                 # Create the schedule and event games
-                event = CompetitionEvent.objects.get(name=event_name)
+                event = CompetitionEvent.objects.get(id=event_id)
                 logger.info(f"event :{event}")
                 schedule = Schedule.objects.create(
                     event=event,

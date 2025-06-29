@@ -90,9 +90,9 @@ class GameListView(ListAPIView):
     queryset = EventGame.objects.all()
 
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
+        event_id = self.kwargs.get('event_id')
         stage = self.kwargs.get('stage')
-        return EventGame.objects.filter(event__name=event_name, stage=stage)
+        return EventGame.objects.filter(event__id=event_id, stage=stage)
 
 class GameIDRetrieveView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
