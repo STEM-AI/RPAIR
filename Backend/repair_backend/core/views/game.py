@@ -102,4 +102,4 @@ class GameIDRetrieveView(RetrieveAPIView):
     lookup_url_kwarg = 'team_id'
 
     def get_object(self):
-        return self.queryset.filter(event=self.kwargs.get("event_id"),stage=self.kwargs.get("stage")).last()
+        return self.queryset.filter(event=self.kwargs.get("event_id"),stage=self.kwargs.get("stage"),team1=self.kwargs.get("team_id")).last()
