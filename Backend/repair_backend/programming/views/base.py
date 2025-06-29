@@ -1,12 +1,12 @@
 from rest_framework.generics import ListAPIView
 from rapair_db.models import EventGame
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from programming.serializers import ProgrammingRankSerializer
 
 
 
 class ProgrammingRankListView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = ProgrammingRankSerializer
     queryset = EventGame.objects.all()
     lookup_field = 'event'
