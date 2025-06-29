@@ -423,13 +423,13 @@ export default function FileComp() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-                      tempScores[team.id]
-                        ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
-                        : "bg-slate-100 text-slate-600"
-                    }`}>
-                     {tempScores[team.id] || 0}
-                    </span>
+                  <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                        tempScores[team.team] || team.score
+                          ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
+                          : "bg-slate-100 text-slate-600"
+                      }`}>
+                        {tempScores[team.team] || team.score || "Pending"}
+                      </span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <motion.button

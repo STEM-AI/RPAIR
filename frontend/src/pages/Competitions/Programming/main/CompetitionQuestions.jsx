@@ -15,6 +15,7 @@ import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
 
 const CompetitionQuestions = () => {
   const { competition } = useParams();
+  const { game_id } = useParams();
   const [answeredQuestions, setAnsweredQuestions] = useState({});
   const [searchParams] = useSearchParams();
   const competition_id = searchParams.get('id');
@@ -24,9 +25,9 @@ const CompetitionQuestions = () => {
   const [currentQuestionId, setCurrentQuestionId] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [savedAnswers, setSavedAnswers] = useState({}); // تتبع الأسئلة المحفوظة
+  const [savedAnswers, setSavedAnswers] = useState({});
 
-  const startTime = useRef(Date.now());
+  
   
       const { questions: infoQuestions} = useInfoQuestions(competition_id, competition);
   
@@ -66,7 +67,7 @@ const formatSingleLineCode = (text) => {
     const data = {
       question_id: questionId,
       answer_id: answerId,
-      event_game_id: 813
+      event_game_id: game_id
     };
     
     try {
@@ -131,7 +132,7 @@ const formatSingleLineCode = (text) => {
         text: 'The competition has ended.',
         confirmButtonColor: '#32cd32',
       }).then(() => {
-        navigate(`/competition/${competition}/results`, { replace: true });
+        navigate(`/competition/programming/${competition}?gameId=${encodeURIComponent(game_id)}`, { replace: true });
       });
     }
   }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer]);
@@ -168,20 +169,8 @@ const formatSingleLineCode = (text) => {
   }, [currentQuestionIndex, allQuestions]);
 
 
-  // const handleTimeUp = useCallback(() => {
     
-  
-  //   Swal.fire({
-  //     icon: 'error',
-  //     title: 'Time\'s up!',
-  //     text: 'The competition has ended.',
-  //     confirmButtonColor: '#32cd32',
-  //   }).then(() => {
-      
-  //       navigate(`/competition/${competition}/results`, { replace: true });
-      
-  //   });
-  // }, [ navigate, competition ]);
+
 
   const handleOptionSelect = (questionId, optionId, isMultiple = false) => {
     setSelectedOptions(prev => {
@@ -248,7 +237,6 @@ const formatSingleLineCode = (text) => {
     if (!allQuestions || allQuestions.length === 0 || isSaving) return;
     
     const currentId = allQuestions[currentQuestionIndex].id;
-    const currentAnswer = selectedOptions[currentId];
     
     if (currentQuestionIndex < allQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);

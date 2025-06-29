@@ -135,6 +135,7 @@ import FileComp from "./pages/Dashboards/Judge/JudgeComp/OpenSource/FileComp";
 import UploadFileMcq from "./pages/Dashboards/AdminDashboard/Management/UploedFileMcq";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
+import LiveCompFile from "./pages/LiveEvents/LiveMatches/LiveCompFile";
 
 
 const App = () => {
@@ -922,7 +923,7 @@ const App = () => {
 
 
 <Route
-          path="/competition/:competition"
+          path="/competition/:competition/:game_id"
           element={
             <Layout hideNavbar>
 
@@ -933,7 +934,7 @@ const App = () => {
         /> 
 
 <Route
-          path="/competition/:competition/results"
+          path="/competition/programming/:competition"
           element={
             <Layout hideNavbar>
 
@@ -1082,6 +1083,15 @@ const App = () => {
           element={
             <Layout >
                 <LiveProgramming/>
+            </Layout>
+            
+          }
+            />
+          <Route
+          path="/LiveFile"
+          element={
+            <Layout >
+                <LiveCompFile/>
             </Layout>
             
           }

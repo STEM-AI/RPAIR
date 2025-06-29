@@ -1,22 +1,75 @@
 
+  
+
 import React from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from "../../../../assets/Static/logoWrite-re.png";
 import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
+import useGameID from '../../../../hooks/GameID';
 
 const ProgInfo = () => {
   const { competition } = useParams();
   const { id } = useParams();
+  const event_id = id;
   const [searchParams] = useSearchParams();
   const type = searchParams.get('eventName');
+  const team_id = searchParams.get('teamId');
 
-    const { questions: allQuestions, loading: allLoading, error: allError } = useInfoQuestions(id, competition);
+  const { 
+    questions: allQuestions, 
+    loading: allLoading, 
+    error: allError 
+  } = useInfoQuestions(id, competition);
   
-  
+  const { 
+    GameID, 
+    loading: gameIdLoading, 
+    error: gameIdError 
+  } = useGameID(team_id, event_id, "programming");
+
   const navigate = useNavigate();
   
-
+  // Handle loading state
+  if (allLoading || gameIdLoading) {
+    return (
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-cyan-700 to-cyan-900 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-300"></div>
+      </motion.div>
+    );
+  }
+  
+  // Handle error state
+  if (allError || gameIdError) {
+    const errorMessage = allError || gameIdError;
+    
+    return (
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-cyan-700 to-cyan-900 p-6 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="bg-white bg-opacity-90 rounded-xl p-8 max-w-md text-center">
+          <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
+          <p className="text-gray-700 mb-6">{errorMessage}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors"
+          >
+            Reload Page
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
   const competitionDetails = {
     questions:allQuestions.number_of_questions,
     score:allQuestions.number_of_questions,
@@ -31,7 +84,7 @@ const ProgInfo = () => {
   const details = competitionDetails;
 
   const handleStartCompetition = () => {
-    navigate(`/competition/${type}/?id=${encodeURIComponent(id)}`);
+    navigate(`/competition/${type}/${GameID.id}?id=${encodeURIComponent(id)}`);
   };
 
   return (
@@ -113,14 +166,14 @@ const ProgInfo = () => {
         >
           <div className="space-y-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider"> Competition Topic</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider"> Competition Topic - <span className="text-cyan-700 text-2xl">Game: {GameID.id}</span></h3>
               <div className="flex items-center mt-3">
                 <motion.p 
                   className="text-2xl font-bold text-cyan-700"
                   initial={{ x: -10 }}
                   animate={{ x: 0 }}
                 >
-                  {details.title}
+                  {details.title} 
                 </motion.p>
               </div>
             </div>

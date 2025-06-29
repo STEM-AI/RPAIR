@@ -183,6 +183,7 @@ const CreateEvent = ({orgID}) => {
           </select>
         );
       case 'arduino':
+        formData.name = "arduino";
         return (
           <input
             type="text"
@@ -194,6 +195,7 @@ const CreateEvent = ({orgID}) => {
           />
         );
       case 'flutter':
+        formData.name = "flutter";
         return (
           <input
             type="text"

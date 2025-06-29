@@ -196,7 +196,7 @@ useEffect(() => {
           >
             <option value="">{isLoading ? 'Loading events...' : 'Select Event'}</option>
             {events.map((event) => (
-              <option key={event.id} value={event.name}>
+              <option key={event.id} value={event.id}>
                 {event.name}
               </option>
             ))}
