@@ -13,4 +13,4 @@ class ProgrammingRankListView(ListAPIView):
     lookup_url_kwarg = 'event_id'
 
     def get_queryset(self):
-        return self.queryset.filter(stage='programming').order_by('-socre')
+        return self.queryset.filter(stage='programming').order_by('-score')
