@@ -11,6 +11,7 @@ const MatchRounds = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
 
   const handleClick = (path) => {
     navigate(path);
@@ -39,7 +40,7 @@ const MatchRounds = () => {
         ].map((service, index) => (
           <div 
             key={index} 
-            onClick={() => handleClick(`${service.path}?eventName=${encodeURIComponent(event_name)}`)}
+            onClick={() => handleClick(`${service.path}?eventName=${encodeURIComponent(event_name)}&eventId=${encodeURIComponent(event_id)}`)}
             className="relative rounded-xl mt-12 bg-white p-6 text-center shadow-xl h-96 flex flex-col items-center justify-center transform transition-transform duration-300 hover:scale-105 cursor-pointer">
             
             <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex h-20 w-20 items-center justify-center rounded-full ${service.color} ${service.shadow}`}>

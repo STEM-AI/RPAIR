@@ -10,6 +10,7 @@ const CompOpen = () => {
   const { competition } = useParams();
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const team_id = searchParams.get('teamId');
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
@@ -35,34 +36,8 @@ const CompOpen = () => {
 
   const details = competitionDetails[competition];
   const [error, setError] = useState("");
-  const [teams, setTeams] = useState([]);
-  const [selectedTeam, setSelectedTeam] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-
-      const params = {
-        competition_event__name: eventName
-      };
-      
-      try {
-        
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/user/`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            params
-          }
-        );
-        setTeams(res.data);
-      } catch (err) {
-        setError("Failed to fetch teams");
-      }
-    };
-
-    fetchTeams();
-  }, [token]);
 
   const handleFileSelect = () => {
     fileInputRef.current.click();
@@ -94,8 +69,8 @@ const CompOpen = () => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedTeam) {
-      return Swal.fire("Error", "Please select a team first!", "error");
+    if (!team_id) {
+      return Swal.fire("Error", "Team data is not available", "error");
     }
 
     if (!selectedFile) {
@@ -110,7 +85,7 @@ const CompOpen = () => {
       formData.append('attachment', selectedFile);
 
       await axios.patch(
-        `${process.env.REACT_APP_API_URL}/${competition}/${eventName}/team-attachment/${selectedTeam}/`,
+        `${process.env.REACT_APP_API_URL}/${competition}/${eventName}/team-attachment/${team_id}/`,
         formData,
         {
           headers: {
@@ -218,25 +193,7 @@ const CompOpen = () => {
               <p className="text-gray-600">Upload a single compressed file ({details.allowedTypes.join(', ')})</p>
             </div>
 
-            {/* Team Selection */}
-            <div>
-              <label className="block text-sm font-medium text-indigo-700 mb-2">Select Your Team</label>
-              <select
-                value={selectedTeam}
-                onChange={(e) => setSelectedTeam(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-              >
-                <option value="">Select Team</option>
-                {teams.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-              {!selectedTeam && (
-                <p className="text-red-500 text-sm mt-1">Please select a team to submit</p>
-              )}
-            </div>
+            
 
             {/* File Upload Area */}
             <motion.div 
@@ -302,14 +259,14 @@ const CompOpen = () => {
         >
           <motion.button
             onClick={handleSubmit}
-            disabled={loading || !selectedTeam || !selectedFile}
+            disabled={loading|| !selectedFile}
             whileHover={{ 
               scale: 1.05,
               boxShadow: "0 20px 40px -10px rgba(6, 182, 212, 0.4)"
             }}
             whileTap={{ scale: 0.98 }}
             className={`px-12 py-4 rounded-xl font-bold text-2xl text-white ${
-              loading || !selectedTeam || !selectedFile
+              loading || !selectedFile
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br shadow-lg shadow-cyan-500/50'
             }`}

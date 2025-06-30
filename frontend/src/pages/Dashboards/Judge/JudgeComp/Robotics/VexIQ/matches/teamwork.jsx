@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ScoreTeams from "../Scores/scoreTeams";
+import Koper from "../Scores/Koper";
 import { FaTrophy, FaCheck,FaUsers,FaChartBar ,FaSync} from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import axios from "axios";
@@ -21,6 +21,11 @@ const Teamwork = () => {
 
      const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
+  console.log("event_id", event_id);
+  console.log("event_name", event_name);
+  
+  
 
 
 const { 
@@ -28,7 +33,7 @@ const {
     loading: schedulesLoading, 
     error: schedulesError, 
     refetch: refetchSchedules 
-  } = useEventSchedules(event_name, "teamwork", "-id"); // Order by descending ID
+  } = useEventSchedules(event_id, "teamwork", "-id"); // Order by descending ID
 
   const lastScheduleId = eventSchedules[0]?.id; // أول عنصر بعد الترتيب التنازلي
   const { 
@@ -292,7 +297,7 @@ const Td = ({ children, className }) => (
       </div>
 
       {selectedMatch && (
-        <ScoreTeams
+        <Koper
           onCalculate={handleCalculate}
           onClose={() => setSelectedMatch(null)}
           gameId={selectedMatch}
