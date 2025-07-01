@@ -5,7 +5,7 @@ from rapair_db.permissions import IsJudgeUser
 from rest_framework.permissions import AllowAny
 from django.db.models import Avg
 from rest_framework.response import Response
-from rapair_db.models import Team
+from rapair_db.models import TeamCompetitionEvent
 class GameCoopView(UpdateAPIView):
     """
     View to handle the set of game coop scores.
@@ -22,12 +22,12 @@ class CoopRankView(ListAPIView):
     permission_classes=[AllowAny]
     serializer_class = CoopTeamRankSerializer
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return TeamworkTeamScore.objects.none()
         return (
                 TeamworkTeamScore.objects
-                .filter(team__competition_event__name=event_name)  # Filter by event name
+                .filter(team__competition_event__id=event_id)  # Filter by event name
                 .select_related('team')  # Fetch the related Team model
                 .values('team', 'team__name')  # Include team name directly
                 .annotate(avg_score=Avg('score'))
@@ -44,7 +44,7 @@ class CoopRankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = Team.objects.get(id=item['team'])
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'])
             team.teamwork_rank = index + 1  # Rank starts from 1
             team.save()
 

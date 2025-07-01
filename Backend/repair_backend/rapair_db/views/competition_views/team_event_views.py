@@ -17,17 +17,17 @@ class TeamNonTechScoreUpdateView(UpdateAPIView):
 
     def get_object(self):
         logger.info("get_object")
-        event_name = self.kwargs.get("event_name")
-        logger.info(f"event_name {event_name}")
+        event_id = self.kwargs.get("event_id")
+        logger.info(f"event_id {event_id}")
         team_id = self.kwargs.get("id")
         logger.info(f"team_id {team_id}")
 
         # Ensure event exists
         try:
-            event = CompetitionEvent.objects.get(name=event_name)
+            event = CompetitionEvent.objects.get(id=event_id)
             logger.info(f"event {event}")
         except CompetitionEvent.DoesNotExist:
-            raise ValidationError({"event_name": "Event not found."})
+            raise ValidationError({"event_id": "Event not found."})
 
         logger.info(f"teamcompetitionevent {TeamCompetitionEvent.objects.all()}")
         # Ensure team exists and belongs to the event

@@ -185,7 +185,7 @@ class UserTeamListCreateView(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         print("request.data", request.data)
         print("request.content_type", request.content_type)
-        event = event_utils.get_object(event_name=request.data.get('event_name'))
+        event = event_utils.get_object(event_id=request.data.get('event_id'))
         if not event:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
 

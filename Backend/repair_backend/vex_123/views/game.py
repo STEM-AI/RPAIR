@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.db.models.functions import Coalesce
 from django.db.models.fields import FloatField
-from rapair_db.models import Team
+from rapair_db.models import TeamCompetitionEvent
 
 
 
@@ -22,10 +22,10 @@ class GameCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
-            return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
-        event = CompetitionEvent.objects.get(name=event_name)
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
+            return Response({"error": "Event id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        event = CompetitionEvent.objects.get(id=event_id)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(event=event)
@@ -41,13 +41,13 @@ class Vex123RankView(ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return SkillsTeamScore.objects.none()
 
         queryset = (
             SkillsTeamScore.objects
-            .filter(team__competition_event__name=event_name)
+            .filter(team__competition_event__id=event_id)
             .values('team', 'team__name')
             .annotate(
                 total_score=Sum('driver_score'),
@@ -57,7 +57,7 @@ class Vex123RankView(ListAPIView):
         # Subquery to get total time_taken per team (as team1) in the given event
         total_time_subquery = (
             EventGame.objects
-            .filter(team1=OuterRef('team'), event__name=event_name)
+            .filter(team1=OuterRef('team'), event__id=event_id)
             .values('team1')  # Group by team1
             .annotate(total_time=Sum('time_taken'))
             .values('total_time')[:1]
@@ -83,7 +83,7 @@ class Vex123RankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = Team.objects.get(id=item['team'])
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'])
             team.skills_rank = index + 1  # Rank starts from 1
             team.save()
 

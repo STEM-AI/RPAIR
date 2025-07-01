@@ -6,16 +6,16 @@ from django.db.models import Avg
 from django.db import IntegrityError
 import logging
 logger = logging.getLogger(__name__)
-def get_object(competition_name = None , event_name = None):
-        if competition_name :
+def get_object(competition_id = None , event_id = None):
+        if competition_id :
             try:
-                return Competition.objects.get(name=competition_name)
+                return Competition.objects.get(id=competition_id)
             except Competition.DoesNotExist:
                 return None
             
-        if event_name :
+        if event_id :
              try:
-                return CompetitionEvent.objects.get(name=event_name)
+                return CompetitionEvent.objects.get(id=event_id)
              except CompetitionEvent.DoesNotExist:
                 return None
 

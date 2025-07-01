@@ -6,10 +6,11 @@ from rest_framework.permissions import AllowAny
 
 
 class TeamInterviewView(UpdateAPIView):
-    queryset = Team.objects.all()
+    queryset = TeamCompetitionEvent.objects.all()
     serializer_class = TeamInterviewSerializer
     permission_classes = [IsJudgeUser]
-    lookup_field ='id'
+    lookup_field ='team_id'
+    lookup_url_kwarg = 'id'
 
 
 
@@ -17,12 +18,15 @@ class TeamInterviewRankListView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = TeamInterviewSerializer
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return TeamCompetitionEvent.objects.none()
         return (
             TeamCompetitionEvent.objects
-            .select_related('competition_event')
-            .filter(competition_event__name=event_name)
+            .filter(competition_event__id=event_id)
+            .select_related(
+                'team',
+                'competition_event'
+            )
             .order_by('-interview_score')
             )

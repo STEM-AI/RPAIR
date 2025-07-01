@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from ...permissions import IsJudgeUser
 from core.utils import event_utils
-from ...models import EventGame , Team ,  TeamworkTeamScore , SkillsTeamScore
+from ...models import EventGame , Team ,  TeamworkTeamScore , SkillsTeamScore , TeamCompetitionEvent
 from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
 from django.db import IntegrityError
@@ -17,11 +17,11 @@ class CreateScheduleEventGameView(APIView):
     permission_classes = [AllowAny]
     serializer_class = EventGameSerializer
 
-    def post(self, request , event_name=None):
-        if not event_name:
-            return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request , event_id=None):
+        if not event_id:
+            return Response({"error": "Event id is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        event = event_utils.get_object(event_name=event_name)
+        event = event_utils.get_object(event_id=event_id)
         if not event:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         
@@ -47,10 +47,10 @@ class GetEventSchedule(ListAPIView):
     filterset_fields = ['stage']
 
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return EventGame.objects.none()
-        event = event_utils.get_object(event_name=event_name)
+        event = event_utils.get_object(event_id=event_id)
         return EventGame.objects.filter(event=event).order_by('time')
                 
     
@@ -59,12 +59,12 @@ class TeamWorkRankView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = TeamScoreSerializer
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return TeamworkTeamScore.objects.none()
         return (
                 TeamworkTeamScore.objects
-                .filter(team__competition_event__name=event_name)  # Filter by event name
+                .filter(team__competition_event__id=event_id)  # Filter by event name
                 .select_related('team')  # Fetch the related Team model
                 .values('team', 'team__name')  # Include team name directly
                 .annotate(avg_score=Avg('score'))
@@ -80,7 +80,7 @@ class TeamWorkRankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = Team.objects.get(id=item['team'])
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'])
             team.teamwork_rank = index + 1  # Rank starts from 1
             team.save()
 
@@ -92,12 +92,16 @@ class TeamsInterviewScoreRankView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = TeamInterviewScoreSerializer
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
-            return Team.objects.none()
-        return (Team.objects
-                .select_related('competition_event')
-                .filter(competition_event__name=event_name)
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
+            return TeamCompetitionEvent.objects.none()
+        return (
+                TeamCompetitionEvent.objects
+                .filter(competition_event__id=event_id)
+                .select_related(
+                    'team',
+                    'competition_event'
+                )
                 .order_by('-interview_score')
                 )
 
@@ -105,12 +109,15 @@ class TeamsEngNotebookScoreRank(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = TeamEngNotebookScoreSerializer
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
-            return Team.objects.none()
-        return (Team.objects
-                .select_related('competition_event')
-                .filter(competition_event__name=event_name)
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
+            return TeamCompetitionEvent.objects.none()
+        return (TeamCompetitionEvent.objects
+                .filter(competition_event__id=event_id)
+                .select_related(
+                    'team',
+                    'competition_event'
+                )
                 .order_by('-eng_notebook_score')
                 )
     
@@ -120,12 +127,12 @@ class SkillsRankView(ListAPIView):
     serializer_class = SkillsRankSerializer
 
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return SkillsTeamScore.objects.none()
         return (
             SkillsTeamScore.objects
-            .filter(team__competition_event__name=event_name)  # Filter by event name
+            .filter(team__competition_event__id=event_id)  # Filter by event name
             .select_related('team')  # Fetch the related Team model
             .values('team', 'team__name')  # Include team name directly
             .annotate(
@@ -144,7 +151,7 @@ class SkillsRankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = Team.objects.get(id=item['team'])
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'])
             team.skills_rank = index + 1  # Rank starts from 1
             team.save()
 

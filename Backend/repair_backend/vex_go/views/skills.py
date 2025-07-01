@@ -6,7 +6,7 @@ from rapair_db.permissions import IsJudgeUser
 from django.db.models import Max, Subquery, OuterRef, FloatField,Sum,F
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rapair_db.models import Team
+from rapair_db.models import TeamCompetitionEvent
 
 class GameSkillsView(UpdateAPIView):
     """
@@ -28,14 +28,14 @@ class SkillsRankView(ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        event_name = self.kwargs.get('event_name')
-        if not event_name:
+        event_id = self.kwargs.get('event_id')
+        if not event_id:
             return SkillsTeamScore.objects.none()
 
         # Subquery to get total time_taken per team (as team1) in the given event
         total_time_subquery = (
             EventGame.objects
-            .filter(team1=OuterRef('team'), event__name=event_name)
+            .filter(team1=OuterRef('team'), event__id=event_id)
             .values('team1')  # Group by team1
             .annotate(total_time=Sum('time_taken'))
             .values('total_time')[:1]
@@ -43,7 +43,7 @@ class SkillsRankView(ListAPIView):
 
         return (
             SkillsTeamScore.objects
-            .filter(team__competition_event__name=event_name)
+            .filter(team__competition_event__id=event_id)
             .values('team', 'team__name')
             .annotate(
                 total_score=Max('autonomous_score') + Max('driver_score'),
@@ -63,7 +63,7 @@ class SkillsRankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = Team.objects.get(id=item['team'])
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'])
             team.skills_rank = index + 1  # Rank starts from 1
             team.save()
 

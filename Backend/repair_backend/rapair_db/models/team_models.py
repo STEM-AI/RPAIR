@@ -17,8 +17,6 @@ class Team(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL , null=True, blank=True  , related_name='team_organization')
     competition_event = models.ManyToManyField(CompetitionEvent, through='TeamCompetitionEvent', related_name='teams')
     note = models.CharField(max_length=255 , null=True, blank=True , default='')
-    teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
-    skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
     team_number = models.CharField(max_length=255 , unique=True , null=True, blank=True)
     image = models.ImageField(upload_to='teams_image/', null=True, blank=True,default=None)
 
@@ -57,6 +55,8 @@ class TeamCompetitionEvent(models.Model):
     inspect_score = models.IntegerField(null=True, blank=True,default=0)
     eng_notebook_score = models.IntegerField(null=True, blank=True,default=0)
     attachment = models.FileField(upload_to='team_competition_event_attachments/', null=True, blank=True,default=None)
+    teamwork_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
+    skills_rank = models.IntegerField(null=True, blank=True,default=1)  # New field to store the rank
     class Meta:
         constraints = [
             models.UniqueConstraint(

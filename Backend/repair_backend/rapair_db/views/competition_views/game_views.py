@@ -10,15 +10,15 @@ from ...models import EventGame
 class GameScoreView(APIView):
     permission_classes = [IsJudgeUser]
     def post(self, request , game_id):
-        event_name = request.data.get('event_name', None)
-        if event_name is None:
-            return Response({"error": "Event name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        event_id = request.data.get('event_id', None)
+        if event_id is None:
+            return Response({"error": "Event id is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         if game_id is None:
             return Response({"error": "Game ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         
 
-        event = event_utils.get_object(event_name=event_name)
+        event = event_utils.get_object(event_id=event_id)
         if event is None:
             return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
         

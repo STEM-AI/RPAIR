@@ -17,7 +17,7 @@ class TeamListView(ListAPIView):
     serializer_class = TeamMinimalSerializer
     queryset = Team.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['competition_event__name','grade_level']
+    filterset_fields = ['competition_event__id','grade_level']
     search_fields = ['name']
         
 

@@ -6,6 +6,6 @@ from ...views.competition_views.team_event_views import(
 
 urlpatterns = [
     # Competition Team Event APIs
-    path('<str:event_name>/non-tech-score/<int:id>/', TeamNonTechScoreUpdateView.as_view(), name='set-team-extra-scores-fields'),
+    path('<int:event_id>/non-tech-score/<int:id>/', TeamNonTechScoreUpdateView.as_view(), name='set-team-extra-scores-fields'),
 
 ]
