@@ -153,7 +153,7 @@ class SkillsRankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = TeamCompetitionEvent.objects.get(team_id=item['team'],,competition_event_id=event_id)
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'],competition_event_id=event_id)
             team.skills_rank = index + 1  # Rank starts from 1
             team.save()
 
