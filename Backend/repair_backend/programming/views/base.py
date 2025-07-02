@@ -9,7 +9,7 @@ class ProgrammingRankListView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = ProgrammingRankSerializer
     queryset = EventGame.objects.all()
-    lookup_field = 'event'
+    lookup_field = 'event_id'
     lookup_url_kwarg = 'event_id'
 
     def get_queryset(self):
