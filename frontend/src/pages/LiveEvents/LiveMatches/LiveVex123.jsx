@@ -12,11 +12,12 @@ const LiveVex123 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const eventId = searchParams.get('eventId');
 
 
    
 
-  const URL = `${process.env.REACT_APP_API_URL}/vex-123/${eventName}/rank/`;
+  const URL = `${process.env.REACT_APP_API_URL}/vex-123/${eventId}/rank/`;
   const intervalRef = useRef(null);
 
   // Memoized fetch function

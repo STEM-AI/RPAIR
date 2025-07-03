@@ -59,6 +59,7 @@ const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
  
       const [searchParams] = useSearchParams();
     const event_name = searchParams.get('eventName');
+    const event_id = searchParams.get('eventId');
     console.log("eventName", event_name);
   
   
@@ -81,7 +82,7 @@ const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/vex-123/${event_name}/rank/`
+        `${process.env.REACT_APP_API_URL}/vex-123/${event_id}/rank/`
       );
       
       // Sort rankings by score then time
@@ -246,7 +247,7 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/list/`,
           {
-            params: { competition_event__name: event_name },
+            params: { competition_event__id: event_id },
             headers: { Authorization: `Bearer ${token}` }
           }
         );
@@ -258,10 +259,10 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
       }
     };
 
-    if (event_name) {
+    if (event_id) {
       fetchTeams();
     }
-  }, [event_name, token]);
+  }, [event_id, token]);
 
   // Handle team selection
   const handleTeamSelect = (event) => {
@@ -275,7 +276,7 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
     try {
       setLoading(true);
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/vex-123/${event_name}/game/create/`,
+        `${process.env.REACT_APP_API_URL}/vex-123/${event_id}/game/create/`,
         {
           team1: team.id.toString(),
           time: formatTime(INITIAL_TIME)

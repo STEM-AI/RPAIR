@@ -299,204 +299,235 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
-        {/* Compact Header */}
-        <div className="flex justify-between items-center p-3 bg-gray-800 text-white">
-          <h2 className="text-lg font-bold">Koper Game</h2>
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
+        {/* Header */}
+        <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800">Koper Game Score</h2>
           <button
             onClick={onClose}
-            className="text-gray-300 hover:text-white transition-colors"
+            className="text-gray-500 hover:text-red-600 transition-colors"
           >
-            <FaTimes size={18} />
+            <FaTimes size={24} />
           </button>
         </div>
 
-        {/* Compact Score Display */}
-        <div className="p-3 bg-gray-100 border-b">
-          <div className="flex justify-between items-center">
-            <div className="text-sm font-semibold text-gray-700">Score:</div>
-            <div className="text-xl font-bold text-green-600">{score}</div>
+        {/* Score Display */}
+        <div className="p-4 bg-gray-50">
+          <div className="text-center text-2xl font-bold text-gray-800 mb-2">
+            Current Score: <span className="text-green-600">{score}</span>
           </div>
-          <div className="flex justify-between items-center mt-1">
-            <div className="text-xs text-gray-600">Circles: {unlockedCircles}/6</div>
-            <div className="flex">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div 
-                  key={i}
-                  className={`w-2 h-2 rounded-full mx-0.5 ${
-                    i < unlockedCircles ? "bg-green-500" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
+          <div className="text-center text-sm text-gray-600">
+            Unlocked Circles: {unlockedCircles}/6
+          </div>
+          <div className="flex justify-center mt-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div 
+                key={i}
+                className={`w-4 h-4 rounded-full mx-1 ${
+                  i < unlockedCircles ? "bg-green-500" : "bg-gray-300"
+                }`}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Compact Timer and Controls */}
-        <div className="p-3 bg-gray-50 border-b">
-          <div className="flex justify-between items-center mb-2">
-            <div className="text-sm font-semibold">
-              {gamePaused ? "PAUSED" : timeUp ? "TIME'S UP" : `${remainingTime}s`}
-            </div>
-            <div className="flex space-x-1">
-              {!showControls ? (
+        {/* Timer and Controls */}
+        <div className="p-4">
+          <div className="flex justify-center space-x-4 mb-4">
+            {!showControls && (
+              <button
+                onClick={startGame}
+                disabled={gameActive}
+                className="bg-blue-500 text-white p-3 rounded-full shadow-md hover:bg-blue-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FaPlay size={18} />
+              </button>
+            )}
+
+            {showControls && (
+              <>
                 <button
-                  onClick={startGame}
-                  disabled={gameActive}
-                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 disabled:opacity-50"
-                  title="Start"
+                  onClick={pauseGame}
+                  disabled={!gameActive || gamePaused}
+                  className="bg-yellow-500 text-white p-3 rounded-full shadow-md hover:bg-yellow-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <FaPlay size={12} />
+                  <FaPause size={18} />
                 </button>
-              ) : (
-                <>
-                  <button
-                    onClick={pauseGame}
-                    disabled={!gameActive || gamePaused}
-                    className="bg-yellow-500 text-white p-2 rounded-full hover:bg-yellow-600 disabled:opacity-50"
-                    title="Pause"
-                  >
-                    <FaPause size={12} />
-                  </button>
-                  <button
-                    onClick={resumeGame}
-                    disabled={!gamePaused}
-                    className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 disabled:opacity-50"
-                    title="Resume"
-                  >
-                    <BsSkipStartFill size={12} />
-                  </button>
-                  <button
-                    onClick={restartGame}
-                    disabled={!gameActive}
-                    className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 disabled:opacity-50"
-                    title="Restart"
-                  >
-                    <FaSync size={12} />
-                  </button>
-                </>
-              )}
-            </div>
+                <button
+                  onClick={resumeGame}
+                  disabled={!gamePaused}
+                  className="bg-green-500 text-white p-3 rounded-full shadow-md hover:bg-green-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <BsSkipStartFill size={18} />
+                </button>
+                <button
+                  onClick={restartGame}
+                  disabled={!gameActive}
+                  className="bg-red-500 text-white p-3 rounded-full shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaSync size={18} />
+                </button>
+              </>
+            )}
+          </div>
+
+          <div className="text-center text-lg font-bold text-red-600 bg-gray-100 p-2 rounded-lg shadow-sm">
+            {gamePaused
+              ? "Game Paused"
+              : timeUp
+              ? "Time's Up!"
+              : `Remaining Time: ${remainingTime} seconds`}
           </div>
         </div>
 
-        {/* Compact Counters */}
-        <div className="p-2 space-y-2 max-h-64 overflow-y-auto">
-          {/* Cube Counter */}
-          <div className="flex items-center justify-between p-1 text-sm">
-            <div className="flex items-center">
-              <div className="w-4 h-4 bg-blue-500 rounded mr-2"></div>
-              <span>Cubes</span>
+        {/* Counters */}
+        <div className="p-4 border-t border-gray-200">
+          <div className="grid grid-cols-1 gap-3">
+            {/* Cube Counter */}
+            <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-blue-500 rounded mr-2"></div>
+                <span className="font-medium">Cube (1 point each)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => setCubeCount(prev => Math.max(0, prev - 1))}
+                  disabled={!gameActive || gamePaused}
+                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaMinus size={14} />
+                </button>
+                <span className="font-bold w-8 text-center">{cubeCount}</span>
+                <button 
+                  onClick={() => setCubeCount(prev => prev + 1)}
+                  disabled={!gameActive || gamePaused}
+                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaPlus size={14} />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center space-x-1">
-              <button 
-                onClick={() => setCubeCount(prev => Math.max(0, prev - 1))}
-                disabled={!gameActive || gamePaused}
-                className="bg-gray-200 text-gray-700 p-1 rounded hover:bg-gray-300 disabled:opacity-50"
-              >
-                <FaMinus size={10} />
-              </button>
-              <span className="font-bold w-6 text-center">{cubeCount}</span>
-              <button 
-                onClick={() => setCubeCount(prev => prev + 1)}
-                disabled={!gameActive || gamePaused}
-                className="bg-gray-200 text-gray-700 p-1 rounded hover:bg-gray-300 disabled:opacity-50"
-              >
-                <FaPlus size={10} />
-              </button>
+            
+            {/* Firaj Counter (unlocks 2 circles) */}
+            <div className="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
+              <div className="flex items-center">
+                <GiThreeBurningBalls className="text-purple-500 mr-2" size={20} />
+                <span className="font-medium">Firaj (unlocks 2 circles)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setFirajCount(prev => prev === 0 ? 1 : 0)}
+                  disabled={!gameActive || gamePaused}
+                  className={`p-1 rounded-lg ${
+                    firajCount === 1 
+                      ? "bg-purple-500 text-white" 
+                      : "bg-purple-200 text-purple-800"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {firajCount === 1 ? "✓" : <GiThreeBurningBalls size={18} />}
+                </button>
+              </div>
+            </div>
+            
+            {/* Double Group Counter (10 points + unlocks 2 circles) */}
+            <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+              <div className="flex items-center">
+                <FaBullseye className="text-blue-500 mr-2" size={18} />
+                <span className="font-medium">Double Group (10 points + unlocks 2 circles)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setDoubleGroupCount(prev => prev === 0 ? 1 : 0)}
+                  disabled={!gameActive || gamePaused}
+                  className={`p-1 rounded-lg ${
+                    doubleGroupCount === 1 
+                      ? "bg-blue-500 text-white" 
+                      : "bg-blue-200 text-blue-800"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {doubleGroupCount === 1 ? "✓" : <FaBullseye size={16} />}
+                </button>
+              </div>
+            </div>
+            
+            {/* Triple Group Counter (15 points + unlocks 2 circles) */}
+            <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
+              <div className="flex items-center">
+                <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
+                <span className="font-medium">Triple Group (15 points + unlocks 2 circles)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setTripleGroupCount(prev => prev === 0 ? 1 : 0)}
+                  disabled={!gameActive || gamePaused}
+                  className={`p-1 rounded-lg ${
+                    tripleGroupCount === 1 
+                      ? "bg-red-500 text-white" 
+                      : "bg-red-200 text-red-800"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {tripleGroupCount === 1 ? "✓" : <GiThreeBurningBalls size={18} />}
+                </button>
+              </div>
             </div>
           </div>
           
-          {/* Firaj Counter */}
-          <div className="flex items-center justify-between p-1 text-sm">
-            <div className="flex items-center">
-              <GiThreeBurningBalls className="text-purple-500 mr-2" size={16} />
-              <span>Firaj</span>
-            </div>
-            <button
-              onClick={() => setFirajCount(prev => prev === 0 ? 1 : 0)}
-              disabled={!gameActive || gamePaused}
-              className={`p-1 rounded ${firajCount === 1 ? "bg-purple-500 text-white" : "bg-purple-100 text-purple-800"} disabled:opacity-50`}
-            >
-              {firajCount === 1 ? "✓" : <GiThreeBurningBalls size={14} />}
-            </button>
-          </div>
-          
-          {/* Double Group Counter */}
-          <div className="flex items-center justify-between p-1 text-sm">
-            <div className="flex items-center">
-              <FaBullseye className="text-blue-500 mr-2" size={14} />
-              <span>Double Group</span>
-            </div>
-            <button
-              onClick={() => setDoubleGroupCount(prev => prev === 0 ? 1 : 0)}
-              disabled={!gameActive || gamePaused}
-              className={`p-1 rounded ${doubleGroupCount === 1 ? "bg-blue-500 text-white" : "bg-blue-100 text-blue-800"} disabled:opacity-50`}
-            >
-              {doubleGroupCount === 1 ? "✓" : <FaBullseye size={12} />}
-            </button>
-          </div>
-          
-          {/* Triple Group Counter */}
-          <div className="flex items-center justify-between p-1 text-sm">
-            <div className="flex items-center">
-              <GiThreeBurningBalls className="text-red-500 mr-2" size={16} />
-              <span>Triple Group</span>
-            </div>
-            <button
-              onClick={() => setTripleGroupCount(prev => prev === 0 ? 1 : 0)}
-              disabled={!gameActive || gamePaused}
-              className={`p-1 rounded ${tripleGroupCount === 1 ? "bg-red-500 text-white" : "bg-red-100 text-red-800"} disabled:opacity-50`}
-            >
-              {tripleGroupCount === 1 ? "✓" : <GiThreeBurningBalls size={14} />}
-            </button>
-          </div>
-          
-          {/* Circle Plays - Only when unlocked */}
+          {/* Circle Play Section - Only when circles are unlocked */}
           {unlockedCircles > 0 && (
-            <div className="mt-2 p-2 bg-yellow-50 rounded border border-yellow-200">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-yellow-800">
-                  Circles ({currentCirclePoints}pts)
-                </span>
-                <span className="text-xs font-bold">
-                  {circlePlayCount}/6
-                </span>
+            <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <h3 className="font-bold text-lg text-center text-yellow-800 mb-3">
+                Circle Plays ({currentCirclePoints} points per play)
+              </h3>
+              <div className="text-center mb-3">
+                <div className="flex justify-center mb-2">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div 
+                      key={i}
+                      className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${
+                        i < circlePlayCount ? "bg-yellow-500" : "bg-gray-300"
+                      }`}
+                    >
+                      <span className="font-bold text-white">
+                        {i + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-yellow-700">
+                  Current point value: {getCirclePointValue()} per circle
+                  {firajCount > 0 && " (Firaj circles)"}
+                  {doubleGroupCount > 0 && " (Double circles)"}
+                  {tripleGroupCount > 0 && " (Triple circles)"}
+                </p>
+                <p className="text-sm text-yellow-700 mt-1">
+                  Total circle points: {circlePlayCount * currentCirclePoints}
+                </p>
               </div>
-              <div className="flex justify-center mb-1">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className={`w-4 h-4 rounded-full mx-0.5 flex items-center justify-center text-xs ${
-                      i < circlePlayCount ? "bg-yellow-500 text-white" : "bg-gray-200"
-                    }`}
-                  >
-                    {i < circlePlayCount ? i+1 : ""}
-                  </div>
-                ))}
-              </div>
+              
               <button
                 onClick={handleCirclePlay}
                 disabled={!gameActive || gamePaused || circlePlayCount >= 6}
-                className={`w-full py-1 text-xs rounded font-medium ${
+                className={`w-full py-2 rounded-lg font-semibold ${
                   circlePlayCount < 6 
                     ? "bg-yellow-500 text-white hover:bg-yellow-600" 
                     : "bg-green-500 text-white"
-                } disabled:opacity-50`}
+                } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {circlePlayCount < 6 ? "Add Circle Play" : "Completed"}
+                {circlePlayCount < 6
+                  ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)` 
+                  : "All Circle Plays Completed"}
               </button>
             </div>
           )}
         </div>
 
         {/* Submit Button */}
-        <div className="p-3 bg-gray-100">
+        <div className="p-4 border-t border-gray-200">
           <button
             onClick={handleCalculateAndSubmit}
-            className="w-full bg-green-500 text-white py-2 rounded text-sm font-semibold hover:bg-green-600 disabled:opacity-50"
+            className="w-full bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 transition-transform transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit Score
+            Calculate & Submit Score
           </button>
         </div>
       </div>

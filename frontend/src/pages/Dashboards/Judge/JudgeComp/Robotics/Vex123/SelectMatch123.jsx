@@ -22,6 +22,7 @@ export default function SelectMatch123() {
   const navigate = useNavigate();
      const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   console.log("eventName", eventName);
   
 
@@ -34,7 +35,7 @@ export default function SelectMatch123() {
         {cards.map((card, index) => (
           <motion.div
             key={index}
-            onClick={() => navigate(`${card.route}?eventName=${encodeURIComponent(eventName)}`)}
+            onClick={() => navigate(`${card.route}?eventName=${encodeURIComponent(eventName)}&eventId=${encodeURIComponent(event_id)}`)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`relative min-w-64 h-80 cursor-pointer rounded-2xl shadow-lg transition-all duration-500 bg-gradient-to-br ${card.bg} text-white overflow-hidden flex flex-col items-center justify-center p-6`}

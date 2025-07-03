@@ -29,7 +29,7 @@ const CompetitionQuestions = () => {
 
   
   
-      const { questions: infoQuestions} = useInfoQuestions(competition_id, competition);
+  const { questions: infoQuestions} = useInfoQuestions(competition_id, competition);
   
   const { questions: allQuestions, loading: allLoading, error: allError } = useAllQuestion(competition_id, competition);
   

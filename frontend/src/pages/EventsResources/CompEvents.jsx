@@ -14,7 +14,6 @@ const CompEvents = () => {
   const navigate = useNavigate();
 
 
-  const token = localStorage.getItem("access_token");
 
  const getEventStatus = (startDate, endDate) => {
     const now = new Date();
@@ -63,7 +62,7 @@ const CompEvents = () => {
   }
 
    const handleCompetitionClick = (event_name) => {
-    navigate(`/Competitions/${competition_name}/${event_name}`);
+    navigate(`/Competitions/${competition_name}/${event_name}?eventId=${event_name}`);
   };
 
   return (

@@ -14,17 +14,18 @@ const LiveTeamVex = () => {
   const socketRef = useRef(null);
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const eventId = searchParams.get('eventId');
 
   const fetchRankings = async () => {
     setIsLoading(true);
-    if (!eventName) {
+    if (!eventName || !eventId) {
       console.error("No event name found");
       setIsLoading(false);
       return;
     }
 
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventId}/teamwork-rank`, {
       
       });
       setRankings(response.data);

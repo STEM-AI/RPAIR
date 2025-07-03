@@ -273,10 +273,7 @@ function LiveEvents() {
                   transition={{ delay: 0.7 }}
                 >
                   <Link
-                    to={
-                      comp.competition_name === 'programming' ? 
-                      `${comp.link}?eventName=${encodeURIComponent(comp.name)}&id=${encodeURIComponent(comp.id)}` :
-                      `${comp.link}?eventName=${encodeURIComponent(comp.name)}`}
+                    to={`${comp.link}?eventName=${encodeURIComponent(comp.name)}&id=${encodeURIComponent(comp.id)}`}
                     className={`block text-center font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${comp.accentColor} hover:bg-opacity-90`}
                   >
                     <motion.span

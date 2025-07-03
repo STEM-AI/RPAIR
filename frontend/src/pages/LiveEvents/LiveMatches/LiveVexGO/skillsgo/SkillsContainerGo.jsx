@@ -214,6 +214,7 @@ const SkillsContainerGO = () => {
   const [teams, setTeams] = useState([]);
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const eventId = searchParams.get('eventId');
   const [showRankings, setShowRankings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -283,7 +284,7 @@ const SkillsContainerGO = () => {
     }
 
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/vex-go/${eventName}/skills/rank/`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/vex-go/${eventId}/skills/rank/`);
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {

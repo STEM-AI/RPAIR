@@ -9,7 +9,7 @@ import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
 
 
-const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
+const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId }) => {
   // console.log(gameId);
    const [switchCount, setSwitchCount] = useState(0);
     const [goalCount, setGoalCount] = useState(0);
@@ -56,7 +56,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName }) => {
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/game/${gameId}/set-game-score/`,
           {
-            event_name: eventName, // أو استخدم متغير eventName إذا كان متوفرًا
+            event_id: eventId, // أو استخدم متغير eventName إذا كان متوفرًا
             score: score,
           },
           {

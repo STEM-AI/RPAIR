@@ -46,6 +46,7 @@ export default function InterviewSheet() {
   const [loading, setLoading] = useState(false);
      const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   console.log("eventName", eventName);
   
 useEffect(() => {
@@ -80,7 +81,7 @@ useEffect(() => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/team/list/`, 
         {
-          params: { competition_event__name: eventName },
+          params: { competition_event__id: event_id },
           headers: { Authorization: `Bearer ${token}` }
         }
       );
@@ -104,7 +105,7 @@ const fetchTeamData = async (teamName) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/team/list/`, {
       params: {
-        competition_event__name: eventName, 
+        competition_event__id: event_id, 
         search: teamName
       },
       headers: { Authorization: `Bearer ${token}` }
@@ -360,7 +361,7 @@ const postScore = async () => {
         <p className="mt-2">Current Total: {scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)} points</p>
       </div>
       <InterviewRankings 
-  apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${eventName}/team/interview/rank/`} 
+  apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${event_id}/team/interview/rank/`} 
 />
     </div>
   );

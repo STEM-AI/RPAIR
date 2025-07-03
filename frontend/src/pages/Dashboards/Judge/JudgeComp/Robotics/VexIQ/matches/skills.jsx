@@ -27,6 +27,7 @@ const Skills = () => {
 
   const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   const token = localStorage.getItem("access_token");
 
   const tabs = [
@@ -39,9 +40,9 @@ const Skills = () => {
     loading: schedulesLoading, 
     error: schedulesError, 
     refetch: refetchSchedules 
-  } = useEventSchedules(event_name, tabs.find(tab => tab.id === activeTab)?.id, "-id"); // Order by descending ID
+  } = useEventSchedules(event_id, tabs.find(tab => tab.id === activeTab)?.id, "-id"); 
 
-  const lastScheduleId = eventSchedules[0]?.id; // أول عنصر بعد الترتيب التنازلي
+  const lastScheduleId = eventSchedules[0]?.id; 
   const { 
     schedule: scheduleDetails, 
     loading: scheduleLoading, 
@@ -49,13 +50,7 @@ const Skills = () => {
     refetch: refetchScheduleDetails 
   } = useSchedule(lastScheduleId);
 
-  // const handleTabChange = async (tabId) => {
-  //   setActiveTab(tabId);
-  //   await refetchSchedules(); 
-  //   if (eventSchedules[0]?.id) {
-  //     await refetchScheduleDetails();
-  //   }
-  // };
+ 
 
   useEffect(() => {
     if (lastScheduleId) {
@@ -73,7 +68,7 @@ const Skills = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/event/${event_name}/skills-rank/`,
+        `${process.env.REACT_APP_API_URL}/event/${event_id}/skills-rank/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -178,7 +173,7 @@ const Td = ({ children, className }) => (
         
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8 ">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-blue-600">
             <tr>
@@ -364,6 +359,7 @@ const Td = ({ children, className }) => (
           mode={activeTab}
           gameId={selectedTeam.id}
           eventName ={event_name}
+          eventId ={event_id}
         />
       )}
     </div>

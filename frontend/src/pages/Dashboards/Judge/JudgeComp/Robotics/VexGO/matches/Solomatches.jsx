@@ -29,6 +29,7 @@ const SkillsGO = () => {
   const [schedulesError, setSchedulesError] = useState(null);
   const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   const token = localStorage.getItem("access_token");
 
   const tabs = [
@@ -57,14 +58,14 @@ const SkillsGO = () => {
     loading: driverLoading,
     error: driverError,
     refetch: refetchDriver 
-  } = useEventSchedules(event_name, "driver_go", "-id");
+  } = useEventSchedules(event_id, "driver_go", "-id");
   
   const { 
     schedules: codingSchedules, 
     loading: codingLoading,
     error: codingError,
     refetch: refetchCoding 
-  } = useEventSchedules(event_name, "coding", "-id");
+  } = useEventSchedules(event_id, "coding", "-id");
 
   // Combined refetch function
   const refetchSchedules = () => {
@@ -159,7 +160,7 @@ const SkillsGO = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/vex-go/${event_name}/skills/rank/`,
+        `${process.env.REACT_APP_API_URL}/vex-go/${event_id}/skills/rank/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -432,7 +433,7 @@ const SkillsGO = () => {
       ) : (
         <SheetSolo
           selectedMatch={selectedMatch}
-          eventName={event_name}
+          eventName={event_id}
           onClose={() => setSelectedMatch(null)}
           challengeType={activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge'}
           sheetType={selectedChallenge}
