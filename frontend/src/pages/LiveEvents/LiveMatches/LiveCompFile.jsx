@@ -17,7 +17,7 @@ const LiveProgramming = () => {
 
    
 
-  const URL = `${process.env.REACT_APP_API_URL}/programming/rank/${id}/`;
+  const URL = `${process.env.REACT_APP_API_URL}/${eventName}/${id}/rank/`;
   const intervalRef = useRef(null);
 
   // Memoized fetch function

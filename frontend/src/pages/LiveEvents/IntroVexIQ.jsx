@@ -13,6 +13,7 @@ const IntroVexIQ = () => {
   const navigate = useNavigate();
    const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const eventId = searchParams.get('eventId');
   const handleClick = (path) => {
     navigate(path);
   };
@@ -73,7 +74,7 @@ const IntroVexIQ = () => {
                 y: -5,
                 scale: 1.02
               }}
-              onClick={() => handleClick( `${challenge.path}?eventName=${encodeURIComponent(eventName)}`)}
+              onClick={() => handleClick( `${challenge.path}?eventName=${encodeURIComponent(eventName)}&eventId=${encodeURIComponent(eventId)}`)}
               className="relative rounded-2xl bg-white p-6 shadow-xl h-40 flex items-center justify-between cursor-pointer overflow-hidden group"
             >
               {/* Gradient background overlay */}

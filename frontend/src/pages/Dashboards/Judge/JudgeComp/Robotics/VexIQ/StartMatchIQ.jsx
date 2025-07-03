@@ -14,6 +14,8 @@ export default function StartMatchIQ() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
+  
 
   return (
     <div className="mx-auto text-center flex flex-col justify-center items-center">
@@ -25,7 +27,7 @@ export default function StartMatchIQ() {
         {cards.map((card, index) => (
           <div
             key={index}
-            onClick={() => navigate(`${card.route}?eventName=${encodeURIComponent(event_name)}`)}
+            onClick={() => navigate(`${card.route}?eventName=${encodeURIComponent(event_name)}&eventId=${encodeURIComponent(event_id)}`)}
             className={`relative min-w-64 h-80 cursor-pointer rounded-2xl shadow-lg transition-all duration-500 hover:shadow-gray-300 overflow-hidden flex flex-col items-center justify-center ${card.bg} text-white`}
           >
             <div className="mb-4">{card.icon}</div>

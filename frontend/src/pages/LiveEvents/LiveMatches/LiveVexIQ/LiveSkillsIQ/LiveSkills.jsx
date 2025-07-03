@@ -18,6 +18,7 @@ const LiveSkillsVex = () => {
   const [teamRounds, setTeamRounds] = useState({});
 const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const eventId = searchParams.get('eventId');
   const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
 
@@ -126,7 +127,7 @@ const [searchParams] = useSearchParams();
   const fetchRankings = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventId}/skills-rank`);
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {

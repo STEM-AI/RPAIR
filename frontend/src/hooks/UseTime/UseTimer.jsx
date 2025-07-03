@@ -34,20 +34,27 @@ import { useState, useEffect, useRef } from "react";
 
 const useTimer = (durationInSeconds, onEnd) => {
   const [seconds, setSeconds] = useState(durationInSeconds);
-  const hasEnded = useRef(false); // Track if timer has ended
+  const hasEnded = useRef(false); 
+  const intervalRef = useRef();
 
   useEffect(() => {
     if (seconds <= 0 && !hasEnded.current) {
-      hasEnded.current = true; // Mark as ended
-      onEnd(); // Call onEnd only once
+      hasEnded.current = true;
+      onEnd();
       return;
     }
-
-    const interval = setInterval(() => {
-      setSeconds(prev => prev - 1);
+  
+    intervalRef.current = setInterval(() => {
+      setSeconds(prev => {
+        if (prev <= 1) { // عند الوصول إلى 1، أوقف العد
+          clearInterval(intervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
-
-    return () => clearInterval(interval);
+  
+    return () => clearInterval(intervalRef.current);
   }, [seconds, onEnd]);
 
   const minutes = Math.floor(seconds / 60);

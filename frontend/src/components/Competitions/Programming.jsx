@@ -8,7 +8,6 @@ import { Helmet } from "react-helmet-async";
 import ProgrammingAwardsList from "../../components/Awards/programmingAwards";
 
 const ProgrammingComp = () => {
-  // const images = [img1];
 
   return (
     <>

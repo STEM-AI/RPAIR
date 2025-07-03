@@ -388,6 +388,7 @@ const [error, setError] = useState(null);
   
 const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   
 
 
@@ -397,7 +398,7 @@ const [searchParams] = useSearchParams();
       loading: schedulesLoading, 
       error: schedulesError, 
       refetch: refetchSchedules 
-    } = useEventSchedules(event_name, "coop", "-id"); // Order by descending ID
+    } = useEventSchedules(event_id, "coop", "-id"); // Order by descending ID
   
     const lastScheduleId = eventSchedules[0]?.id; // أول عنصر بعد الترتيب التنازلي
     const { 
@@ -421,7 +422,7 @@ const [searchParams] = useSearchParams();
   setError(null);
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/vex-go/${event_name}/coop/rank/`,
+      `${process.env.REACT_APP_API_URL}/vex-go/${event_id}/coop/rank/`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -709,7 +710,7 @@ const [searchParams] = useSearchParams();
       ) : (
         <SheetCoop
           selectedMatch={selectedMatch}
-          eventName={event_name}
+          eventName={event_id}
               onClose={() => setSelectedMatch(null)}
               sheetType={selectedChallenge}
         />

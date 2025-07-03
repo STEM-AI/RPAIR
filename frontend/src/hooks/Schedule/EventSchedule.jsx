@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const useEventSchedules = (eventName, stage = '', ordering = "-id") => {
+const useEventSchedules = (event_id, stage , ordering ) => {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,10 +11,13 @@ const useEventSchedules = (eventName, stage = '', ordering = "-id") => {
   const fetchSchedules = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/core/event/${eventName}/schedule/`,
+        `${process.env.REACT_APP_API_URL}/core/event/${event_id}/schedule/`,
         {
-          params: { ordering, stage }, // الباراميترات
-          headers: { // إضافة الهيدر المطلوب
+          params: {
+            ordering,
+            stage
+          }, 
+          headers: { 
             Authorization: `Bearer ${token}`,
           },
         }
@@ -28,10 +31,10 @@ const useEventSchedules = (eventName, stage = '', ordering = "-id") => {
   };
 
   useEffect(() => {
-    if (eventName) {
+    if (event_id) {
       fetchSchedules(); // 2. استدعاء الدالة هنا
     }
-  }, [eventName, ordering, stage]);
+  }, [event_id, ordering, stage]);
 
   // 3. إرجاع الدالة كـ refetch
 return { schedules, loading, error, refetch: fetchSchedules };

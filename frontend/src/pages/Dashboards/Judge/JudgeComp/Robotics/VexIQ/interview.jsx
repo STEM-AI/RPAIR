@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 const Interview = () => {
    const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   
   return (
     <>
@@ -19,7 +20,7 @@ const Interview = () => {
         apiScoreField="interview_score"
       />
       <InterviewRankings
-        apiUrl={`${process.env.REACT_APP_API_URL}/event/${event_name}/teams-interview-rank/`}
+        apiUrl={`${process.env.REACT_APP_API_URL}/event/${event_id}/teams-interview-rank/`}
       />
     </>
   );

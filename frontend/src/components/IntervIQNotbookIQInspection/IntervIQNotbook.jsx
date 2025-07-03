@@ -26,6 +26,7 @@ const GenericRubric = ({
   const [totalScore, setTotalScore] = useState(0);
   const [searchParams] = useSearchParams();
     const event_name = searchParams.get('eventName');
+    const event_id = searchParams.get('eventId');
 
   const [scores, setScores] = useState({});
   const [activeAlerts, setActiveAlerts] = useState({});
@@ -60,12 +61,12 @@ const handleScoreChange = (category, value) => {
         const judgeName = await fetchJudgeData(token);
         setJudge(judgeName);
         
-        const teamsData = await fetchTeams(token, event_name);
+        const teamsData = await fetchTeams(token, event_id);
         setTeams(teamsData);
       }
     };
     loadData();
-  }, [token, event_name]);
+  }, [token, event_id]);
 
   const postScore = async () => {
      if (!teamData?.id) {
@@ -76,7 +77,7 @@ const handleScoreChange = (category, value) => {
     });
     return;
   }
-    await submitScore(token, event_name, teamData.id, apiScoreField, totalScore);
+    await submitScore(token, event_id, teamData.id, apiScoreField, totalScore);
   };
 
  const generatePDF = () => {

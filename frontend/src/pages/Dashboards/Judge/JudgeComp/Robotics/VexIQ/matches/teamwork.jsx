@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import ScoreTeams from "../Scores/scoreTeams";
+import scoreTeams from "../Scores/Koper";
 import { FaTrophy, FaCheck,FaUsers,FaChartBar ,FaSync} from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import axios from "axios";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule"
 import { useSearchParams } from "react-router-dom";
+import ScoreTeams from "../Scores/scoreTeams";
+import Koper from "../Scores/Koper";
+import Swal from "sweetalert2";
 
 
 const Teamwork = () => {
@@ -18,9 +21,15 @@ const Teamwork = () => {
   const token = localStorage.getItem("access_token");
    const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [calculatorType, setCalculatorType] = useState(null); 
 
      const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
+  console.log("event_id", event_id);
+  console.log("event_name", event_name);
+  
+  
 
 
 const { 
@@ -28,7 +37,7 @@ const {
     loading: schedulesLoading, 
     error: schedulesError, 
     refetch: refetchSchedules 
-  } = useEventSchedules(event_name, "teamwork", "-id"); // Order by descending ID
+  } = useEventSchedules(event_id, "teamwork", "-id"); // Order by descending ID
 
   const lastScheduleId = eventSchedules[0]?.id; // أول عنصر بعد الترتيب التنازلي
   const { 
@@ -53,7 +62,7 @@ const {
     setError(null);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/event/${event_name}/teamwork-rank/`,
+        `${process.env.REACT_APP_API_URL}/event/${event_id}/teamwork-rank/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -82,10 +91,31 @@ const {
   
 
   const handleOpenCalculator = (matchCode) => {
-    console.log("matchCode" , matchCode);
-    
-    setSelectedMatch(matchCode);
+    Swal.fire({
+      title: 'Select Calculator Type',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Teams',
+      denyButtonText: 'Koper',
+      cancelButtonText: 'Cancel',
+      icon: 'question',
+      customClass: {
+        confirmButton: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2',
+        denyButton: 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
+        cancelButton: 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded',
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setSelectedMatch(matchCode);
+        setCalculatorType('teams');
+      } else if (result.isDenied) {
+        setSelectedMatch(matchCode);
+        setCalculatorType('koper');
+      }
+    });
   };
+
 
   const handleCalculate = (score) => {
     setTempScores((prev) => ({
@@ -291,14 +321,31 @@ const Td = ({ children, className }) => (
         )}
       </div>
 
-      {selectedMatch && (
-        <ScoreTeams
+     
+      {selectedMatch && calculatorType === 'koper' && (
+        <Koper
           onCalculate={handleCalculate}
-          onClose={() => setSelectedMatch(null)}
+          onClose={() => {
+            setSelectedMatch(null);
+            setCalculatorType(null);
+          }}
           gameId={selectedMatch}
           mode="manual"
-         eventName={event_name}
-         
+          eventName={event_name}
+          eventId={event_id}
+        />
+      )}
+
+      {selectedMatch && calculatorType === 'teams' && (
+        <ScoreTeams
+          onCalculate={handleCalculate}
+          onClose={() => {
+            setSelectedMatch(null);
+            setCalculatorType(null);
+          }}
+          gameId={selectedMatch}
+          eventName={event_name}
+          eventId={event_id}
         />
       )}
     </div>

@@ -23,7 +23,7 @@ import OpenWelcome from "./pages/Competitions/OpenSource/OpenWelcom"
 import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
 import Home from "./components/Home/Home";
 import {ResultProvider } from "../src/context/CompetitionContext" ; 
-import CompetitionResult from "./pages/Competitions/Programming/main/CompetitionResult";
+import CompetitionFinal from "./pages/Competitions/Programming/main/CompetitionFinal";
 import Robotics from "./pages/Gallary/Robotics/Robotics";
 import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
 import LiveEvents from "./pages/LiveEvents/introEvents";
@@ -135,6 +135,7 @@ import FileComp from "./pages/Dashboards/Judge/JudgeComp/OpenSource/FileComp";
 import UploadFileMcq from "./pages/Dashboards/AdminDashboard/Management/UploedFileMcq";
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
+import LiveCompFile from "./pages/LiveEvents/LiveMatches/LiveCompFile";
 
 
 const App = () => {
@@ -922,7 +923,7 @@ const App = () => {
 
 
 <Route
-          path="/competition/:competition"
+          path="/competition/:competition/:game_id"
           element={
             <Layout hideNavbar>
 
@@ -933,11 +934,11 @@ const App = () => {
         /> 
 
 <Route
-          path="/competition/:competition/results"
+          path="/competition/programming/:competition"
           element={
             <Layout hideNavbar>
 
-                <CompetitionResult/>
+                <CompetitionFinal/>
 
             </Layout>
           }
@@ -1082,6 +1083,15 @@ const App = () => {
           element={
             <Layout >
                 <LiveProgramming/>
+            </Layout>
+            
+          }
+            />
+          <Route
+          path="/LiveFile"
+          element={
+            <Layout >
+                <LiveCompFile/>
             </Layout>
             
           }

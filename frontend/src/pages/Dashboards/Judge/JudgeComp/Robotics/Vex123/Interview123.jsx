@@ -28,6 +28,7 @@ export default function InterviewSheet() {
   const [loading, setLoading] = useState(false);
       const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
+  const eventId = searchParams.get('eventId');
   console.log("eventName", eventName);
   
 
@@ -53,7 +54,7 @@ export default function InterviewSheet() {
         const res = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/list/`,
           {
-            params: { competition_event__name: eventName },
+            params: { competition_event__id: eventId },
             headers: { Authorization: `Bearer ${token}` },
           }
         );
@@ -222,7 +223,7 @@ export default function InterviewSheet() {
 
       
         <InterviewRankings
-  apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${eventName}/team/interview/rank/`} 
+  apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${eventId}/team/interview/rank/`} 
 />
     </div>
   );

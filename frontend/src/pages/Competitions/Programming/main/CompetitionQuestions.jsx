@@ -1,34 +1,41 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Swal from 'sweetalert2';
 import logo from "../../../../assets/Static/logoWrite-re.png";
 import CircularTimer from "../../../../components/Timer/CircularTimer";
-import { useResult } from '../../../../context/CompetitionContext';
 import { useMediaQuery } from 'react-responsive';
 import useQuestion from '../../../../hooks/Questions/QuestionId';
 import useAllQuestion from '../../../../hooks/Questions/AllQuestion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import axios from 'axios';
+import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
 
 
-const CompetitionPage = () => {
+const CompetitionQuestions = () => {
   const { competition } = useParams();
+  const { game_id } = useParams();
+  const [answeredQuestions, setAnsweredQuestions] = useState({});
   const [searchParams] = useSearchParams();
   const competition_id = searchParams.get('id');
   const [formattedQuestion, setFormattedQuestion] = useState('');
   const [formattedCode, setFormattedCode] = useState('');  const navigate = useNavigate();
-  
+  const [isSaving, setIsSaving] = useState(false);
   const [currentQuestionId, setCurrentQuestionId] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const { updateResults, incrementAttempts } = useResult();
-  const startTime = useRef(Date.now());
+  const [savedAnswers, setSavedAnswers] = useState({});
+
+  
+  
+  const { questions: infoQuestions} = useInfoQuestions(competition_id, competition);
   
   const { questions: allQuestions, loading: allLoading, error: allError } = useAllQuestion(competition_id, competition);
   
   const { question: detailedQuestion, loading: detailLoading, error: detailError } = useQuestion(currentQuestionId);
   
+  const token= localStorage.getItem('access_token');
   
 const formatSingleLineCode = (text) => {
   if (!text) return { question: '', code: '' };
@@ -46,12 +53,89 @@ const formatSingleLineCode = (text) => {
   return { question, code };
 };
 
+  
 
   
   // Media queries for responsive design
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
-  const showSidebar = !isMobile && !isTablet;
+  const showSidebar = useMemo(() => !isMobile && !isTablet, [isMobile, isTablet]);
+  
+   const saveAnswer = useCallback(async (questionId, answerId) => {
+    if (savedAnswers[questionId]) return; 
+    
+    const data = {
+      question_id: questionId,
+      answer_id: answerId,
+      event_game_id: game_id
+    };
+    
+    try {
+      setIsSaving(true);
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/programming/answer-question/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      // وضع علامة على السؤال كـ "محفوظ"
+      setSavedAnswers(prev => ({ ...prev, [questionId]: true }));
+      
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Save Error',
+        text:`Failed to save your answer, ${error.response.data.error}` ||  'Failed to save your answer. Please try again.' ,
+      });
+      throw error;
+    } finally {
+      setIsSaving(false);
+    }
+  }, [savedAnswers, token]);
+
+  // دالة انتهاء الوقت المعدلة
+  const handleTimeUp = useCallback(async () => {
+
+    
+    const unsavedQuestions = Object.entries(selectedOptions)
+      .filter(([id, answer]) => 
+        answer !== null && 
+        !savedAnswers[id] &&
+        (Array.isArray(answer) ? answer.length > 0 : true)
+      );
+    
+    try {
+      Swal.fire({
+        icon: 'error',
+        title: 'Time\'s up!',
+        text: 'The competition has ended.',
+        confirmButtonColor: '#32cd32',
+      });
+      setIsSaving(true);
+      await Promise.all(
+        unsavedQuestions.map(([id, answer]) => 
+          saveAnswer(id, answer)
+        )
+      );
+    } catch (error) {
+      console.error("Failed to save answers:", error);
+    } finally {
+      setIsSaving(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Time\'s up!',
+        text: 'The competition has ended.',
+        confirmButtonColor: '#32cd32',
+      }).then(() => {
+        navigate(`/competition/programming/${competition}?gameId=${encodeURIComponent(game_id)}`, { replace: true });
+      });
+    }
+  }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer]);
 
   useEffect(() => {
     if (detailedQuestion?.text) {
@@ -62,9 +146,7 @@ const formatSingleLineCode = (text) => {
  
 
 
-  useEffect(() => {
-    incrementAttempts();
-  }, []);
+
 
   useEffect(() => {
     if (allQuestions && allQuestions.length > 0 && !currentQuestionId) {
@@ -86,55 +168,9 @@ const formatSingleLineCode = (text) => {
     }
   }, [currentQuestionIndex, allQuestions]);
 
-  const calculateResults = useCallback(() => {
-    if (!allQuestions || allQuestions.length === 0) return {};
-    
-    const endTime = Date.now();
-    const timeTakenInSeconds = Math.floor((endTime - startTime.current) / 1000);
-  
-    const correctAnswers = allQuestions.reduce((count, q) => {
-      const userAnswer = selectedOptions[q.id];
-      const correctAnswer = q.correctAnswer;
-      
-      if (Array.isArray(correctAnswer)) {
-        const sortedUser = [...userAnswer].sort().join('');
-        const sortedCorrect = [...correctAnswer].sort().join('');
-        return count + (sortedUser === sortedCorrect ? 1 : 0);
-      }
-      
-      return count + (userAnswer ? 1 : 0);
-      // return count + (userAnswer === correctAnswer ? 1 : 0);
-    }, 0);
-  
-    const totalQuestions = allQuestions.length;
-    const passed = correctAnswers >= Math.ceil(totalQuestions * 0.6);
-  
-    return {
-      score: correctAnswers,
-      totalQuestions,
-      timeTakenInSeconds,
-      passed,
-      answers: selectedOptions,
-      questions: allQuestions
-    };
-  }, [allQuestions, selectedOptions]);
 
-  const handleTimeUp = useCallback(() => {
-    const results = calculateResults();
-    updateResults(results);
-  
-    Swal.fire({
-      icon: 'error',
-      title: 'Time\'s up!',
-      text: 'The competition has ended.',
-      confirmButtonColor: '#32cd32',
-      confirmButtonText: 'Show Results'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate(`/competition/${competition}/results`, { replace: true });
-      }
-    });
-  }, [updateResults, navigate, competition, calculateResults]);
+    
+
 
   const handleOptionSelect = (questionId, optionId, isMultiple = false) => {
     setSelectedOptions(prev => {
@@ -152,51 +188,90 @@ const formatSingleLineCode = (text) => {
     });
   };
 
-  const handleNext = () => {
-  if (!allQuestions || allQuestions.length === 0) return;
+  const answerDone = async () => {
+    const currentId = allQuestions[currentQuestionIndex].id;
+    const currentAnswer = selectedOptions[currentId];
+    
+    if (!currentAnswer || (Array.isArray(currentAnswer) && currentAnswer.length === 0)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Answer Selected',
+        text: 'Please select an answer before submitting.',
+      });
+      return;
+    }
   
-  if (currentQuestionIndex < allQuestions.length - 1) {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-  } else {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You are about to submit your answers.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, submit it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const results = calculateResults();
-        updateResults(results);
-
+    try {
+      
+      await saveAnswer(currentId, currentAnswer);
+      
+      setAnsweredQuestions(prev => ({ ...prev, [currentId]: true }));
+  
+      if (currentQuestionIndex < allQuestions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
         Swal.fire({
-          title: 'Done!',
-          text: `You answered ${results.score} out of ${results.totalQuestions} correctly.`,
-          icon: 'success',
-          confirmButtonText: 'Show Results'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate(`/competition/${competition}/results`, { replace: true });
-            ;
-          }
+          title: 'Are you sure?',
+          text: "You are about to submit your answers.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, submit it!'
+        }).then(async () => {
+                // await saveAnswer(currentId, currentAnswer);
+          Swal.fire({
+            title: 'Done!',
+            text: `thank you have answerd submitted`,
+            icon: 'success',
+          }).then(() => {
+              navigate(`/competition/${competition}/results`, { replace: true });
+          });
         });
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   }
-};
-
+  const handleNext = async () => {
+    if (!allQuestions || allQuestions.length === 0 || isSaving) return;
+    
+    const currentId = allQuestions[currentQuestionIndex].id;
+    
+    if (currentQuestionIndex < allQuestions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+   
+  };
+  
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      const prevQuestionId = allQuestions[currentQuestionIndex - 1].id;
+      if (!answeredQuestions[prevQuestionId]) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      } else {
+        Swal.fire({
+          icon: 'info',
+          title: 'Question Already Answered',
+          text: 'You cannot return to this question after submitting your answer.',
+        });
+      }
     }
   };
 
-  const handleQuestionSelect = (index) => {
-    setCurrentQuestionIndex(index);
-  };
 
+  const handleQuestionSelect = (index) => {
+    const questionId = allQuestions[index].id;
+    if (!answeredQuestions[questionId]) {
+      setCurrentQuestionIndex(index);
+    } else {
+      Swal.fire({
+        icon: 'info',
+        title: 'Question Already Answered',
+        text: 'You cannot return to this question after submitting your answer.',
+      });
+    }
+  };
   if (allLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -269,10 +344,10 @@ const formatSingleLineCode = (text) => {
               <img src={logo} alt="Logo" className="w-28 mb-4 mx-auto" />
               <div className="flex justify-center">
                 <CircularTimer
-                  duration={(allQuestions.length +20 ) *60}
+                  duration={infoQuestions.time_limit}
                   onEnd={handleTimeUp}
                   current={currentQuestionIndex + 1}
-                  total={allQuestions.length}
+                  total={(infoQuestions.time_limit)/60}
                 />
               </div>
             </div>
@@ -284,21 +359,30 @@ const formatSingleLineCode = (text) => {
                 <ul className="space-y-2">
                   {allQuestions.map((q, i) => (
                     <li
-                      key={q.id}
-                      onClick={() => handleQuestionSelect(i)}
-                      className={`cursor-pointer px-3 py-2 rounded-lg transition-all flex items-start relative group ${
-                        i === currentQuestionIndex
-                          ? 'bg-white text-cyan-700 font-medium'
+                    key={q.id}
+                    onClick={() => handleQuestionSelect(i)}
+                    className={`cursor-pointer px-3 py-2 rounded-lg transition-all flex items-start relative group ${
+                      i === currentQuestionIndex
+                        ? 'bg-white text-cyan-700 font-medium'
+                        : answeredQuestions[q.id]
+                          ? 'bg-cyan-800 cursor-not-allowed'
                           : selectedOptions[q.id] 
-                            ? 'bg-cyan-800'
+                            ? 'bg-cyan-600'
                             : 'hover:bg-cyan-600'
-                      }`}
-                    >
-                      <span className="min-w-[24px] font-medium">{i + 1}.</span>
-                      <span className="ml-1 line-clamp-1 text-left">
-                        {q.text.substring(0, 30)}
-                        {q.text.length > 30 && "..."}
+                    }`}
+                  >
+                    <span className="min-w-[24px] font-medium">{i + 1}.</span>
+                    <span className="ml-1 line-clamp-1 text-left">
+                      {q.text.substring(0, 30)}
+                      {q.text.length > 30 && "..."}
+                    </span>
+                    
+                    {answeredQuestions[q.id] && (
+                      <span className="ml-2 text-xs bg-white text-cyan-700 px-1 rounded">
+                        Answered
                       </span>
+                    )}
+                      
                       
                       {/* Internal Hover Tooltip */}
                       <div className="absolute top-full left-0 w-full mt-1 p-3 bg-white text-cyan-800 text-sm rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
@@ -338,10 +422,10 @@ const formatSingleLineCode = (text) => {
                 Q: {currentQuestionIndex + 1}/{allQuestions.length}
               </span>
               <CircularTimer
-                duration={(allQuestions.length +20 ) *60}
+                duration={infoQuestions.time_limit}
                 onEnd={handleTimeUp}
                 current={currentQuestionIndex + 1}
-                total={allQuestions.length}
+                total={(infoQuestions.time_limit)/60}
                 size={isMobile ? 50 : 60}
               />
             </div>
@@ -354,21 +438,24 @@ const formatSingleLineCode = (text) => {
             <div className="flex space-x-2 pb-2">
               {allQuestions.map((q, i) => (
                 <button
-                  key={q.id}
-                  onClick={() => handleQuestionSelect(i)}
-                  className={`min-w-8 h-8 rounded-full flex items-center justify-center text-sm ${
-                    i === currentQuestionIndex
-                      ? 'bg-cyan-600 text-white'
-                      : selectedOptions[q.id] &&
-                        (q.type === 'multiple'
-                          ? selectedOptions[q.id].length > 0
-                          : selectedOptions[q.id] !== null)
-                      ? 'bg-cyan-200 text-cyan-800'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {i + 1}
-                </button>
+                key={q.id}
+                onClick={() => handleQuestionSelect(i)}
+                className={`min-w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                  i === currentQuestionIndex
+                    ? 'bg-cyan-600 text-white'
+                    : answeredQuestions[q.id]
+                      ? 'bg-cyan-800 text-white cursor-not-allowed'
+                      : selectedOptions[q.id] 
+                        ? 'bg-cyan-200 text-cyan-800'
+                        : 'bg-gray-200 text-gray-700'
+                }`}
+                disabled={answeredQuestions[q.id]}
+              >
+                {i + 1}
+                {answeredQuestions[q.id] && (
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border border-white"></span>
+                )}
+              </button>
               ))}
             </div>
           </div>
@@ -430,10 +517,31 @@ const formatSingleLineCode = (text) => {
                   Previous
                 </button>
                 <button
-                  onClick={handleNext}
-                  className="px-4 py-2 md:px-6 md:py-2 bg-cyan-600 text-white rounded-lg"
+                  onClick={answerDone}
+                  disabled={isSaving}
+                  className={`px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white rounded-lg ${
+                    isSaving ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  {currentQuestionIndex < allQuestions.length - 1 ? 'Next' : 'Submit'}
+                  {isSaving ? (
+                    <span className="flex items-center">
+                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                      Saving...
+                    </span>
+                  ) : currentQuestionIndex < allQuestions.length - 1 ? 'Done' : 'Submit'}
+                </button>
+                <button
+                  onClick={handleNext}
+                  className={`px-4 py-2 md:px-6 md:py-2 bg-cyan-600 text-white rounded-lg ${
+                    isSaving ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {isSaving ? (
+                    <span className="flex items-center">
+                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                      Saving...
+                    </span>
+                  ) : currentQuestionIndex < allQuestions.length - 1 ? 'Next' : 'Submit'}
                 </button>
               </div>
             </motion.div>
@@ -445,4 +553,4 @@ const formatSingleLineCode = (text) => {
   );
 };
 
-export default CompetitionPage;
+export default CompetitionQuestions;

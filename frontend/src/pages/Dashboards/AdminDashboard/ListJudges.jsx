@@ -576,7 +576,7 @@ useEffect(() => {
                                     >
                                         <option value="">Select an event</option>
                                         {upcomingCompetitions.map((event) => (
-                                            <option key={event.id} value={event.name}>
+                                            <option key={event.id} value={event.id}>
                                                 {event.name}
                                             </option>
                                         ))}

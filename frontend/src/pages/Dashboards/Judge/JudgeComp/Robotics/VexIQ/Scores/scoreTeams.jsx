@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
 
-const ScoreTeams = ({ onCalculate, onClose, gameId ,eventName}) => {
+const ScoreTeams = ({ onCalculate, onClose, gameId ,eventName ,eventId}) => {
   const [switchCount, setSwitchCount] = useState(0);
   const [goalCount, setGoalCount] = useState(0);
   const [passCount, setPassCount] = useState(0);
@@ -54,7 +54,7 @@ const handleCalculateAndSubmit = async () => {
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/game/${gameId}/set-game-score/`,
           {
-            event_name: eventName,
+            event_id: eventId,
             score: score,
           },
           {

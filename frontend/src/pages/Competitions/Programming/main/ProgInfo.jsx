@@ -1,62 +1,90 @@
 
+  
+
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from "../../../../assets/Static/logoWrite-re.png";
-import useAllQuestion from '../../../../hooks/Questions/AllQuestion';
+import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
+import useGameID from '../../../../hooks/GameID';
 
 const ProgInfo = () => {
   const { competition } = useParams();
   const { id } = useParams();
-  
-    const { questions: allQuestions, loading: allLoading, error: allError ,type} = useAllQuestion(id, competition);
-  
-  
-  const navigate = useNavigate();
-  let score = 0;
-  
-  
-  for (let i = 0; i < allQuestions.length; i++){
-    if (allQuestions[i].category === 'problem_solving') {
-      score += 5;
-    }else if (allQuestions[i].category === 'compiler') {
-      score += 3;
-    }
-    else  {
-      score += 2;
-    }
-  }
+  const event_id = id;
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('eventName');
+  const team_id = searchParams.get('teamId');
 
+  const { 
+    questions: allQuestions, 
+    loading: allLoading, 
+    error: allError 
+  } = useInfoQuestions(id, competition);
+  
+  const { 
+    GameID, 
+    loading: gameIdLoading, 
+    error: gameIdError 
+  } = useGameID(team_id, event_id, "programming");
+
+  const navigate = useNavigate();
+  
+  // Handle loading state
+  if (allLoading || gameIdLoading) {
+    return (
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-cyan-700 to-cyan-900 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-300"></div>
+      </motion.div>
+    );
+  }
+  
+  // Handle error state
+  if (allError || gameIdError) {
+    const errorMessage = allError || gameIdError;
+    
+    return (
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-cyan-700 to-cyan-900 p-6 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="bg-white bg-opacity-90 rounded-xl p-8 max-w-md text-center">
+          <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
+          <p className="text-gray-700 mb-6">{errorMessage}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors"
+          >
+            Reload Page
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
   const competitionDetails = {
-    questions: allQuestions.length,
-    score,
-    time: allQuestions.length +20 ,
+    questions:allQuestions.number_of_questions,
+    score:allQuestions.number_of_questions,
+    time: (allQuestions.time_limit) /60 ,
     title: type,
-    description: "Test your Python programming skills with algorithmic challenges",
+    description: `Test your ${type} programming skills with algorithmic challenges`,
     color: "from-emerald-500 to-emerald-700"
 
-    // python: {
-      // questions: allQuestions.length,
-      // score: 125,
-      // time: 6,
-      // title: type,
-      // description: "Test your Python programming skills with algorithmic challenges",
-      // color: "from-emerald-500 to-emerald-700"
-    // },
-    // tynker: {
-    //   questions: 10,
-    //   score: 100,
-    //   time: 8,
-    //   title: "Tynker",
-    //   description: "Creative coding with block-based programming challenges",
-    //   color: "from-cyan-500 to-cyan-700"
-    // }
+
   };
 
   const details = competitionDetails;
 
   const handleStartCompetition = () => {
-    navigate(`/competition/${competition}/?id=${encodeURIComponent(id)}`);
+    navigate(`/competition/${type}/${GameID.id}?id=${encodeURIComponent(id)}`);
   };
 
   return (
@@ -138,14 +166,14 @@ const ProgInfo = () => {
         >
           <div className="space-y-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Selected Competition Topic</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider"> Competition Topic - <span className="text-cyan-700 text-2xl">Game: {GameID.id}</span></h3>
               <div className="flex items-center mt-3">
                 <motion.p 
                   className="text-2xl font-bold text-cyan-700"
                   initial={{ x: -10 }}
                   animate={{ x: 0 }}
                 >
-                  {details.title}
+                  {details.title} 
                 </motion.p>
               </div>
             </div>
@@ -156,7 +184,7 @@ const ProgInfo = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Questions to attempt</h3>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Number Of Questions </h3>
                 <p className="text-2xl font-bold text-gray-800 mt-2">{details.questions}</p>
               </motion.div>
               
@@ -178,18 +206,10 @@ const ProgInfo = () => {
                 <p className="text-2xl font-bold text-gray-800 mt-2">{details.time} minutes</p>
               </motion.div>
               
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Attempts allowed</h3>
-                <p className="text-2xl font-bold text-gray-800 mt-2">2</p>
-              </motion.div>
+              
             </div>
           </div>
         </motion.div>
-
         {/* Start Button */}
         <motion.div 
           className="text-center"

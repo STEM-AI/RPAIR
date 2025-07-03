@@ -11,12 +11,12 @@ import Rank from './Rank';
 export default function AllEventDetails() {
   const [showRankings, setShowRankings] = useState(false); 
     const { event_name } = useParams()
+    const { event_id } = useParams()
     const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
   const [events, setEvents] = useState([]);
   const [showResults, setShowResults] = useState(false);
       const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    console.log("event_name", event_name);
     const [openTeamIndex, setOpenTeamIndex] = useState(null);
 
     useEffect(() => {
@@ -107,7 +107,7 @@ export default function AllEventDetails() {
           </button>
         </div>
         {showResults ? (
-          <Rank eventName={events.name}  eventCategory={events.competition_name}/>
+          <Rank eventName={events.name}  eventId={events.id} eventCategory={events.competition_name}/>
         ) : (
 
           <div className="bg-white overflow-hidden shadow-xl rounded-2xl">

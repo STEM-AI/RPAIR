@@ -20,7 +20,7 @@ export const fetchTeams = async (token, competition) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/team/list/`,
       {
-        params: { competition_event__name: competition },
+        params: { competition_event__id: competition },
         headers: { Authorization: `Bearer ${token}` },
       }
     );

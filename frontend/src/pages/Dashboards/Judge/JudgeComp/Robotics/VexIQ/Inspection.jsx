@@ -12,6 +12,7 @@ import { useSearchParams } from "react-router-dom";
 export default function Inspection() {
      const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   const [checkedItems, setCheckedItems] = useState(new Array(inspectionChecklist.length).fill(false));
   const [division, setDivision] = useState("");
   const [score, setScore] = useState("");
@@ -30,12 +31,12 @@ export default function Inspection() {
         const judgeName = await fetchJudgeData(token);
         setJudge(judgeName);
         
-        const teamsData = await fetchTeams(token, event_name);
+        const teamsData = await fetchTeams(token, event_id);
         setTeams(teamsData);
       }
     };
     loadData();
-  }, [token, event_name]);
+  }, [token, event_id]);
   
 
 
@@ -84,7 +85,7 @@ export default function Inspection() {
      });
      return;
    }
-     await submitScore(token, event_name, teamData.id, apiScoreField, totalScore);
+     await submitScore(token, event_id, teamData.id, apiScoreField, totalScore);
   };
   
   return (

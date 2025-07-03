@@ -4,7 +4,7 @@ import { FaStar, FaUsers,FaChevronDown } from "react-icons/fa"; // <-- التع�
 import { IoPersonOutline } from "react-icons/io5";
 
 
-export default function Rank({ eventName, eventCategory }) {
+export default function Rank({ eventName, eventCategory  ,eventId}) {
     const [skillsRank, setSkillsRank] = useState([]);
     const [teamworkRank, setTeamworkRank] = useState([]);
     const [coopRank, setCoopRank] = useState([]);
@@ -13,6 +13,7 @@ export default function Rank({ eventName, eventCategory }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,22 +22,37 @@ export default function Rank({ eventName, eventCategory }) {
                 switch(eventCategory) {
                     case 'vex_iq':
                         endpoints = [
-                            `${process.env.REACT_APP_API_URL}/event/${eventName}/skills-rank/`,
-                            `${process.env.REACT_APP_API_URL}/event/${eventName}/teamwork-rank/`,
-                            `${process.env.REACT_APP_API_URL}/event/${eventName}/teams-interview-rank/`,
+                            `${process.env.REACT_APP_API_URL}/event/${eventId}/skills-rank/`,
+                            `${process.env.REACT_APP_API_URL}/event/${eventId}/teamwork-rank/`,
+                            `${process.env.REACT_APP_API_URL}/event/${eventId}/teams-interview-rank/`,
                         ];
                         break;
                     case 'vex_go':
                         endpoints = [
-                            `${process.env.REACT_APP_API_URL}/vex-go/${eventName}/coop/rank/`,
-                            `${process.env.REACT_APP_API_URL}/vex-go/${eventName}/skills/rank/`,
-                            `${process.env.REACT_APP_API_URL}/vex-go/${eventName}/team/interview/rank/`
+                            `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/coop/rank/`,
+                            `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/skills/rank/`,
+                            `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/team/interview/rank/`
                         ];
                         break;
                     case 'vex_123':
                         endpoints = [
-                            `${process.env.REACT_APP_API_URL}/vex-123/${eventName}/rank/`,
-                            `${process.env.REACT_APP_API_URL}/vex-123/${eventName}/team/interview/rank/`
+                            `${process.env.REACT_APP_API_URL}/vex-123/${eventId}/rank/`,
+                            `${process.env.REACT_APP_API_URL}/vex-123/${eventId}/team/interview/rank/`
+                        ];
+                        break;
+                    case 'programming':
+                        endpoints = [
+                            `${process.env.REACT_APP_API_URL}/programming/rank/${eventId}/`,
+                        ];
+                        break;
+                    case 'arduino':
+                        endpoints = [
+                            `${process.env.REACT_APP_API_URL}/arduino/${eventName}/rank/`,
+                        ];
+                        break;
+                    case 'flutter':
+                        endpoints = [
+                            `${process.env.REACT_APP_API_URL}/flutter/${eventName}/rank/`,
                         ];
                         break;
                     default:
@@ -68,12 +84,9 @@ export default function Rank({ eventName, eventCategory }) {
         };
 
         fetchData();
-    }, [eventName, eventCategory]);
+    }, [eventName, eventCategory, eventId]);
 
-    // const getTeamName = (teamId) => {
-    //     const team = gameRank.find(t => t.team === teamId);
-    //     return team ? team.team_name || team.team__name  : 'Unknown Team';
-    // };
+ 
     const getTeamName = (teamId) => {
         let team;
         switch(eventCategory) {
