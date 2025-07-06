@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaStar, FaUsers,FaChevronDown } from "react-icons/fa"; // <-- التعديل هنا
+import { FaStar, FaUsers, FaChevronDown } from "react-icons/fa";
 import { IoPersonOutline } from "react-icons/io5";
 
-
-export default function Rank({ eventName, eventCategory  ,eventId}) {
+export default function Rank({ eventName, eventCategory, eventId }) {
     const [skillsRank, setSkillsRank] = useState([]);
     const [teamworkRank, setTeamworkRank] = useState([]);
     const [coopRank, setCoopRank] = useState([]);
@@ -13,13 +12,12 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
-    
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 let endpoints = [];
-                switch(eventCategory) {
+                switch (eventCategory) {
                     case 'vex_iq':
                         endpoints = [
                             `${process.env.REACT_APP_API_URL}/event/${eventId}/skills-rank/`,
@@ -47,12 +45,12 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
                         break;
                     case 'arduino':
                         endpoints = [
-                            `${process.env.REACT_APP_API_URL}/arduino/${eventName}/rank/`,
+                            `${process.env.REACT_APP_API_URL}/arduino/${eventId}/rank/`,
                         ];
                         break;
                     case 'flutter':
                         endpoints = [
-                            `${process.env.REACT_APP_API_URL}/flutter/${eventName}/rank/`,
+                            `${process.env.REACT_APP_API_URL}/flutter/${eventId}/rank/`,
                         ];
                         break;
                     default:
@@ -62,6 +60,13 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
                 const responses = await Promise.all(
                     endpoints.map(url => axios.get(url))
                 );
+
+                // Clear previous state
+                setSkillsRank([]);
+                setTeamworkRank([]);
+                setCoopRank([]);
+                setGameRank([]);
+                setInterviewRank([]);
 
                 if (eventCategory === 'vex_iq') {
                     setSkillsRank(responses[0].data);
@@ -74,6 +79,12 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
                 } else if (eventCategory === 'vex_123') {
                     setGameRank(responses[0].data);
                     setInterviewRank(responses[1].data);
+                } else if (
+                    eventCategory === 'arduino' ||
+                    eventCategory === 'flutter' ||
+                    eventCategory === 'programming'
+                ) {
+                    setGameRank(responses[0].data);
                 }
 
                 setLoading(false);
@@ -86,15 +97,19 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
         fetchData();
     }, [eventName, eventCategory, eventId]);
 
- 
     const getTeamName = (teamId) => {
         let team;
-        switch(eventCategory) {
+        switch (eventCategory) {
             case 'vex_123':
                 team = gameRank.find(t => t.team === teamId);
                 break;
             case 'vex_go':
                 team = skillsRank.find(t => t.team === teamId);
+                break;
+            case 'arduino':
+            case 'flutter':
+            case 'programming':
+                team = gameRank.find(t => t.id === teamId);
                 break;
             default:
                 team = null;
@@ -128,22 +143,22 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
                     {/* VEX IQ Rankings */}
                     {eventCategory === 'vex_iq' && (
                         <>
-                            <RankingSection 
-                                title="Skills Rankings" 
-                                data={skillsRank} 
+                            <RankingSection
+                                title="Skills Rankings"
+                                data={skillsRank}
                                 icon={<FaStar className="text-yellow-400" />}
                                 scoreField="total_score"
                             />
-                            <RankingSection 
-                                title="Teamwork Rankings" 
-                                data={teamworkRank} 
+                            <RankingSection
+                                title="Teamwork Rankings"
+                                data={teamworkRank}
                                 icon={<FaUsers className="text-blue-500" />}
                                 scoreField="avg_score"
                             />
                             <div className="lg:col-span-2">
-                                <RankingSection 
-                                    title="Interview Rankings" 
-                                    data={interviewRank} 
+                                <RankingSection
+                                    title="Interview Rankings"
+                                    data={interviewRank}
                                     icon={<IoPersonOutline className="text-purple-500" />}
                                     scoreField="interview_score"
                                 />
@@ -154,122 +169,130 @@ export default function Rank({ eventName, eventCategory  ,eventId}) {
                     {/* VEX GO Rankings */}
                     {eventCategory === 'vex_go' && (
                         <>
-                            <RankingSection 
-                                title="Coop Rankings" 
-                                data={coopRank} 
+                            <RankingSection
+                                title="Coop Rankings"
+                                data={coopRank}
                                 icon={<FaUsers className="text-green-500" />}
                                 scoreField="avg_score"
                             />
-                            <RankingSection 
-                                title="Skills Rankings" 
-                                data={skillsRank} 
+                            <RankingSection
+                                title="Skills Rankings"
+                                data={skillsRank}
                                 icon={<FaStar className="text-yellow-400" />}
                                 scoreField="total_score"
                                 timeField="skills_time"
                             />
                             <div className="lg:col-span-2">
-                            <div className="bg-white shadow-xl rounded-2xl p-6">
-                                
-                                <div 
-                                    className="flex items-center justify-between cursor-pointer"
-                                    onClick={() => setIsExpanded(!isExpanded)}
-                                >
-                                    <div className="flex items-center gap-2">
-                                    <h2 className="text-2xl font-bold  flex items-center gap-2">
-                                    <IoPersonOutline className="text-green-500" />
-                                    Interview Rankings
-                                     </h2>
+                                <div className="bg-white shadow-xl rounded-2xl p-6">
+                                    <div
+                                        className="flex items-center justify-between cursor-pointer"
+                                        onClick={() => setIsExpanded(!isExpanded)}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <h2 className="text-2xl font-bold  flex items-center gap-2">
+                                                <IoPersonOutline className="text-green-500" />
+                                                Interview Rankings
+                                            </h2>
+                                        </div>
+                                        <FaChevronDown
+                                            className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                                                }`}
+                                        />
                                     </div>
-                                    <FaChevronDown 
-                                        className={`text-gray-500 transition-transform duration-200 ${
-                                            isExpanded ? 'rotate-180' : ''
-                                        }`}
-                                    />
-                                </div>
-                                {isExpanded && (
-                                <div className="space-y-4">
-                                    {interviewRank.map((interview, index) => (
-                                        <div key={interview.id} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                                            <div className="flex justify-between items-center">
-                                                <div className="flex items-center gap-4">
-                                                    <span className="font-bold text-blue-600">#{index + 1}</span>
-                                                    <div>
-                                                        <h3 className="font-semibold text-lg">
-                                                            {getTeamName(interview.id)}
-                                                        </h3>
-                                                        <div className="text-sm text-gray-500">
-                                                            Team ID: {interview.id}
+                                    {isExpanded && (
+                                        <div className="space-y-4">
+                                            {interviewRank.map((interview, index) => (
+                                                <div key={interview.id} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                                                    <div className="flex justify-between items-center">
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="font-bold text-blue-600">#{index + 1}</span>
+                                                            <div>
+                                                                <h3 className="font-semibold text-lg">
+                                                                    {getTeamName(interview.id)}
+                                                                </h3>
+                                                                <div className="text-sm text-gray-500">
+                                                                    Team ID: {interview.id}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="font-bold text-xl">{interview.interview_score} pts</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold text-xl">{interview.interview_score} pts</p>
-                                                </div>
-                                            </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                </div>
                             </div>
                         </>
-                        )}
+                    )}
 
                     {/* VEX 123 Rankings */}
                     {eventCategory === 'vex_123' && (
                         <>
-                            <RankingSection 
-                                title="Game Rankings" 
-                                data={gameRank} 
+                            <RankingSection
+                                title="Game Rankings"
+                                data={gameRank}
                                 icon={<FaStar className="text-yellow-400" />}
                                 scoreField="total_score"
                                 timeField="total_time_taken"
                             />
-                            
                             <div className="bg-white shadow-xl rounded-2xl p-6">
-                                
-                                <div 
+                                <div
                                     className="flex items-center justify-between cursor-pointer"
                                     onClick={() => setIsExpanded(!isExpanded)}
                                 >
                                     <div className="flex items-center gap-2">
-                                    <h2 className="text-2xl font-bold  flex items-center gap-2">
-                                    <IoPersonOutline className="text-green-500" />
-                                    Interview Rankings
-                                     </h2>
+                                        <h2 className="text-2xl font-bold  flex items-center gap-2">
+                                            <IoPersonOutline className="text-green-500" />
+                                            Interview Rankings
+                                        </h2>
                                     </div>
-                                    <FaChevronDown 
-                                        className={`text-gray-500 transition-transform duration-200 ${
-                                            isExpanded ? 'rotate-180' : ''
-                                        }`}
+                                    <FaChevronDown
+                                        className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                                            }`}
                                     />
                                 </div>
                                 {isExpanded && (
-                                <div className="space-y-4">
-                                    {interviewRank.map((interview, index) => (
-                                        <div key={interview.id} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                                            <div className="flex justify-between items-center">
-                                                <div className="flex items-center gap-4">
-                                                    <span className="font-bold text-blue-600">#{index + 1}</span>
-                                                    <div>
-                                                        <h3 className="font-semibold text-lg">
-                                                            {getTeamName(interview.id)}
-                                                        </h3>
-                                                        <div className="text-sm text-gray-500">
-                                                            Team ID: {interview.id}
+                                    <div className="space-y-4">
+                                        {interviewRank.map((interview, index) => (
+                                            <div key={interview.id} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="font-bold text-blue-600">#{index + 1}</span>
+                                                        <div>
+                                                            <h3 className="font-semibold text-lg">
+                                                                {getTeamName(interview.id)}
+                                                            </h3>
+                                                            <div className="text-sm text-gray-500">
+                                                                Team ID: {interview.id}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold text-xl">{interview.interview_score} pts</p>
+                                                    <div className="text-right">
+                                                        <p className="font-bold text-xl">{interview.interview_score} pts</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                     </div>
                                 )}
                             </div>
                         </>
+                    )}
+
+                    {/* Arduino/Flutter/Programming Rankings */}
+                    {(eventCategory === 'arduino' || eventCategory === 'flutter' || eventCategory === 'programming') && (
+                        <div className="lg:col-span-2">
+                            <RankingSection
+                                title={`${eventCategory.charAt(0).toUpperCase() + eventCategory.slice(1)} Rankings`}
+                                data={gameRank}
+                                icon={<FaStar className="text-yellow-400" />}
+                                scoreField="score"
+                                timeField={gameRank.length > 0 && gameRank[0].total_time ? "total_time" : null}
+                            />
+                        </div>
                     )}
                 </div>
             </div>
@@ -281,8 +304,8 @@ const RankingSection = ({ title, data, icon, scoreField, timeField }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-      <div className="bg-white shadow-xl rounded-2xl p-6">
-         <div 
+        <div className="bg-white shadow-xl rounded-2xl p-6">
+            <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setIsExpanded(!isExpanded)}
             >
@@ -290,36 +313,34 @@ const RankingSection = ({ title, data, icon, scoreField, timeField }) => {
                     {icon}
                     <h2 className="text-2xl font-bold">{title}</h2>
                 </div>
-                <FaChevronDown 
-                    className={`text-gray-500 transition-transform duration-200 ${
-                        isExpanded ? 'rotate-180' : ''
-                    }`}
+                <FaChevronDown
+                    className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                        }`}
                 />
             </div>
             {isExpanded && (
-        <div className="space-y-4">
-          {data.map((team, index) => (
-            <div key={team.id || index} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <span className="font-bold text-blue-600">#{index + 1}</span>
-                  <div>
-                    {/* التعديل هنا: استخدام team.name أولًا */}
-                    <h3 className="font-semibold text-lg">{team.name || team.team_name || team.team__name}</h3>
-                    <div className="text-sm text-gray-500">
-                      Team ID: {team.team || team.id}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-xl">{team[scoreField]} pts</p>
-                  {timeField && <p className="text-sm text-gray-500">{team[timeField]}s</p>}
-                </div>
-              </div>
-            </div>
-          ))}
+                <div className="space-y-4">
+                    {data.map((team, index) => (
+                        <div key={team.id || index} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-4">
+                                    <span className="font-bold text-blue-600">#{index + 1}</span>
+                                    <div>
+                                        <h3 className="font-semibold text-lg">{team.name || team.team_name || team.team__name}</h3>
+                                        <div className="text-sm text-gray-500">
+                                            Team ID: {team.team || team.id}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-bold text-xl">{team[scoreField]} pts</p>
+                                    {timeField && <p className="text-sm text-gray-500">{team[timeField]}s</p>}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
-      </div>
+        </div>
     );
-  };
+};

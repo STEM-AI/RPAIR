@@ -4,6 +4,7 @@
 export const content = ["./src/**/*.{js,jsx,ts,tsx}"];
 export const theme = {
   extend: {
+    
     spacing: {
       'screen': '100vw',
     },
@@ -20,6 +21,7 @@ export const theme = {
         500: '#B8860B',
       }
     },
+   
     animation: {
       marquee: "marquee 60s linear infinite",
       marqueePaused: "marquee 60s linear infinite paused",
@@ -32,6 +34,8 @@ export const theme = {
       progress: "progress 2s ease-in-out forwards",
       fadeInDown: 'fadeInDown 0.5s ease-out',
     },
+   
+  
     keyframes: {
       marquee: {
         from: { transform: "translateX(0)" }, // Start from original position

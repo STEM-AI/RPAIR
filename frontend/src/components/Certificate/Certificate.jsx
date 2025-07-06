@@ -248,6 +248,7 @@ import vexIQLogo from "../../assets/logoCert/vexIQ.png";
 import vexGOLogo from "../../assets/logoCert/vexGO.png";
 import arduinoLogo from "../../assets/logoCert/arduino.png";
 import flutterLogo from "../../assets/logoCert/flutter.png";
+import pythonLogo from "../../assets/logoCert/python.webp";
 
 const Certificate = ({ selectedMember, certificateRef, teamName, competitionName, startDate }) => {
 
@@ -264,7 +265,7 @@ const Certificate = ({ selectedMember, certificateRef, teamName, competitionName
       case 'flutter':
         return flutterLogo;
       default:
-        return vex123Logo;
+        return pythonLogo;
     }
   };
 
