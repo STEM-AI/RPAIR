@@ -3,6 +3,7 @@ import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
+import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const LiveTeamVex = () => {
   const [matches, setMatches] = useState([]);
@@ -16,6 +17,18 @@ const LiveTeamVex = () => {
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
 
+
+   const { 
+      score: serverScores, 
+      refetch: refetchScores 
+    } = useGetScore(eventId, "teamwork");
+  
+    // Initialize matches from serverScores
+    useEffect(() => {
+      if (serverScores) {
+        setMatches(serverScores);
+      }
+    }, [serverScores]);
   const fetchRankings = async () => {
     setIsLoading(true);
     if (!eventName || !eventId) {
@@ -38,10 +51,7 @@ const LiveTeamVex = () => {
   };
 
   useEffect(() => {
-    const savedMatches = localStorage.getItem('live_matches');
-    if (savedMatches) {
-      setMatches(JSON.parse(savedMatches));
-    }
+   
 
     socketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/teamwork/`);
 
@@ -60,7 +70,7 @@ const LiveTeamVex = () => {
           const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
           if (matchIndex === -1) {
             updatedMatches = [...prevMatches, {
-              code: data.game_id,
+              code: data.game_id || data.id,
               team1: data.team1_name || 'Team 1',
               team2: data.team2_name || 'Team 2',
               score: data.score
@@ -73,7 +83,6 @@ const LiveTeamVex = () => {
             };
           }
 
-          localStorage.setItem('live_matches', JSON.stringify(updatedMatches));
           return updatedMatches;
         });
 
@@ -167,10 +176,10 @@ const LiveTeamVex = () => {
           <div className="grid grid-cols-1 gap-4 p-4">
             {matches.map((match) => (
               <div
-                key={match.code}
+                key={match.code || match.id}
                 className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
               >
-                <div className="text-center text-sm font-medium text-gray-500 mb-3">Match {match.code}</div>
+                <div className="text-center text-sm font-medium text-gray-500 mb-3">Match {match.code || match.id}</div>
                 <div className="flex items-center justify-between">
                   <div className="text-center flex-1">
                     <div className="font-medium text-gray-700">{match.team1}</div>

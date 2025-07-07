@@ -21,14 +21,14 @@ const AutoRoundsComponent = ({ matches }) => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {matches.map((team) => (
-          <tr key={`auto-${team.code}`} className="hover:bg-gray-50 transition-colors">
-            <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.code}</td>
-            <td className="px-6 py-4 whitespace-nowrap">{team.team1}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-center">
-              {team.score?.autonomous > 0 ? (
-                <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium">
-                  {team.score.autonomous}
-                </span>
+          <tr key={`auto-${team.code || team.id}`} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">#{team.code || team.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{team.team1_name} </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      {team.score?.autonomous > 0|| team.score > 0 ? (
+                        <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
+                          {team.score.autonomous ||team.score}
+                        </span>
               ) : (
                 <span className="text-gray-400">-</span>
               )}

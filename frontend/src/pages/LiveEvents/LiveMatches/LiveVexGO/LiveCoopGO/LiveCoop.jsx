@@ -1,10 +1,9 @@
-
-
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
+import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const LiveCoop = () => {
   const [matches, setMatches] = useState([]);
@@ -18,6 +17,19 @@ const LiveCoop = () => {
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
 
+  // Moved useGetScore to top-level
+  const { 
+    score: serverScores, 
+    refetch: refetchScores 
+  } = useGetScore(eventId, "coop");
+
+  // Initialize matches from serverScores
+  useEffect(() => {
+    if (serverScores) {
+      setMatches(serverScores);
+    }
+  }, [serverScores]);
+
   // Fetch Rankings API
   const fetchRankings = async () => {
     setIsLoading(true);
@@ -29,9 +41,8 @@ const LiveCoop = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/event/${eventId}/teamwork-rank`
+        `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/coop/rank/`
       );
-
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {
@@ -41,15 +52,10 @@ const LiveCoop = () => {
     }
   };
 
-  // Load stored matches from localStorage on page load
+  // WebSocket connection
   useEffect(() => {
-    const storedMatches = localStorage.getItem("coop_matches");
-    if (storedMatches) {
-      setMatches(JSON.parse(storedMatches));
-    }
-  }, []);
+    if (!eventName) return;
 
-  useEffect(() => {
     socketRef.current = new WebSocket(
       `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coop/`
     );
@@ -64,31 +70,26 @@ const LiveCoop = () => {
 
       if (data.game_id && data.score !== undefined) {
         setMatches((prevMatches) => {
-          let updatedMatches = [...prevMatches];
-          const matchIndex = updatedMatches.findIndex(
-            (m) => m.code === data.game_id
-          );
-
+          const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
+          
           if (matchIndex === -1) {
-            updatedMatches.push({
-              code: data.game_id,
-              team1: data.team1_name || "Team 1",
-              team2: data.team2_name || "Team 2",
-              score: data.score,
-            });
-          } else {
-            updatedMatches[matchIndex] = {
-              ...updatedMatches[matchIndex],
-              score: data.score,
-            };
+            return [
+              ...prevMatches,
+              {
+                code: data.game_id ,
+                team1: data.team1_name || "Team 1",
+                team2: data.team2_name || "Team 2",
+                score: data.score,
+              }
+            ];
           }
-
-          // Save to localStorage
-          localStorage.setItem("coop_matches", JSON.stringify(updatedMatches));
-
-          return updatedMatches;
+          
+          return prevMatches.map((match, index) => 
+            index === matchIndex 
+              ? { ...match, score: data.score } 
+              : match
+          );
         });
-
         setLastUpdate(new Date());
       }
     };
@@ -120,6 +121,7 @@ const LiveCoop = () => {
         return <span className="text-gray-500 font-medium">{rank}</span>;
     }
   };
+
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -168,11 +170,11 @@ const LiveCoop = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {matches.map((match) => (
                 <tr
-                  key={match.code}
+                  key={match.code || match.id}
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                    #{match.code}
+                    #{match.code || match.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>

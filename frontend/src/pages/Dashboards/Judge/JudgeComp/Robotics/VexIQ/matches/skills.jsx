@@ -119,10 +119,10 @@ const Skills = () => {
     const currentSchedule = roundSchedules[selectedRound - 1]?.schedule?.games;
     if (!currentSchedule) return false;
     
-    return currentSchedule.every(match => 
-      confirmed[selectedRound]?.[match.id] || 
-      serverScores.some(s => s.id === match.id && s.score !== null)
-    );
+    return currentSchedule.every(match => {
+      const serverScore = serverScores?.find(s => s.id === match.id);
+      return serverScore?.score !== null || confirmed[selectedRound]?.[match.id];
+    });
   };
 
   const handleCompleteRound = async () => {
@@ -148,16 +148,17 @@ const Skills = () => {
         setSelectedRound(prev => prev + 1);
       }
 
+      // Refresh data
+      refetchSchedules();
+      refetchScores(); // ADD THIS TO REFRESH SCORES
+      fetchRankings();
+
       await Swal.fire({
         title: 'Success!',
         text: `Round ${selectedRound} has been completed.`,
         icon: 'success',
         confirmButtonText: 'OK'
       });
-
-      // Refresh data
-      refetchSchedules();
-      fetchRankings();
     } catch (error) {
       console.error("Error completing round:", error);
       Swal.fire({
@@ -444,19 +445,26 @@ const Skills = () => {
   
   {/* Complete Round Button */}
   <div className="flex justify-center p-4 bg-gray-50 border-t border-gray-200">
-    <button
-      onClick={handleCompleteRound}
-      disabled={!isRoundCompleted()}
-      className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all ${
-        isRoundCompleted() 
-          ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:shadow-md' 
-          : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-      }`}
-    >
-      <FaCheck className="h-5 w-5" />
-      <span className="font-medium">Complete Round {selectedRound}</span>
-    </button>
-  </div>
+        <button
+          onClick={handleCompleteRound}
+          disabled={!isRoundCompleted() || completedRounds[activeTab].includes(selectedRound)}
+          className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all ${
+            completedRounds[activeTab].includes(selectedRound)
+              ? 'bg-green-500 text-white shadow-lg cursor-default'
+              : isRoundCompleted() 
+                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:shadow-md' 
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          <FaCheck className="h-5 w-5" />
+          <span className="font-medium">
+            {completedRounds[activeTab].includes(selectedRound)
+              ? `Round ${selectedRound} Completed`
+              : `Complete Round ${selectedRound}`}
+          </span>
+        </button>
+      </div>
+
 </div>
 
       {/* Ranking Section */}

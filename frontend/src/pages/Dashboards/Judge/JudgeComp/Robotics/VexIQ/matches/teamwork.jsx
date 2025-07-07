@@ -47,7 +47,6 @@ const Teamwork = () => {
     refetch: refetchScheduleDetails 
   } = useSchedule(lastScheduleId);
 
-  // Create a map of match scores from serverScores for easy lookup
   const scoresMap = serverScores.reduce((acc, match) => {
     acc[match.id] = match.score;
     return acc;

@@ -341,6 +341,7 @@ const formatTime = (seconds) => {
   }, [remainingTime, gameActive, gamePaused, playMiddle]);
 
   return (
+    
     <div className="relative max-w-5xl mx-auto mt-4 sm:mt-8 p-3 sm:p-6 bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-xl">
        <button
           onClick={onClose}

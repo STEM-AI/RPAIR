@@ -165,7 +165,8 @@ import { useSearchParams } from 'react-router-dom';
 
 export default function Python() {
     const [searchParams] = useSearchParams();
-    const id = searchParams.get('eventName');
+    const id = searchParams.get('eventId');
+    const event_name = searchParams.get('eventName');
     const [numberOfQuestions, setNumberOfQuestions] = useState('');
     const [timeLimit, setTimeLimit] = useState('');
     const [timeUnit, setTimeUnit] = useState('minutes'); // default to minutes
@@ -249,7 +250,7 @@ export default function Python() {
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg">
             <div className="mb-6 text-center">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Programming Competition Setup</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Programming Competition Setup  ({event_name})</h2>
                 <p className="text-gray-600">Configure competition parameters</p>
             </div>
             
