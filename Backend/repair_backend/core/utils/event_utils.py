@@ -22,6 +22,8 @@ def get_object(competition_id = None , event_id = None):
 
 def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
     time_limit = event.time_limit
+    if stage == 'coop':
+        time_limit = 120
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
@@ -33,16 +35,18 @@ def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
 def skills_schedule(event , game_time , stage, schedule):
     logger.info("create skills")
     event_teams = event.teams.order_by('?')
-    paused_time = event.time_limit
     logger.info(f"event teams {event_teams}")
     games = []
-    # if stage == 'driver_go':
-    #     paused_time = 120
-    # elif stage in ['driver_iq','coding','auto']:
-    #     paused_time = 60
-    # elif stage == 'programming':
-    #     logger.info(f"event in programming:{event}")
-    #     logger.info(f"paused_time in programming:{paused_time}")
+    if stage == 'driver_go':
+        paused_time = 120
+    elif stage in ['driver_iq','auto']:
+        paused_time = event.time_limit
+    elif stage == 'coding':
+        paused_time = 60
+    elif stage == 'programming':
+        paused_time = event.time_limit
+        logger.info(f"event in programming:{event}")
+        logger.info(f"paused_time in programming:{paused_time}")
 
 
     for i in range(len(event_teams)):
