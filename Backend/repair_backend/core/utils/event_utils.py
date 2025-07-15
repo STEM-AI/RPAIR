@@ -21,10 +21,11 @@ def get_object(competition_id = None , event_id = None):
 
 
 def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
+    time_limit = event.time_limit
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
-            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage,paused_time=60, schedule=schedule, duration=60))
+            games.append(EventGame(event= event ,team1=event_teams[i], team2=event_teams[j], time=game_time.time() , stage=stage,paused_time=time_limit, schedule=schedule, duration=time_limit))
             game_time += timedelta(minutes=5)   
 
     return games
@@ -32,16 +33,16 @@ def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
 def skills_schedule(event , game_time , stage, schedule):
     logger.info("create skills")
     event_teams = event.teams.order_by('?')
+    paused_time = event.time_limit
     logger.info(f"event teams {event_teams}")
     games = []
-    if stage == 'driver_go':
-        paused_time = 120
-    elif stage in ['driver_iq','coding','auto']:
-        paused_time = 60
-    elif stage == 'programming':
-        logger.info(f"event in programming:{event}")
-        paused_time = event.time_limit
-        logger.info(f"paused_time in programming:{paused_time}")
+    # if stage == 'driver_go':
+    #     paused_time = 120
+    # elif stage in ['driver_iq','coding','auto']:
+    #     paused_time = 60
+    # elif stage == 'programming':
+    #     logger.info(f"event in programming:{event}")
+    #     logger.info(f"paused_time in programming:{paused_time}")
 
 
     for i in range(len(event_teams)):
