@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import ScheduleListView,ScheduleDetailView,GamesScheduleCreateView,GameListView,GameIDRetrieveView
+from core.views import ScheduleListView,ScheduleDetailView,GamesScheduleCreateView,GameListView,GameIDRetrieveView,UpdateEventTimeLimit
 urlpatterns = [
 
     path('event/<int:event_id>/schedule/', ScheduleListView.as_view(), name='schedule_list'),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('event/<int:event_id>/games/schedule/', GamesScheduleCreateView.as_view(), name='games_schedule'),
     path('event/<int:event_id>/<str:stage>/games/', GameListView.as_view(), name='game_list'),
     path('game-id/<int:team_id>/<int:event_id>/<str:stage>/', GameIDRetrieveView.as_view(), name='game_id_retrieve'),
+    path('event/<int:id>/time-limit/', UpdateEventTimeLimit.as_view(), name='update_event_time_limit'),
 ]
