@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView,UpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rapair_db.serializers.arduino_flutter import TeamCompetitionEventSerializer,TeamCompetitionEventRankingSerializer,TeamCompetitionEventScoreSerializer
 from rapair_db.models import TeamCompetitionEvent
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_spectacular.utils import extend_schema
 from rapair_db.permissions import IsJudgeUser
 class TeamAttachmentListView(ListAPIView):
@@ -11,7 +11,7 @@ class TeamAttachmentListView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return TeamCompetitionEvent.objects.filter(competition_event__name=self.kwargs['event_name'])
+        return TeamCompetitionEvent.objects.filter(competition_event__id=self.kwargs['event_id'])
 
 
 @extend_schema(
@@ -35,15 +35,15 @@ class TeamAttachmentUpdateView(UpdateAPIView):
     lookup_url_kwarg = 'team_id'
 
     def get_queryset(self):
-        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['team_id'],competition_event__name=self.kwargs['event_name'])
+        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['team_id'],competition_event__id=self.kwargs['event_id'])
     
 class TeamAttachmentRankingView(ListAPIView):
     serializer_class = TeamCompetitionEventRankingSerializer
     queryset = TeamCompetitionEvent.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = TeamCompetitionEvent.objects.filter(competition_event__name=self.kwargs['event_name'])
+        queryset = TeamCompetitionEvent.objects.filter(competition_event__id=self.kwargs['event_id'])
         return queryset.order_by('-score')
     
 class TeamScoreUpdateView(UpdateAPIView):
@@ -54,7 +54,7 @@ class TeamScoreUpdateView(UpdateAPIView):
     lookup_url_kwarg = 'team_id'
 
     def get_queryset(self):
-        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['team_id'],competition_event__name=self.kwargs['event_name'])
+        return TeamCompetitionEvent.objects.filter(team_id=self.kwargs['team_id'],competition_event__id=self.kwargs['event_id'])
     
 class TeamAttachmentScoreListView(ListAPIView):
     serializer_class = TeamCompetitionEventScoreSerializer
@@ -62,4 +62,4 @@ class TeamAttachmentScoreListView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return TeamCompetitionEvent.objects.filter(competition_event__name=self.kwargs['event_name']).order_by('-score')
+        return TeamCompetitionEvent.objects.filter(competition_event__id=self.kwargs['event_id']).order_by('-score')

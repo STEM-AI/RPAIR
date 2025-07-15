@@ -37,6 +37,7 @@ class CoopRankView(ListAPIView):
     def list(self, request, *args, **kwargs):
         # Get the queryset
         queryset = self.get_queryset()
+        event_id = self.kwargs.get('event_id')
 
         # Serialize the data
         serializer = self.get_serializer(queryset, many=True)
@@ -44,7 +45,7 @@ class CoopRankView(ListAPIView):
 
         # Save the rank to the Team model
         for index, item in enumerate(data):
-            team = TeamCompetitionEvent.objects.get(team_id=item['team'])
+            team = TeamCompetitionEvent.objects.get(team_id=item['team'],competition_event_id=event_id)
             team.teamwork_rank = index + 1  # Rank starts from 1
             team.save()
 
