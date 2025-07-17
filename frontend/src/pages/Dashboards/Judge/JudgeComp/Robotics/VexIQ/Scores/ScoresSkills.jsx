@@ -56,7 +56,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/game/${gameId}/set-game-score/`,
           {
-            event_id: eventId, // أو استخدم متغير eventName إذا كان متوفرًا
+            event_id: eventId, 
             score: score,
           },
           {

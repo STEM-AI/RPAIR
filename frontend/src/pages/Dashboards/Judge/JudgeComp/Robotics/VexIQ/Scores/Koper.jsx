@@ -8,8 +8,8 @@ import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
 
-const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
-  const [remainingTime, setRemainingTime] = useState(60);
+const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
+  const [remainingTime, setRemainingTime] = useState(90);
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
@@ -17,8 +17,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
   const [showControls, setShowControls] = useState(false);
   const token = localStorage.getItem("access_token");
   const prevTimeRef = useRef(remainingTime);
-  
-  // Counters
+
   const [cubeCount, setCubeCount] = useState(0);
   const [firajCount, setFirajCount] = useState(0);
   const [doubleGroupCount, setDoubleGroupCount] = useState(0);
@@ -45,18 +44,11 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
 
   const score = useMemo(() => {
     let totalScore = 0;
-    
-    // 1. Cubes (1 point each)
     totalScore += cubeCount;
-    
-    // 2. Double Group (10 points)
     totalScore += doubleGroupCount * 10;
-    
-    // 3. Triple Group (15 points)
     totalScore += tripleGroupCount * 15;
     
-    // 4. Circle plays (points based on current unlock state)
-    let circlePoints = 0;
+        let circlePoints = 0;
     if (firajCount > 0) circlePoints = 2;
     if (doubleGroupCount > 0) circlePoints = 4;
     if (tripleGroupCount > 0) circlePoints = 6;
@@ -92,7 +84,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
           const response = await axios.post(
             `${process.env.REACT_APP_API_URL}/game/${gameId}/set-game-score/`,
             {
-              event_name: eventName,
+              event_id: eventId,
               score: score,
             },
             {
@@ -298,8 +290,8 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
   const currentCirclePoints = getCirclePointValue() ;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-800">Koper Game Score</h2>
@@ -312,6 +304,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
         </div>
 
         {/* Score Display */}
+        <div className="flex-grow overflow-y-auto">
         <div className="p-4 bg-gray-50">
           <div className="text-center text-2xl font-bold text-gray-800 mb-2">
             Current Score: <span className="text-green-600">{score}</span>
@@ -329,7 +322,8 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
               />
             ))}
           </div>
-        </div>
+          </div>
+          </div>
 
         {/* Timer and Controls */}
         <div className="p-4">
@@ -522,7 +516,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName }) => {
         </div>
 
         {/* Submit Button */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="flex-shrink-0 p-4 border-t border-gray-200">
           <button
             onClick={handleCalculateAndSubmit}
             className="w-full bg-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-green-600 transition-transform transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"

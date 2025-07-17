@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useRef } from "react";
 import { FaTrophy, FaMedal, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
@@ -7,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import DriverRounds from "./DriverRounds";
 import AutoRounds from "./AutoRounds";
 import { useSearchParams } from "react-router-dom";
+import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const LiveSkillsVex = () => {
   const [rankings, setRankings] = useState([]);
@@ -16,42 +15,46 @@ const LiveSkillsVex = () => {
   const [showRankings, setShowRankings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [teamRounds, setTeamRounds] = useState({});
-const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
   const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
 
 
-  // Load existing matches from localStorage when component mounts
-  useEffect(() => {
-    const storedAutoIqMatches = JSON.parse(localStorage.getItem("autoIqMatches")) || [];
-    const storedDriverIqMatches = JSON.parse(localStorage.getItem("driverIqMatches")) || [];
-    setAutoIqMatches(storedAutoIqMatches);
-    setDriverIqMatches(storedDriverIqMatches);
-    updateTeamRounds(storedAutoIqMatches, storedDriverIqMatches);
-  }, []);
-
+  const { 
+      score: scoresAuto, 
+    } = useGetScore(eventId, "auto");
+  const { 
+      score: scoresDriver, 
+    } = useGetScore(eventId, "driver_iq");
+  
+     useEffect(() => {
+       if (scoresAuto || scoresDriver) {
+        setDriverIqMatches(scoresDriver);
+        setAutoIqMatches(scoresAuto);
+        }
+      }, [scoresAuto, scoresDriver]);
   // Update team rounds when matches change
   useEffect(() => {
-    updateTeamRounds(autoIqMatches, driverIqMatches);
+    const updateTeamRounds = () => {
+      const rounds = {};
+      
+      autoIqMatches.forEach(match => {
+        if (!rounds[match.team1]) rounds[match.team1] = 0;
+        rounds[match.team1]++;
+      });
+      
+      driverIqMatches.forEach(match => {
+        if (!rounds[match.team1]) rounds[match.team1] = 0;
+        rounds[match.team1]++;
+      });
+      
+      setTeamRounds(rounds);
+    };
+    
+    updateTeamRounds();
   }, [autoIqMatches, driverIqMatches]);
-
-  const updateTeamRounds = (autoIqMatches, driverIqMatches) => {
-    const rounds = {};
-
-    autoIqMatches.forEach(match => {
-      if (!rounds[match.team1]) rounds[match.team1] = 0;
-      rounds[match.team1]++;
-    });
-
-    driverIqMatches.forEach(match => {
-      if (!rounds[match.team1]) rounds[match.team1] = 0;
-      rounds[match.team1]++;
-    });
-
-    setTeamRounds(rounds);
-  };
 
   useEffect(() => {
     autoSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/auto/`);
@@ -59,11 +62,7 @@ const [searchParams] = useSearchParams();
     autoSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.game_id && data.score?.autonomous !== undefined) {
-        setAutoIqMatches(prev => {
-          const updatedMatches = updateMatches(prev, data);
-          localStorage.setItem("autoIqMatches", JSON.stringify(updatedMatches));
-          return updatedMatches;
-        });
+        setAutoIqMatches(prev => updateMatches(prev, data));
         setLastUpdate(new Date());
       }
     };
@@ -81,11 +80,7 @@ const [searchParams] = useSearchParams();
     driverSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.game_id && data.score?.driver !== undefined) {
-        setDriverIqMatches(prev => {
-          const updatedMatches = updateMatches(prev, data);
-          localStorage.setItem("driverIqMatches", JSON.stringify(updatedMatches));
-          return updatedMatches;
-        });
+        setDriverIqMatches(prev => updateMatches(prev, data));
         setLastUpdate(new Date());
       }
     };

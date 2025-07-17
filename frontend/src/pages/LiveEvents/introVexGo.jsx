@@ -14,6 +14,9 @@ const IntroVexGO = () => {
    const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
+  console.log("eventName", eventName);
+  console.log("eventId", eventId);
+  
   
 
   const handleClick = (path) => {

@@ -225,7 +225,7 @@ const formatSingleLineCode = (text) => {
             text: `thank you have answerd submitted`,
             icon: 'success',
           }).then(() => {
-              navigate(`/competition/${competition}/results`, { replace: true });
+              navigate(`/competition/programming/${competition}`, { replace: true });
           });
         });
       }

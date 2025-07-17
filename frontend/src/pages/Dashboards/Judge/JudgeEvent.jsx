@@ -255,10 +255,7 @@ export default function JudgeEvent() {
                   </div>
                 </div>
                   <Link 
-                  to={
-                    event.competition_event.competition_name === 'flutter'|| event.competition_event.competition_name === 'arduino' ? 
-                    `/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventName=${encodeURIComponent(event.competition_event.name)}`
-                     :`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`
+                  to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`
                   }
                 >
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">

@@ -10,6 +10,7 @@ import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaRegFileCode } from "react-icons/fa";
 import AddScore from "./AddScore";
+import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const theme = {
   primary: {
@@ -38,6 +39,7 @@ export default function FileComp() {
   const [showRanking, setShowRanking] = useState(false);
   const [rankings, setRankings] = useState([]);
   const event_name = searchParams.get('eventName');
+  const event_id = searchParams.get('eventId');
   const [searchQuery, setSearchQuery] = useState("");
     const [tempScores, setTempScores] = useState({});
   const [teams, setTeams] = useState([]);
@@ -62,7 +64,13 @@ export default function FileComp() {
     setSelectedTeam(null);
   };
 
-
+  
+  const { 
+    score: serverScores, 
+    loading: scoresLoading, 
+    error: scoresError, 
+    refetch: refetchScores 
+  } = useGetScore(event_id,event_name );
 
   
   useEffect(() => {
@@ -81,7 +89,7 @@ export default function FileComp() {
       return;
     }
 
-    const myAPI = `${process.env.REACT_APP_API_URL}/${competition_name}/${event_name}/`;
+    const myAPI = `${process.env.REACT_APP_API_URL}/${competition_name}/${event_id}/`;
     try {
       setLoading(true);
       setError(null);
@@ -131,7 +139,7 @@ export default function FileComp() {
     setError(null);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/${competition_name}/${event_name}/rank/`,
+        `${process.env.REACT_APP_API_URL}/${competition_name}/${event_id}/rank/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -180,7 +188,7 @@ export default function FileComp() {
 
     try {
       await axios.patch(
-        `${process.env.REACT_APP_API_URL}/${competition_name}/${event_name}/score/${selectedTeam}/`,
+        `${process.env.REACT_APP_API_URL}/${competition_name}/${event_id}/score/${selectedTeam}/`,
         scoreData,
         {
           headers: {
@@ -221,7 +229,7 @@ export default function FileComp() {
 
   useEffect(() => {
     fetchTeams();
-  }, [token, event_name]);
+  }, [token, event_id]);
 
   const filteredTeams = teams.filter(team => {
     const matchesName = team.team_name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -589,6 +597,7 @@ export default function FileComp() {
           onClose={() => setShowModal(false)}
           onScore={handleScore}
           eventName={event_name}
+          eventID = {event_id}
           competition_name={competition_name}
           selectedTeam={selectedTeam}
           selectedTeamName={selectedTeamName}

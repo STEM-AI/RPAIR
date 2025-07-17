@@ -8,10 +8,11 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
-import ChoiseSheet from "./ChoiseSheet";
+import useGetScore from "../../../../../../../hooks/Schedule/GetScore";
 
 const SkillsGO = () => {
-  const [selectedChallenge, setSelectedChallenge] = useState(null);
+  const [playGround, setPlayGround] = useState(null);
+
   const { matches, setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [activeTab, setActiveTab] = useState('driver_go');
@@ -31,7 +32,8 @@ const SkillsGO = () => {
   const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
   const token = localStorage.getItem("access_token");
-
+  const [confirmed, setConfirmed] = useState({}); // Add confirmation state
+  const [selectedRound, setSelectedRound] = useState(1);
   const tabs = [
     { id: 'driver_go', label: 'Driving Challenge', icon: '🚗', color: 'teal' },
     { id: 'coding', label: 'Coding Challenge', icon: '🤖', color: 'teal' },
@@ -43,6 +45,12 @@ const SkillsGO = () => {
     coding: { 1: null, 2: null, 3: null }
   });
 
+  const { 
+      score: serverScores, 
+      loading: scoresLoading, 
+      error: scoresError, 
+      refetch: refetchScores 
+    } = useGetScore(event_id, activeTab);
   // Memoized round schedules - FIXED: use const instead of reassignment
   const roundSchedules = useMemo(() => {
     return [
@@ -58,7 +66,7 @@ const SkillsGO = () => {
     loading: driverLoading,
     error: driverError,
     refetch: refetchDriver 
-  } = useEventSchedules(event_id, "driver_go", "-id");
+  } = useEventSchedules(event_id, "driver_go", "id");
   
   const { 
     schedules: codingSchedules, 
@@ -120,8 +128,14 @@ const SkillsGO = () => {
 
   const isRoundCompleted = () => {
     const currentSchedule = roundSchedules[round - 1]?.schedule?.games;
-    return currentSchedule?.every(match => completedMatches[match.id]);
+    return currentSchedule?.every(match => {
+      const serverScore = serverScores?.find(s => s.id === match.id);
+      return serverScore?.score !== null || confirmed[round]?.[match.id];
+    });
   };
+
+
+ 
 
   // Calculate allowed rounds
   const currentStageCompleted = completedRounds[activeTab] || [];
@@ -129,28 +143,42 @@ const SkillsGO = () => {
   const nextAllowedRound = maxCompleted + 1;
 
   const handleCompleteRound = () => {
-    if (!isRoundCompleted()) {
+    if (!isRoundCompleted() ) {
       Swal.fire('Warning', 'Complete all matches in this round first!', 'warning');
       return;
     }
 
-    // Update completed rounds locally
-    setCompletedRounds(prev => ({
-      ...prev,
-      [activeTab]: [...prev[activeTab], round]
-    }));
+    Swal.fire({
+      title: 'Complete Round?',
+      text: `Are you sure you want to mark Round ${round} as completed?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, complete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Update completed rounds
+        setCompletedRounds(prev => ({
+          ...prev,
+          [activeTab]: [...prev[activeTab], round]
+        }));
 
-    refetchSchedules();
+        
+        refetchSchedules();
+        refetchScores();
+        
+        // Auto-advance to next round
+        if (round < 3) {
+          setTimeout(() => {
+            setRound(prev => prev + 1);
+          }, 1000);
+        }
 
-    // Auto-advance to next round if not final
-    if (round < 3) {
-      setTimeout(() => {
-        setRound(prev => prev + 1);
-      }, 1000);
-    }
-
-    Swal.fire('Success', `Round ${round} completed!`, 'success');
-    fetchCoopRankings();
+        Swal.fire('Success', `Round ${round} completed!`, 'success');
+        fetchCoopRankings();
+      }
+    });
   };
 
   const isCurrentRoundCompleted = completedRounds[activeTab].includes(round);
@@ -187,7 +215,38 @@ const SkillsGO = () => {
   };
 
   const handleStartMatch = (match) => {
-    setCurrentMatch({
+     Swal.fire({
+              title: '<strong>Select Playground Type</strong>',
+              html: `
+                <div class="flex flex-col gap-4 mt-4">
+                  <button id="teams-btn" class="calculator-option">
+                    <div class="bg-blue-100 p-3 rounded-full mb-2">
+                      <i class="text-blue-600 text-xl">🌊 Ocean Challenge</i>
+                    </div>
+                  </button>
+                  
+                  <button id="koper-btn" class="calculator-option">
+                    <div class="bg-green-100 p-3 rounded-full mb-2">
+                      <i class="text-green-600 text-xl">🚀 Space Challenge</i>
+                    </div>
+                  </button>
+                </div>
+              `,
+              showCancelButton: true,
+              cancelButtonText: 'Cancel',
+              showConfirmButton: false,
+              customClass: {
+                popup: 'rounded-xl',
+                htmlContainer: 'pt-0 pb-4',
+                cancelButton: 'mt-4 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-colors'
+              },
+              didOpen: () => {
+                document.getElementById('teams-btn').addEventListener('click', () => Swal.close({ isConfirmed: true }))
+                document.getElementById('koper-btn').addEventListener('click', () => Swal.close({ isDenied: true }))
+              }
+            }).then((result) => {
+              if (result.isConfirmed) {
+                 setCurrentMatch({
       ...match,
       id: match.id,
       type: 'solo',
@@ -197,6 +256,22 @@ const SkillsGO = () => {
       round: round,
     });
     setSelectedMatch(match);
+                setPlayGround('Ocean');
+              } else if (result.isDenied) {
+                 setCurrentMatch({
+      ...match,
+      id: match.id,
+      type: 'solo',
+      team: match.team1_name,
+      challengeType: activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge',
+      mode: activeTab,
+      round: round,
+    });
+    setSelectedMatch(match);
+                setPlayGround('Space');
+              }
+            });
+   
   };
 
   const formatTime = (seconds) => {
@@ -207,14 +282,12 @@ const SkillsGO = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      {!selectedChallenge ? (
-        <ChoiseSheet onChallengeSelect={setSelectedChallenge} />
-      ) : !selectedMatch ? (
+      {!selectedMatch ? (
         <>
           {/* Main Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              ⚡ Skills {selectedChallenge} Challenge
+              ⚡ Solo Challenge
             </h1>
             
             <div className="flex justify-center gap-4 mb-8">
@@ -239,7 +312,7 @@ const SkillsGO = () => {
                 </button>
               ))}
             </div>
-
+            
             {/* Round Navigation */}
             <div className="flex justify-center items-center gap-2 mt-2">
               <button
@@ -279,64 +352,91 @@ const SkillsGO = () => {
           {/* Matches Table */}
           <div className="bg-white rounded-xl shadow-xl mb-8 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gradient-to-r from-teal-600 to-teal-600 text-white">
-                  <tr>
-                    <th className="px-6 py-4 text-left rounded-tl-xl">Match</th>
-                    <th className="px-6 py-4 text-center">Team</th>
-                    <th className="px-6 py-4 text-center">ID</th>
-                    <th className="px-6 py-4 text-center">Score</th>
-                    <th className="px-6 py-4 text-center">Time</th>
-                    <th className="px-6 py-4 text-center rounded-tr-xl">Actions</th>
+            <table className="w-full">
+            <thead className="bg-gradient-to-r from-teal-600 to-teal-600 text-white">
+              <tr>
+                <th className="px-6 py-4 text-left rounded-tl-xl">Match</th>
+                <th className="px-6 py-4 text-center">Team</th>
+                <th className="px-6 py-4 text-center">ID</th>
+                <th className="px-6 py-4 text-center">Score</th>
+                <th className="px-6 py-4 text-center">Time</th>
+                <th className="px-6 py-4 text-center rounded-tr-xl">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+                {roundSchedules[round - 1]?.schedule?.games?.map((match) => {
+                const serverScore = serverScores?.find(s => s.id === match.id);
+                const scoreValue = serverScore?.score ?? null;
+                const isConfirmed = confirmed[selectedRound]?.[match.id];
+                const hasScore = scoreValue > 0;
+                
+                return (
+                  <tr
+                    key={match.id}
+                    className={`hover:bg-gray-50 transition-colors ${
+                      hasScore ? 'bg-green-50' : ''
+                    }`}
+                  >
+                    <td className="px-6 py-4 font-semibold text-gray-700">#{match.id}</td>
+                    <td className="px-6 py-4 text-center font-medium">{match.team1_name}</td>
+                    <td className="px-6 py-4 text-center text-gray-500">{match.team1}</td>
+                    <td className="px-6 py-4 text-center font-bold text-teal-600">
+                      {hasScore ? scoreValue : 0}
+                    </td>
+                    <td className="px-6 py-4 text-center text-gray-600">
+                      {serverScore?.time_taken ? (
+                        <div className="flex items-center justify-center gap-1">
+                          <FaClock className="text-gray-400" />
+                          <span>{formatTime(serverScore.time_taken)}</span>
+                        </div>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleStartMatch(match)}
+                        disabled={hasScore || isConfirmed}
+                        className={`px-4 py-2 rounded-lg flex items-center justify-center  gap-2 transition-transform ${
+                          hasScore || isConfirmed
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-green-500 hover:bg-green-600 text-white hover:shadow-md'
+                        }`}
+                      >
+                        <FaPlay />
+                        <span>Start Match</span>
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {roundSchedules[round - 1]?.schedule?.games?.map((match) => (
-                    <tr
-                      key={match.id}
-                      className={`hover:bg-gray-50 transition-colors ${
-                        completedMatches[match.id] ? 'bg-green-50' : ''
-                      }`}
-                    >
-                      <td className="px-6 py-4 font-semibold text-gray-700">#{match.id}</td>
-                      <td className="px-6 py-4 text-center font-medium">{match.team1_name}</td>
-                      <td className="px-6 py-4 text-center text-gray-500">{match.team1}</td>
-                      <td className="px-6 py-4 text-center font-bold text-teal-600">
-                        {matches[match.id]?.score || 0}
-                      </td>
-                      <td className="px-6 py-4 text-center text-gray-600">
-                        {matches[match.id]?.totalTime ? (
-                          <div className="flex items-center justify-center gap-1">
-                            <FaClock className="text-gray-400" />
-                            <span>{formatTime(matches[match.id].totalTime)}</span>
-                          </div>
-                        ) : (
-                          '-'
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => handleStartMatch(match)}
-                          disabled={completedMatches[match.id]}
-                          className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-transform ${
-                            completedMatches[match.id]
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'bg-green-500 hover:bg-green-600 text-white hover:shadow-md'
-                          }`}
-                        >
-                          <FaPlay />
-                          <span>Start Match</span>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                );
+              })}
+            </tbody>
+          </table>
+          {(schedulesLoading || scoresLoading) && (
+            <div className="p-6 space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-14 bg-gradient-to-r from-gray-100 to-gray-200 animate-pulse rounded-lg" />
+              ))}
             </div>
+          )}
+        </div>
           </div>
 
           {/* Controls Section */}
           <div className="flex justify-center gap-2 mb-4">
+            <button
+              onClick={handleCompleteRound}
+              disabled={isCurrentRoundCompleted }
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-transform ${
+                isCurrentRoundCompleted
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-teal-500 hover:bg-teal-600 text-white hover:shadow-md'
+              }`}
+            >
+              <FaFlagCheckered />
+              <span>Complete Round {round}</span>
+            </button>
+            
             <button
               onClick={handleToggleRanking}
               className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center text-sm"
@@ -434,9 +534,13 @@ const SkillsGO = () => {
         <SheetSolo
           selectedMatch={selectedMatch}
           eventName={event_id}
-          onClose={() => setSelectedMatch(null)}
+            onClose={() => {
+              setSelectedMatch(null)
+              refetchScores();
+            }
+          }
           challengeType={activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge'}
-          sheetType={selectedChallenge}
+          sheetType={playGround}
         />
       )}
     </div>

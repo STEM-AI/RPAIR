@@ -8,7 +8,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { IoClose } from "react-icons/io5";
 import { motion } from "framer-motion";
 
-export default function AddScore({ onClose, eventName, competition_name, selectedTeam, selectedTeamName, onScoreAdded ,onScore}) {
+export default function AddScore({ onClose, eventName, competition_name, selectedTeam, selectedTeamName, onScoreAdded ,onScore,eventID}) {
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,7 +40,7 @@ export default function AddScore({ onClose, eventName, competition_name, selecte
 
     try {
       await axios.patch(
-        `${process.env.REACT_APP_API_URL}/${competition_name}/${eventName}/score/${selectedTeam}/`,
+        `${process.env.REACT_APP_API_URL}/${competition_name}/${eventID}/score/${selectedTeam}/`,
         scoreData,
         {
           headers: {

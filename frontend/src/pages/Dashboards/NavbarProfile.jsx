@@ -144,7 +144,7 @@ export default function NavbarProfile({isSidebarOpen}) {
   return (
     <nav className={`shadow-lg px-5 ps-12 md:px-10 py-3 flex items-center justify-between 
       transition-colors duration-300 bg-white `}>
-       <div className={`flex items-center space-x-3 ml-1 lg:hidden ${
+       <div className={`flex items-center space-x-3 ml-1 md:hidden ${
         isSidebarOpen ? 'invisible' : 'visible'
       }`}>
         <NavLink to={"/"}>
@@ -158,7 +158,7 @@ export default function NavbarProfile({isSidebarOpen}) {
 
       <div
         id="menu"
-        className="text-center hidden md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 md:static rounded-lg right-0 w-80 md:w-auto md:bg-transparent shadow-md md:shadow-none"
+        className={`text-center hidden md:flex md:items-center space-y-4 py-4 md:space-y-0 md:space-x-6 md:static rounded-lg right-0 w-80 md:w-auto md:bg-transparent shadow-md md:shadow-none `}
       >
         <NavLink
           to={"/"}
