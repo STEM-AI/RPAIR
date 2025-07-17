@@ -406,10 +406,13 @@ const [searchParams] = useSearchParams();
           </div>
         </>
       ) :  (
-        <SheetCoop
+          <SheetCoop
           selectedMatch={selectedMatch}
           eventName={event_id}
-          onClose={() => setSelectedMatch(null)}
+          onClose={() => {
+            setSelectedMatch(null);
+            refetchScores(); 
+          }}
           sheetType={playGround} 
         />
       )

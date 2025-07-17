@@ -39,10 +39,7 @@ const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
   }, [switchCount, goalCount, passCount]);
 
 const handleCalculateAndSubmit = async () => {
-  if (!score) {
-    alert("Please enter a valid score.");
-    return;
-  }
+ 
   
   Alert.confirm({
     title: 'Submit Final Score?',

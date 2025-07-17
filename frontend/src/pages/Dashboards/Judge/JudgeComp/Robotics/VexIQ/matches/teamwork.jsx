@@ -10,6 +10,8 @@ import ScoreTeams from "../Scores/scoreTeams";
 import Koper from "../Scores/Koper";
 import Swal from "sweetalert2";
 import useGetScore from "../../../../../../../hooks/Schedule/GetScore";
+import EditTimeIQ from "../../../../../../../hooks/EditTime/EditeTimeIQ";
+
 
 const Teamwork = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -20,11 +22,19 @@ const Teamwork = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [calculatorType, setCalculatorType] = useState(null);
-
+  const [showTimeSelector, setShowTimeSelector] = useState(true);
   const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
-  
+
+
+ 
+  const [timeUnit, setTimeUnit] = useState('minutes'); // Add this state
+
+  const handleTimeChange = (seconds) => {
+    console.log("Time limit updated to:", seconds, "seconds");
+     setShowTimeSelector(false);
+  };
   const { 
     score: serverScores, 
     loading: scoresLoading, 
@@ -134,7 +144,7 @@ const Teamwork = () => {
       } else if (result.isDenied) {
         setSelectedMatch(matchCode);
         setCalculatorType('koper');
-      }
+              }
     });
   };
 
@@ -176,6 +186,14 @@ const Teamwork = () => {
         </button>
       </div>
 
+       {showTimeSelector && (
+        <EditTimeIQ 
+          id={event_id} 
+          onTimeChange={handleTimeChange} 
+        />
+      )}
+ 
+
       {/* Matches Table */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
         <table className="w-full divide-y divide-gray-200">
@@ -194,7 +212,7 @@ const Teamwork = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {(scheduleDetails?.games || []).map((match) => (
               <tr key={match.id}  className={`hover:bg-gray-50 transition-colors ${
-                scoresMap[match.id] !== null ? 'bg-green-50' : ''}`}>
+                scoresMap[match.id] !== 0 ? 'bg-green-50' : ''}`}>
                 
                 <td className="px-4 py-3 text-center font-medium text-blue-600">#{match.id}</td>
                 
@@ -216,7 +234,7 @@ const Teamwork = () => {
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                   scoresMap[match.id] ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
               }`}>
-                {scoresMap[match.id] ||'--'} 
+                {scoresMap[match.id] } 
               </span>
                 </td>
               

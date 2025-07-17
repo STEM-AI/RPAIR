@@ -303,7 +303,9 @@ function TeamEventLive() {
                   transition={{ delay: 0.7 }}
                 >
                   <Link
-                    to={`/Competition-start${comp.link}/${comp.id}/?eventName=${encodeURIComponent(comp.name)}&teamId=${encodeURIComponent(id)}`}
+                    to={comp.name === "vex_go" || comp.name === "vex_go" || comp.name === "vex_123" ?
+                      `/live-events` :
+                      `/Competition-start${comp.link}/${comp.id}/?eventName=${encodeURIComponent(comp.name)}&teamId=${encodeURIComponent(id)}`}
                     className={`block text-center font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${comp.accentColor} hover:bg-opacity-90`}
                   >
                     <motion.span

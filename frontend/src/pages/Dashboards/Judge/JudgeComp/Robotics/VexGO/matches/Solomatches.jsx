@@ -164,9 +164,9 @@ const SkillsGO = () => {
           [activeTab]: [...prev[activeTab], round]
         }));
 
-        // Refresh data
+        
         refetchSchedules();
-        refetchScores();  // Add this to refresh scores
+        refetchScores();
         
         // Auto-advance to next round
         if (round < 3) {
@@ -534,7 +534,11 @@ const SkillsGO = () => {
         <SheetSolo
           selectedMatch={selectedMatch}
           eventName={event_id}
-          onClose={() => setSelectedMatch(null)}
+            onClose={() => {
+              setSelectedMatch(null)
+              refetchScores();
+            }
+          }
           challengeType={activeTab === 'driver_go' ? 'Driving Challenge' : 'Coding Challenge'}
           sheetType={playGround}
         />

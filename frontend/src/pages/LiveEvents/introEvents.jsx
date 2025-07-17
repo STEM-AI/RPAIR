@@ -17,7 +17,7 @@ import programmingLogo from '../../../src/assets/gallery/Programming/logos/progr
 import { Helmet } from 'react-helmet-async';
 
 function LiveEvents() {
-  const [competitions, setCompetitions] = useState([]);
+  const [competitions, setCompetitions] = useState([ ]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -131,7 +131,7 @@ function LiveEvents() {
                   <title>Live-Competitions</title>
             </Helmet>
       <motion.h2 
-        className="mb-12 text-center text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600"
+        className="mb-12 text-center text-5xl font-extrabold text-cyan-800"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

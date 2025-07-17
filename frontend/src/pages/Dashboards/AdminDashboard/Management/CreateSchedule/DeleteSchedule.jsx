@@ -25,12 +25,14 @@ export default function DeleteSchedule() {
     "coop",
     "coding",
     "vex_123",
+    "programming",
   ];
 
   const competitionOptions = [
     { value: "vex_iq", label: "Vex IQ" },
     { value: "vex_go", label: "Vex GO" },
     { value: "vex_123", label: "Vex 123" },
+    { value: "programming", label: "Programming" },
   ];
 
   useEffect(() => {

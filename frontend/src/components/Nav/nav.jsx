@@ -53,18 +53,14 @@ export default function Navbar() {
       }
 
       if (isTokenExpired(access_token)) {
-        // محاولة تجديد الـ access token باستخدام الـ refresh token
         const newAccessToken = await refreshAccessToken();
         
         if (newAccessToken) {
-          // تم تجديد الـ access token بنجاح
           setIsLoggedIn(true);
         } else {
-          // فشل تجديد الـ token، قم بتسجيل الخروج
           handleLogout();
         }
       } else {
-        // الـ access token صالح
         setIsLoggedIn(true);
       }
     };
@@ -178,7 +174,7 @@ export default function Navbar() {
 
       <button
         onClick={toggleMenu}
-          aria-label="Menu" // أضف هذا السطر
+          aria-label="Menu" 
         className="md:hidden p-3 ml-auto mr-4 focus:outline-none"
       >
         <GiHamburgerMenu className="text-5xl text-cyan-500 hover:text-cyan-950 transition-all duration-300 transform hover:scale-105" />

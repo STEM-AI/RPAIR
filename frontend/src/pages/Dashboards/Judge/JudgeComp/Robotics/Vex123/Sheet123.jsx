@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FaClock, FaPlay, FaPause, FaRedo, FaDownload } from "react-icons/fa";
@@ -6,6 +6,7 @@ import { jsPDF } from "jspdf";
 import { FaTrophy, FaMedal} from "react-icons/fa";
 import useSound from 'use-sound';
 import { useSearchParams } from "react-router-dom";
+import useGetScore from "../../../../../../hooks/Schedule/GetScore";
 
 
 // Constants
@@ -36,7 +37,7 @@ const GAME_MODES = [
 
 const Sheet123 = () => {
   const token = localStorage.getItem("access_token");
-const [missionEndTimes, setMissionEndTimes] = useState({}); // تتبع أوقات نهاية المهام
+const [missionEndTimes, setMissionEndTimes] = useState({}); 
 
   // State Management
   const [teams, setTeams] = useState([]);
@@ -48,22 +49,40 @@ const [missionEndTimes, setMissionEndTimes] = useState({}); // تتبع أوقا
   const [currentGame, setCurrentGame] = useState(null);
   const [teamGames, setTeamGames] = useState({});
   const [missionStatus, setMissionStatus] = useState({});
-  const [teamScores, setTeamScores] = useState({}); // Track scores per team
-  const [teamTimes, setTeamTimes] = useState({}); // Track times per team
-const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
- const [rankings, setRankings] = useState([]);
+  const [teamScores, setTeamScores] = useState({});
+  const [teamTimes, setTeamTimes] = useState({}); 
+  const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
+  const [rankings, setRankings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-    const [showRankings, setShowRankings] = useState(false); // Add this state
-      const [playStart] = useSound('/sounds/Vex123Start.mp3', { volume: 1 });
-      const [playEnd] = useSound('/sounds/Vex123End.mp3', { volume: 1 });
- 
-      const [searchParams] = useSearchParams();
+  const [showRankings, setShowRankings] = useState(false);
+  const [playStart] = useSound('/sounds/Vex123Start.mp3', { volume: 1 });
+  const [playEnd] = useSound('/sounds/Vex123End.mp3', { volume: 1 });
+
+    const [searchParams] = useSearchParams();
     const event_name = searchParams.get('eventName');
     const event_id = searchParams.get('eventId');
     console.log("eventName", event_name);
   
+ // داخل Sheet123.jsx
+const { 
+  score: serverScores, 
+  loading: scoresLoading, 
+  error: scoresError, 
+  refetch: refetchScores 
+} = useGetScore(event_id, "vex_123");
+
+// معالجة البيانات بعد استقبالها
+const processedGames = useMemo(() => {
+  if (!serverScores) return [];
   
-   // Medal icon rendering function (keep this in your component)
+  return serverScores.map(game => ({
+    ...game,
+    status: game.score !== null ? 'completed' : 'not_started',
+    formattedTime: game.time_taken ? `${game.time_taken}s` : 'N/A',
+    teamName: game.team1_name || `Team ${game.team1}`
+  }));
+}, [serverScores]);
+  
   const getMedalIcon = (rank) => {
     switch (rank) {
       case 1:
@@ -491,15 +510,14 @@ const handleRestart = async () => {
       setLoading(true);
       setTimer(INITIAL_TIME);
       setIsRunning(true);
-      setHasPlayedEndSound(false); // إعادة التعيين هنا
+      setHasPlayedEndSound(false); 
 
-      // 2. Remove current mode from completed modes
       if (selectedTeam && currentMode) {
         setTeamGames(prev => ({
           ...prev,
           [selectedTeam.id]: {
             ...prev[selectedTeam.id],
-            [currentMode.name]: undefined // Remove "Completed" status
+            [currentMode.name]: undefined 
           }
         }));
       }
@@ -601,7 +619,7 @@ const handleRestart = async () => {
     
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
      {GAME_MODES.map(mode => {
-  const isCompleted = teamGames[selectedTeam?.id]?.[mode.name]; // الاعتماد على teamGames
+  const isCompleted = teamGames[selectedTeam?.id]?.[mode.name]; 
   
   return (
     <button
