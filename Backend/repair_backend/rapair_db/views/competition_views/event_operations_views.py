@@ -133,7 +133,7 @@ class SkillsRankView(ListAPIView):
             return SkillsTeamScore.objects.none()
         return (
             SkillsTeamScore.objects
-            .filter(game__event_id=event_id)  # Only scores from games in this event
+            .filter(competition_event__id=event_id)  # Only scores from games in this event
             .select_related('team')  # Fetch the related Team model
             .values('team', 'team__name')  # Include team name directly
             .annotate(

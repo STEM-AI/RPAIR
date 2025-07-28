@@ -103,6 +103,7 @@ def add_team_score(sender, instance, created, **kwargs):
                 logger.info("Creating new skills score with driver score")
                 instance.team1.skills_scores.create(
                     driver_score=instance.driver_score,
+                    competition_event=instance.event,
                     autonomous_score=0
                 )
         elif instance.stage in ['auto','coding']:
@@ -120,12 +121,14 @@ def add_team_score(sender, instance, created, **kwargs):
                 logger.info("Creating new skills score with autonomous score")
                 instance.team1.skills_scores.create(
                     autonomous_score=instance.autonomous_score,
-                    driver_score=0
+                    driver_score=0,
+                    competition_event=instance.event
                 )
         elif instance.stage in ['vex_123']:
             logger.info("Setting vex 123 scores") 
             instance.team1.skills_scores.create(
                 driver_score=instance.driver_score,
-                autonomous_score=0
+                autonomous_score=0,
+                competition_event=instance.event
             )
 

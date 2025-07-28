@@ -43,7 +43,7 @@ class SkillsRankView(ListAPIView):
 
         return (
             SkillsTeamScore.objects
-            .filter(game__event_id=event_id)  # Only scores from games in this event
+            .filter(competition_event__id=event_id)  # Only scores from games in this event
             .values('team', 'team__name')
             .annotate(
                 total_score=Max('autonomous_score') + Max('driver_score'),

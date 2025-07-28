@@ -87,7 +87,7 @@ class SkillsTeamScore(models.Model):
     autonomous_score = models.IntegerField(default=0)
     driver_score = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    game = models.ForeignKey(EventGame, on_delete=models.CASCADE , related_name="skills_scores", blank=True, null=True,default=None)
+    competition_event = models.ForeignKey(CompetitionEvent, on_delete=models.CASCADE , related_name="skills_scores", blank=True, null=True,default=None)
 
     
     def __str__(self):
