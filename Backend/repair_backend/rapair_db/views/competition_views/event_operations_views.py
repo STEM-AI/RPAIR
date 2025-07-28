@@ -64,7 +64,7 @@ class TeamWorkRankView(ListAPIView):
             return TeamworkTeamScore.objects.none()
         return (
                 TeamworkTeamScore.objects
-                .filter(team__competition_event__id=event_id)  # Filter by event name
+                .filter(game__event_id=event_id)  # Only scores from games in this event
                 .select_related('team')  # Fetch the related Team model
                 .values('team', 'team__name')  # Include team name directly
                 .annotate(avg_score=Avg('score'))
@@ -133,7 +133,7 @@ class SkillsRankView(ListAPIView):
             return SkillsTeamScore.objects.none()
         return (
             SkillsTeamScore.objects
-            .filter(team__competition_event__id=event_id)  # Filter by event name
+            .filter(game__event_id=event_id)  # Only scores from games in this event
             .select_related('team')  # Fetch the related Team model
             .values('team', 'team__name')  # Include team name directly
             .annotate(

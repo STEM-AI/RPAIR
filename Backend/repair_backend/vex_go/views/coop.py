@@ -6,6 +6,9 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Avg
 from rest_framework.response import Response
 from rapair_db.models import TeamCompetitionEvent
+import logging
+logger = logging.getLogger(__name__)
+
 class GameCoopView(UpdateAPIView):
     """
     View to handle the set of game coop scores.
@@ -23,16 +26,20 @@ class CoopRankView(ListAPIView):
     serializer_class = CoopTeamRankSerializer
     def get_queryset(self):
         event_id = self.kwargs.get('event_id')
+        logger.info(f"event id {event_id}")
         if not event_id:
             return TeamworkTeamScore.objects.none()
-        return (
-                TeamworkTeamScore.objects
-                .filter(team__competition_event__id=event_id)  # Filter by event name
-                .select_related('team')  # Fetch the related Team model
-                .values('team', 'team__name')  # Include team name directly
-                .annotate(avg_score=Avg('score'))
-                .order_by('-avg_score')
-                )
+
+        queryset = (
+            TeamworkTeamScore.objects
+            .filter(game__event_id=event_id)  # Only scores from games in this event
+            .select_related('team')  # Fetch the related Team model
+            .values('team', 'team__name')  # Include team name directly
+            .annotate(avg_score=Avg('score'))
+            .order_by('-avg_score')
+            )
+        logger.info(f"queryset {queryset}")
+        return queryset         
     
     def list(self, request, *args, **kwargs):
         # Get the queryset

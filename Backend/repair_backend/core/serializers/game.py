@@ -8,7 +8,7 @@ class GamesSerializer(serializers.ModelSerializer):
     team2_name = serializers.CharField(source='team2.name', read_only=True)
     class Meta:
         model = EventGame
-        fields = ['id','team1','team2', 'score','time_taken','team1_name','team2_name']
+        fields = ['id','team1','team2', 'score','time_taken','team1_name','team2_name','completed']
         read_only_fields = ['id', 'team1','team2','team1_name','team2_name']
         extra_kwargs = {
             'time_taken': {'required': False},
