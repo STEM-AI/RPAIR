@@ -225,7 +225,7 @@ const formatSingleLineCode = (text) => {
             text: `thank you have answerd submitted`,
             icon: 'success',
           }).then(() => {
-              navigate(`/competition/programming/${competition}`, { replace: true });
+              navigate(`/competition/programming/${competition}/${competition_id}`, { replace: true });
           });
         });
       }
@@ -534,14 +534,14 @@ const formatSingleLineCode = (text) => {
                   onClick={handleNext}
                   className={`px-4 py-2 md:px-6 md:py-2 bg-cyan-600 text-white rounded-lg ${
                     isSaving ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  } ${currentQuestionIndex === allQuestions.length - 1 ? 'hidden' : ''}`}
                 >
                   {isSaving ? (
                     <span className="flex items-center">
                       <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
                       Saving...
                     </span>
-                  ) : currentQuestionIndex < allQuestions.length - 1 ? 'Next' : 'Submit'}
+                  ) : currentQuestionIndex < allQuestions.length - 1 ? 'Next' : ''}
                 </button>
               </div>
             </motion.div>

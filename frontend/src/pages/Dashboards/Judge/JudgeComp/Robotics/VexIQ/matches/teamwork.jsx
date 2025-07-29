@@ -57,10 +57,13 @@ const Teamwork = () => {
     refetch: refetchScheduleDetails 
   } = useSchedule(lastScheduleId);
 
-  const scoresMap = serverScores.reduce((acc, match) => {
-    acc[match.id] = match.score;
-    return acc;
-  }, {});
+ const scoresMap = serverScores.reduce((acc, match) => {
+  acc[match.id] = {
+    score: match.score,
+    completed: match.completed
+  };
+  return acc;
+}, {});
 
   const handleRefreshSchedule = async () => {
     try {
@@ -211,8 +214,7 @@ const Teamwork = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {(scheduleDetails?.games || []).map((match) => (
-              <tr key={match.id}  className={`hover:bg-gray-50 transition-colors ${
-                scoresMap[match.id] !== 0 ? 'bg-green-50' : ''}`}>
+              <tr key={match.id} className={`hover:bg-gray-50 transition-colors ${scoresMap[match.id]?.completed ? 'bg-green-50' : ''}`}>
                 
                 <td className="px-4 py-3 text-center font-medium text-blue-600">#{match.id}</td>
                 
@@ -230,19 +232,19 @@ const Teamwork = () => {
                   </div>
                 </td>
                 
-                <td className="px-4 py-3 text-center font-bold text-blue-600 text-xl">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  scoresMap[match.id] ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {scoresMap[match.id] } 
-              </span>
+                <td className="px-4 py-3 text-center">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    scoresMap[match.id]?.completed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {scoresMap[match.id]?.score ?? 'N/A'}
+                  </span>
                 </td>
               
                 
               
 
                 <td className="px-4 py-3 text-center">
-              {scoresMap[match.id] > 0? (
+              {scoresMap[match.id]?.completed  ? (
                 <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
                   <FaCheck className="h-4 w-4" />
                 </span>

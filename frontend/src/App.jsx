@@ -934,7 +934,7 @@ const App = () => {
         /> 
 
 <Route
-          path="/competition/programming/:competition"
+          path="/competition/programming/:competition/:id"
           element={
             <Layout hideNavbar>
 

@@ -11,7 +11,14 @@ export default function Rank({ eventName, eventCategory, eventId }) {
     const [interviewRank, setInterviewRank] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [expandedSections, setExpandedSections] = useState({});
+
+    const toggleSection = (section) => {
+        setExpandedSections(prev => ({
+            ...prev,
+            [section]: !prev[section]
+        }));
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -119,10 +126,10 @@ export default function Rank({ eventName, eventCategory, eventId }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600 text-lg font-medium">Loading rankings...</p>
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto"></div>
+                    <p className="mt-6 text-gray-700 text-xl font-medium">Loading rankings...</p>
                 </div>
             </div>
         );
@@ -130,30 +137,46 @@ export default function Rank({ eventName, eventCategory, eventId }) {
 
     if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-red-500 text-lg">{error}</div>
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+                <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
+                    <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Error Loading Rankings</h3>
+                    <p className="text-gray-600 mb-6">{error}</p>
+                    <button 
+                        onClick={() => window.location.reload()}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        Try Again
+                    </button>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* VEX IQ Rankings */}
                     {eventCategory === 'vex_iq' && (
                         <>
                             <RankingSection
                                 title="Skills Rankings"
                                 data={skillsRank}
-                                icon={<FaStar className="text-yellow-400" />}
+                                icon={<FaStar className="text-yellow-500" />}
                                 scoreField="total_score"
+                                isExpanded={expandedSections.skills}
+                                toggleExpanded={() => toggleSection('skills')}
                             />
                             <RankingSection
                                 title="Teamwork Rankings"
                                 data={teamworkRank}
                                 icon={<FaUsers className="text-blue-500" />}
                                 scoreField="avg_score"
+                                isExpanded={expandedSections.teamwork}
+                                toggleExpanded={() => toggleSection('teamwork')}
                             />
                             <div className="lg:col-span-2">
                                 <RankingSection
@@ -161,6 +184,8 @@ export default function Rank({ eventName, eventCategory, eventId }) {
                                     data={interviewRank}
                                     icon={<IoPersonOutline className="text-purple-500" />}
                                     scoreField="interview_score"
+                                    isExpanded={expandedSections.interview}
+                                    toggleExpanded={() => toggleSection('interview')}
                                 />
                             </div>
                         </>
@@ -172,58 +197,29 @@ export default function Rank({ eventName, eventCategory, eventId }) {
                             <RankingSection
                                 title="Coop Rankings"
                                 data={coopRank}
-                                icon={<FaUsers className="text-green-500" />}
+                                icon={<FaUsers className="text-green-600" />}
                                 scoreField="avg_score"
+                                isExpanded={expandedSections.coop}
+                                toggleExpanded={() => toggleSection('coop')}
                             />
                             <RankingSection
                                 title="Skills Rankings"
                                 data={skillsRank}
-                                icon={<FaStar className="text-yellow-400" />}
+                                icon={<FaStar className="text-yellow-500" />}
                                 scoreField="total_score"
                                 timeField="skills_time"
+                                isExpanded={expandedSections.skills}
+                                toggleExpanded={() => toggleSection('skills')}
                             />
                             <div className="lg:col-span-2">
-                                <div className="bg-white shadow-xl rounded-2xl p-6">
-                                    <div
-                                        className="flex items-center justify-between cursor-pointer"
-                                        onClick={() => setIsExpanded(!isExpanded)}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <h2 className="text-2xl font-bold  flex items-center gap-2">
-                                                <IoPersonOutline className="text-green-500" />
-                                                Interview Rankings
-                                            </h2>
-                                        </div>
-                                        <FaChevronDown
-                                            className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
-                                                }`}
-                                        />
-                                    </div>
-                                    {isExpanded && (
-                                        <div className="space-y-4">
-                                            {interviewRank.map((interview, index) => (
-                                                <div key={interview.id} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="flex items-center gap-4">
-                                                            <span className="font-bold text-blue-600">#{index + 1}</span>
-                                                            <div>
-                                                                <h3 className="font-semibold text-lg">
-                                                                    {getTeamName(interview.id)}
-                                                                </h3>
-                                                                <div className="text-sm text-gray-500">
-                                                                    Team ID: {interview.id}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="text-right">
-                                                            <p className="font-bold text-xl">{interview.interview_score} pts</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                <RankingSection
+                                    title="Interview Rankings"
+                                    data={interviewRank}
+                                    icon={<IoPersonOutline className="text-green-600" />}
+                                    scoreField="interview_score"
+                                    isExpanded={expandedSections.interview}
+                                    toggleExpanded={() => toggleSection('interview')}
+                                />
                             </div>
                         </>
                     )}
@@ -234,51 +230,20 @@ export default function Rank({ eventName, eventCategory, eventId }) {
                             <RankingSection
                                 title="Game Rankings"
                                 data={gameRank}
-                                icon={<FaStar className="text-yellow-400" />}
+                                icon={<FaStar className="text-yellow-500" />}
                                 scoreField="total_score"
                                 timeField="total_time_taken"
+                                isExpanded={expandedSections.game}
+                                toggleExpanded={() => toggleSection('game')}
                             />
-                            <div className="bg-white shadow-xl rounded-2xl p-6">
-                                <div
-                                    className="flex items-center justify-between cursor-pointer"
-                                    onClick={() => setIsExpanded(!isExpanded)}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <h2 className="text-2xl font-bold  flex items-center gap-2">
-                                            <IoPersonOutline className="text-green-500" />
-                                            Interview Rankings
-                                        </h2>
-                                    </div>
-                                    <FaChevronDown
-                                        className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
-                                            }`}
-                                    />
-                                </div>
-                                {isExpanded && (
-                                    <div className="space-y-4">
-                                        {interviewRank.map((interview, index) => (
-                                            <div key={interview.id} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="font-bold text-blue-600">#{index + 1}</span>
-                                                        <div>
-                                                            <h3 className="font-semibold text-lg">
-                                                                {getTeamName(interview.id)}
-                                                            </h3>
-                                                            <div className="text-sm text-gray-500">
-                                                                Team ID: {interview.id}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <p className="font-bold text-xl">{interview.interview_score} pts</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                            <RankingSection
+                                title="Interview Rankings"
+                                data={interviewRank}
+                                icon={<IoPersonOutline className="text-green-600" />}
+                                scoreField="interview_score"
+                                isExpanded={expandedSections.interview}
+                                toggleExpanded={() => toggleSection('interview')}
+                            />
                         </>
                     )}
 
@@ -288,9 +253,11 @@ export default function Rank({ eventName, eventCategory, eventId }) {
                             <RankingSection
                                 title={`${eventCategory.charAt(0).toUpperCase() + eventCategory.slice(1)} Rankings`}
                                 data={gameRank}
-                                icon={<FaStar className="text-yellow-400" />}
+                                icon={<FaStar className="text-yellow-500" />}
                                 scoreField="score"
                                 timeField={gameRank.length > 0 && gameRank[0].total_time ? "total_time" : null}
+                                isExpanded={expandedSections.game}
+                                toggleExpanded={() => toggleSection('game')}
                             />
                         </div>
                     )}
@@ -300,45 +267,68 @@ export default function Rank({ eventName, eventCategory, eventId }) {
     );
 }
 
-const RankingSection = ({ title, data, icon, scoreField, timeField }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-
+const RankingSection = ({ title, data, icon, scoreField, timeField, isExpanded, toggleExpanded }) => {
     return (
-        <div className="bg-white shadow-xl rounded-2xl p-6">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg">
             <div
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center justify-between p-6 cursor-pointer"
+                onClick={toggleExpanded}
             >
-                <div className="flex items-center gap-2">
-                    {icon}
-                    <h2 className="text-2xl font-bold">{title}</h2>
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                        {React.cloneElement(icon, { className: `${icon.props.className} text-xl` })}
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+                    <span className="ml-2 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                        {data.length} teams
+                    </span>
                 </div>
                 <FaChevronDown
-                    className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
-                        }`}
+                    className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                 />
             </div>
+            
             {isExpanded && (
-                <div className="space-y-4">
-                    {data.map((team, index) => (
-                        <div key={team.id || index} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-4">
-                                    <span className="font-bold text-blue-600">#{index + 1}</span>
-                                    <div>
-                                        <h3 className="font-semibold text-lg">{team.name || team.team_name || team.team__name}</h3>
-                                        <div className="text-sm text-gray-500">
-                                            Team ID: {team.team || team.id}
+                <div className="border-t border-gray-100 divide-y divide-gray-100">
+                    {data.length > 0 ? (
+                        data.map((team, index) => (
+                            <div key={team.id || index} className="p-5 hover:bg-gray-50 transition-colors">
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                                            index < 3 ? 
+                                                index === 0 ? 'bg-yellow-100 text-yellow-600' : 
+                                                index === 1 ? 'bg-gray-200 text-gray-600' : 
+                                                'bg-amber-100 text-amber-600' : 
+                                                'bg-blue-50 text-blue-600'
+                                        }`}>
+                                            <span className="font-bold">#{index + 1}</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-800">
+                                                {team.name || team.team_name || team.team__name}
+                                            </h3>
+                                            <div className="text-sm text-gray-500">
+                                                Team ID: {team.team || team.id}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-bold text-xl">{team[scoreField]} pts</p>
-                                    {timeField && <p className="text-sm text-gray-500">{team[timeField]}s</p>}
+                                    <div className="text-right">
+                                        <p className="font-bold text-lg text-gray-800">{team[scoreField]} pts</p>
+                                        {timeField && team[timeField] && (
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                Time: <span className="font-medium">{team[timeField]}s</span>
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="p-6 text-center text-gray-500">
+                            No ranking data available
                         </div>
-                    ))}
+                    )}
                 </div>
             )}
         </div>

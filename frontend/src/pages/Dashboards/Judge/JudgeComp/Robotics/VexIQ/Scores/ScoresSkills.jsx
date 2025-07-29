@@ -40,11 +40,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId
   }, [switchCount, goalCount, mode]);
 
   const handleCalculate = async () => {
-  if (!score) {
-   Swal.fire("Error", "Please enter a valid score.");
-
-    return;
-  }
+  
   
   Alert.confirm({
     title: 'Submit Final Score?',

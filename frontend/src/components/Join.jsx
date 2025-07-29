@@ -65,10 +65,12 @@ const Join = ({ event_id, eventName, onClose }) => {
             });
             onClose();
         } catch (err) {
+            console.log(err);
+            
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: err.response?.data?.detail || "Failed to assign the event. Please try again."
+                text: err.response?.data?.error || "Failed to assign the event. Please try again."
             });
         } finally {
             setIsSubmitting(false);
