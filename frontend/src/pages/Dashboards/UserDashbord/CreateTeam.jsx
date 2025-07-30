@@ -763,9 +763,9 @@ const handleSubmit = async (event) => {
                 type="text"
                 name="team_leader_phone_number"
                 placeholder="Phone number"
+                value={formData.team_leader_phone_number}
                 pattern="^\+2\d{11}$"
                 title="Phone number must start with +2 followed by 11 digits"
-                value={formData.team_leader_phone_number}
                 onChange={(e) => {
                   let value = e.target.value;
                   value = value.replace(/[^\d+]/g, '');

@@ -57,6 +57,24 @@ const Register = () => {
                   setLoading(true);
                   setError(null);
 
+                                        
+                    if (password !== confirmPassword) {
+                        setError("Passwords do not match.");
+                        setLoading(false);
+                        return;
+                    }
+
+                    if (!isPasswordValid) {
+                        setError("Password does not meet the requirements.");
+                        setLoading(false);
+                        return;
+                    }
+
+                    if (!phone_number.startsWith('+20') || phone_number.length !== 13) {
+                        setError("Phone number must start with +20 followed by 10 digits.");
+                        setLoading(false);
+                        return;
+                    }
                   if (password !== confirmPassword) {
                       setError("Passwords do not match.");
                       setLoading(false);
@@ -177,10 +195,10 @@ const Register = () => {
                             Register as organization
                         </Link>
     
-                        <button className="w-full flex items-center justify-center gap-3 py-3 mb-8 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        {/* <button className="w-full flex items-center justify-center gap-3 py-3 mb-8 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                             <FcGoogle className="text-xl" />
                             <span className="text-gray-700 font-medium">Continue with Google</span>
-                        </button>
+                        </button> */}
     
                         <div className="flex items-center mb-8">
                             <div className="flex-1 border-t border-gray-300"></div>
@@ -266,19 +284,34 @@ const Register = () => {
                                     />
                                 </div>
     
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Phone Number
-                                    </label>
-                                    <input
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors"
-                                        type="tel"
-                                        placeholder="+20XXXXXXXXXX"
-                                        pattern="^\+20\d{10}$"
-                                        value={phone_number}
-                                        onChange={(e) => setPhonenumber(e.target.value)}
-                                        required
-                                    />
+                               <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Phone Number
+                                </label>
+                                <input
+                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors"
+                                    type="tel"
+                                    placeholder="+20XXXXXXXXXX"
+                                    value={phone_number}
+                                    onChange={(e) => {
+                                    let value = e.target.value;
+                                    // Remove all non-digit and non-plus characters
+                                    value = value.replace(/[^\d+]/g, '');
+                                    
+                                    // Ensure it starts with +20
+                                    if (!value.startsWith('+20')) {
+                                        value = '+20' + value.replace('+', '');
+                                    }
+                                    
+                                    // Limit to 13 characters (+20 followed by 10 digits)
+                                    if (value.length > 13) {
+                                        value = value.slice(0, 13);
+                                    }
+                                    
+                                    setPhonenumber(value);
+                                    }}
+                                    required
+                                />
                                 </div>
                             </div>
     

@@ -132,8 +132,8 @@ const formatSingleLineCode = (text) => {
         text: 'The competition has ended.',
         confirmButtonColor: '#32cd32',
       }).then(() => {
-        navigate(`/competition/programming/${competition}?gameId=${encodeURIComponent(game_id)}`, { replace: true });
-      });
+            navigate(`/competition/programming/${competition}/${competition_id}`, { replace: true });
+          });
     }
   }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer]);
 
@@ -153,7 +153,6 @@ const formatSingleLineCode = (text) => {
       setCurrentQuestionId(allQuestions[0].id);
       setCurrentQuestionIndex(0);
       
-      // تهيئة الإجابات المختارة
       const initialSelectedOptions = {};
       allQuestions.forEach(q => {
         initialSelectedOptions[q.id] = q.type === 'multiple' ? [] : null;
@@ -225,7 +224,8 @@ const formatSingleLineCode = (text) => {
             text: `thank you have answerd submitted`,
             icon: 'success',
           }).then(() => {
-              navigate(`/competition/programming/${competition}/${competition_id}`, { replace: true });
+            navigate(`/competition/programming/${competition}/${competition_id}`, { replace: true });
+            
           });
         });
       }

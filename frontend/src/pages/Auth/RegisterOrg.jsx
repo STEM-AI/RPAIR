@@ -93,12 +93,12 @@ export default function RegisterOrg() {
                         `${process.env.REACT_APP_API_URL}/organization/`,
                         {
                           first_name,
-                          last_name, // Corrected field name
+                          last_name, 
                           username,
-                          email, // Mapped to 'main1'
+                          email, 
                           country,
                           address,
-                          date_of_birth, // Corrected field name
+                          date_of_birth, 
                           phone_number,
                           password,
                           name: organizationName,
@@ -273,20 +273,35 @@ export default function RegisterOrg() {
                         />
                       </div>
         
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Phone Number
-                        </label>
-                        <input
-                          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors"
-                          type="tel"
-                          placeholder="+20XXXXXXXXXX"
-                          pattern="^\+20\d{10}$"
-                          value={phone_number}
-                          onChange={(e) => setPhonenumber(e.target.value)}
-                          required
-                        />
-                      </div>
+                     <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number
+                          </label>
+                          <input
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors"
+                            type="tel"
+                            placeholder="+20XXXXXXXXXX"
+                            value={phone_number}
+                            onChange={(e) => {
+                              let value = e.target.value;
+                              // Remove all non-digit and non-plus characters
+                              value = value.replace(/[^\d+]/g, '');
+                              
+                              // Ensure it starts with +20
+                              if (!value.startsWith('+20')) {
+                                value = '+20' + value.replace('+', '');
+                              }
+                              
+                              // Limit to 13 characters (+20 followed by 11 digits)
+                              if (value.length > 13) {
+                                value = value.slice(0, 13);
+                              }
+                              
+                              setPhonenumber(value);
+                            }}
+                            required
+                          />
+                        </div>
                     </div>
         
                     <div>
@@ -404,26 +419,43 @@ export default function RegisterOrg() {
                           <HiPhone className="text-lg" />
                           Contact Numbers
                         </h4>
-                        {organizationContacts.map((contact, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <input
-                              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors"
-                              value={contact.phone_number}
-                              onChange={(e) => handleContactChange(index, e.target.value)}
-                              placeholder="+20XXXXXXXXXX"
-                              required
-                            />
-                            {organizationContacts.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveContact(index)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <IoIosRemoveCircle className="text-2xl" />
-                              </button>
-                            )}
-                          </div>
-                        ))}
+                      {organizationContacts.map((contact, index) => (
+  <div key={index} className="flex items-center gap-2">
+    <input
+      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 outline-none transition-colors"
+      value={contact.phone_number}
+      type="tel"
+      placeholder="+20XXXXXXXXXX"
+      onChange={(e) => {
+        let value = e.target.value;
+        // Remove all non-digit and non-plus characters
+        value = value.replace(/[^\d+]/g, '');
+        
+        // Ensure it starts with +20
+        if (!value.startsWith('+20')) {
+          value = '+20' + value.replace('+', '');
+        }
+        
+        // Limit to 13 characters (+20 followed by 11 digits)
+        if (value.length > 13) {
+          value = value.slice(0, 13);
+        }
+        
+        handleContactChange(index, value);
+      }}
+      required
+    />
+    {organizationContacts.length > 1 && (
+      <button
+        type="button"
+        onClick={() => handleRemoveContact(index)}
+        className="text-red-500 hover:text-red-700"
+      >
+        <IoIosRemoveCircle className="text-2xl" />
+      </button>
+    )}
+  </div>
+))}
                         <button
                           type="button"
                           onClick={handleAddContact}

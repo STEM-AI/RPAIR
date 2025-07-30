@@ -34,18 +34,48 @@ const CreateStaff = () => {
     );
   }
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+const handleChange = (event) => {
+  const { name, value } = event.target;
+  
+  if (name === "phone_number") {
+    let phoneValue = value;
+    phoneValue = phoneValue.replace(/[^\d+]/g, '');
+    
+    if (!phoneValue.startsWith('+20')) {
+      phoneValue = '+20' + phoneValue.replace('+', '');
+    }
+    
+    if (phoneValue.length > 13) {
+      phoneValue = phoneValue.slice(0, 13);
+    }
+    
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: phoneValue,
+    }));
+  } else {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-  };
+  }
+};
 
   
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+      if (!formData.phone_number.startsWith('+20') || formData.phone_number.length !== 13) {
+    setAlertType("error");
+    setResponseMessage("Phone number must start with +20 followed by 10 digits.");
+    Swal.fire({
+      icon: "error",
+      title: "Invalid Phone Number",
+      text: "Phone number must start with +20 followed by 10 digits.",
+    });
+    return;
+  }
+
   const updatedEmail = formData.email.replace("@gmail.com", "@rpair.judge.com");
   const updatedFormData = { ...formData, email: updatedEmail };
   
@@ -294,6 +324,8 @@ const CreateStaff = () => {
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
             required
           />
+
+          
         </div>
 
         <div className="col-span-full mt-6 p-2">

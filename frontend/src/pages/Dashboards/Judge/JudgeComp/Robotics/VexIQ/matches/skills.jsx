@@ -300,28 +300,30 @@ const Skills = () => {
     <div  className="max-w-6xl mx-auto px-4 py-6 transition-all duration-300">
     {/* Header and Tabs */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">🏆 Skills Challenge</h1>
-        
-        <div className="flex justify-center gap-4 mb-6">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id);
-                setSelectedRound(1);
-                refetchSchedules();
-              }}
-              className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all ${
-                activeTab === tab.id 
-                  ? `bg-gradient-to-r from-${tab.color}-600 to-${tab.color}-500 text-white shadow-md` 
-                  : 'bg-gray-100 hover:bg-gray-200'
-              }`}
-            >
-              <span className="text-xl">{tab.icon}</span>
-              <span className="font-medium">{tab.label}</span>
-            </button>
-          ))}
-        </div>  
+  <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+    🏆 Skills Challenge
+  </h1>
+  
+          <div className="flex justify-center gap-4 mb-6">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSelectedRound(1);
+                  refetchSchedules();
+                }}
+                className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 ${
+                  activeTab === tab.id 
+                    ? `bg-gradient-to-r from-${tab.color}-600 to-${tab.color}-500 text-white shadow-lg transform scale-105` 
+                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                <span className="text-xl">{tab.icon}</span>
+                <span className="font-medium">{tab.label}</span>
+              </button>
+            ))}
+          </div>  
 
         {/* Round Navigation */}
         <div className="flex justify-center items-center gap-4 mb-6">
@@ -395,7 +397,7 @@ const Skills = () => {
   <table className="w-full divide-y divide-gray-200">
     <thead className="bg-gradient-to-r from-blue-600 to-blue-500">
       <tr>
-        {['Match', 'Team ', 'Score', 'Actions'].map((header) => (
+        {['Match','Team-code', 'Team ', 'Score', 'Actions'].map((header) => (
           <th
             key={header}
             className="px-4 py-3 text-sm font-semibold text-white text-center uppercase tracking-wider"
@@ -414,52 +416,51 @@ const Skills = () => {
 
 
        return (
-                <tr 
-                  key={match.id} 
-                  className={`hover:bg-gray-50 transition-colors ${
-                    isCompleted ? 'bg-green-50' : ''
-                  }`}
-                >
-                  <td className="px-4 py-3 text-center font-medium text-blue-600">
-                    <span className="inline-block bg-blue-100 rounded-full px-3 py-1">
-                      #{match.id}
+                                <tr 
+                key={match.id} 
+                className={`transition-all duration-200 ${
+                  isCompleted ? 'bg-green-50/50' : 'hover:bg-gray-50'
+                } ${
+                  hasScore ? 'border-l-4 border-blue-500' : ''
+                }`}
+              >
+                <td className="px-4 py-4 text-center">
+                  <span className="inline-block bg-blue-50 rounded-lg px-3 py-1.5 text-blue-600 font-medium">
+                    #{match.id}
+                  </span>
+                </td>
+                <td className="px-4 py-4 text-center">
+                        <span className="inline-block bg-blue-50 rounded-lg px-3 py-1.5 text-blue-600 font-medium">
+                        {match.team1}</span>
+                </td>
+                
+                <td className="px-4 py-4 text-center">
+                      <div className="font-medium text-gray-900">{match.team1_name}</div>
+                </td>
+                
+                <td className="px-4 py-4 text-center">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    isCompleted ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {isCompleted ? scoreValue : 0 }
+                  </span>
+                </td>
+                
+                <td className="px-4 py-4 text-center">
+                  {isCompleted ? (
+                    <span className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-100 text-green-600 border border-green-200">
+                      <FaCheck className="h-4 w-4" />
                     </span>
-                  </td>
-                  
-                  <td className="px-4 py-3 text-center">
-                    <div className="flex items-center text-center space-x-3">
-                      <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-medium text-center">#{match.team1}</span>
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900 text-center">{match.team1_name}</div>
-                      </div>
-                    </div>
-                  </td>
-                  
-                  <td className="px-4 py-3 text-center">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                      hasScore ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {hasScore ? scoreValue : ''}
-                    </span>
-                  </td>
-                  
-                  <td className="px-4 py-3 text-center">
-                    {isCompleted ? (
-                      <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
-                        <FaCheck className="h-4 w-4" />
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => openCalculator(match, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
-                        className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
-                      >
-                        <AiOutlineCalculator className="h-4 w-4" />
-                      </button>
-                    )}
-                  </td>
-                </tr>
+                  ) : (
+                    <button
+                      onClick={() => openCalculator(match, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
+                      className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 transition-all duration-200 hover:shadow-sm"
+                    >
+                      <AiOutlineCalculator className="h-5 w-5" />
+                    </button>
+                  )}
+                </td>
+              </tr>
               );
             })}
           </tbody>
