@@ -58,9 +58,11 @@ const CreateEvent = ({orgID}) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+      const processedValue = value.replace(/\s+/g, '_');
+
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: processedValue,
     }));
   };
 

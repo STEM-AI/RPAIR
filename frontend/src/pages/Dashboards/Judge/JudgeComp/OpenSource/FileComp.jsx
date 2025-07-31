@@ -10,7 +10,6 @@ import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaRegFileCode } from "react-icons/fa";
 import AddScore from "./AddScore";
-import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const theme = {
   primary: {
@@ -41,7 +40,7 @@ export default function FileComp() {
   const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
   const [searchQuery, setSearchQuery] = useState("");
-    const [tempScores, setTempScores] = useState({});
+  const [tempScores, setTempScores] = useState({});
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -56,6 +55,11 @@ export default function FileComp() {
   const token = localStorage.getItem("access_token");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
+  const getTeamScore = (teamId) => {
+    const teamRanking = rankings.find(team => team.team === teamId);
+    return teamRanking ? teamRanking.score : null;
+  };
+
   const handleScore = (score) => {
     setTempScores((prev) => ({
       ...prev,
@@ -64,15 +68,6 @@ export default function FileComp() {
     setSelectedTeam(null);
   };
 
-  
-  const { 
-    score: serverScores, 
-    loading: scoresLoading, 
-    error: scoresError, 
-    refetch: refetchScores 
-  } = useGetScore(event_id,event_name );
-
-  
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -164,6 +159,7 @@ export default function FileComp() {
       return newState;
     });
   };
+
   const handleScoreChange = (e) => {
     setScore(e.target.value);
   };
@@ -211,6 +207,7 @@ export default function FileComp() {
       setScore("");
       setShowModal(false);
       fetchTeams();
+      fetchCoopRankings(); // Refresh rankings after adding score
     } catch (err) {
       setAlertType("error");
       setResponseMessage(
@@ -229,6 +226,7 @@ export default function FileComp() {
 
   useEffect(() => {
     fetchTeams();
+    fetchCoopRankings(); // Fetch rankings on initial load
   }, [token, event_id]);
 
   const filteredTeams = teams.filter(team => {
@@ -323,7 +321,6 @@ export default function FileComp() {
       {/* Enhanced Mobile Cards */}
       <div className="block md:hidden space-y-4">
         {filteredTeams.map((team) => (
-          
           <motion.div
             key={team.team}
             initial={{ opacity: 0, y: 10 }}
@@ -371,12 +368,12 @@ export default function FileComp() {
               
               <div className="text-slate-500">Score</div>
               <div className="font-medium">
-              <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-                  tempScores[team.team] || team.score
+                <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                  getTeamScore(team.team)
                     ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
                     : "bg-slate-100 text-slate-600"
                 }`}>
-                  {tempScores[team.team] || team.score || "Pending"}
+                  {getTeamScore(team.team) || "Pending"}
                 </span>
               </div>
             </div>
@@ -431,13 +428,13 @@ export default function FileComp() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                  <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-                        tempScores[team.team] || team.score
-                          ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
-                          : "bg-slate-100 text-slate-600"
-                      }`}>
-                        {tempScores[team.team] || team.score || "Pending"}
-                      </span>
+                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                      getTeamScore(team.team)
+                        ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
+                        : "bg-slate-100 text-slate-600"
+                    }`}>
+                      {getTeamScore(team.team) || "Pending"}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <motion.button
@@ -591,17 +588,19 @@ export default function FileComp() {
         )}
       </div>
 
-   
       {showModal && selectedTeam && (
         <AddScore
           onClose={() => setShowModal(false)}
           onScore={handleScore}
           eventName={event_name}
-          eventID = {event_id}
+          eventID={event_id}
           competition_name={competition_name}
           selectedTeam={selectedTeam}
           selectedTeamName={selectedTeamName}
-          onScoreAdded={fetchTeams} // Add this to refresh the list after adding a score
+          onScoreAdded={() => {
+            fetchTeams();
+            fetchCoopRankings();
+          }}
         />
       )}
     </div>
