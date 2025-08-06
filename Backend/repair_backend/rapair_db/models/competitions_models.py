@@ -138,9 +138,12 @@ class EventGame(models.Model):
         ('final', 'Teamwork Final'),
         ('vex_123', 'VEX 123'),
         ('programming', 'Programming'),
+        ('vex_123_manual', 'VEX 123 Manual'),
+        ('vex_123_coder_card', 'VEX 123 Coder Card'),
+        ('vex_123_programming', 'VEX 123 Programming'),
     )
     stage = models.CharField(
-        max_length=15 ,
+        max_length=35 ,
         choices= STAGE_CHOICES , 
         default='teamwork')
     

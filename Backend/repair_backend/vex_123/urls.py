@@ -7,5 +7,5 @@ urlpatterns = [
     path('<int:event_id>/team/interview/rank/', TeamInterviewRankListView.as_view(), name='team_interview_rank'),
     path('game/<int:id>/', Vex123GameView.as_view(), name='game_skills'),
     path('<int:event_id>/rank/', Vex123RankView.as_view(), name='game_skills_rank'),
-    path('<int:event_id>/game/create/', GameCreateView.as_view(), name='game_create'),
+    path('<int:event_id>/game/<str:stage>/create/', GameCreateView.as_view(), name='game_create'),
 ]

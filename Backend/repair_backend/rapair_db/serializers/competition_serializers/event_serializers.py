@@ -68,7 +68,7 @@ class EventGameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventGame
-        fields = ['id' ,'team1', 'team2', 'score' , 'stage' , 'team1_id' , 'team2_id']
+        fields = ['id' ,'team1', 'team2', 'score' , 'stage' , 'team1_id' , 'team2_id','completed']
         extra_kwargs = {
             'team1_id': {'read_only': True},
             'team2_id': {'read_only': True},

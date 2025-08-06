@@ -11,7 +11,6 @@ class GameCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['paused_time'] = 300
         validated_data['duration'] = 300
-        validated_data['stage'] = 'vex_123'
         return super().create(validated_data)
 
 
