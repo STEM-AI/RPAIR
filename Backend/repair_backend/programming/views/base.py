@@ -1,5 +1,7 @@
 from rest_framework.generics import ListAPIView,UpdateAPIView
 from rapair_db.models import EventGame
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from programming.serializers import ProgrammingRankSerializer,ProgrammingGameSubmitSerializer
 import logging
@@ -29,5 +31,5 @@ class ProgrammingGameSubmitView(UpdateAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
     
