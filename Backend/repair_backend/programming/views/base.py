@@ -21,6 +21,8 @@ class ProgrammingGameSubmitView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProgrammingGameSubmitSerializer
     queryset = EventGame.objects.all()
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
