@@ -28,7 +28,7 @@ def broadcast_game_score(sender,created, instance, **kwargs):
         )
     
     if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
-        logger.info("instance.stage" , instance.stage)
+        logger.info(f"instance.stage {instance.stage}")
         channel_layer = get_channel_layer()
         if instance.stage in ['driver_iq','driver_go','vex_123','vex_123_manual','vex_123_coder_card','vex_123_programming']:
             data = {
@@ -40,7 +40,7 @@ def broadcast_game_score(sender,created, instance, **kwargs):
                     }
             }
 
-            logger.info("data" , data)
+            logger.info(f"data {data}")
         elif instance.stage in ['auto','coding']:
             data = {
                 "game_id" : instance.id,
