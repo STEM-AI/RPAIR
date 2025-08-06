@@ -7,5 +7,6 @@ urlpatterns = [
     path('upload-questions/', UploadQuestionsCSV.as_view(), name='upload-questions'),
     path('number-of-questions-time-limit/<int:id>/', NumberOfQuestionsAndTimeLimitUpdateView.as_view(), name='number-of-questions-time-limit-update'),
     path('answer-question/', AnswerQuestionView.as_view(), name='answer-question'),
-    path('rank/<int:event_id>/',ProgrammingRankListView.as_view(),name='programming-rank-list')
+    path('rank/<int:event_id>/',ProgrammingRankListView.as_view(),name='programming-rank-list'),
+    path('submit/<int:id>/',ProgrammingGameSubmitView.as_view(),name='programming-game-submit')
 ]

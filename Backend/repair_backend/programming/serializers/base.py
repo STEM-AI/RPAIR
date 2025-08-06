@@ -5,3 +5,13 @@ class ProgrammingRankSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventGame
         fields = ['team','score']
+
+class ProgrammingGameSubmitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventGame
+        fields = ['id','completed']
+
+    def update(self, instance, validated_data):
+        instance.completed = True
+        instance.save()
+        return instance

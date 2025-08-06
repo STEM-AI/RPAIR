@@ -1,7 +1,7 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView,UpdateAPIView
 from rapair_db.models import EventGame
-from rest_framework.permissions import AllowAny
-from programming.serializers import ProgrammingRankSerializer
+from rest_framework.permissions import AllowAny,IsAuthenticated
+from programming.serializers import ProgrammingRankSerializer,ProgrammingGameSubmitSerializer
 import logging
 logger = logging.getLogger(__name__)
 
@@ -16,3 +16,16 @@ class ProgrammingRankListView(ListAPIView):
     def get_queryset(self):
         logger.info(f"event_id {self.kwargs.get('event_id')}")
         return self.queryset.filter(event_id=self.kwargs.get('event_id'),stage='programming').order_by('-score')
+
+class ProgrammingGameSubmitView(UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProgrammingGameSubmitSerializer
+    queryset = EventGame.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
