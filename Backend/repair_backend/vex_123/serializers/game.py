@@ -1,6 +1,8 @@
 from core.serializers import GamesSerializer
 from rapair_db.models import EventGame
 from rest_framework import serializers
+import logging
+logger = logging.getLogger(__name__)
 
 class GameCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,15 +24,16 @@ class GameSerializer(GamesSerializer):
     def update(self, instance, validated_data):
         # Update the instance with the validated data
         instance.score = validated_data.get('score', instance.score)
-        print("instance score" , instance.score)
+        logger.info("instance score" , instance.score)
         instance.time_taken = validated_data.get('time_taken', instance.time_taken)
-        print("instance.time",instance.time)
-        if instance.stage == 'vex_123':
-            print("driver score")
+        logger.info("instance.time",instance.time)
+        if instance.stage in ['vex_123','vex_123_manual','vex_123_coder_card','vex_123_programming']:
+            logger.info("driver score")
             instance.driver_score = instance.score
 
         instance.operation = "set_skills_game_score"
+        instance.completed = True
         # Save the instance
-        print("instance.operation" , instance.operation)
+        logger.info("instance.operation" , instance.operation)
         instance.save()
         return instance
