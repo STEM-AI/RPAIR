@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import QuestionListAPIView,QuestionDetailAPIView,UploadQuestionsCSV,NumberOfQuestionsAndTimeLimitUpdateView,AnswerQuestionView,ProgrammingRankListView
+from .views import QuestionListAPIView,QuestionDetailAPIView,UploadQuestionsCSV,NumberOfQuestionsAndTimeLimitUpdateView,AnswerQuestionView,ProgrammingRankListView,ProgrammingGameSubmitView
 
 urlpatterns = [
     path('questions/<int:competition_event_id>/', QuestionListAPIView.as_view(), name='question-list'),
