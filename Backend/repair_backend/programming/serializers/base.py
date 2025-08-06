@@ -10,6 +10,9 @@ class ProgrammingGameSubmitSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventGame
         fields = ['id','completed']
+        extra_kwargs = {
+            'completed': {'read_only': True}
+        }
 
     def update(self, instance, validated_data):
         instance.completed = True
