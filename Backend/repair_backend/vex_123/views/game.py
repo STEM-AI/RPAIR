@@ -30,6 +30,10 @@ class GameCreateView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(event=event)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['stage'] = self.kwargs.get('stage')
+        return context
     
 class Vex123GameView(GameSkillsView):
     serializer_class = GameSerializer
