@@ -206,7 +206,6 @@ const [searchParams] = useSearchParams();
     .sort((a, b) => b.total - a.total);
 
   setRankings(sortedRankings);
-  console.log("Updated Rankings:", sortedRankings);
   };
 
 

@@ -19,7 +19,6 @@ export default function EventDetails() {
       const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const token = localStorage.getItem("access_token");
-    console.log("event_name", event_name);
     const [openTeamIndex, setOpenTeamIndex] = useState(null);
 
 
@@ -33,8 +32,7 @@ export default function EventDetails() {
           headers: { Authorization: `Bearer ${token}` },
         });
           setEvents(response.data);
-          console.log("API Response:", response.data);
-          console.log("API Response:", response.data.members);
+         
           
         setLoading(false);
       } catch (err) {

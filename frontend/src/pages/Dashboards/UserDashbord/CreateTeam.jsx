@@ -320,9 +320,7 @@ const handleSubmit = async (event) => {
 
       setAlertType("success");
       setResponseMessage("Event created successfully!");
-      console.log("Response Data:", response.data);
-
-      console.log(" Data:", formData);
+      
         
            Swal.fire({
         icon: "success",

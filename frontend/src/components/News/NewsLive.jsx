@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState } from "react";
-import { NavHashLink } from "react-router-hash-link";
+import { Link } from "react-router-dom";
 
 const NewsTicker = () => {
   const [news, setNews] = useState("Loading news...");
@@ -102,7 +102,7 @@ const NewsTicker = () => {
         <div className="w-full flex overflow-hidden whitespace-nowrap group">
           <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
             {[...Array(4)].map((_, index) => ( 
-      <NavHashLink key={index} to="/#challenges" className="flex-shrink-0">
+      <Link key={index} to="/resources/event" className="flex-shrink-0">
         <span className="mx-4">
           🔥 Exciting News! A Rpair New competition is here!{" "}
           <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
@@ -111,7 +111,7 @@ const NewsTicker = () => {
           <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
           #ChallengeYourself
         </span>
-      </NavHashLink>
+      </Link>
     ))}
           </div>
         </div>

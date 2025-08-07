@@ -1,6 +1,7 @@
 import React, { useState, useEffect , lazy ,Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route ,useLocation } from "react-router-dom";
+import {  Routes, Route ,useLocation, ScrollRestoration } from "react-router-dom";
 import "./App.css";
+import { getTokens, handleLogout, isTokenExpired } from "./pages/Auth/auth";
 
 
 //                              components              //
@@ -136,26 +137,36 @@ import UploadFileMcq from "./pages/Dashboards/AdminDashboard/Management/UploedFi
 import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
 import LiveCompFile from "./pages/LiveEvents/LiveMatches/LiveCompFile";
+import Layout from "./pages/Dashboards/LayoutDashboard/Layout";
 
 
 const App = () => {
   
-  
-  
-  const Layout = ({ children, hideNavbar = false }) => (
-    <>
-      {!hideNavbar && <Navbar />}
-      {children}
-      {!hideNavbar && <Footer />}
-    </>
-  );
   const LayoutComing = ({ children, hideNavbar = false }) => (
     <>
       {!hideNavbar && <Navbar />}
       {children}
     </>
   );
-  
+  const { access_token, refresh_token } = getTokens();
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      if (access_token && isTokenExpired(access_token)) {
+        console.log('Access token expired, checking refresh token...');
+        if (!refresh_token || isTokenExpired(refresh_token)) {
+          console.log('Refresh token is expired or invalid, logging out...');
+          handleLogout();
+        }
+      }
+    };
+
+    checkTokenExpiration();
+
+    const interval = setInterval(checkTokenExpiration, 5000); // Check every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [access_token, refresh_token]);
 
   return (
     <>
@@ -176,7 +187,7 @@ const App = () => {
         <Route
           path="/competitions/ComingSoon"
           element={
-            <LayoutComing>
+             <LayoutComing>
               <ComingSoonPage />
             </LayoutComing>
           }

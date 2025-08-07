@@ -14,6 +14,7 @@ const INITIAL_TIME = 5 * 60; // 5 minutes in seconds
 const GAME_MODES = [
   {
     name: "Manual",
+    stage: "vex_123_manual",
     missions: [
       { step: "Mission 1", description: "From Point 1 to Point 2", points: 5 },
       { step: "Mission 2", description: "From Point 2 to Point 3", points: 5 },
@@ -22,6 +23,7 @@ const GAME_MODES = [
   },
   {
     name: "Coder Card",
+    stage: "vex_123_coder_card",
     missions: [
       { step: "Mission 4", description: "From Point 4 to Point 5", points: 10 },
       { step: "Mission 5", description: "From Point 5 to Point 6", points: 5 }
@@ -29,6 +31,7 @@ const GAME_MODES = [
   },
   {
     name: "Programming",
+    stage: "vex_123_programming",
     missions: [
       { step: "Mission 6", description: "From Point 6 to the End Line", points: 10 }
     ]
@@ -47,10 +50,8 @@ const [missionEndTimes, setMissionEndTimes] = useState({});
   const [timer, setTimer] = useState(INITIAL_TIME);
   const [isRunning, setIsRunning] = useState(false);
   const [currentGame, setCurrentGame] = useState(null);
-  const [teamGames, setTeamGames] = useState({});
   const [missionStatus, setMissionStatus] = useState({});
-  const [teamScores, setTeamScores] = useState({});
-  const [teamTimes, setTeamTimes] = useState({}); 
+  
   const [hasPlayedEndSound, setHasPlayedEndSound] = useState(false);
   const [rankings, setRankings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,27 +62,40 @@ const [missionEndTimes, setMissionEndTimes] = useState({});
     const [searchParams] = useSearchParams();
     const event_name = searchParams.get('eventName');
     const event_id = searchParams.get('eventId');
-    console.log("eventName", event_name);
   
- // داخل Sheet123.jsx
-const { 
-  score: serverScores, 
-  loading: scoresLoading, 
-  error: scoresError, 
-  refetch: refetchScores 
-} = useGetScore(event_id, "vex_123");
-
-// معالجة البيانات بعد استقبالها
-const processedGames = useMemo(() => {
-  if (!serverScores) return [];
+  const { score: manualGames ,refetch: refetchManualGames } = useGetScore(event_id, "vex_123_manual");
+  const { score: coderCardGames ,refetch: refetchCoderCardGames } = useGetScore(event_id, "vex_123_coder_card");
+  const { score: programmingGames ,refetch: refetchProgrammingGames } = useGetScore(event_id, "vex_123_programming");
   
-  return serverScores.map(game => ({
-    ...game,
-    status: game.score !== null ? 'completed' : 'not_started',
-    formattedTime: game.time_taken ? `${game.time_taken}s` : 'N/A',
-    teamName: game.team1_name || `Team ${game.team1}`
-  }));
-}, [serverScores]);
+  const processTeamGames = useMemo(() => {
+    const teamStatus = {};
+      const processGames = (games, modeName) => {
+      if (!games) return;
+      
+      games.forEach(game => {
+        if (game.completed && game.team1) {
+          const teamId = game.team1;
+          
+          if (!teamStatus[teamId]) {
+            teamStatus[teamId] = {};
+          }
+          
+          teamStatus[teamId][modeName] = {
+            completed: true,
+            score: game.score,
+            timeTaken: game.time_taken,
+            gameId: game.id
+          };
+        }
+      });
+    };
+    
+    processGames(manualGames, "Manual");
+    processGames(coderCardGames, "Coder Card");
+    processGames(programmingGames, "Programming");
+    
+    return teamStatus;
+}, [manualGames, coderCardGames, programmingGames]);
   
   const getMedalIcon = (rank) => {
     switch (rank) {
@@ -96,7 +110,6 @@ const processedGames = useMemo(() => {
     }
   };
 
-  // Modified fetch function with sorting
   const fetchRankings = async () => {
     try {
       setIsLoading(true);
@@ -127,7 +140,6 @@ useEffect(() => {
   if (isRunning && timer > 0) {
     interval = setInterval(() => {
       setTimer(prevTimer => {
-        // تشغيل الصوت عند الوصول لـ 5 ثواني
         if (prevTimer === 6 && !hasPlayedEndSound) {
           playEnd();
           setHasPlayedEndSound(true);
@@ -146,117 +158,114 @@ useEffect(() => {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  // Calculate total time and score for a team
-  const calculateTeamTotals = (teamId) => {
+   const formatSeconds = (seconds) => {
+    if (!seconds) return "0:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+ const calculateTeamTotals = (teamId) => {
+    if (!teamId || !processTeamGames[teamId]) {
+      return { totalScore: 0, totalTime: 0 };
+    }
+
     let totalScore = 0;
     let totalTime = 0;
-    
-    if (teamScores[teamId]) {
-      totalScore = Object.values(teamScores[teamId]).reduce((sum, score) => sum + score, 0);
-    }
-    
-    if (teamTimes[teamId]) {
-      totalTime = Object.values(teamTimes[teamId]).reduce((sum, time) => sum + time, 0);
-    }
-    
+
+    // Sum scores and times from all modes
+    Object.values(processTeamGames[teamId]).forEach(mode => {
+      totalScore += mode.score || 0;
+      totalTime += mode.timeTaken || 0;
+    });
+
     return { totalScore, totalTime };
   };
-
-
-
-// Generate PDF for a team
-const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) => {
-  // Add null checks for critical parameters
-  if (!team || !GAME_MODES) return;
+ 
   
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const accentColor = '#4F46E5'; // Indigo
-  const textColor = '#374151'; // Gray
 
-  // Add Header
-  doc.setFillColor(accentColor);
-  doc.rect(0, 0, pageWidth, 40, 'F');
-  doc.setFontSize(18);
-  doc.setTextColor(255, 255, 255);
-  doc.text("VEX123 Robotics Challenge", pageWidth / 2, 25, { align: 'center' });
-  doc.setFontSize(12);
-  doc.text(`Competition: ${event_name}`, pageWidth / 2, 32, { align: 'center' });
+ const generateTeamPDF = (team, event_name, GAME_MODES) => {
+    if (!team || !GAME_MODES) return;
+    
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const accentColor = '#4F46E5';
+   const textColor = '#374151';
+     const teamData = processTeamGames[team.id] || {}; // FIX: Get team data
 
-  // Team Information Section
-  let yPosition = 50;
-  doc.setFontSize(14);
-  doc.setTextColor(textColor);
-  doc.text(`Team Name: ${team.name}`, 20, yPosition);
-  doc.text(`Team Number: ${team.id}`, pageWidth - 20, yPosition, { align: 'right' });
-  yPosition += 15;
 
-  // Total Scores Section
-  const { totalScore, totalTime } = calculateTeamTotals(team.id);
-  doc.setFillColor('#E0E7FF'); // Light indigo background
-  doc.rect(15, yPosition, pageWidth - 30, 20, 'F');
-  doc.setFontSize(12);
-  doc.setTextColor(accentColor);
-  doc.text('TOTAL PERFORMANCE SUMMARY', 20, yPosition + 8);
-  
-  yPosition += 25;
-  doc.setFontSize(24);
-  doc.setTextColor(accentColor);
-  doc.text(`${totalScore} Points`, 20, yPosition+5);
-  doc.text(`${formatTime(totalTime)}`, pageWidth - 20, yPosition+5, { align: 'right' });
+    // Header
+    doc.setFillColor(accentColor);
+    doc.rect(0, 0, pageWidth, 40, 'F');
+    doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255);
+    doc.text("VEX123 Robotics Challenge", pageWidth / 2, 25, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(`Competition: ${event_name}`, pageWidth / 2, 32, { align: 'center' });
 
-  // Game Mode Details
-  yPosition += 20;
- GAME_MODES?.forEach((mode) => {
-    const modeScore = teamScores[team.id]?.[mode.name] || 0;
-    const modeTime = teamTimes[team.id]?.[mode.name] || 0;
+    // Team Info
+    let yPosition = 50;
+    doc.setFontSize(14);
+    doc.setTextColor(textColor);
+    doc.text(`Team Name: ${team.name}`, 20, yPosition);
+    doc.text(`Team Number: ${team.id}`, pageWidth - 20, yPosition, { align: 'right' });
+    yPosition += 15;
 
-    if (modeScore > 0 || modeTime > 0) {
-      // Check page overflow
-      if (yPosition > 280) {
-        doc.addPage();
-        yPosition = 20; // Reset position, add header if needed
-      }
+    // Total Performance
+    const { totalScore, totalTime } = calculateTeamTotals(team.id);
+    doc.setFillColor('#E0E7FF');
+    doc.rect(15, yPosition, pageWidth - 30, 20, 'F');
+    doc.setFontSize(12);
+    doc.setTextColor(accentColor);
+    doc.text('TOTAL PERFORMANCE SUMMARY', 20, yPosition + 8);
+    
+    yPosition += 25;
+    doc.setFontSize(24);
+    doc.setTextColor(accentColor);
+    doc.text(`${totalScore} Points`, 20, yPosition+5);
+    doc.text(`${formatSeconds(totalTime)}`, pageWidth - 20, yPosition+5, { align: 'right' });
 
-      // Mode Header
-      doc.setFillColor('#E0E7FF');
+    // Game Modes - Show ALL modes
+    yPosition += 20;
+    GAME_MODES.forEach((mode) => {
+    const modeInfo = teamData[mode.name];
+    const modeScore = modeInfo?.score || 0;
+    const modeTime = modeInfo?.timeTaken || 0;
+    const isCompleted = !!modeInfo;
+        // Mode Header
+      doc.setFillColor(isCompleted ? '#E0F7FA' : '#FFF8E1');
       doc.rect(15, yPosition, pageWidth - 30, 10, 'F');
       doc.setFontSize(12);
-      doc.setTextColor(accentColor);
-      doc.text(`${mode.name} MODE`, 20, yPosition + 7);
-      
-      // Score and Time
+      doc.setTextColor(isCompleted ? '#00838F' : '#F57F17');
+      doc.text(`${mode.name} MODE ${isCompleted ? '(COMPLETED)' : '(PENDING)'}`, 20, yPosition + 7);
+
+       // Score and Time
       doc.setTextColor(textColor);
       doc.text(`Score: ${modeScore}`, pageWidth - 60, yPosition + 7);
-      doc.text(`Time: ${formatTime(modeTime)}`, pageWidth - 20, yPosition + 7, { align: 'right' });
-      
-      // Missions List
+      doc.text(`Time: ${formatSeconds(modeTime)}`, pageWidth - 20, yPosition + 7, { align: 'right' });
+
+         // Missions List
       yPosition += 15;
       mode.missions.forEach((mission) => {
-        // Replace with actual earned points if available
-        const earnedPoints = mission.points; // Placeholder
         doc.setFontSize(10);
         doc.setTextColor(textColor);
-        doc.text(`✓ ${mission.step}`, 25, yPosition);
-        doc.setTextColor('#10B981');
-        doc.text(`${earnedPoints} pts`, pageWidth - 20, yPosition, { align: 'right' });
+        doc.text(`• ${mission.step}: ${mission.description}`, 25, yPosition);
+        doc.setTextColor(isCompleted ? '#10B981' : '#9CA3AF');
+        doc.text(`${mission.points} pts`, pageWidth - 20, yPosition, { align: 'right' });
         yPosition += 8;
       });
       yPosition += 10;
-    }
-  });
+    });
 
-  // Footer
-  doc.setDrawColor(200);
-  doc.line(15, 280, pageWidth - 15, 280);
-  doc.setFontSize(8);
-  doc.setTextColor(textColor);
-  doc.text(`Report generated on: ${new Date().toLocaleString()}`, 20, 285);
-  doc.text('VEX123 Official Score Report', pageWidth - 20, 285, { align: 'right' });
+    // Footer
+    doc.setDrawColor(200);
+    doc.line(15, 280, pageWidth - 15, 280);
+    doc.setFontSize(8);
+    doc.setTextColor(textColor);
+    doc.text(`Report generated on: ${new Date().toLocaleString()}`, 20, 285);
+    doc.text('VEX123 Official Score Report', pageWidth - 20, 285, { align: 'right' });
 
-  // Save PDF
-  doc.save(`VEX123_${team.name}_Report.pdf`);
-};
+    doc.save(`VEX123_${team.name}_Report.pdf`);
+  };
 
   // Fetch teams for the current competition
   useEffect(() => {
@@ -291,11 +300,12 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
   };
 
   // Create new game when timer starts
-  const createGame = async (team) => {
+  const createGame = async (team, stage) => { 
+
     try {
       setLoading(true);
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/vex-123/${event_id}/game/create/`,
+        `${process.env.REACT_APP_API_URL}/vex-123/${event_id}/game/${stage}/create/`,
         {
           team1: team.id.toString(),
           time: formatTime(INITIAL_TIME)
@@ -331,7 +341,7 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
     }
 
     // Check if mode is already completed for this team
-    if (teamGames[selectedTeam?.id]?.[mode.name]) {
+    if (processTeamGames[selectedTeam?.id]?.[mode.name]) { // FIXED: use processTeamGames
       Swal.fire({
         title: 'Mode Already Completed',
         text: `This team has already completed the ${mode.name} mode`,
@@ -340,7 +350,8 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
       return;
     }
     
-     const gameId = await createGame(selectedTeam);
+       const gameId = await createGame(selectedTeam, mode.stage); 
+
   if (!gameId) return;
 
 
@@ -361,7 +372,18 @@ const generateTeamPDF = (team, event_name, GAME_MODES, teamScores, teamTimes) =>
       return;
     }
 
-      setIsRunning(true);
+    // Check if current mode is already completed
+    const isModeCompleted = !!processTeamGames[selectedTeam.id]?.[currentMode.name];
+    if (isModeCompleted) {
+      Swal.fire({
+        title: 'Mode Already Completed',
+        text: 'This mode has already been completed for the selected team',
+        icon: 'warning'
+      });
+      return;
+    }
+
+    setIsRunning(true);
     setHasPlayedEndSound(false); 
     playStart();
   };
@@ -385,18 +407,15 @@ const handleMissionComplete = (missionIndex) => {
     return;
   }
   
- const currentTime = INITIAL_TIME - timer; // الوقت المنقضي منذ بدء المؤقت
+ const currentTime = INITIAL_TIME - timer;
   const prevMissionIndex = missionIndex - 1;
-  const prevEndTime = missionEndTimes[prevMissionIndex] || 0; // وقت نهاية المهمة السابقة
+  const prevEndTime = missionEndTimes[prevMissionIndex] || 0; 
   if (missionStatus[missionIndex]) {
-    // إلغاء تنشيط المهمة
     setMissionStatus(prev => ({ ...prev, [missionIndex]: null }));
     setMissionEndTimes(prev => ({ ...prev, [missionIndex]: null }));
   } else {
-    // حساب الوقت المنقضي منذ نهاية المهمة السابقة
     const elapsedTime = currentTime - prevEndTime;
     
-    // تحديث الحالات
     setMissionStatus(prev => ({
       ...prev,
       [missionIndex]: elapsedTime
@@ -404,28 +423,18 @@ const handleMissionComplete = (missionIndex) => {
     
     setMissionEndTimes(prev => ({
       ...prev,
-      [missionIndex]: currentTime // حفظ وقت نهاية المهمة الحالية
+      [missionIndex]: currentTime 
     }));
   }
   };
   
-  // إضافة دالة حساب الوقت
-const calculateMissionTime = () => {
-  return Object.values(missionStatus)
-    .filter(time => time !== null)
-    .reduce((sum, time) => sum + time, 0);
-};
-
-
-  // Calculate total score
   const calculateScore = () => {
     return currentMode.missions.reduce((total, mission, index) => {
       return total + (missionStatus[index] ? mission.points : 0);
     }, 0);
   };
 
-  // Handle round completion
-  // Handle round completion
+  
 const handleRoundComplete = async () => {
   if (!currentGame) return;
 
@@ -455,30 +464,10 @@ const handleRoundComplete = async () => {
         }
       );
 
-      // Update team scores and times
-      setTeamGames(prev => ({
-        ...prev,
-        [selectedTeam.id]: {
-          ...prev[selectedTeam.id],
-          [currentMode.name]: true
-        }
-      }));
       
-      setTeamScores(prev => ({
-        ...prev,
-        [selectedTeam.id]: {
-          ...prev[selectedTeam.id],
-          [currentMode.name]: score
-        }
-      }));
-
-      setTeamTimes(prev => ({
-        ...prev,
-        [selectedTeam.id]: {
-          ...prev[selectedTeam.id],
-          [currentMode.name]: timeTaken
-        }
-      }));
+      refetchManualGames();
+      refetchCoderCardGames();
+      refetchProgrammingGames();
 
       Swal.fire('Success', 'Round completed successfully!', 'success');
       setCurrentGame(null);
@@ -512,15 +501,7 @@ const handleRestart = async () => {
       setIsRunning(true);
       setHasPlayedEndSound(false); 
 
-      if (selectedTeam && currentMode) {
-        setTeamGames(prev => ({
-          ...prev,
-          [selectedTeam.id]: {
-            ...prev[selectedTeam.id],
-            [currentMode.name]: undefined 
-          }
-        }));
-      }
+      
 
       Swal.fire('Success!', 'Restart completed successfully', 'success');
     } catch (error) {
@@ -574,40 +555,45 @@ const handleRestart = async () => {
       ))}
     </select>
 
+    
     {selectedTeam && (
-      <div className="mt-6 p-4 bg-indigo-50 rounded-xl border border-indigo-200">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-indigo-700">{selectedTeam.name}</h3>
-            <p className="text-sm text-indigo-600">Team ID: #{selectedTeam.id}</p>
-          </div>
-          
-          <div className="flex items-center gap-6">
-            <div className="text-center bg-white p-3 rounded-lg shadow-xs min-w-[100px]">
-              <p className="text-sm font-medium text-indigo-600 mb-1">Total Score</p>
-              <p className="text-2xl font-bold text-indigo-700">
-                {calculateTeamTotals(selectedTeam.id).totalScore}
-              </p>
+        <div className="mt-6 p-4 bg-indigo-50 rounded-xl border border-indigo-200">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-indigo-700">{selectedTeam.name}</h3>
+              <p className="text-sm text-indigo-600">Team ID: #{selectedTeam.id}</p>
             </div>
             
-            <div className="text-center bg-white p-3 rounded-lg shadow-xs min-w-[100px]">
-              <p className="text-sm font-medium text-indigo-600 mb-1">Total Time</p>
-              <p className="text-2xl font-bold text-indigo-700">
-                {formatTime(calculateTeamTotals(selectedTeam.id).totalTime)}
-              </p>
-            </div>
-            
+            <div className="flex items-center gap-6">
+              {/* Total Score */}
+              <div className="text-center bg-white p-3 rounded-lg shadow-xs min-w-[100px]">
+                <p className="text-sm font-medium text-indigo-600 mb-1">Total Score</p>
+                <p className="text-2xl font-bold text-indigo-700">
+                  {calculateTeamTotals(selectedTeam.id).totalScore}
+                </p>
+              </div>
+              
+              {/* Total Time */}
+              <div className="text-center bg-white p-3 rounded-lg shadow-xs min-w-[100px]">
+                <p className="text-sm font-medium text-indigo-600 mb-1">Total Time</p>
+                <p className="text-2xl font-bold text-indigo-700">
+                  {formatTime(calculateTeamTotals(selectedTeam.id).totalTime)}
+                </p>
+              </div>
+              
+             
+              
             <button
-              onClick={() => generateTeamPDF(selectedTeam, event_name, GAME_MODES, teamScores, teamTimes)}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-md"
-            >
-              <FaDownload className="text-lg" />
-              Export PDF
-            </button>
+                onClick={() => generateTeamPDF(selectedTeam, event_name, GAME_MODES)} // FIXED: remove extra params
+                className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-md"
+              >
+                <FaDownload className="text-lg" />
+                Export PDF
+          </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
   </div>
 
   {/* Game Modes Section */}
@@ -619,13 +605,16 @@ const handleRestart = async () => {
     
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
      {GAME_MODES.map(mode => {
-  const isCompleted = teamGames[selectedTeam?.id]?.[mode.name]; 
-  
+ const teamStatus = selectedTeam 
+          ? processTeamGames[selectedTeam.id]?.[mode.name] 
+          : null;
+          
+        const isCompleted = !!teamStatus;  
   return (
     <button
       key={mode.name}
       onClick={() => handleModeSelect(mode)}
-      disabled={isCompleted} // تعطيل الزر إذا اكتمل
+      disabled={isCompleted} 
             className={`
               p-4 rounded-xl border-2 transition-all duration-300
               ${isCompleted 
@@ -647,10 +636,10 @@ const handleRestart = async () => {
             {isCompleted ? (
               <div className="text-left space-y-1">
                 <p className="text-sm text-green-700">
-                  Score: {teamScores[selectedTeam?.id]?.[mode.name] || 0}
+                  Score: {teamStatus.score}
                 </p>
                 <p className="text-sm text-green-700">
-                  Time: {formatTime(teamTimes[selectedTeam?.id]?.[mode.name] || 0)}
+                  Time: {formatTime(teamStatus.timeTaken || 0)}
                 </p>
               </div>
             ) : (
@@ -692,7 +681,7 @@ const handleRestart = async () => {
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleTimerControl}
-                disabled={!selectedTeam || !currentMode}
+                disabled={!selectedTeam || !currentMode || !!processTeamGames[selectedTeam.id]?.[currentMode.name]}
                 className={`
                   px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-all
                   ${isRunning 
@@ -854,5 +843,6 @@ const handleRestart = async () => {
       </>
   );
 };
+
 
 export default Sheet123;

@@ -24,12 +24,10 @@ export default function OrganizerDash() {
           });
   
           setUserData(response.data);
-          console.log("API Response:", response.data);
-          console.log("API Active:", response.data.organization[0].is_active);
+        
           setStatus(response.data.organization[0].is_active)
 
 
-          console.log("API Active:", userData.organization?.[0]?.id );
           
 
         } catch {

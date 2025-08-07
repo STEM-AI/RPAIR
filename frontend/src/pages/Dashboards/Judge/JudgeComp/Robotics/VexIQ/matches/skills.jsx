@@ -44,7 +44,6 @@ const Skills = () => {
   const { score: serverScores, loading: scoresLoading,
     error: scoresError, refetch: refetchScores } = useGetScore(event_id, activeTab);
  const handleTimeChange = (seconds) => {
-    console.log("Time limit updated to:", seconds, "seconds");
      setShowTimeSelector(false);
   };
   // State for storing schedules by round and challenge type

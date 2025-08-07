@@ -11,6 +11,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import axios from 'axios';
 import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
+import useSubmitGame from '../../../../hooks/Questions/useSubmitGame';
 
 
 const CompetitionQuestions = () => {
@@ -26,6 +27,7 @@ const CompetitionQuestions = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [savedAnswers, setSavedAnswers] = useState({});
+  const { submitGame, isSubmitting, error, success } = useSubmitGame(game_id);
 
   
   
@@ -98,45 +100,40 @@ const formatSingleLineCode = (text) => {
     }
   }, [savedAnswers, token]);
 
-  // دالة انتهاء الوقت المعدلة
-  const handleTimeUp = useCallback(async () => {
-
+ const handleTimeUp = useCallback(async () => {
+  const unsavedQuestions = Object.entries(selectedOptions)
+    .filter(([id, answer]) => 
+      answer !== null && 
+      !savedAnswers[id] &&
+      (Array.isArray(answer) ? answer.length > 0 : true)
+    );
+  
+  try {
+    await Promise.all(
+      unsavedQuestions.map(([id, answer]) => 
+        saveAnswer(id, answer)
+      )
+    );
     
-    const unsavedQuestions = Object.entries(selectedOptions)
-      .filter(([id, answer]) => 
-        answer !== null && 
-        !savedAnswers[id] &&
-        (Array.isArray(answer) ? answer.length > 0 : true)
-      );
+    await submitGame(game_id);
     
-    try {
-      Swal.fire({
-        icon: 'error',
-        title: 'Time\'s up!',
-        text: 'The competition has ended.',
-        confirmButtonColor: '#32cd32',
-      });
-      setIsSaving(true);
-      await Promise.all(
-        unsavedQuestions.map(([id, answer]) => 
-          saveAnswer(id, answer)
-        )
-      );
-    } catch (error) {
-      console.error("Failed to save answers:", error);
-    } finally {
-      setIsSaving(false);
-      Swal.fire({
-        icon: 'error',
-        title: 'Time\'s up!',
-        text: 'The competition has ended.',
-        confirmButtonColor: '#32cd32',
-      }).then(() => {
-            navigate(`/competition/programming/${competition}/${competition_id}`, { replace: true });
-          });
-    }
-  }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer]);
-
+    Swal.fire({
+      icon: 'error',
+      title: 'Time\'s up!',
+      text: 'The competition has ended.',
+      confirmButtonColor: '#32cd32',
+    }).then(() => {
+      navigate(`/competition/programming/${competition}/${competition_id}`, { replace: true });
+    });
+  } catch (error) {
+    console.error("Failed to save answers:", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Submission Error',
+      text: 'Failed to submit your answers. Please try again.',
+    });
+  }
+}, [navigate, competition, selectedOptions, savedAnswers, saveAnswer, submitGame, game_id]);
   useEffect(() => {
     if (detailedQuestion?.text) {
       const { question } = formatSingleLineCode(detailedQuestion.text);
@@ -218,7 +215,7 @@ const formatSingleLineCode = (text) => {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, submit it!'
         }).then(async () => {
-                // await saveAnswer(currentId, currentAnswer);
+          submitGame()
           Swal.fire({
             title: 'Done!',
             text: `thank you have answerd submitted`,

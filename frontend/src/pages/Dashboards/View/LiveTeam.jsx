@@ -11,7 +11,6 @@ const LiveTeamIQ = () => {
   const socketRef = useRef(null);
   const event_Name = localStorage.getItem('selected_event_name');
   const eventName = localStorage.getItem("event_name");
-  console.log("eventname", eventName);
   const token = localStorage.getItem("access_token");
 
   const fetchRankings = async () => {
@@ -26,7 +25,6 @@ const LiveTeamIQ = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log("API Response:", response.data);
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {
@@ -48,7 +46,6 @@ const LiveTeamIQ = () => {
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Score Update:", data);
 
       if (data.game_id && data.score !== undefined) {
         // Update matches with new score

@@ -29,7 +29,6 @@ export default function InterviewSheet() {
       const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
-  console.log("eventName", eventName);
   
 
   useEffect(() => {
@@ -59,7 +58,6 @@ export default function InterviewSheet() {
           }
         );
         setTeams(res.data);
-        console.log("Teams:", res.data);
         
       } catch (err) {
         setError("Failed to fetch teams");

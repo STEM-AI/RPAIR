@@ -164,11 +164,27 @@ export default function FileComp() {
     setScore(e.target.value);
   };
 
+  // Check if team can add score
+  const canAddScore = (teamId) => {
+    const existingScore = getTeamScore(teamId);
+    // Allow adding score if there is no existing score or if the existing score is 0
+    return existingScore === null || existingScore === 0;
+  };
+
   const addScore = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setResponseMessage(null);
     setAlertType("");
+
+    // Check if team already has a score
+    const existingScore = getTeamScore(selectedTeam);
+    if (existingScore !== null) {
+      setAlertType("error");
+      setResponseMessage("This team already has a score. You cannot add another score.");
+      setIsSubmitting(false);
+      return;
+    }
 
     if (!score || !selectedTeam) {
       setAlertType("error");
@@ -437,15 +453,26 @@ export default function FileComp() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => openScoreModal(team.team, team.team_name)}
-                      className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 transition-all"
-                    >
-                      <MdAddBox className="mr-2" size={16} />
-                      Add Score
-                    </motion.button>
+                    {canAddScore(team.team) ? (
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => openScoreModal(team.team, team.team_name)}
+                        className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 transition-all"
+                      >
+                        <MdAddBox className="mr-2" size={16} />
+                        Add Score
+                      </motion.button>
+                    ) : (
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-sm text-slate-400 bg-slate-100 cursor-not-allowed transition-all"
+                        disabled
+                      >
+                        <MdAddBox className="mr-2" size={16} />
+                        Score Added
+                      </motion.button>
+                    )}
                   </td>
                 </motion.tr>
               ))}
@@ -483,110 +510,7 @@ export default function FileComp() {
         </motion.div>
       )}
 
-      {/* Enhanced Rankings Section */}
-      <div className="mt-12">
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleToggleRanking}
-          className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl shadow-md flex items-center font-medium mx-auto transition-all"
-        >
-          <FaTrophy className="mr-2" />
-          {showRanking ? "Hide Rankings" : "View Rankings"}
-        </motion.button>
-
-        {showRanking && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-6 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden"
-          >
-            <div className="p-6">
-              {isLoading ? (
-                <div className="space-y-4">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-14 bg-slate-100 animate-pulse rounded-lg" />
-                  ))}
-                </div>
-              ) : error ? (
-                <div className="text-center py-8 text-red-500 bg-red-50 rounded-lg">
-                  ⚠️ Error loading rankings: {error}
-                </div>
-              ) : rankings.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 bg-slate-50 rounded-lg">
-                  🏟️ No rankings available yet
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  {rankings.map((team, index) => {
-                    const rank = index + 1;
-                    return (
-                      <motion.div
-                        key={team.team}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className={`flex items-center justify-between p-5 rounded-lg ${
-                          rank <= 3 ? 'border-2 shadow-sm' : 'border hover:border-cyan-200'
-                        } ${
-                          rank === 1
-                            ? 'border-amber-300 bg-amber-50'
-                            : rank === 2
-                            ? 'border-slate-300 bg-slate-50'
-                            : rank === 3
-                            ? 'border-amber-500 bg-amber-50'
-                            : 'border-slate-200 bg-white'
-                        }`}
-                      >
-                        <div className="flex items-center gap-5">
-                          <span
-                            className={`w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold ${
-                              rank <= 3
-                                ? rank === 1
-                                  ? 'bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-md'
-                                  : rank === 2
-                                  ? 'bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-md'
-                                  : 'bg-gradient-to-br from-amber-600 to-amber-700 text-white shadow-md'
-                                : 'bg-cyan-100 text-cyan-600'
-                            }`}
-                          >
-                            {rank}
-                          </span>
-                          <div className="flex flex-col">
-                            <span className="font-medium text-slate-800">{team.team_name}</span>
-                            <span className="text-xs text-slate-500">Team #{team.team}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-5">
-                          <span className="text-xl font-bold text-cyan-600">
-                            {typeof team.score === 'number' 
-                              ? team.score.toFixed(2)
-                              : 'N/A'}
-                          </span>
-                          {rank <= 3 && (
-                            <span className={`flex items-center text-sm px-3 py-1 rounded-full ${
-                              rank === 1 ? 'bg-amber-100 text-amber-800' :
-                              rank === 2 ? 'bg-slate-100 text-slate-800' :
-                              'bg-amber-100 text-amber-800'
-                            }`}>
-                              {rank === 1 ? <FaMedal className="mr-1 text-amber-500" /> : 
-                               rank === 2 ? <FaMedal className="mr-1 text-slate-400" /> : 
-                               <FaMedal className="mr-1 text-amber-600" />}
-                              {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
-                            </span>
-                          )}
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </div>
+     
 
       {showModal && selectedTeam && (
         <AddScore

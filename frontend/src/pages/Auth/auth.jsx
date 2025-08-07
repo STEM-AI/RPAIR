@@ -41,8 +41,14 @@ export const refreshAccessToken = async () => {
     try {
         const refresh_token = localStorage.getItem(AUTH_TOKENS.REFRESH_TOKEN);
         
-        if (!refresh_token || isTokenExpired(refresh_token)) {
-            // If refresh token is expired or doesn't exist, logout
+        if (!refresh_token) {
+            console.error('No refresh token found');
+            handleLogout();
+            return null;
+        }
+
+        if (isTokenExpired(refresh_token)) {
+            console.error('Refresh token has expired');
             handleLogout();
             return null;
         }
@@ -55,10 +61,18 @@ export const refreshAccessToken = async () => {
             localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, response.data.access);
             localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, response.data.refresh);
             return response.data.access;
+        } else {
+            console.error('Refresh token endpoint did not return new tokens');
+            handleLogout();
+            return null;
         }
         
         return null;
     } catch (error) {
+        console.error('Error refreshing token:', error);
+        if (error.response && error.response.status === 401) {
+            console.error('Invalid refresh token');
+        }
         handleLogout();
         return null;
     }
@@ -66,6 +80,7 @@ export const refreshAccessToken = async () => {
 
 // Handle logout
 export const handleLogout = () => {
+    console.log('Performing logout due to token expiration or invalid refresh token');
     clearTokens();
     // Redirect to login page
     window.location.href = '/login';
@@ -77,20 +92,27 @@ export const createAuthenticatedInstance = () => {
 
     instance.interceptors.request.use(
         async (config) => {
-            let access_token = localStorage.getItem(AUTH_TOKENS.ACCESS_TOKEN);
+            const access_token = localStorage.getItem(AUTH_TOKENS.ACCESS_TOKEN);
 
-            if (access_token && isTokenExpired(access_token)) {
-                // Token is expired, try to refresh it
-                access_token = await refreshAccessToken();
+            if (!access_token) {
+                console.log('No access token found');
+                return config;
             }
 
-            if (access_token) {
+            if (isTokenExpired(access_token)) {
+                console.log('Access token expired, attempting to refresh');
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    config.headers.Authorization = `Bearer ${newToken}`;
+                }
+            } else {
                 config.headers.Authorization = `Bearer ${access_token}`;
             }
 
             return config;
         },
         (error) => {
+            console.error('Request error:', error);
             return Promise.reject(error);
         }
     );

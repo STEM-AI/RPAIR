@@ -464,7 +464,6 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
                     >
                       <span className="font-bold text-white">
                         {i + 1}
-                        
                       </span>
                     </div>
                   );
