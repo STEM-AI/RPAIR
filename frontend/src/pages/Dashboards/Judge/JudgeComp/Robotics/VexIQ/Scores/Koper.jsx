@@ -265,6 +265,24 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
     return 0;
   };
 
+   useEffect(() => {
+    if (gameActive && !gamePaused) {
+      if (
+        (prevTimeRef.current >= 40 && remainingTime === 40) ||
+        (prevTimeRef.current >= 50 && remainingTime === 50)
+      ) {
+        playMiddle();
+      }
+    }
+    prevTimeRef.current = remainingTime;
+  }, [remainingTime, gameActive, gamePaused, playMiddle]);
+
+     useEffect(() => {
+    if (remainingTime === 0) {
+      playEnd();
+    }
+  }, [remainingTime, playEnd]);
+
   // Calculate current points per circle play
   const currentCirclePoints = getCirclePointValue();
 

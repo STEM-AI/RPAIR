@@ -3,7 +3,7 @@ import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { MdEvent, MdAccessTime, MdLocationOn, MdInfo, MdRefresh, MdError, MdPlayArrow, MdLock, MdDone } from 'react-icons/md';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authAxios, getTokens } from "../../Auth/auth"
 
 
@@ -13,7 +13,7 @@ export default function JudgeEvent() {
   const [error, setError] = useState(null);
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
-
+    const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
 
   const getEventStatus = (startDate, endDate) => {
@@ -27,7 +27,7 @@ export default function JudgeEvent() {
       return {
         status: 'upcoming',
         message: 'Not Started',
-        timeLeft: Math.floor((start - now) / (1000 * 60)), // minutes until start
+        timeLeft: Math.floor((start - now) / (1000 * 60)),
         color: 'bg-yellow-600 hover:bg-yellow-700',
         icon: MdLock
       };
@@ -35,7 +35,7 @@ export default function JudgeEvent() {
       return {
         status: 'in_progress',
         message: 'Start Judging',
-        timeLeft: Math.floor((adjustedEnd - now) / (1000 * 60)), // دقائق حتى الانتهاء (بعد 20 ساعة)
+        timeLeft: Math.floor((adjustedEnd - now) / (1000 * 60)), 
         color: 'bg-green-600 hover:bg-green-700',
         icon: MdPlayArrow
       };
@@ -253,21 +253,18 @@ export default function JudgeEvent() {
                     </div>
                   </div>
                 </div>
-                  <Link 
-                  to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`
-                  }
-                >
+                  
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
                     <button 
+                      onClick={() => navigate(`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`)}
                       className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
                         transition-colors duration-200 flex items-center justify-center`}
-                      disabled={eventStatus.status === 'ended'}
+                      disabled={eventStatus.status === 'ended' || eventStatus.status === 'upcoming'}
                     >
                       <eventStatus.icon className="h-5 w-5 mr-2" />
                       {eventStatus.message}
                     </button>
                   </div>
-                </Link>
               </div>
             );
           })}
