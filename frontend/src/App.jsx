@@ -42,7 +42,7 @@ import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
 
-import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo/SkillsContainerGo";
+import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/skillsgo/SkillsContainerGo";
 import CompetitionSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 import Sheet123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
