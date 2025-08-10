@@ -7,7 +7,6 @@ import { useSearchParams } from "react-router-dom";
 
 const Notebook = () => {
     const [searchParams] = useSearchParams();
-    const event_name = searchParams.get('eventName');
     const event_id= searchParams.get('eventId');
     
     return (

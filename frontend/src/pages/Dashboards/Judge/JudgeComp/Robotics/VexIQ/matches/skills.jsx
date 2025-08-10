@@ -4,7 +4,6 @@ import { AiOutlineCalculator } from "react-icons/ai";
 import CalculatorSkills from "../Scores/ScoresSkills";
 import axios from "axios";
 import Swal from "sweetalert2";
-import Alert from "../../../../../../../components/Alert/Alert";
 import { useSearchParams } from "react-router-dom";
 import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule";
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule"

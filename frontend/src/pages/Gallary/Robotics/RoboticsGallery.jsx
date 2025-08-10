@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState,  useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { HashLink } from 'react-router-hash-link';
 import { useLoading } from '../../../context/LoadingContext';

@@ -4,8 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
-import { Icon } from "@mui/material";
-import { Groups, Engineering, School, Person, Phone, SmartToy, Search, Done } from "@mui/icons-material";
+import { Groups, Search, Done } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import ButtonLive from "../../../components/EventLive/ButtonLive";
 const MyTeams = () => {
@@ -15,7 +14,6 @@ const MyTeams = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
-  const [teamDetails, setTeamDetails] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState({});
   const token = localStorage.getItem("access_token");

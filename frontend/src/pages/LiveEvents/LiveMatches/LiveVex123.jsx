@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef ,useCallback } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { TiStopwatch } from "react-icons/ti";
-import { FaTrophy, FaMedal, FaSyncAlt, FaRobot, FaCar, FaListOl } from "react-icons/fa";
+import { FaTrophy, FaMedal, FaSyncAlt, FaRobot, FaListOl } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
 
 
@@ -80,6 +80,7 @@ const LiveVex123 = () => {
           <h1 className="text-3xl md:text-4xl  py-4 font-bold text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
             VEX 123 Live Challenge
           </h1>
+          <span>{eventName}</span>
         </div>
         
         <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">

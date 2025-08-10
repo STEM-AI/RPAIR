@@ -1,7 +1,6 @@
-import Alert from "../../../../../../../components/Alert/Alert";
 import { useState, useEffect, useMemo } from "react";
-import { FaTrophy, FaCheck, FaPlay, FaChartBar, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock, FaPause, FaRedo } from "react-icons/fa";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { FaTrophy, FaCheck, FaPlay, FaChartBar, FaFlagCheckered, FaChevronLeft, FaChevronRight, FaClock} from "react-icons/fa";
+import {  useSearchParams } from "react-router-dom";
 import { useMatchContext } from './MatchContext';
 import SheetSolo from "./SheetSolo"
 import axios from "axios";
@@ -21,7 +20,6 @@ const SkillsGO = () => {
     coding: []
   });
   const [round, setRound] = useState(1);
-  const [completedMatches, setCompletedMatches] = useState({});
   const [rankings, setRankings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,7 +31,6 @@ const SkillsGO = () => {
   const event_id = searchParams.get('eventId');
   const token = localStorage.getItem("access_token");
   const [confirmed, setConfirmed] = useState({}); // Add confirmation state
-  const [selectedRound, setSelectedRound] = useState(1);
   const tabs = [
     { id: 'driver_go', label: 'Driving Challenge', icon: '🚗', color: 'teal' },
     { id: 'coding', label: 'Coding Challenge', icon: '🤖', color: 'teal' },
@@ -122,9 +119,7 @@ const SkillsGO = () => {
     setSchedulesError(driverError || codingError);
   }, [driverLoading, codingLoading, driverError, codingError]);
 
-  const handleRoundChange = (newRound) => {
-    setRound(newRound);
-  };
+
 
   const isRoundCompleted = () => {
     const currentSchedule = roundSchedules[round - 1]?.schedule?.games;

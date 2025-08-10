@@ -7,7 +7,6 @@ import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const LiveTeamVex = () => {
   const [matches, setMatches] = useState([]);
-  const [teams, setTeams] = useState([]);
   const [rankings, setRankings] = useState([]);
   const [showRankings, setShowRankings] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(new Date());
@@ -16,7 +15,7 @@ const LiveTeamVex = () => {
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
-
+ const intervalRef = useRef(null);
 
    const { 
       score: serverScores, 
@@ -29,6 +28,23 @@ const LiveTeamVex = () => {
         setMatches(serverScores);
       }
     }, [serverScores]);
+  
+    useEffect(() => {
+    if (eventId) {
+      refetchScores();
+      
+      intervalRef.current = setInterval(() => {
+        refetchScores();
+      }, 30000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [eventId, refetchScores]);
+
   const fetchRankings = async () => {
     setIsLoading(true);
     if (!eventName || !eventId) {
@@ -116,6 +132,7 @@ const LiveTeamVex = () => {
         return <span className="text-gray-500 font-medium">{rank}</span>;
     }
   };
+
 
   return (
     <div className="p-4 max-w-7xl mx-auto">

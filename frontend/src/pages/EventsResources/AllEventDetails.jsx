@@ -11,8 +11,6 @@ import Rank from './Rank';
 export default function AllEventDetails() {
   const [showRankings, setShowRankings] = useState(false); 
     const { event_name } = useParams()
-    const { event_id } = useParams()
-    const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
   const [events, setEvents] = useState([]);
   const [showResults, setShowResults] = useState(false);
       const [loading, setLoading] = useState(true);
@@ -84,7 +82,7 @@ export default function AllEventDetails() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-4 text-center">
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-          {events.name}
+          {events.name} 
           </h1>
           <div className="mt-2 flex justify-center items-center space-x-2">
             <span className="inline-flex items-center px-3 py-0.5 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
