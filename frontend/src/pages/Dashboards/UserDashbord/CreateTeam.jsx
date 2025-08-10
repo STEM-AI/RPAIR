@@ -12,14 +12,14 @@ import { useNavigate } from "react-router-dom";
 const CreateTeam = () => {
   const [hasGlobalNumber, setHasGlobalNumber] = useState(null);
   const [events, setEvents] = useState([]);
-  const [organizations, setOrganizations] = useState([]); // تأكد أنها مصفوفة فارغة
-  const [isManualOrgEntry, setIsManualOrgEntry] = useState(false); // إضافة حالة جديدة
-  const [hasCoach, setHasCoach] = useState(false); // هل يريد إضافة كوتش؟
-  const [showCoachForm, setShowCoachForm] = useState(false); // هل نعرض حقول الكوتش؟
+  const [organizations, setOrganizations] = useState([]);
+  const [isManualOrgEntry, setIsManualOrgEntry] = useState(false); 
+  const [hasCoach, setHasCoach] = useState(false); 
+  const [showCoachForm, setShowCoachForm] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    event_name: "",
+    event_id: "",
     competition: "",
     organization_info: {
       name: "",
@@ -43,7 +43,6 @@ const CreateTeam = () => {
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
 
-   // دالة جديدة للتعامل مع اختيار المنظمة
    const handleOrgSelect = (e) => {
     const selectedOrgName = e.target.value;
     
@@ -69,7 +68,6 @@ const CreateTeam = () => {
         ...prev,
         organization_info: { 
           ...selectedOrg,
-          // تأكد أن contacts موجودة وإلا استخدم مصفوفة فارغة
           contacts: selectedOrg.contacts || [] 
         }
       }));
@@ -81,7 +79,6 @@ const CreateTeam = () => {
     setShowCoachForm(choice);
     
     if (choice) {
-      // إذا اختار إضافة كوتش، نضيف كوتش فارغ
       setFormData(prev => ({
         ...prev,
         coach: [{ name: "", email: "", phone_number: "", position: "" }]
@@ -297,7 +294,7 @@ const handleSubmit = async (event) => {
     }
 
     // Append other fields
-    formDataToSend.append("event_name", formData.event_name);
+    formDataToSend.append("event_id", formData.event_id);
     formDataToSend.append("competition", formData.competition);
     formDataToSend.append("name", formData.name);
     formDataToSend.append("robot_name", formData.robot_name);
@@ -323,9 +320,7 @@ const handleSubmit = async (event) => {
 
       setAlertType("success");
       setResponseMessage("Event created successfully!");
-      console.log("Response Data:", response.data);
-
-      console.log(" Data:", formData);
+      
         
            Swal.fire({
         icon: "success",
@@ -336,7 +331,7 @@ const handleSubmit = async (event) => {
            });
       
       setFormData({
-        event_name: "",
+        event_id: "",
         competition: "",
         organization_info: {
           name: "",
@@ -447,17 +442,21 @@ const handleSubmit = async (event) => {
           <div className="w-full md:w-1/2">
             <label className="block mb-2 text-sm font-bold text-gray-700">Event Name</label>
             <select
-              value={formData.event_name}
+              value={formData.event_id}
               onChange={(e) => handleChange(e, null, null, null, null)}
-              name="event_name"
+              name="event_id"
               className="bg-gray-200 border rounded py-2 px-4 w-full"
               required
               disabled={!formData.competition}
             >
               <option value="">Select Event</option>
               {upcomingCompetitions.map((event, index) => (
-                <option key={index} value={event.name}>
-                  {event.name}
+                <option clas key={index} value={event.id}>
+                  <span>{event.name}</span> - <span>{new Date(event.start_date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}</span>
                 </option>
               ))}
             </select>
@@ -630,7 +629,8 @@ const handleSubmit = async (event) => {
               required
             />
           </div>
-          <div className="w-full md:w-1/2">
+          {formData.competition === 'programming' || formData.competition === 'flutter' || formData.competition === 'arduino' ?
+          (""):( <div className="w-full md:w-1/2">
             <label className="block mb-2 text-sm font-bold text-gray-700">Robot Name</label>
             <input
               type="text"
@@ -640,7 +640,8 @@ const handleSubmit = async (event) => {
               className="bg-gray-200 border rounded py-2 px-4 w-full"
               required
             />
-          </div>
+          </div>) }
+         
         </div>
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-5">
           <div className="w-full md:w-1/2">
@@ -724,7 +725,8 @@ const handleSubmit = async (event) => {
           </div>
 
         {/* Team Leader Info */}
-        <div className="teamLeader">
+        {formData.competition === 'programming'? (""):(
+          <div className="teamLeader">
           <h3 className="py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
             Team Leader Info:
           </h3>
@@ -759,9 +761,9 @@ const handleSubmit = async (event) => {
                 type="text"
                 name="team_leader_phone_number"
                 placeholder="Phone number"
+                value={formData.team_leader_phone_number}
                 pattern="^\+2\d{11}$"
                 title="Phone number must start with +2 followed by 11 digits"
-                value={formData.team_leader_phone_number}
                 onChange={(e) => {
                   let value = e.target.value;
                   value = value.replace(/[^\d+]/g, '');
@@ -779,6 +781,9 @@ const handleSubmit = async (event) => {
             </div>
           </div>
         </div>
+        )
+        }
+        
 
         <div className="coach">
           <h3 className="py-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-2xl font-black">
@@ -972,3 +977,5 @@ const handleSubmit = async (event) => {
 };
 
 export default CreateTeam;
+
+

@@ -399,9 +399,13 @@ const GameScheduleForm = () => {
             disabled={!eventName || isLoading}
           >
             <option value="">{isLoading ? 'Loading events...' : 'Select Event'}</option>
-            {upcomingCompetitions.map((event) => (
+            {events.map((event) => (
               <option key={event.id} value={event.id}>
-                {event.name}
+                {event.name} - <span>{new Date(event.start_date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}</span>
               </option>
             ))}
           </select>

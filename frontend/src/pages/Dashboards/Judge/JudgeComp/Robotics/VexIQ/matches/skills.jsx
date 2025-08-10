@@ -10,6 +10,8 @@ import useEventSchedules from "../../../../../../../hooks/Schedule/EventSchedule
 import useSchedule from "../../../../../../../hooks/Schedule/Schedule"
 import Koper from "../Scores/Koper";
 import useGetScore from "../../../../../../../hooks/Schedule/GetScore";
+import EditTimeIQ from "../../../../../../../hooks/EditTime/EditeTimeIQ";
+
 
 const Skills = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +25,7 @@ const Skills = () => {
   const [showRanking, setShowRanking] = useState(false);
   const [activeTab, setActiveTab] = useState('driver_iq');
   const [calculatorType, setCalculatorType] = useState(null);
-  
+    const [showTimeSelector, setShowTimeSelector] = useState(true);
   const [completedRounds, setCompletedRounds] = useState({
     driver_iq: [],
     auto: []
@@ -39,15 +41,18 @@ const Skills = () => {
     { id: 'auto', label: 'Autonomous Challenge', icon: '🤖', color: 'blue' },
   ];
   
-  const { score: serverScores, loading: scoresLoading, error: scoresError , refetch: refetchScores} = useGetScore(event_id, activeTab);
-
+  const { score: serverScores, loading: scoresLoading,
+    error: scoresError, refetch: refetchScores } = useGetScore(event_id, activeTab);
+ const handleTimeChange = (seconds) => {
+     setShowTimeSelector(false);
+  };
   // State for storing schedules by round and challenge type
   const [schedulesByRound, setSchedulesByRound] = useState({
     driver_iq: { 1: null, 2: null, 3: null },
     auto: { 1: null, 2: null, 3: null }
   });
 
-  // Memoized round schedules
+  
   const roundSchedules = useMemo(() => {
     return [
       schedulesByRound[activeTab]?.[1] || null,
@@ -115,15 +120,23 @@ const Skills = () => {
   const maxCompleted = currentChallengeCompleted.length > 0 ? Math.max(...currentChallengeCompleted) : 0;
   const nextAllowedRound = maxCompleted + 1;
 
-  const isRoundCompleted = () => {
-    const currentSchedule = roundSchedules[selectedRound - 1]?.schedule?.games;
-    if (!currentSchedule) return false;
-    
-    return currentSchedule.every(match => {
-      const serverScore = serverScores?.find(s => s.id === match.id);
-      return serverScore?.score !== null || confirmed[selectedRound]?.[match.id];
-    });
-  };
+      const isRoundCompleted = () => {
+        const currentSchedule = roundSchedules[selectedRound - 1]?.schedule?.games;
+        if (!currentSchedule) return false;
+        
+        return currentSchedule.every(match => {
+          return scoresMap[match.id]?.completed;
+        });
+      };
+      const scoresMap = useMemo(() => {
+          return serverScores.reduce((acc, match) => {
+            acc[match.id] = {
+              score: match.score,
+              completed: match.completed
+            };
+            return acc;
+          }, {});
+        }, [serverScores]);
 
   const handleCompleteRound = async () => {
     if (!isRoundCompleted()) {
@@ -286,28 +299,30 @@ const Skills = () => {
     <div  className="max-w-6xl mx-auto px-4 py-6 transition-all duration-300">
     {/* Header and Tabs */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">🏆 Skills Challenge</h1>
-        
-        <div className="flex justify-center gap-4 mb-6">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id);
-                setSelectedRound(1);
-                refetchSchedules();
-              }}
-              className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all ${
-                activeTab === tab.id 
-                  ? `bg-gradient-to-r from-${tab.color}-600 to-${tab.color}-500 text-white shadow-md` 
-                  : 'bg-gray-100 hover:bg-gray-200'
-              }`}
-            >
-              <span className="text-xl">{tab.icon}</span>
-              <span className="font-medium">{tab.label}</span>
-            </button>
-          ))}
-        </div>  
+  <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+    🏆 Skills Challenge
+  </h1>
+  
+          <div className="flex justify-center gap-4 mb-6">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSelectedRound(1);
+                  refetchSchedules();
+                }}
+                className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 ${
+                  activeTab === tab.id 
+                    ? `bg-gradient-to-r from-${tab.color}-600 to-${tab.color}-500 text-white shadow-lg transform scale-105` 
+                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                <span className="text-xl">{tab.icon}</span>
+                <span className="font-medium">{tab.label}</span>
+              </button>
+            ))}
+          </div>  
 
         {/* Round Navigation */}
         <div className="flex justify-center items-center gap-4 mb-6">
@@ -368,13 +383,20 @@ const Skills = () => {
       <div key={i} className="h-14 bg-gradient-to-r from-gray-100 to-gray-200 animate-pulse rounded-lg" />
     ))}
   </div>
-)}
+      )}
+      
+      {showTimeSelector && (
+              <EditTimeIQ 
+                id={event_id} 
+                onTimeChange={handleTimeChange} 
+              />
+            )}
      {/* Matches Table */}
 <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
   <table className="w-full divide-y divide-gray-200">
     <thead className="bg-gradient-to-r from-blue-600 to-blue-500">
       <tr>
-        {['Match', 'Team 1', 'Score', 'Actions'].map((header) => (
+        {['Match','Team-code', 'Team ', 'Score', 'Actions'].map((header) => (
           <th
             key={header}
             className="px-4 py-3 text-sm font-semibold text-white text-center uppercase tracking-wider"
@@ -384,64 +406,64 @@ const Skills = () => {
         ))}
       </tr>
     </thead>
-    <tbody className="bg-white divide-y divide-gray-200">
-      {(roundSchedules[selectedRound - 1]?.schedule?.games || []).map((match) => {
-        const serverScore = serverScores?.find(s => s.id === match.id);
-        const scoreValue = serverScore?.score ?? null;
-        const isConfirmed = confirmed[selectedRound]?.[match.id];
-        const hasScore = scoreValue > 0;
+     <tbody className="bg-white divide-y divide-gray-200">
+            {(roundSchedules[selectedRound - 1]?.schedule?.games || []).map((match) => {
+              const matchScore = scoresMap[match.id] || {};
+              const scoreValue = matchScore.score;
+              const isCompleted = matchScore.completed;
+              const hasScore = scoreValue !== null && scoreValue !== undefined;
 
-        return (
-          <tr 
-            key={match.id} 
-            className={`hover:bg-gray-50 transition-colors ${
-              hasScore ? 'bg-green-50' : ''
-            }`}
-          >
-            <td className="px-4 py-3 text-center font-medium text-blue-600">
-              <span className="inline-block bg-blue-100 rounded-full px-3 py-1">
-                #{match.id}
-              </span>
-            </td>
-            
-            <td className="px-4 py-3">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-medium">#{match.team1}</span>
-                </div>
-                <div>
-                  <div className="font-medium text-gray-900">{match.team1_name}</div>
-                </div>
-              </div>
-            </td>
-            
-            <td className="px-4 py-3 text-center">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                hasScore ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {hasScore ? scoreValue : '--'}
-              </span>
-            </td>
-            
-            <td className="px-4 py-3 text-center">
-              {hasScore || isConfirmed ? (
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
-                  <FaCheck className="h-4 w-4" />
-                </span>
-              ) : (
-                <button
-                  onClick={() => openCalculator(match, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
-                  className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
-                >
-                  <AiOutlineCalculator className="h-4 w-4" />
-                </button>
-              )}
-            </td>
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
+
+       return (
+                                <tr 
+                key={match.id} 
+                className={`transition-all duration-200 ${
+                  isCompleted ? 'bg-green-50/50' : 'hover:bg-gray-50'
+                } ${
+                  hasScore ? 'border-l-4 border-blue-500' : ''
+                }`}
+              >
+                <td className="px-4 py-4 text-center">
+                  <span className="inline-block bg-blue-50 rounded-lg px-3 py-1.5 text-blue-600 font-medium">
+                    #{match.id}
+                  </span>
+                </td>
+                <td className="px-4 py-4 text-center">
+                        <span className="inline-block bg-blue-50 rounded-lg px-3 py-1.5 text-blue-600 font-medium">
+                        {match.team1}</span>
+                </td>
+                
+                <td className="px-4 py-4 text-center">
+                      <div className="font-medium text-gray-900">{match.team1_name}</div>
+                </td>
+                
+                <td className="px-4 py-4 text-center">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    isCompleted ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {isCompleted ? scoreValue : 0 }
+                  </span>
+                </td>
+                
+                <td className="px-4 py-4 text-center">
+                  {isCompleted ? (
+                    <span className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-100 text-green-600 border border-green-200">
+                      <FaCheck className="h-4 w-4" />
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => openCalculator(match, selectedRound, activeTab === 'driver_iq' ? 'driver' : 'auto')}
+                      className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 transition-all duration-200 hover:shadow-sm"
+                    >
+                      <AiOutlineCalculator className="h-5 w-5" />
+                    </button>
+                  )}
+                </td>
+              </tr>
+              );
+            })}
+          </tbody>
+        </table>
   
   {/* Complete Round Button */}
   <div className="flex justify-center p-4 bg-gray-50 border-t border-gray-200">

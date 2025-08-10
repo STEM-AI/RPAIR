@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 const SelectMatch = () => {
   const navigate = useNavigate();
   const eventName = localStorage.getItem("event_name");
-  // console.log("event_name", eventName);
 
 
   

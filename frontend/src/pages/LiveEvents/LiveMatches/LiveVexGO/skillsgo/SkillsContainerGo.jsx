@@ -43,7 +43,6 @@ const {
 
     autoSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Score Update:", data);
       if (data.game_id && data.score?.autonomous !== undefined) {
         setAutoMatches((prev) => {
           return updateMatches(prev, data, 1);
@@ -64,7 +63,6 @@ const {
 
     driverSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Score Update:", data);
       if (data.game_id && data.score?.driver !== undefined) {
         setDriverMatches((prev) => {
           return updateMatches(prev, data, 1);

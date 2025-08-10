@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from  "../../assets/Static/logoWrite-re.png"
-import bgimg from  "../../assets/Static/bg.png";
+import logo from "../../assets/Static/logoWrite-re.png";
+import bgimg from "../../assets/Static/bg.png";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -10,6 +10,7 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { Helmet } from "react-helmet-async";
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
 const steps = ["Send Code", "Verify Code", "Reset Password"];
 
@@ -23,6 +24,8 @@ const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [newPasswordVisible, setNewPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const validatePassword = () => {
     if (newPassword.length < 8) {
@@ -50,6 +53,14 @@ const ResetPassword = () => {
       return false;
     }
     return true;
+  };
+
+  const togglePasswordVisibility = (field) => {
+    if (field === 'newPassword') {
+      setNewPasswordVisible(!newPasswordVisible);
+    } else if (field === 'confirmPassword') {
+      setConfirmPasswordVisible(!confirmPasswordVisible);
+    }
   };
 
   const handleSendCode = async (e) => {
@@ -269,30 +280,50 @@ const ResetPassword = () => {
               <label htmlFor="newPassword" className="block text-gray-700 text-sm font-bold mb-2">
                 New Password
               </label>
-              <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={newPasswordVisible ? 'text' : 'password'}
+                  id="newPassword"
+                  name="newPassword"
+                  placeholder="••••••••"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility('newPassword')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {newPasswordVisible ? <VscEyeClosed size={20} /> : <VscEye size={20} />}
+                </button>
+              </div>
             </div>
-
+          
             <div>
               <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2">
                 Confirm Password
               </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={confirmPasswordVisible ? 'text' : 'password'}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:shadow-md border border-gray-300 rounded py-2 px-4 block w-full pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility('confirmPassword')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {confirmPasswordVisible ? <VscEyeClosed size={20} /> : <VscEye size={20} />}
+                </button>
+              </div>
             </div>
 
             <button
@@ -320,8 +351,8 @@ const ResetPassword = () => {
       }}
     >
       <Helmet>
-                <title>ResetPassword</title>
-            </Helmet>
+        <title>Reset Password</title>
+      </Helmet>
       <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
       <div id="loginForm" className="relative flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl border-2 border-cyan-600">
         <div className="hidden lg:block lg:w-1/3 bg-cover bg-gradient-to-br from-cyan-800 to-cyan-400">

@@ -47,7 +47,6 @@ export default function InterviewSheet() {
      const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
-  console.log("eventName", eventName);
   
 useEffect(() => {
   const fetchData = async () => {
@@ -86,7 +85,6 @@ useEffect(() => {
         }
       );
       setTeams(response.data);
-      console.log("Teams:", response.data);
       
     } catch (error) {
       console.error('Error fetching teams:', error);
@@ -117,7 +115,6 @@ const fetchTeamData = async (teamName) => {
 
     const [team] = response.data;
     setTeamData(team);
-    console.log("Team Data:", team);
     
   } catch (error) {
     console.error('Error fetching team data:', error);

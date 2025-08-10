@@ -10,7 +10,6 @@ import useSound from 'use-sound';
 
 
 const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId }) => {
-  // console.log(gameId);
    const [switchCount, setSwitchCount] = useState(0);
     const [goalCount, setGoalCount] = useState(0);
     const [remainingTime, setRemainingTime] = useState(60);
@@ -20,7 +19,6 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId
     const socketRef = useRef(null);
     const [showControls, setShowControls] = useState(false);
     const token = localStorage.getItem("access_token");
-  // console.log(process.env.REACT_APP_WS_URL);
     const prevTimeRef = useRef(remainingTime);
   
   const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
@@ -40,11 +38,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId
   }, [switchCount, goalCount, mode]);
 
   const handleCalculate = async () => {
-  if (!score) {
-   Swal.fire("Error", "Please enter a valid score.");
-
-    return;
-  }
+  
   
   Alert.confirm({
     title: 'Submit Final Score?',

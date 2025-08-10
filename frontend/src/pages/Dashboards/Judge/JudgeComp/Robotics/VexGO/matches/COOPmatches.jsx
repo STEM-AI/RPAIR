@@ -1,4 +1,4 @@
-import { useState , useEffect} from "react";
+import { useState , useEffect, useMemo} from "react";
 import { FaTrophy,FaSync, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
@@ -35,10 +35,16 @@ const [searchParams] = useSearchParams();
     refetch: refetchScores 
   } = useGetScore(event_id, "coop");
 
-  const scoresMap = serverScores.reduce((acc, match) => {
-    acc[match.id] = match.score;
-    return acc;
-  }, {});
+ const scoresMap = useMemo(() => {
+    return serverScores.reduce((acc, match) => {
+      acc[match.id] = {
+        score: match.score,
+        completed: match.completed
+      };
+      return acc;
+    }, {});
+  }, [serverScores]);
+
 
 
   const { 
@@ -200,7 +206,6 @@ const [searchParams] = useSearchParams();
     .sort((a, b) => b.total - a.total);
 
   setRankings(sortedRankings);
-  console.log("Updated Rankings:", sortedRankings);
   };
 
 
@@ -234,7 +239,7 @@ const [searchParams] = useSearchParams();
               <table className="w-full divide-y divide-gray-200">
                 <thead className="bg-teal-600">
                   <tr>
-                    {['Match', 'Teams', 'Score', 'Time', 'Status'].map((header) => (
+                    {['Match', 'Teams', 'Score', 'Status'].map((header) => (
                       <th
                         key={header}
                         className="px-4 py-3 text-sm font-semibold text-white text-center uppercase tracking-wider"
@@ -245,11 +250,17 @@ const [searchParams] = useSearchParams();
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {(scheduleDetails?.games || []).map((match) => (
-                    <tr
-                      key={match.id}
-                      className={completedMatches[match.id] ? 'bg-emerald-50/50' : 'hover:bg-gray-50'}
-                    >
+            {(scheduleDetails?.games || []).map((match) => {
+              const matchScore = scoresMap[match.id] || {};
+              const scoreValue = matchScore.score;
+              const isCompleted = matchScore.completed;
+              const hasScore = scoreValue !== null && scoreValue !== undefined;
+
+              return (
+                <tr
+                  key={match.id}
+                  className={`${isCompleted ? 'bg-green-50' : 'hover:bg-gray-50'}`}
+                >
                       <td className="px-4 py-3 text-center font-medium text-teal-600">#{match.id}</td>
                       <td className="px-4 py-3 text-center">
                         <div className="flex flex-col space-y-1">
@@ -260,48 +271,34 @@ const [searchParams] = useSearchParams();
                       </td>
                      
                       <td className="px-4 py-3 text-center font-bold text-blue-600 text-xl">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  scoresMap[match.id] ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {scoresMap[match.id] ||'--'} 
-              </span>
-                </td>
-                      <td className="px-4 py-3 text-center text-gray-600 hidden sm:table-cell">
-                        {matches[match.id]?.totalTime ? formatTime(matches[match.id].totalTime) : '--:--'}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {scoresMap[match.id] > 1500? (
-                          <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
-                            <FaCheck className="h-4 w-4" />
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => handleStartMatch(match)}
-                            disabled={completedMatches[match.id]}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all ${completedMatches[match.id]
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-teal-600 hover:bg-teal-700 text-white'
-                              }`}
-                          >
-                            {completedMatches[match.id] ? (
-                              <>
-                                <FaCheck className="w-3.5 h-3.5" />
-                                <span>Completed</span>
-                              </>
-                            ) : (
-                              <>
-                                <FaPlay className="w-3.5 h-3.5" />
-                                <span>Start</span>
-                              </>
-                            )}
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                      isCompleted ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {hasScore ? scoreValue : '--'}
+                    </span>
+                  </td>
+                  
+                  <td className="px-4 py-3 text-center">
+                    {isCompleted ? (
+                      <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
+                        <FaCheck className="h-4 w-4" />
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleStartMatch(match)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-teal-600 hover:bg-teal-700 text-white transition-all"
+                      >
+                        <FaPlay className="w-3.5 h-3.5" />
+                        <span>Start</span>
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
           </div>
 
           {/* Rankings Section */}

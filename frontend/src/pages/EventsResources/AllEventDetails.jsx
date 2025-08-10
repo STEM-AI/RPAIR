@@ -25,8 +25,7 @@ export default function AllEventDetails() {
       try {
         const response = await axios.get(apiUrl);
           setEvents(response.data);
-          console.log("API Response:", response.data);
-          console.log("API Response:", response.data.members);
+          
           
         setLoading(false);
       } catch (err) {

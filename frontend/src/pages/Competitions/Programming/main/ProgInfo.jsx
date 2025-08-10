@@ -1,19 +1,19 @@
 
-  
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import logo from "../../../../assets/Static/logoWrite-re.png";
 import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
 import useGameID from '../../../../hooks/GameID';
-import Swal from 'sweetalert2';
 
 const ProgInfo = () => {
+  // All hooks moved to the top level
   const { competition } = useParams();
   const { id } = useParams();
-  const event_id = id;
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
+  const event_id = id;
   const type = searchParams.get('eventName');
   const team_id = searchParams.get('teamId');
 
@@ -29,8 +29,10 @@ const ProgInfo = () => {
     error: gameIdError 
   } = useGameID(team_id, event_id, "programming");
 
-  const navigate = useNavigate();
+  const completed = GameID?.completed;
   
+  
+
   // Handle loading state
   if (allLoading || gameIdLoading) {
     return (
@@ -71,25 +73,22 @@ const ProgInfo = () => {
       </motion.div>
     );
   }
+
   const competitionDetails = {
-    questions:allQuestions.number_of_questions,
-    score:allQuestions.number_of_questions,
-    time: (allQuestions.time_limit) /60 ,
+    questions: allQuestions.number_of_questions,
+    score: allQuestions.number_of_questions,
+    time: (allQuestions.time_limit) / 60,
     title: type,
     description: `Test your ${type} programming skills with algorithmic challenges`,
     color: "from-emerald-500 to-emerald-700"
-
-
   };
 
   const details = competitionDetails;
+  const isCompetitionStarted = !!GameID?.id;
 
   const handleStartCompetition = () => {
     navigate(`/competition/${type}/${GameID.id}?id=${encodeURIComponent(id)}`);
   };
-
-  // Add this after competitionDetails declaration
-  const isCompetitionStarted = !!GameID.id;
 
   return (
     <motion.div 
@@ -99,7 +98,7 @@ const ProgInfo = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Animated background elements - kept as requested */}
+      {/* Animated background elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         {[...Array(8)].map((_, i) => (
           <motion.div
@@ -209,139 +208,151 @@ const ProgInfo = () => {
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Time limit</h3>
                 <p className="text-2xl font-bold text-gray-800 mt-2">{details.time} minutes</p>
               </motion.div>
-              
-              
             </div>
           </div>
         </motion.div>
-       {/* Start Button Section */}
-<motion.div 
-  className="text-center"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ delay: 0.9 }}
->
-  {isCompetitionStarted ? (
-    <div className="relative inline-block">
-      <motion.button
-        onClick={handleStartCompetition}
-        whileHover={{ 
-          scale: 1.05,
-          boxShadow: "0 20px 40px -10px rgba(6, 182, 212, 0.6)"
-        }}
-        whileTap={{ scale: 0.95 }}
-        className="relative px-12 py-4 rounded-xl font-bold text-2xl text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 shadow-xl shadow-cyan-500/50 text-center transition-all duration-300 cursor-pointer z-10"
-      >
-        Start Competition
-        {/* Pulsing effect */}
-        <motion.span
-          className="absolute inset-0 rounded-xl bg-white"
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{
-            opacity: [0, 0.3, 0],
-            scale: [1, 1.1, 1.2]
-          }}
-          transition={{ 
-            duration: 2, 
-            repeat: Infinity,
-            repeatDelay: 0.5
-          }}
-        />
-      </motion.button>
-      
-      {/* Floating particles animation */}
-      {[...Array(5)].map((_, i) => (
-        <motion.span
-          key={i}
-          className="absolute rounded-full bg-cyan-400/80"
-          initial={{ 
-            width: "6px", 
-            height: "6px",
-            opacity: 0
-          }}
-          animate={{
-            opacity: [0, 1, 0],
-            y: [0, -20],
-            x: [0, (i % 2 === 0 ? -1 : 1) * 30]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            delay: i * 0.3,
-            ease: "easeOut"
-          }}
-          style={{
-            top: "50%",
-            left: "50%",
-            translateX: "-50%",
-            translateY: "-50%"
-          }}
-        />
-      ))}
-    </div>
-  ) : (
-    <motion.div
-      className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-6 border border-cyan-500/20"
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="flex flex-col items-center">
-        <motion.div
-          animate={{ 
-            rotate: [0, 10, 0, -10, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ 
-            repeat: Infinity, 
-            duration: 4 
-          }}
-          className="mb-6"
+        
+        {/* Start Button Section */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9 }}
         >
-          <ClockIcon className="h-16 w-16 text-cyan-400" />
-        </motion.div>
-        
-        <h3 className="text-2xl font-bold text-cyan-50 mb-4">
-          Competition Not Started Yet
-        </h3>
-        
-        <p className="text-cyan-100/80 mb-6 max-w-md text-center">
-          The competition will begin soon. Prepare yourself for
-          <span className="font-semibold text-cyan-300"> {details.questions} challenges </span> 
-          with a time limit of 
-          <span className="font-semibold text-cyan-300"> {details.time} minutes</span>.
-        </p>
-        
-        <div className="bg-cyan-900/30 rounded-xl px-6 py-3 border border-cyan-500/30">
-          <span className="text-cyan-100 font-medium">Current Status: </span>
-          <span className="ml-2 font-semibold text-amber-400 animate-pulse">
-            Waiting to Start
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  )}
 
-  <motion.p 
-    className="mt-6 text-cyan-100/90 text-md"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 1.1 }}
-  >
-    {isCompetitionStarted ? (
-      <>
-        <span className="font-semibold text-cyan-300">{details.time} minute time limit</span> for 
-        <span className="font-semibold text-cyan-300"> {details.questions} challenges</span>
-      </>
-    ) : (
-      "Stay tuned - The competition will begin shortly"
-    )}
-  </motion.p>
-</motion.div>
+          {completed ? (
+            <div className="text-center">
+              <motion.h2 
+                className="text-2xl font-bold text-cyan-600 mb-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                Competition Completed!
+              </motion.h2>
+            </div>
+          ) : (isCompetitionStarted ? (
+            <div className="relative inline-block">
+              <motion.button
+                onClick={handleStartCompetition}
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: "0 20px 40px -10px rgba(6, 182, 212, 0.6)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                className="relative px-12 py-4 rounded-xl font-bold text-2xl text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 shadow-xl shadow-cyan-500/50 text-center transition-all duration-300 cursor-pointer z-10"
+              >
+                Start Competition
+                <motion.span
+                  className="absolute inset-0 rounded-xl bg-white"
+                  initial={{ opacity: 0, scale: 1 }}
+                  animate={{
+                    opacity: [0, 0.3, 0],
+                    scale: [1, 1.1, 1.2]
+                  }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity,
+                    repeatDelay: 0.5
+                  }}
+                />
+              </motion.button>
+              
+              {[...Array(5)].map((_, i) => (
+                <motion.span
+                  key={i}
+                  className="absolute rounded-full bg-cyan-400/80"
+                  initial={{ 
+                    width: "6px", 
+                    height: "6px",
+                    opacity: 0
+                  }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    y: [0, -20],
+                    x: [0, (i % 2 === 0 ? -1 : 1) * 30]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                    ease: "easeOut"
+                  }}
+                  style={{
+                    top: "50%",
+                    left: "50%",
+                    translateX: "-50%",
+                    translateY: "-50%"
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-6 border border-cyan-500/20"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-col items-center">
+                <motion.div
+                  animate={{ 
+                    rotate: [0, 10, 0, -10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 4 
+                  }}
+                  className="mb-6"
+                >
+                  <ClockIcon className="h-16 w-16 text-cyan-400" />
+                </motion.div>
+                
+                <h3 className="text-2xl font-bold text-cyan-50 mb-4">
+                  Competition Not Started Yet
+                </h3>
+                
+                <p className="text-cyan-100/80 mb-6 max-w-md text-center">
+                  The competition will begin soon. Prepare yourself for
+                  <span className="font-semibold text-cyan-300"> {details.questions} challenges </span> 
+                  with a time limit of 
+                  <span className="font-semibold text-cyan-300"> {details.time} minutes</span>.
+                </p>
+                
+                <div className="bg-cyan-900/30 rounded-xl px-6 py-3 border border-cyan-500/30">
+                  <span className="text-cyan-100 font-medium">Current Status: </span>
+                  <span className="ml-2 font-semibold text-amber-400 animate-pulse">
+                    Waiting to Start
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          )
+          )}
+          
+
+          <motion.p 
+            className="mt-6 text-cyan-100/90 text-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1 }}
+          >
+            {isCompetitionStarted ? (
+              <>
+                <span className="font-semibold text-cyan-300">{details.time} minute time limit</span> for 
+                <span className="font-semibold text-cyan-300"> {details.questions} challenges</span>
+              </>
+            ) : (
+              "Stay tuned - The competition will begin shortly"
+            )}
+          </motion.p>
+        </motion.div>
       </div>
     </motion.div>
   );
 };
+
 const ClockIcon = ({ className }) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
@@ -358,4 +369,5 @@ const ClockIcon = ({ className }) => (
     />
   </svg>
 );
+
 export default ProgInfo;

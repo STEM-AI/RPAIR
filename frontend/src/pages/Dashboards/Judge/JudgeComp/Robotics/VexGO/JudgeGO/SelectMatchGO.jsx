@@ -12,7 +12,6 @@ const SelectMatchGO = () => {
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
-  console.log("eventName", eventName);
 
   
 

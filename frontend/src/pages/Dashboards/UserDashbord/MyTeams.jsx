@@ -260,7 +260,15 @@ const MyTeams = () => {
           <p className="text-gray-500 max-w-md mx-auto">
             {searchQuery 
               ? "No teams match your search. Try different keywords." 
-              : "You haven't joined any teams yet. Create or join a team to get started."}
+              : (
+                <>
+                  Try adjusting your search terms or create a new team to get started.
+                  <br />
+                  <Link to="/Dashboard/User/CreateTeam" className="text-cyan-600 hover:text-cyan-700">
+                    Create a new team
+                  </Link>
+                </>
+              )}
           </p>
         </motion.div>
       )}

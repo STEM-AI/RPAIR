@@ -51,7 +51,7 @@ const SkillsGO = () => {
       error: scoresError, 
       refetch: refetchScores 
     } = useGetScore(event_id, activeTab);
-  // Memoized round schedules - FIXED: use const instead of reassignment
+
   const roundSchedules = useMemo(() => {
     return [
       schedulesByRound[activeTab]?.[1],
@@ -133,6 +133,18 @@ const SkillsGO = () => {
       return serverScore?.score !== null || confirmed[round]?.[match.id];
     });
   };
+
+      const scoresMap = useMemo(() => {
+        return serverScores.reduce((acc, match) => {
+          acc[match.id] = {
+            score: match.score,
+            completed: match.completed,
+            time_taken: match.time_taken
+          };
+          return acc;
+        }, {});
+      }, [serverScores]);
+
 
 
  
@@ -364,48 +376,55 @@ const SkillsGO = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-                {roundSchedules[round - 1]?.schedule?.games?.map((match) => {
-                const serverScore = serverScores?.find(s => s.id === match.id);
-                const scoreValue = serverScore?.score ?? null;
-                const isConfirmed = confirmed[selectedRound]?.[match.id];
-                const hasScore = scoreValue > 0;
-                
+              {roundSchedules[round - 1]?.schedule?.games?.map((match) => {
+                const matchScore = scoresMap[match.id] || {};
+                const scoreValue = matchScore.score;
+                const isCompleted = matchScore.completed;
+                const hasScore = scoreValue !== null && scoreValue !== undefined;
+
                 return (
                   <tr
                     key={match.id}
                     className={`hover:bg-gray-50 transition-colors ${
-                      hasScore ? 'bg-green-50' : ''
+                      isCompleted ? 'bg-green-50 border-l-4 border-green-400' : ''
                     }`}
                   >
                     <td className="px-6 py-4 font-semibold text-gray-700">#{match.id}</td>
                     <td className="px-6 py-4 text-center font-medium">{match.team1_name}</td>
                     <td className="px-6 py-4 text-center text-gray-500">{match.team1}</td>
                     <td className="px-6 py-4 text-center font-bold text-teal-600">
-                      {hasScore ? scoreValue : 0}
+                      <span className={`inline-flex items-center justify-center w-16 h-8 rounded-full ${
+                        isCompleted ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {hasScore ? scoreValue : '-'}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-center text-gray-600">
-                      {serverScore?.time_taken ? (
+                      {matchScore.time_taken ? (
                         <div className="flex items-center justify-center gap-1">
                           <FaClock className="text-gray-400" />
-                          <span>{formatTime(serverScore.time_taken)}</span>
+                          <span>{formatTime(matchScore.time_taken)}</span>
                         </div>
                       ) : (
                         '-'
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleStartMatch(match)}
-                        disabled={hasScore || isConfirmed}
-                        className={`px-4 py-2 rounded-lg flex items-center justify-center  gap-2 transition-transform ${
-                          hasScore || isConfirmed
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-green-500 hover:bg-green-600 text-white hover:shadow-md'
-                        }`}
-                      >
-                        <FaPlay />
-                        <span>Start Match</span>
-                      </button>
+                      {isCompleted ? (
+                        <div className="flex flex-col items-center">
+                          <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
+                            <FaCheck className="h-4 w-4" />
+                          </span>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleStartMatch(match)}
+                          className="px-4 py-2 rounded-lg flex text-center items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white hover:shadow-md transition-transform"
+                        >
+                          <FaPlay />
+                          <span>Start Match</span>
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );

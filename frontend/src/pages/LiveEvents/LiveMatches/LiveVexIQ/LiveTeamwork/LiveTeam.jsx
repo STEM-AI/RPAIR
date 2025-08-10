@@ -61,7 +61,6 @@ const LiveTeamVex = () => {
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Score Update:", data);
 
       if (data.game_id && data.score !== undefined) {
         setMatches(prevMatches => {

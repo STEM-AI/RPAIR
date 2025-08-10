@@ -44,7 +44,6 @@ const CompetitionEvents = () => {
       });
       
       setEvents(response.data);
-      console.log(response.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);

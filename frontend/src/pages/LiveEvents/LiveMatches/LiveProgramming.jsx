@@ -12,7 +12,7 @@ const LiveProgramming = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
-  const id = searchParams.get('id');
+  const id = searchParams.get('eventId');
 
 
    

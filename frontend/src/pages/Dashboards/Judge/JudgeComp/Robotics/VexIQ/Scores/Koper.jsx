@@ -8,7 +8,8 @@ import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
 
-const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
+
+const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
   const [remainingTime, setRemainingTime] = useState(90);
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
@@ -22,7 +23,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
   const [firajCount, setFirajCount] = useState(0);
   const [doubleGroupCount, setDoubleGroupCount] = useState(0);
   const [tripleGroupCount, setTripleGroupCount] = useState(0);
-  const [circlePlayCount, setCirclePlayCount] = useState(0);
+  const [circlePlays, setCirclePlays] = useState([]); // Changed from circlePlayCount to circlePlays array
   const [unlockedCircles, setUnlockedCircles] = useState(0);
 
   const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
@@ -37,10 +38,10 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
 
   // Reset circle plays when unlocks drop below current count
   useEffect(() => {
-    if (circlePlayCount > 0 && unlockedCircles < circlePlayCount ) {
-      setCirclePlayCount(0);
+    if (circlePlays.length > 0 && unlockedCircles < circlePlays.length) {
+      setCirclePlays([]);
     }
-  }, [unlockedCircles, circlePlayCount]);
+  }, [unlockedCircles, circlePlays]);
 
   const score = useMemo(() => {
     let totalScore = 0;
@@ -48,15 +49,11 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
     totalScore += doubleGroupCount * 10;
     totalScore += tripleGroupCount * 15;
     
-        let circlePoints = 0;
-    if (firajCount > 0) circlePoints = 2;
-    if (doubleGroupCount > 0) circlePoints = 4;
-    if (tripleGroupCount > 0) circlePoints = 6;
-    
-    totalScore += circlePlayCount * circlePoints ;
+    // Calculate circle points based on actual values stored
+    totalScore += circlePlays.reduce((sum, points) => sum + points, 0);
     
     return totalScore;
-  }, [cubeCount, firajCount, doubleGroupCount, tripleGroupCount, circlePlayCount]);
+  }, [cubeCount, firajCount, doubleGroupCount, tripleGroupCount, circlePlays]);
 
   const handleCalculateAndSubmit = async () => {
     if (score === 0) {
@@ -244,7 +241,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
         setFirajCount(0);
         setDoubleGroupCount(0);
         setTripleGroupCount(0);
-        setCirclePlayCount(0);
+        setCirclePlays([]); // Reset to empty array
         setGamePaused(false);
         setTimeUp(false);
       },
@@ -255,28 +252,10 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
   };
 
   const handleCirclePlay = () => {
-    if (circlePlayCount < 6) {
-      setCirclePlayCount(prev => prev + 1);
+    if (circlePlays.length < 6) {
+      setCirclePlays([...circlePlays, getCirclePointValue()]);
     }
   };
-
-  useEffect(() => {
-    if (remainingTime === 0) {
-      playEnd();
-    }
-  }, [remainingTime, playEnd]);
-
-  useEffect(() => {
-    if (gameActive && !gamePaused) {
-      if (
-        (prevTimeRef.current >= 25 && remainingTime === 25) ||
-        (prevTimeRef.current >= 35 && remainingTime === 35)
-      ) {
-        playMiddle();
-      }
-    }
-    prevTimeRef.current = remainingTime;
-  }, [remainingTime, gameActive, gamePaused, playMiddle]);
 
   // Calculate current circle point value
   const getCirclePointValue = () => {
@@ -287,7 +266,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
   };
 
   // Calculate current points per circle play
-  const currentCirclePoints = getCirclePointValue() ;
+  const currentCirclePoints = getCirclePointValue();
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
@@ -304,26 +283,26 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
         </div>
 
         {/* Score Display */}
-        <div className="flex-grow overflow-y-auto">
-        <div className="p-4 bg-gray-50">
-          <div className="text-center text-2xl font-bold text-gray-800 mb-2">
-            Current Score: <span className="text-green-600">{score}</span>
+         <div className="flex-grow overflow-y-auto">
+          <div className="p-4 bg-gray-50">
+            <div className="text-center text-2xl font-bold text-gray-800 mb-2">
+              Current Score: <span className="text-green-600">{score}</span>
+            </div>
+            <div className="text-center text-sm text-gray-600">
+              Unlocked Circles: {unlockedCircles}/6
+            </div>
+            <div className="flex justify-center mt-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div 
+                  key={i}
+                  className={`w-4 h-4 rounded-full mx-1 ${
+                    i < unlockedCircles ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
-          <div className="text-center text-sm text-gray-600">
-            Unlocked Circles: {unlockedCircles}/6
-          </div>
-          <div className="flex justify-center mt-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div 
-                key={i}
-                className={`w-4 h-4 rounded-full mx-1 ${
-                  i < unlockedCircles ? "bg-green-500" : "bg-gray-300"
-                }`}
-              />
-            ))}
-          </div>
-          </div>
-          </div>
+        </div>
 
         {/* Timer and Controls */}
         <div className="p-4">
@@ -468,51 +447,54 @@ const Koper = ({ onCalculate, onClose, gameId, eventName ,eventId}) => {
           
           {/* Circle Play Section - Only when circles are unlocked */}
           {unlockedCircles > 0 && (
-            <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-              <h3 className="font-bold text-lg text-center text-yellow-800 mb-3">
-                Circle Plays ({currentCirclePoints} points per play)
-              </h3>
-              <div className="text-center mb-3">
-                <div className="flex justify-center mb-2">
-                  {Array.from({ length: 6 }).map((_, i) => (
+          <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+            <h3 className="font-bold text-lg text-center text-yellow-800 mb-3">
+              Circle Plays ({currentCirclePoints} points for new plays)
+            </h3>
+            <div className="text-center mb-3">
+              <div className="flex justify-center mb-2">
+                {Array.from({ length: 6 }).map((_, i) => {
+                  const points = circlePlays[i];
+                  return (
                     <div 
                       key={i}
                       className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${
-                        i < circlePlayCount ? "bg-yellow-500" : "bg-gray-300"
+                        points ? "bg-yellow-500" : "bg-gray-300"
                       }`}
                     >
                       <span className="font-bold text-white">
                         {i + 1}
                       </span>
                     </div>
-                  ))}
-                </div>
-                <p className="text-sm text-yellow-700">
-                  Current point value: {getCirclePointValue()} per circle
-                  {firajCount > 0 && " (Firaj circles)"}
-                  {doubleGroupCount > 0 && " (Double circles)"}
-                  {tripleGroupCount > 0 && " (Triple circles)"}
-                </p>
-                <p className="text-sm text-yellow-700 mt-1">
-                  Total circle points: {circlePlayCount * currentCirclePoints}
-                </p>
+                  );
+                })}
               </div>
-              
-              <button
-                onClick={handleCirclePlay}
-                disabled={!gameActive || gamePaused || circlePlayCount >= 6}
-                className={`w-full py-2 rounded-lg font-semibold ${
-                  circlePlayCount < 6 
-                    ? "bg-yellow-500 text-white hover:bg-yellow-600" 
-                    : "bg-green-500 text-white"
-                } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                {circlePlayCount < 6
-                  ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)` 
-                  : "All Circle Plays Completed"}
-              </button>
+              <p className="text-sm text-yellow-700">
+                Current point value: {getCirclePointValue()} per circle
+                {firajCount > 0 && " (Firaj circles)"}
+                {doubleGroupCount > 0 && " (Double circles)"}
+                {tripleGroupCount > 0 && " (Triple circles)"}
+              </p>
+              <p className="text-sm text-yellow-700 mt-1">
+                Total circle points: {circlePlays.reduce((sum, points) => sum + points, 0)}
+              </p>
             </div>
-          )}
+            
+            <button
+              onClick={handleCirclePlay}
+              disabled={!gameActive || gamePaused || circlePlays.length >= 6}
+              className={`w-full py-2 rounded-lg font-semibold ${
+                circlePlays.length < 6 
+                  ? "bg-yellow-500 text-white hover:bg-yellow-600" 
+                  : "bg-green-500 text-white"
+              } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {circlePlays.length < 6
+                ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)` 
+                : "All Circle Plays Completed"}
+            </button>
+          </div>
+        )}
         </div>
 
         {/* Submit Button */}

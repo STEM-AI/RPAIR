@@ -15,8 +15,6 @@ const PaymentForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your payment submission logic here
-    console.log("Form Submitted:", formData);
     };
     
     const [isOverlayVisible, setIsOverlayVisible] = useState(false); // State for controlling overlay visibility
