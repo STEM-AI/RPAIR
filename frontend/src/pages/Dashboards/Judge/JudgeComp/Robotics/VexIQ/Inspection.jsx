@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { ImSpinner8 } from "react-icons/im";
-import { FiAlertCircle } from "react-icons/fi";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -11,14 +9,11 @@ import Swal from "sweetalert2";
 import { useSearchParams } from "react-router-dom";
 export default function Inspection() {
      const [searchParams] = useSearchParams();
-  const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
   const [checkedItems, setCheckedItems] = useState(new Array(inspectionChecklist.length).fill(false));
   const [division, setDivision] = useState("");
   const [score, setScore] = useState("");
-   const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("access_token");
-  const [activeAlerts, setActiveAlerts] = useState({});
   const [teams, setTeams] = useState([]);
     const [judge, setJudge] = useState("");
     const [selectedTeam, setSelectedTeam] = useState("");

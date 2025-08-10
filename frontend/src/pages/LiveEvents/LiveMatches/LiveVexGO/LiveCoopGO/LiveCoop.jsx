@@ -7,7 +7,6 @@ import useGetScore from "../../../../../hooks/Schedule/GetScore";
 
 const LiveCoop = () => {
   const [matches, setMatches] = useState([]);
-  const [teams, setTeams] = useState([]);
   const [rankings, setRankings] = useState([]);
   const [showRankings, setShowRankings] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(new Date());
@@ -16,6 +15,7 @@ const LiveCoop = () => {
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
+   const intervalRef = useRef(null);
 
   // Moved useGetScore to top-level
   const { 
@@ -24,6 +24,23 @@ const LiveCoop = () => {
   } = useGetScore(eventId, "coop");
 
   // Initialize matches from serverScores
+    useEffect(() => {
+    if (eventId) {
+      // Initial fetch on mount
+      refetchScores();
+      
+      intervalRef.current = setInterval(() => {
+        refetchScores();
+      }, 30000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [eventId, refetchScores]);
+
   useEffect(() => {
     if (serverScores) {
       setMatches(serverScores);

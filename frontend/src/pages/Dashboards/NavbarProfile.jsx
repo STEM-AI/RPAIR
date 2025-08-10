@@ -1,6 +1,5 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import logo from "../../assets/Static/logoWrite-re.png";
 import logoBlack from "../../assets/Static/logo2.png";
 import { useLocation, NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -12,7 +11,6 @@ import { RxDropdownMenu } from "react-icons/rx";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 import { NavHashLink } from "react-router-hash-link";
 import { BiSolidMessageAdd } from "react-icons/bi";
-import NotificationsPage from "./Notifications";
 
 export default function NavbarProfile({isSidebarOpen}) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +21,6 @@ export default function NavbarProfile({isSidebarOpen}) {
     profile: false
   });
 
-  const location = useLocation();
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);

@@ -10,8 +10,7 @@ import useGetScore from "../../../../../hooks/Schedule/GetScore";
 const SkillsContainerGO = () => {
   const [rankings, setRankings] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(new Date());
-  const [matches, setMatches] = useState([]);
-  const [teams, setTeams] = useState([]);
+  
   const [searchParams] = useSearchParams();
   const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');

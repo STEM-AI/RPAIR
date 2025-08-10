@@ -1,15 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logo from "../../../assets/Static/logoWrite-re.png";
-import { FaDownload, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const CompOpen = () => {
   const { competition } = useParams();
+  const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
   const team_id = searchParams.get('teamId');
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -35,7 +34,6 @@ const CompOpen = () => {
   };
 
   const details = competitionDetails[competition];
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
 
@@ -43,7 +41,7 @@ const CompOpen = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
+ const handleFileChange = (e) => {
     const file = e.target.files[0];
     
     if (file) {
@@ -51,12 +49,14 @@ const CompOpen = () => {
       const fileExtension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
       if (!details.allowedTypes.includes(fileExtension)) {
         setUploadStatus(`Invalid file type. Only ${details.allowedTypes.join(', ')} allowed`);
+        setSelectedFile(null);
         return;
       }
       
       // Check file size
       if (file.size > details.maxSize * 1024 * 1024) {
         setUploadStatus(`File exceeds ${details.maxSize}MB limit`);
+        setSelectedFile(null);
         return;
       }
       
@@ -67,14 +67,25 @@ const CompOpen = () => {
       setUploadStatus('No file selected');
     }
   };
-
   const handleSubmit = async () => {
     if (!team_id) {
-      return Swal.fire("Error", "Team data is not available", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Team Error",
+        text: "Team data is not available",
+        confirmButtonColor: "#06b6d4"
+      });
+      return;
     }
 
     if (!selectedFile) {
-      return Swal.fire("Error", "Please select a file first!", "error");
+      Swal.fire({
+        icon: "error",
+        title: "File Error",
+        text: "Please select a file first!",
+        confirmButtonColor: "#06b6d4"
+      });
+      return;
     }
 
     try {
@@ -84,8 +95,8 @@ const CompOpen = () => {
       const formData = new FormData();
       formData.append('attachment', selectedFile);
 
-      await axios.patch(
-        `${process.env.REACT_APP_API_URL}/${competition}/${eventName}/team-attachment/${team_id}/`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/${competition}/${id}/team-attachment/${team_id}/`,
         formData,
         {
           headers: {
@@ -96,15 +107,39 @@ const CompOpen = () => {
       );
 
       setUploadStatus('Upload successful! Redirecting...');
-      Swal.fire("Success", "Your file submitted successfully!", "success");
       
-      setTimeout(() => {
-        navigate('/Dashboard/Competitions');
-      }, 2000);
+      await Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Your file was submitted successfully!",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      
+      navigate('/Dashboard/Competitions' , { replace: true });
     } catch (err) {
       console.error("Submission error:", err);
       setUploadStatus('Upload failed. Please try again.');
-      Swal.fire("Error", "Submission failed", "error");
+      
+      let errorMessage = "Submission failed";
+      if (err.response) {
+        if (err.response.data?.detail) {
+          errorMessage = err.response.data.detail;
+        } else if (err.response.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response.status === 413) {
+          errorMessage = "File size is too large";
+        } else if (err.response.status === 415) {
+          errorMessage = "Unsupported file type";
+        }
+      }
+      
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: errorMessage,
+        confirmButtonColor: "#06b6d4"
+      });
     } finally {
       setLoading(false);
     }

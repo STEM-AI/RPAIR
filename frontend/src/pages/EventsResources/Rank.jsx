@@ -104,25 +104,7 @@ export default function Rank({ eventName, eventCategory, eventId }) {
         fetchData();
     }, [eventName, eventCategory, eventId]);
 
-    const getTeamName = (teamId) => {
-        let team;
-        switch (eventCategory) {
-            case 'vex_123':
-                team = gameRank.find(t => t.team === teamId);
-                break;
-            case 'vex_go':
-                team = skillsRank.find(t => t.team === teamId);
-                break;
-            case 'arduino':
-            case 'flutter':
-            case 'programming':
-                team = gameRank.find(t => t.id === teamId);
-                break;
-            default:
-                team = null;
-        }
-        return team ? team.team_name || team.team__name || team.name : 'Unknown Team';
-    };
+
 
     if (loading) {
         return (
@@ -306,7 +288,7 @@ const RankingSection = ({ title, data, icon, scoreField, timeField, isExpanded, 
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-gray-800">
-                                                {team.name || team.team_name || team.team__name}
+                                                {team.name || team.team_name || team.team__name || team.team}
                                             </h3>
                                             <div className="text-sm text-gray-500">
                                                 Team ID: {team.team || team.id}

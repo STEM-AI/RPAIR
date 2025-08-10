@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
-import Stack from "@mui/material/Stack";
 import { IoAddCircle } from "react-icons/io5";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { Helmet } from "react-helmet-async";
@@ -84,7 +81,6 @@ const CreateTeam = () => {
         coach: [{ name: "", email: "", phone_number: "", position: "" }]
       }));
     } else {
-      // إذا اختار لا، نمسح أي بيانات كوتش
       setFormData(prev => ({
         ...prev,
         coach: []
