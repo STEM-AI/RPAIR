@@ -250,7 +250,7 @@ useEffect(() => {
     const today = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
 
     const upcomingCompetitions = events.filter(
-      (comp) => comp.start_date >= today
+      (comp) => comp.end_date >= today
     );
 
     // Handle judge deletion
