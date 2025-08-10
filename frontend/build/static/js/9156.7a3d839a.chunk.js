@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkforntend=self.webpackChunkforntend||[]).push([[9156],{9156:(e,n,r)=>{r.r(n),r.d(n,{default:()=>d});r(2791);var l=r(3050),t=r(184);function d(){return(0,t.jsx)("div",{children:(0,t.jsx)(l.ql,{children:(0,t.jsx)("title",{children:"Fablab"})})})}}}]);
-//# sourceMappingURL=9156.7a3d839a.chunk.js.map
