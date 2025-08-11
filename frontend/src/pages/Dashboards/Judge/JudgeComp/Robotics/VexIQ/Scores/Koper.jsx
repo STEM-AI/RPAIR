@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useMemo } from "react";
-import { FaRedo, FaBullseye, FaTimes, FaPlay, FaPause, FaSync, FaPlus, FaMinus } from "react-icons/fa";
+import {  FaBullseye, FaTimes, FaPlay, FaPause, FaSync, FaPlus, FaMinus } from "react-icons/fa";
 import { BsSkipStartFill } from "react-icons/bs";
 import { GiThreeBurningBalls } from "react-icons/gi";
 import axios from "axios";

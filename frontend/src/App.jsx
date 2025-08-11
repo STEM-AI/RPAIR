@@ -1,5 +1,5 @@
-import React, { useState, useEffect , lazy ,Suspense } from "react";
-import {  Routes, Route ,useLocation, ScrollRestoration } from "react-router-dom";
+import React, {  useEffect } from "react";
+import {  Routes, Route  } from "react-router-dom";
 import "./App.css";
 import { getTokens, handleLogout, isTokenExpired } from "./pages/Auth/auth";
 
@@ -7,17 +7,14 @@ import { getTokens, handleLogout, isTokenExpired } from "./pages/Auth/auth";
 //                              components              //
 import { MatchProvider } from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/MatchContext";
 import Navbar from "./components/Nav/nav";
-import Footer from "./components/Footer/footer";
-import ContactUs from "./components/Contact/contactUs";
+
 import PublicRoute from "./components/PublicRoute";
 import LayoutDashboard from "./pages/Dashboards/LayoutDashboard/LayoutDashboard";
 import { LoadingProvider } from "./context/LoadingContext";
-import LoadingPage from "./components/LoadingPage"
-import VEX123Sheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
+
 import SheetSolo from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/SheetSolo";
 import SelectMatch123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/SelectMatch123";
 import Interview123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Interview123";
-import MainProg from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgInfo from "./pages/Competitions/Programming/main/ProgInfo";
 import OpenWelcome from "./pages/Competitions/OpenSource/OpenWelcom"
@@ -30,20 +27,17 @@ import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
 import LiveEvents from "./pages/LiveEvents/introEvents";
 import IntroVexIQ from "./pages/LiveEvents/IntroVexIQ";
 import IntroVexGO from "./pages/LiveEvents/introVexGo";
-import LiveTeamIQ from "./pages/Dashboards/View/LiveTeam";
 import LiveProgramming from "./pages/LiveEvents/LiveMatches/LiveProgramming";
 import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
 import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveSkillsIQ/LiveSkills";
 import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveTeamwork/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
-import CompetitionSheetContainer from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 import Certificate from "./components/Certificate/Certificate"
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
 
-import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/Skillsgo/SkillsContainerGo";
-import CompetitionSheet from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
+import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/skillsgo/SkillsContainerGo";
 import Sheet123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
 
 
@@ -91,7 +85,6 @@ import PaymentForm from "./pages/Dashboards/UserDashbord/PayMent";
 
 //                          Dashboards                           //
 import EventDash from "./pages/Dashboards/EventsDash";
-import UADashboard from "./pages/Dashboards/UADashboard";
 
 // 414
 //                          Admin                           //
@@ -100,8 +93,6 @@ import TeamDetails from "./pages/Dashboards/AdminDashboard/TeamDetails";
 import ListCompetitions from "./pages/Dashboards/AdminDashboard/ListCompetitions";
 import CompetitionEvents from "./pages/Dashboards/AdminDashboard/CompetitionEvents";
 import ListJudges from "./pages/Dashboards/AdminDashboard/ListJudges";
-import GameScheduleForm from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/GameScheduleForm";
-import DeleteSchedule from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/DeleteSchedule";
 
 //                          User                           //
 import MyTeams from "./pages/Dashboards/UserDashbord/MyTeams";

@@ -7,7 +7,6 @@ import InterviewRankings from "../../../../../../components/IntervIQNotbookIQIns
 import { useSearchParams } from "react-router-dom";
 const Interview = () => {
    const [searchParams] = useSearchParams();
-  const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
   
   return (

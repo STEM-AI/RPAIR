@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import scoreTeams from "../Scores/Koper";
+import { useState } from "react";
 import { FaTrophy, FaCheck, FaUsers, FaChartBar, FaSync } from "react-icons/fa";
 import { AiOutlineCalculator } from "react-icons/ai";
 import axios from "axios";
@@ -17,7 +16,6 @@ const Teamwork = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [rankings, setRankings] = useState([]);
   const [showRanking, setShowRanking] = useState(false);
-  const [schedule, setSchedule] = useState([]);
   const token = localStorage.getItem("access_token");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,7 +27,6 @@ const Teamwork = () => {
 
 
  
-  const [timeUnit, setTimeUnit] = useState('minutes'); // Add this state
 
   const handleTimeChange = (seconds) => {
     console.log("Time limit updated to:", seconds, "seconds");

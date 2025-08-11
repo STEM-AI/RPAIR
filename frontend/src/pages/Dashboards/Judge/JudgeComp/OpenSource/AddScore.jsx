@@ -1,25 +1,35 @@
-import React, { useState } from "react";
-import { MdAddBox } from "react-icons/md";
-import { FaTrophy, FaSearch, FaMedal } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import { IoClose } from "react-icons/io5";
 import { motion } from "framer-motion";
 
-export default function AddScore({ onClose, eventName, competition_name, selectedTeam, selectedTeamName, onScoreAdded ,onScore,eventID}) {
+export default function AddScore({ onClose, eventName, competition_name, selectedTeam, selectedTeamName, onScoreAdded, onScore, eventID }) {
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [score, setScore] = useState("");
   const token = localStorage.getItem("access_token");
 
+  // Effect to handle response messages
+  useEffect(() => {
+    if (responseMessage && alertType) {
+      if (alertType === "error") {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: responseMessage,
+          showConfirmButton: true,
+        });
+      }
+      // Success is already handled in the addScore function
+    }
+  }, [responseMessage, alertType]);
+
   const handleScoreChange = (e) => {
     setScore(e.target.value);
   };
 
-  
   const addScore = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -48,8 +58,7 @@ export default function AddScore({ onClose, eventName, competition_name, selecte
             Authorization: `Bearer ${token}`,
           },
         }
-        );
-        
+      );
 
       setAlertType("success");
       setResponseMessage("Score added successfully!");
@@ -60,13 +69,15 @@ export default function AddScore({ onClose, eventName, competition_name, selecte
         showConfirmButton: false,
         timer: 1500
       });
-      onScore(score)
+      onScore(score);
       onClose();
       if (onScoreAdded) onScoreAdded(); // Refresh the team list
     } catch (err) {
       setAlertType("error");
       setResponseMessage(
-        err.response?.data?.detail || "Failed to add score. Please try again."
+        err.response?.data?.detail || 
+        err.response?.data?.message || 
+        "Failed to add score. Please try again."
       );
     } finally {
       setIsSubmitting(false);

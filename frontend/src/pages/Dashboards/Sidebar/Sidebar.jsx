@@ -17,7 +17,6 @@ const Sidebar = ({isOpen, setIsOpen}) => {
   // const [isOpen, setIsOpen] = useState(false);
   const [isManagementOpen, setIsManagementOpen] = useState(false);
   const [isMainNavOpen, setIsMainNavOpen] = useState(false);
-  const [isEventOpen, setIsEventOpen] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
