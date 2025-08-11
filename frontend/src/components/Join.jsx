@@ -1,13 +1,12 @@
 
 
 import React, { useState, useEffect } from "react";
-import { FaTimes, FaRedo } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const Join = ({ event_id, eventName, onClose }) => {
     const [teams, setTeams] = useState([]);
-    const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formEvents, setFormEvents] = useState({ competition_event: "" });
 
@@ -23,13 +22,19 @@ const Join = ({ event_id, eventName, onClose }) => {
             });
             setTeams(response.data);
         } catch (err) {
-            setError("Failed to fetch events. Please try again.");
+            console.log(err);
+            
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: err.response?.data?.error || "Failed to assign the event. Please try again."
+            });
         }
     };
 
     useEffect(() => {
         fetchTeam();
-    }, []);
+    }, [token]);
 
     const handleEventChange = (e) => {
         const { name, value } = e.target;

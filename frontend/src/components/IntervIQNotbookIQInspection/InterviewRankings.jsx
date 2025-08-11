@@ -27,7 +27,7 @@ const InterviewRankings = ({ apiUrl }) => {
 
       setRankings(response.data);
       
-      const rankingList = response.data.map((team, index) => 
+      const rankingList = rankings.map((team, index) => 
         `<b>${index + 1}.</b> ${team.name} - ${team.interview_score} points`
       ).join('<br>');
 

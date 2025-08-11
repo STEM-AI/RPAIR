@@ -27,7 +27,7 @@ const NotBookRankings = ({ apiUrl }) => {
 
       setRankings(response.data);
       
-      const rankingList = response.data.map((team, index) => 
+      const rankingList = rankings.map((team, index) => 
         `<b>${index + 1}.</b> ${team.name} - ${team.eng_notebook_score} points`
       ).join('<br>');
 
