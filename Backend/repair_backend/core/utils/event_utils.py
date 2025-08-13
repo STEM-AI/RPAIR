@@ -24,6 +24,8 @@ def teamwork_schedule( event ,event_teams , game_time , stage, schedule):
     time_limit = event.time_limit
     if stage == 'coop':
         time_limit = 120
+    elif stage == 'teamwork':
+        time_limit = 60
     games = []
     for i in range(len(event_teams)):
         for j in range(i + 1, len(event_teams)):
@@ -39,9 +41,9 @@ def skills_schedule(event , game_time , stage, schedule):
     games = []
     if stage == 'driver_go':
         paused_time = 120
-    elif stage == 'auto':
-        paused_time = 90
-    elif stage in ['coding','driver_iq']:
+    elif stage in ['auto','driver_iq']:
+        paused_time = event.time_limit
+    elif stage == 'coding':
         paused_time = 60
     elif stage == 'programming':
         paused_time = event.time_limit
