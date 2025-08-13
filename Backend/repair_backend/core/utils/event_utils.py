@@ -39,9 +39,9 @@ def skills_schedule(event , game_time , stage, schedule):
     games = []
     if stage == 'driver_go':
         paused_time = 120
-    elif stage in ['driver_iq','auto']:
-        paused_time = event.time_limit
-    elif stage == 'coding':
+    elif stage == 'auto':
+        paused_time = 90
+    elif stage in ['coding','driver_iq']:
         paused_time = 60
     elif stage == 'programming':
         paused_time = event.time_limit
