@@ -12,6 +12,11 @@ class TeamInterviewView(UpdateAPIView):
     lookup_field ='team_id'
     lookup_url_kwarg = 'id'
 
+    def get_object(self):
+        team_id = self.kwargs.get('id')
+        event_id = self.kwargs.get('event_id')
+        return TeamCompetitionEvent.objects.get(team_id=team_id,competition_event_id=event_id)
+
 
 
 class TeamInterviewRankListView(ListAPIView):
