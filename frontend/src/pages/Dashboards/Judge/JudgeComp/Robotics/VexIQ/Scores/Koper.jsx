@@ -8,9 +8,8 @@ import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
 import useSound from 'use-sound';
 
-
-const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
-  const [remainingTime, setRemainingTime] = useState(90);
+const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) => {
+  const [remainingTime, setRemainingTime] = useState();
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
@@ -18,17 +17,24 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
   const [showControls, setShowControls] = useState(false);
   const token = localStorage.getItem("access_token");
   const prevTimeRef = useRef(remainingTime);
-
+  const [circlePlays, setCirclePlays] = useState(Array(6).fill(null));
   const [cubeCount, setCubeCount] = useState(0);
   const [firajCount, setFirajCount] = useState(0);
   const [doubleGroupCount, setDoubleGroupCount] = useState(0);
   const [tripleGroupCount, setTripleGroupCount] = useState(0);
-  const [circlePlays, setCirclePlays] = useState([]); // Changed from circlePlayCount to circlePlays array
   const [unlockedCircles, setUnlockedCircles] = useState(0);
 
   const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
   const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
   const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
+
+  useEffect(() => {
+    if (activeTab === "teamwork") {
+      setRemainingTime(60);
+    } else {
+      setRemainingTime(90);
+    }
+  }, [activeTab]);
 
   // Calculate unlocked circles
   useEffect(() => {
@@ -37,24 +43,37 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
   }, [firajCount, doubleGroupCount, tripleGroupCount]);
 
   // Reset circle plays when unlocks drop below current count
-  useEffect(() => {
-    if (circlePlays.length > 0 && unlockedCircles < circlePlays.length) {
-      setCirclePlays([]);
-    }
-  }, [unlockedCircles, circlePlays]);
+ useEffect(() => {
+  const playedCirclesCount = circlePlays.filter(points => points !== null).length;
+  
+  if (playedCirclesCount > 0 && unlockedCircles < playedCirclesCount) {
+    setCirclePlays(Array(6).fill(null));
+  }
+}, [unlockedCircles, circlePlays]);
+
 
   const score = useMemo(() => {
     let totalScore = 0;
     totalScore += cubeCount;
     totalScore += doubleGroupCount * 10;
     totalScore += tripleGroupCount * 15;
-    
-    // Calculate circle points based on actual values stored
     totalScore += circlePlays.reduce((sum, points) => sum + points, 0);
-    
     return totalScore;
   }, [cubeCount, firajCount, doubleGroupCount, tripleGroupCount, circlePlays]);
 
+
+   useEffect(() => {
+    let totalUnlocks = 0;
+    if (activeTab === 'auto') {
+      totalUnlocks = (firajCount * 2) + doubleGroupCount + tripleGroupCount;
+    } else {
+      totalUnlocks = (firajCount + doubleGroupCount + tripleGroupCount) * 2;
+    }
+    setUnlockedCircles(Math.min(totalUnlocks, 6));
+  }, [firajCount, doubleGroupCount, tripleGroupCount, activeTab]);
+
+
+  
   const handleCalculateAndSubmit = async () => {
     if (score === 0) {
       Alert.warning({
@@ -241,7 +260,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
         setFirajCount(0);
         setDoubleGroupCount(0);
         setTripleGroupCount(0);
-        setCirclePlays([]); // Reset to empty array
+        setCirclePlays(Array(6).fill(null));
         setGamePaused(false);
         setTimeUp(false);
       },
@@ -250,12 +269,21 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
       }
     });
   };
-
+const handleRemoveCirclePlay = (index) => {
+  if (!gameActive || gamePaused) return;
+  
+  const newCirclePlays = [...circlePlays];
+  newCirclePlays[index] = null;
+  setCirclePlays(newCirclePlays);
+};
   const handleCirclePlay = () => {
-    if (circlePlays.length < 6) {
-      setCirclePlays([...circlePlays, getCirclePointValue()]);
-    }
-  };
+      const emptyIndex = circlePlays.findIndex(points => points === null);
+      if (emptyIndex !== -1) {
+        const newCirclePlays = [...circlePlays];
+        newCirclePlays[emptyIndex] = getCirclePointValue();
+        setCirclePlays(newCirclePlays);
+      }
+    };
 
   // Calculate current circle point value
   const getCirclePointValue = () => {
@@ -265,19 +293,26 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
     return 0;
   };
 
-   useEffect(() => {
-    if (gameActive && !gamePaused) {
-      if (
-        (prevTimeRef.current >= 40 && remainingTime === 40) ||
-        (prevTimeRef.current >= 50 && remainingTime === 50)
-      ) {
+  useEffect(() => {
+    
+ if (activeTab === "teamwork") {
+      if (gameActive && !gamePaused) {
+      if (remainingTime === 35 || remainingTime === 25) {
         playMiddle();
       }
     }
+    } else {
+      if (gameActive && !gamePaused) {
+      if (remainingTime === 40 || remainingTime === 50) {
+        playMiddle();
+      }
+    }
+    }
+    
     prevTimeRef.current = remainingTime;
-  }, [remainingTime, gameActive, gamePaused, playMiddle]);
+  }, [remainingTime, gameActive, gamePaused, playMiddle, activeTab]);
 
-     useEffect(() => {
+  useEffect(() => {
     if (remainingTime === 0) {
       playEnd();
     }
@@ -285,6 +320,29 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
 
   // Calculate current points per circle play
   const currentCirclePoints = getCirclePointValue();
+
+ const handleDoubleGroup = () => {
+    if (activeTab === 'auto') {
+      
+      if (doubleGroupCount < 2) {
+        setDoubleGroupCount(prev => prev + 1);
+      }
+    } else {
+      setDoubleGroupCount(prev => prev === 0 ? 1 : 0);
+    }
+  };
+
+  
+  const handleTripleGroup = () => {
+    if (activeTab === 'auto') {
+    
+      if (tripleGroupCount < 2) {
+        setTripleGroupCount(prev => prev + 1);
+      }
+    } else {
+      setTripleGroupCount(prev => prev === 0 ? 1 : 0);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
@@ -420,47 +478,59 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
               </div>
             </div>
             
-            {/* Double Group Counter (10 points + unlocks 2 circles) */}
-            <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
-              <div className="flex items-center">
-                <FaBullseye className="text-blue-500 mr-2" size={18} />
-                <span className="font-medium">Double Group (10 points + unlocks 2 circles)</span>
+            {/* Double Group Counter */}
+              <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+                <div className="flex items-center">
+                  <FaBullseye className="text-blue-500 mr-2" size={18} />
+                  <span className="font-medium">
+                    {activeTab === 'auto' 
+                      ? "Double Group (10 points + unlocks 1 circle)" 
+                      : "Double Group (10 points + unlocks 2 circles)"}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleDoubleGroup}
+                    disabled={!gameActive || gamePaused }
+                    className={`p-1 rounded-lg ${
+                      doubleGroupCount > 0 
+                        ? "bg-blue-500 text-white" 
+                        : "bg-blue-200 text-blue-800"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {activeTab === 'auto' 
+                      ?doubleGroupCount==2 ? "✓" : `${doubleGroupCount}/2` 
+                      : doubleGroupCount > 0 ? "✓" : <FaBullseye size={16} />}
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setDoubleGroupCount(prev => prev === 0 ? 1 : 0)}
-                  disabled={!gameActive || gamePaused}
-                  className={`p-1 rounded-lg ${
-                    doubleGroupCount === 1 
-                      ? "bg-blue-500 text-white" 
-                      : "bg-blue-200 text-blue-800"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {doubleGroupCount === 1 ? "✓" : <FaBullseye size={16} />}
-                </button>
+              
+              {/* Triple Group Counter */}
+              <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
+                <div className="flex items-center">
+                  <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
+                  <span className="font-medium">
+                    {activeTab === 'auto' 
+                      ? "Triple Group (15 points + unlocks 1 circle)" 
+                      : "Triple Group (15 points + unlocks 2 circles)"}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleTripleGroup}
+                    disabled={!gameActive || gamePaused }
+                    className={`p-1 rounded-lg ${
+                      tripleGroupCount > 0 
+                        ? "bg-red-500 text-white" 
+                        : "bg-red-200 text-red-800"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {activeTab === 'auto' 
+                      ? `${tripleGroupCount}/2` 
+                      : tripleGroupCount > 0 ? "✓" : <GiThreeBurningBalls size={18} />}
+                  </button>
+                </div>
               </div>
-            </div>
-            
-            {/* Triple Group Counter (15 points + unlocks 2 circles) */}
-            <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-              <div className="flex items-center">
-                <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
-                <span className="font-medium">Triple Group (15 points + unlocks 2 circles)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setTripleGroupCount(prev => prev === 0 ? 1 : 0)}
-                  disabled={!gameActive || gamePaused}
-                  className={`p-1 rounded-lg ${
-                    tripleGroupCount === 1 
-                      ? "bg-red-500 text-white" 
-                      : "bg-red-200 text-red-800"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {tripleGroupCount === 1 ? "✓" : <GiThreeBurningBalls size={18} />}
-                </button>
-              </div>
-            </div>
           </div>
           
           {/* Circle Play Section - Only when circles are unlocked */}
@@ -471,21 +541,22 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
             </h3>
             <div className="text-center mb-3">
               <div className="flex justify-center mb-2">
-                {Array.from({ length: 6 }).map((_, i) => {
-                  const points = circlePlays[i];
-                  return (
-                    <div 
-                      key={i}
-                      className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${
-                        points ? "bg-yellow-500" : "bg-gray-300"
-                      }`}
-                    >
-                      <span className="font-bold text-white">
-                        {i + 1}
-                      </span>
-                    </div>
-                  );
-                })}
+                {circlePlays.map((points, i) => (
+                  <button
+                    key={i}
+                    onClick={() => points !== null && handleRemoveCirclePlay(i)}
+                    className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${
+                      points !== null 
+                        ? "bg-yellow-500 hover:bg-yellow-600 cursor-pointer" 
+                        : "bg-gray-300"
+                    }`}
+                    disabled={points === null}
+                  >
+                    <span className="font-bold text-white">
+                      {i + 1}
+                    </span>
+                  </button>
+                ))}
               </div>
               <p className="text-sm text-yellow-700">
                 Current point value: {getCirclePointValue()} per circle
@@ -500,14 +571,14 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId }) => {
             
             <button
               onClick={handleCirclePlay}
-              disabled={!gameActive || gamePaused || circlePlays.length >= 6}
+              disabled={!gameActive || gamePaused || circlePlays.every(p => p !== null)}
               className={`w-full py-2 rounded-lg font-semibold ${
                 circlePlays.length < 6 
                   ? "bg-yellow-500 text-white hover:bg-yellow-600" 
                   : "bg-green-500 text-white"
               } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              {circlePlays.length < 6
+                {circlePlays.some(p => p === null)
                 ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)` 
                 : "All Circle Plays Completed"}
             </button>

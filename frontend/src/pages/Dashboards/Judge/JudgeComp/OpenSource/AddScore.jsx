@@ -4,7 +4,7 @@ import axios from "axios";
 import { IoClose } from "react-icons/io5";
 import { motion } from "framer-motion";
 
-export default function AddScore({ onClose, eventName, competition_name, selectedTeam, selectedTeamName, onScoreAdded, onScore, eventID }) {
+export default function AddScore({ onClose, eventName, competition_name, selectedTeam, selectedTeamName, onScoreAdded, eventID }) {
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,7 +69,6 @@ export default function AddScore({ onClose, eventName, competition_name, selecte
         showConfirmButton: false,
         timer: 1500
       });
-      onScore(score);
       onClose();
       if (onScoreAdded) onScoreAdded(); // Refresh the team list
     } catch (err) {

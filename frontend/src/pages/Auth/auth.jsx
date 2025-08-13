@@ -67,7 +67,6 @@ export const refreshAccessToken = async () => {
             return null;
         }
         
-        return null;
     } catch (error) {
         console.error('Error refreshing token:', error);
         if (error.response && error.response.status === 401) {

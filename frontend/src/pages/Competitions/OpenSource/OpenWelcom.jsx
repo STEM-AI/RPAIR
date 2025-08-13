@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from "../../../assets/Static/logoWrite-re.png";
 import arduinoLogo from "../../../assets/gallery/OpenSource/arduino.png";
-import TynkerLogo from "../../../assets/gallery/Programming/logos/tynker-logo.png";
 
 const OpenWelcome = () => {
   const [selectedTopic, setSelectedTopic] = useState(null);

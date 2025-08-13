@@ -14,7 +14,6 @@ import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 export default function EventDetails() {
     const { event_name } = useParams()
-    const formattedEventName = event_name ? event_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
       const [events, setEvents] = useState([]);
       const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -91,7 +90,7 @@ export default function EventDetails() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-         {events.name}
+         {events.name}  
           </h1>
           <div className="mt-2 flex justify-center items-center space-x-2">
             <span className="inline-flex items-center px-3 py-0.5 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">

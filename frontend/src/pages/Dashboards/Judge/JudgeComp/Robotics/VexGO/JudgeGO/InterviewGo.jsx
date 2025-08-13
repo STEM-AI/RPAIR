@@ -144,7 +144,7 @@ const postScore = async () => {
   try {
     setLoading(true);
     const response = await axios.patch(
-      `${process.env.REACT_APP_API_URL}/vex-go/team/${teamData.id}/interview/`,
+      `${process.env.REACT_APP_API_URL}/vex-go/team/${teamData.id}/interview/${event_id}/`,
       scoreData,
       {
         headers: {

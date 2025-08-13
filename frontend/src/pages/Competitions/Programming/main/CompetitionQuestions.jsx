@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Swal from 'sweetalert2';
@@ -11,7 +11,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import axios from 'axios';
 import useInfoQuestions from '../../../../hooks/Questions/InfoQuestion';
-
+import useSubmitGame from '../../../../hooks/Questions/useSubmitGame';
+import formatSingleLineCode from '../../../../hooks/Questions/FormatCode';
 
 const CompetitionQuestions = () => {
   const { competition } = useParams();
@@ -35,40 +36,14 @@ const [remainingTime, setRemainingTime] = useState(null);
   const { questions: allQuestions, loading: allLoading, error: allError } = useAllQuestion(competition_id, competition);
   
   const { question: detailedQuestion, loading: detailLoading, error: detailError } = useQuestion(currentQuestionId);
+  const { submitGame } = useSubmitGame(game_id);
   
   const token= localStorage.getItem('access_token');
   
-const formatSingleLineCode = (text) => {
-  if (!text) return { question: '', code: '' };
-  const questionEnd = text.indexOf('?');
-  const question = text.substring(0, questionEnd + 1);
-  let code = text.substring(questionEnd + 1).trim();
-  code = code
-  .replace(/;\s*/g, ';\n')   
-  .replace(/^;\n/, '') 
-    .replace(/:\s*/g, ':\n    ')
-    .replace(/\breturn\s+/g, 'return ')
-    .replace(/\bif\s+/g, 'if ')
-    .replace(/\bdef\s+/g, 'def ');
-    setFormattedCode(code);
-  return { question, code };
-};
+
 
   
-useEffect(() => {
-  let timer;
-  
-  if (remainingTime > 0) {
-    timer = setInterval(() => {
-      setRemainingTime(prev => prev - 1);
-    }, 1000);
-  } else if (remainingTime === 0) {
-    handleTimeUp();
-  }
-  
-  return () => clearInterval(timer);
-}, [remainingTime, handleTimeUp]);
-  
+
   // Media queries for responsive design
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
@@ -118,9 +93,7 @@ useEffect(() => {
 }, [infoQuestions]);
   
   
-  // دالة انتهاء الوقت المعدلة
   const handleTimeUp = useCallback(async () => {
-      if (remainingTime <= 0) return; 
     
     const unsavedQuestions = Object.entries(selectedOptions)
       .filter(([id, answer]) => 
@@ -136,6 +109,7 @@ useEffect(() => {
         text: 'The competition has ended.',
         confirmButtonColor: '#32cd32',
       });
+      await submitGame();
       setIsSaving(true);
       await Promise.all(
         unsavedQuestions.map(([id, answer]) => 
@@ -144,6 +118,11 @@ useEffect(() => {
       );
     } catch (error) {
       console.error("Failed to save answers:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Save Error',
+        text:`Failed to save your answer, ${error.response.data.error}` ||  'Failed to save your answer. Please try again.' ,
+      })
     } finally {
       setIsSaving(false);
       Swal.fire({
@@ -156,15 +135,30 @@ useEffect(() => {
           });
     }
     setRemainingTime(0); // تحديث الحالة بعد انتهاء الوقت
-  }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer, remainingTime]);
+  }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer, game_id]);
   
   useEffect(() => {
-    if (detailedQuestion?.text) {
-      const { question } = formatSingleLineCode(detailedQuestion.text);
-      setFormattedQuestion(question);
+    let timer;
+    
+    if (remainingTime > 0) {
+      timer = setInterval(() => {
+        setRemainingTime(prev => prev - 1);
+      }, 1000);
+    } else if (remainingTime === 0) {
+      handleTimeUp();
     }
-  }, [detailedQuestion]);
- 
+    
+    return () => clearInterval(timer);
+  }, [remainingTime, handleTimeUp]);
+  
+  
+ useEffect(() => {
+  if (detailedQuestion?.text) {
+    const { question, code } = formatSingleLineCode(detailedQuestion.text);
+    setFormattedQuestion(question);
+    setFormattedCode(code); 
+  }
+}, [detailedQuestion]);
 
 
 
@@ -180,13 +174,13 @@ useEffect(() => {
       });
       setSelectedOptions(initialSelectedOptions);
     }
-  }, [allQuestions]);
+  }, [allQuestions, currentQuestionId]);
 
   useEffect(() => {
     if (allQuestions && allQuestions.length > 0) {
       setCurrentQuestionId(allQuestions[currentQuestionIndex].id);
     }
-  }, [currentQuestionIndex, allQuestions]);
+  }, [currentQuestionIndex, allQuestions, currentQuestionId]);
 
 
     
@@ -239,7 +233,7 @@ useEffect(() => {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, submit it!'
         }).then(async () => {
-                // await saveAnswer(currentId, currentAnswer);
+          await submitGame();
           Swal.fire({
             title: 'Done!',
             text: `thank you have answerd submitted`,
@@ -577,3 +571,13 @@ useEffect(() => {
 };
 
 export default CompetitionQuestions;
+
+
+
+
+
+
+
+
+
+

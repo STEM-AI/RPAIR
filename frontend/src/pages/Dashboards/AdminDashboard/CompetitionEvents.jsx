@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaListAlt, FaArrowRight } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt, FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { CiSquarePlus } from "react-icons/ci";
 import Join from "../../../components/Join";

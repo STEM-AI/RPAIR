@@ -9,7 +9,6 @@ import { IoPersonOutline } from "react-icons/io5";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import Rank from './Rank';
 export default function AllEventDetails() {
-  const [showRankings, setShowRankings] = useState(false); 
     const { event_name } = useParams()
   const [events, setEvents] = useState([]);
   const [showResults, setShowResults] = useState(false);

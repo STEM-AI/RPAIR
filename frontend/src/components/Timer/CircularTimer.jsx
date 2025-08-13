@@ -1,21 +1,25 @@
 // src/components/CircularTimer.jsx
 import React, { useEffect } from "react";
-import  useTimer  from "../../hooks/UseTime/UseTimer";
 
 const CircularTimer = ({ duration,remainingTime, onEnd, current, total }) => {
-  const { seconds, formattedTime, percentage } = useTimer(duration, onEnd);
 
-  const strokeDasharray = 283; // 2 * π * r (r = 45)
-  const strokeDashoffset = strokeDasharray - (percentage / 100) * strokeDasharray;
  const progress = (remainingTime / duration) * 100;
-  
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const formattedTime = formatTime(remainingTime);
+   const strokeDasharray = 283; // 2 * π * r (r = 45)
+  const strokeDashoffset = strokeDasharray - (progress / 100) * strokeDasharray;
   useEffect(() => {
     if (remainingTime <= 0 && onEnd) {
       onEnd();
     }
   }, [remainingTime, onEnd]);
   
-  return (
+   return (
     <div className="relative w-28 h-28">
       <svg className="w-full h-full transform -rotate-90">
         <circle
@@ -47,4 +51,3 @@ const CircularTimer = ({ duration,remainingTime, onEnd, current, total }) => {
 };
 
 export default CircularTimer;
-
