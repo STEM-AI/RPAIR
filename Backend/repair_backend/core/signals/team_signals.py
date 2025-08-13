@@ -124,7 +124,7 @@ def add_team_score(sender, instance, created, **kwargs):
                     driver_score=0,
                     competition_event=instance.event
                 )
-        elif instance.stage in ['vex_123']:
+        elif instance.stage in ['vex_123','vex_123_manual','vex_123_coder_card','vex_123_programming']:
             logger.info("Setting vex 123 scores") 
             instance.team1.skills_scores.create(
                 driver_score=instance.driver_score,

@@ -89,12 +89,12 @@ class CompetitionEvent(models.Model):
 
     def save(self, *args, **kwargs):
         today = timezone.now().date()
-        if self.start_date > self.end_date:
-            raise ValueError("Start date cannot be greater than end date")
-        if self.start_date < today:
-            raise ValueError("Start date cannot be in the past")
-        if self.end_date < today:
-            raise ValueError("End date cannot be in the past")
+        # if self.start_date > self.end_date:
+        #     raise ValueError("Start date cannot be greater than end date")
+        # if self.start_date < today:
+        #     raise ValueError("Start date cannot be in the past")
+        # if self.end_date < today:
+        #     raise ValueError("End date cannot be in the past")
         if self.start_date > self.end_date:
             raise ValueError("Start date cannot be greater than end date")
         if today > self.start_date and today < self.end_date:
