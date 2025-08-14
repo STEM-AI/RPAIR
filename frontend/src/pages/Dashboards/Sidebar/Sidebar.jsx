@@ -76,14 +76,14 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                     {/* Management */}
                     <li
                       className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                      onClick={() => setIsManagementOpen(!isManagementOpen)} // Toggle the management sub-menu
+                      onClick={() => setIsManagementOpen(!isManagementOpen)} 
                     >
                       <RiUserSettingsLine className="mr-2" />
                       Management
                       {isManagementOpen ? (
-                        <LiaAngleDoubleUpSolid className="ml-2" /> // Show double up icon when open
+                        <LiaAngleDoubleUpSolid className="ml-2" /> 
                       ) : (
-                        <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
+                        <LiaAngleDoubleDownSolid className="ml-2" /> 
                       )}
                     </li>
                     {/* Management Sub-menu */}
@@ -170,13 +170,7 @@ const Sidebar = ({isOpen, setIsOpen}) => {
       case 'user':
         return (
           <>
-            {/* Dashboard */}
-                        {/* <Link to="/Dashboard/User">
-                          <li className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                            <MdOutlineDashboard className="mr-2" />
-                            Dashboard
-                          </li>
-                        </Link> */}
+
                         <li
                       className="flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
                       onClick={() => navigate("/Dashboard/Competitions")}
@@ -255,15 +249,15 @@ const Sidebar = ({isOpen, setIsOpen}) => {
                   <div className="border-b block md:hidden  border-white mb-2">
                     <li
                       className=" flex items-center hover:text-gray-800 text-lg font-medium p-2 rounded transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                      onClick={() => setIsMainNavOpen(!isMainNavOpen)} // Toggle the management sub-menu
+                      onClick={() => setIsMainNavOpen(!isMainNavOpen)} 
                     >
                       <LuWrapText className="mr-2" />
         
                       Main menu
                       {isMainNavOpen ? (
-                        <LiaAngleDoubleUpSolid className="ml-2" /> // Show double up icon when open
+                        <LiaAngleDoubleUpSolid className="ml-2" /> 
                       ) : (
-                        <LiaAngleDoubleDownSolid className="ml-2" /> // Show double down icon when closed
+                        <LiaAngleDoubleDownSolid className="ml-2" /> 
                       )}
                     </li>
                     {/* Management Sub-menu */}
