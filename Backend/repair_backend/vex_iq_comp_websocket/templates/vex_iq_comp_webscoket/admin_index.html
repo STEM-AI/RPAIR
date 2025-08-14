@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <textarea id="newsInput" placeholder="Enter news content here..."></textarea>
+    <br>
+    <button onclick="submitNews()">Update News</button>
+
+    <script>
+        async function submitNews() {
+            const content = document.getElementById('newsInput').value;
+            if (!content) {
+                alert('Please enter some news content.');
+                return;
+            }
+
+            try {
+                yourAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ5MzkwLCJpYXQiOjE3MzgxNDU3OTAsImp0aSI6IjcyN2EwOTU2MzNmMjQ3MDJiY2FmZmM2MGRkMDM3ZDYyIiwidXNlcl9pZCI6MjIsInVzZXJuYW1lIjoibmVrbGF3aUp1ZGdlIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6ZmFsc2V9.V1A_0qk8fuT3co6VKDorlsvrbGRp5A_crM7jVQNe4ww'
+                const response = await fetch('http://localhost:8000/api/admin/news/', {
+                    method: 'POST',
+                    headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${yourAuthToken}`,
+                    },
+                    body: JSON.stringify({ content }),
+                });
+
+                if (response.ok) {
+                    alert('News updated successfully!');
+                    document.getElementById('newsInput').value = ''; // Clear the textarea
+                } else {
+                    alert('Failed to update news.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating news.');
+            }
+        }
+    </script>
+</body>
+</html>

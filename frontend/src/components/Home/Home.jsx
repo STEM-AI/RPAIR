@@ -1,30 +1,25 @@
-import React, { useEffect }  from "react";
-import CardSlider from '../CardSlider/cardSlider';
 import { Carousel, Ripple, initTWE } from "tw-elements";
 import { NavLink } from "react-router-dom";
-import vi from "../../assets/videos/heroVideo.mp4"
+import About from "../../pages/About/About";
+import NewsTicker from "../News/NewsLive";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
-  // useEffect(() => {
-  //   // Initialize TW Elements
-  //   initTWE({ Carousel, Ripple });
-    
-  // }, []);
+  initTWE({ Carousel, Ripple });
 
-   useEffect(() => {
-    // Initialize TW Elements
-    initTWE({ Carousel, Ripple });
-    const hasRefreshed = sessionStorage.getItem("hasRefreshed");
-    const accessToken = localStorage.getItem("access_token");
+  const hasRefreshed = sessionStorage.getItem("hasRefreshed");
+  const accessToken = localStorage.getItem("access_token");
 
-    if (accessToken && !hasRefreshed) {
-      sessionStorage.setItem("hasRefreshed", "true");
-      window.location.reload();
-    }
-  }, []);
+  if (accessToken && !hasRefreshed) {
+    sessionStorage.setItem("hasRefreshed", "true");
+    window.location.reload();
+  }
 
   return (
     <>
+       <Helmet>
+        <title>RPAIR</title>
+      </Helmet>
       <div></div>
       <div id="home-section">
         
@@ -35,26 +30,23 @@ const Home = () => {
         data-twe-ride="carousel"
       >
         <div className="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
-          <div
+            <div
             className="relative float-left -mr-[100%] w-full !transform-none bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none"
             data-twe-carousel-fade
             data-twe-carousel-item
             data-twe-carousel-active
           >
 
-                  {/* <img
-        className="h-screen w-full object-cover"
-        src="https://your-online-image-link.com/your-image.jpg"
-        alt="Hero Background"
-      /> */}<video
-            className="h-screen w-full object-cover"
+      <video
+          className="h-screen w-full object-cover"
             playsInline
             autoPlay
             muted
             loop
+            preload="metadata" 
           >
-            <source
-              src={"https://rpair.org/media/videos/MVI_0285.mp4"}
+             <source
+              src="https://rpair.org/media/videos/MVI_0285.mp4"
               type="video/mp4"
             />
         </video>
@@ -82,19 +74,22 @@ const Home = () => {
               role="button"
             >
               Get Started
-            </NavLink>
+                  </NavLink>
+
           </div>
 
 
               
             </div>
-          </div>
+            </div>
+            
         </div>
         </div>
-
+               
       </div>
-      <CardSlider/>
+      <About />
 
+ <NewsTicker/>
 
 
     </>

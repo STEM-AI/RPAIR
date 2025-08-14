@@ -36,7 +36,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         
     def get_teams(self, obj):
         from ..serializers import TeamSerializer
-        teams = obj.team_set.all()
+        teams = obj.team_organization.all()
         # Implement filtering and ordering of teams based on the organization's type
         return TeamSerializer(teams, many=True).data
     

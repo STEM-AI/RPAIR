@@ -1,36 +1,59 @@
-// Layout.js
-import React from "react";
+// // Layout.js
+// import React from "react";
+// import NavbarProfile from "../../../pages/Dashboards/NavbarProfile";
+// import Sidebar from "../Sidebar/Sidebar";
+// import Back from "../../../components/Back/Back";
+
+// const LayoutDashboard = ({ children }) => {
+    
+//   return (
+//      <div className="flex h-screen ">
+//       <Sidebar className="relative left-0 w-64 h-full z-50 bg-green-500 p-4" />
+//       <div className="flex-1 flex flex-col">
+//         <NavbarProfile className="bg-blue-600 text-white p-4 sticky top-0" />
+//         <div className="p-6 flex-1 overflow-auto  bg-gray-100">{children}</div>
+//         <Back />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default LayoutDashboard;
+
+
+import React, { useState } from "react";
 import NavbarProfile from "../../../pages/Dashboards/NavbarProfile";
-import SidebarAdmin from "../Sidebar/SidebarAdmin";
-import SidebarJadge from "../Sidebar/SidebarJadge";
-import SidebarUser from "../Sidebar/SidebarUser"
+import Sidebar from "../Sidebar/Sidebar";
+import Back from "../../../components/Back/Back";
+import { useLocation } from "react-router-dom";
+
 
 const LayoutDashboard = ({ children }) => {
-      // Get user role from localStorage
-    const userRole = JSON.parse(localStorage.getItem("user_role"));
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const hiddenBackPaths = ['/Dashboard/VexGO/COOPMatches',"/Dashboard/VexGO/Skills"];
+  const shouldHideBack = hiddenBackPaths.includes(location.pathname);
 
-    let Sidebar;
-    if (userRole) {
-        if (userRole.is_superuser) {
-            Sidebar = SidebarAdmin;
-        } else if (userRole.is_staff && !userRole.is_judge) {
-            Sidebar = SidebarJadge;
-        } else {
-            Sidebar = SidebarUser;
-        }
-    } else {
-        Sidebar = () => <div>No Access</div>;
-    }  
   return (
-     <div className="flex h-screen bg-gray-100">
-      <Sidebar className="fixed left-0 w-64 h-full z-50 bg-green-500 p-4" />
-      <div className="flex-1 flex flex-col">
-        <NavbarProfile className="bg-blue-600 text-white p-4 sticky top-0" />
-        <div className="p-6 flex-1 overflow-auto ">{children}</div>
+    <div className="flex ">
+      <Sidebar 
+        className="relative left-0 bottom-0 w-64 h-screen z-50 bg-green-500 p-4" 
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+      />
+      <div className="flex-1 flex h-screen flex-col">
+        <NavbarProfile 
+          className="bg-blue-600 text-white p-4 sticky top-0" 
+          isSidebarOpen={isSidebarOpen}
+        />
+        
+        <div className="p-6 flex-1 overflow-auto bg-gray-100">
+          {!shouldHideBack && <Back />}
+          {children}</div>
+        
       </div>
     </div>
   );
 };
 
 export default LayoutDashboard;
-

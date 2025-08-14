@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competition Event Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .game {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            margin: 15px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .game-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .team {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            margin: 5px 0;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .team .name {
+            font-weight: bold;
+            color: #333;
+        }
+        .team .score {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Live Competition Event Dashboard</h1>
+    <div id="games">
+        <!-- Game blocks will be populated here -->
+    </div>
+
+    <script>
+        const eventName = "stem"; // Replace with the actual competition event ID
+        
+        const socket = new WebSocket(`ws://${window.location.host}/ws/competition_event/${eventName}/`);
+
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            console.log("Score Update:", data);
+            console.log("received game id ", data.score);
+
+            // Find the game block element for this event and update the score
+            const gameElement = document.getElementById(`game-${data.game_id}`);
+            if (gameElement) {
+                // Update score for both teams
+                const team1Element = gameElement.querySelector(`#team-${data.team1_name}`);
+                const team2Element = gameElement.querySelector(`#team-${data.team2_name}`);
+
+                if (team1Element) {
+                    team1Element.querySelector('.score').innerText = `Score: ${data.score}`;
+                }
+
+                if (team2Element) {
+                    team2Element.querySelector('.score').innerText = `Score: ${data.score}`;
+                }
+            } else {
+                // If the game block doesn't exist, create a new game block
+                addNewGame(data);
+            }
+        };
+
+        socket.onclose = function (event) {
+            console.error("WebSocket closed unexpectedly");
+        };
+
+        // Function to add a new game block to the list
+        function addNewGame(data) {
+            const gamesContainer = document.getElementById('games');
+            const gameElement = document.createElement('div');
+            gameElement.id = `game-${data.game_id}`;
+            gameElement.classList.add('game');
+
+            gameElement.innerHTML = `
+                <div class="game-header">Game: ${data.game_id}</div>
+                <div id="team-${data.team1_name}" class="team">
+                    <div class="name">${data.team1_name}</div>
+                    <div class="score">Score: ${data.score.team1}</div>
+                </div>
+                <div id="team-${data.team2_name}" class="team">
+                    <div class="name">${data.team2_name}</div>
+                    <div class="score">Score: ${data.score.team2}</div>
+                </div>
+            `;
+            gamesContainer.appendChild(gameElement);
+        }
+
+    </script>
+
+</body>
+</html>

@@ -29,6 +29,8 @@
   color: #61dafb;
 }
 
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -37,4 +39,17 @@
     transform: rotate(360deg);
   }
 }
+
+@media print {
+  .cert-ignore {
+    display: none !important;
+  }
+}
+
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+
+
 

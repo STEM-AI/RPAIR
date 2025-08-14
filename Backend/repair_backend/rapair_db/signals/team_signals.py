@@ -1,6 +1,10 @@
 from django.db.models.signals import pre_save ,post_save
 from django.dispatch import receiver
-from ..models import Team , Organization , OrganizationContact , TeamSponsor , TeamCoach , TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame
+from ..models import (
+    Team , Organization , OrganizationContact , TeamSponsor , TeamCoach , 
+    TeamPreviousCompetition , TeamSocialMedia , TeamMember , EventGame,
+    SkillsTeamScore , TeamworkTeamScore
+    )
 
 @receiver(pre_save , sender=Team)
 def get_or_create_organization(sender , instance , **kwargs):
@@ -29,12 +33,9 @@ def get_or_create_sponsor(sender, instance, created, **kwargs):
         sponsors_info = instance.sponsors_info
         if sponsors_info :
             for sponsor_data in sponsors_info:
-                sponsor , created = TeamSponsor.objects.get_or_create(
-                    name=sponsor_data['name'] , 
-                    defaults={
-                        'email' : sponsor_data['email'],
-                        'team' : instance
-                        }
+                sponsor = TeamSponsor.objects.create(
+                        team = instance,
+                        **sponsor_data
                         )
                 sponsor.save()
 
@@ -85,18 +86,16 @@ def add_team_members(sender, instance, created, **kwargs):
 
 
 @receiver(post_save , sender=EventGame)
-def update_team_teamwork_score(sender, instance, created, **kwargs):
-    print("Update TeamWorkScore")
-    print("game score " , type(instance.score))
-    print("created" , created)
-    if hasattr(instance, 'score'):
-        print("Game")
-        team1 = instance.team1
-        print("team1" , team1)
-        team2 = instance.team2
-        print("team2" , team2)
-        team1.teamwork_score += instance.score
-        team2.teamwork_score += instance.score
-        team1.save()
-        team2.save()
-    
+def add_team_score(sender, instance, created, **kwargs):
+    if created :
+        return
+    if hasattr(instance, 'operation') and instance.operation == 'set_teamwork_game_score':
+        instance.team1.teamwork_scores.create(score = instance.score)
+        instance.team2.teamwork_scores.create(score = instance.score)
+
+    if hasattr(instance, 'operation') and instance.operation == 'set_skills_game_score':
+        instance.team1.skills_scores.create(
+            driver_score = instance.driver_score,
+            autonomous_score = instance.autonomous_score
+            )
+

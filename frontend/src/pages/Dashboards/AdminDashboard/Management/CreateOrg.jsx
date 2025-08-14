@@ -285,7 +285,7 @@ const CreateOrganization = () => {
 
   return (
     <div className="container  px-4">
-      <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-800 to-cyan-500 text-5xl font-black">
+      <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl font-black">
         Create Organization
       </h2>
 
