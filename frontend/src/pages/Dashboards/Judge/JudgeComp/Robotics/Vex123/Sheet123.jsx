@@ -16,24 +16,25 @@ const GAME_MODES = [
     name: "Manual",
     stage: "vex_123_manual",
     missions: [
-      { step: "Mission 1", description: "From Point 1 to Point 2", points: 5 },
-      { step: "Mission 2", description: "From Point 2 to Point 3", points: 5 },
-      { step: "Mission 3", description: "From Point 3 to Point 4", points: 5 }
+      { step: "Mission 1", points: 5 },
+      { step: "Mission 2", points: 5 },
+      { step: "Mission 3", points: 5 }
     ]
   },
   {
     name: "Coder Card",
     stage: "vex_123_coder_card",
     missions: [
-      { step: "Mission 4", description: "From Point 4 to Point 5", points: 10 },
-      { step: "Mission 5", description: "From Point 5 to Point 6", points: 5 }
+      { step: "Mission 4",  points: 10 },
+      { step: "Mission 5", points: 5 }
     ]
   },
   {
     name: "Programming",
     stage: "vex_123_programming",
     missions: [
-      { step: "Mission 6", description: "From Point 6 to the End Line", points: 10 }
+      { step: "Mission 6",  points: 10 },
+      { step: "Mission 7",  points: 10 }
     ]
   }
 ];
@@ -737,7 +738,6 @@ const handleRestart = async () => {
     >
       <div className="space-y-1">
         <div className="font-medium text-indigo-700">{mission.step}</div>
-        <div className="text-sm text-gray-600">{mission.description}</div>
       </div>
       
       <div className="flex items-center gap-4">
