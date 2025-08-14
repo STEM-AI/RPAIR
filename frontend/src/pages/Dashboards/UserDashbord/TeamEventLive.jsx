@@ -134,7 +134,7 @@ function TeamEventLive() {
     };
 
     fetchEvents();
-  }, [id]);
+  }, [id, token]);
 
   if (loading) {
     return (

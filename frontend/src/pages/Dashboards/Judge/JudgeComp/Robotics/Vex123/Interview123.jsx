@@ -83,7 +83,7 @@ export default function InterviewSheet() {
     try {
       setLoading(true);
       await axios.patch(
-        `${process.env.REACT_APP_API_URL}/vex-123/team/${teamData.id}/interview/`,
+        `${process.env.REACT_APP_API_URL}/vex-123/team/${teamData.id}/interview/${eventId}/`,
         { interview_score: totalScore },
         {
           headers: {
@@ -221,7 +221,7 @@ export default function InterviewSheet() {
 
       
         <InterviewRankings
-  apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${eventId}/team/interview/rank/`} 
+        apiUrl={`${process.env.REACT_APP_API_URL}/vex-123/${eventId}/team/interview/rank/`} 
 />
     </div>
   );

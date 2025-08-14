@@ -27,6 +27,7 @@ const InterviewRankings = ({ apiUrl }) => {
 
       setRankings(response.data);
       
+      // Generate ranking list directly from API response
       const rankingList = response.data.map((team, index) => 
         `<b>${index + 1}.</b> ${team.name} - ${team.interview_score} points`
       ).join('<br>');
@@ -34,7 +35,7 @@ const InterviewRankings = ({ apiUrl }) => {
       Swal.fire({
         title: `Interview Rankings`,
         html: rankingList || 'No rankings available yet',
-        icon: 'scuccess',
+        icon: 'success', 
         confirmButtonColor: '#4f46e5'
       });
 
@@ -54,7 +55,7 @@ const InterviewRankings = ({ apiUrl }) => {
     <button
       onClick={fetchRankings}
       disabled={loading}
-      className={` px-6 py-3 bg-yellow-500 hover:bg-yellow-700 text-white font-bold rounded-lg flex items-center justify-center my-4 mx-auto transition-colors shadow-md hover:shadow-lg ${
+      className={`px-6 py-3 bg-yellow-500 hover:bg-yellow-700 text-white font-bold rounded-lg flex items-center justify-center my-4 mx-auto transition-colors shadow-md hover:shadow-lg ${
         loading ? 'opacity-50 cursor-not-allowed' : ''
       }`}
     >

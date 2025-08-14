@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet-async";
 
@@ -7,7 +7,6 @@ const AddNews = () => {
   const [newsData, setNewsData] = useState({
     content: ""
   });
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem("access_token");
@@ -37,7 +36,6 @@ const AddNews = () => {
         throw new Error(errorData.message || "Network response was not ok");
       }
 
-      const result = await response.json();
       Swal.fire({
                       icon: "success",
                       title: "Success",
@@ -46,7 +44,7 @@ const AddNews = () => {
                         });
 
       setNewsData({ ...newsData, content: "" });
-      setError(null); // Clear any previous errors
+      setError(null); 
     } catch (error) {
       setError(error.message || "Error updating news");
       console.error("Error updating news:", error);

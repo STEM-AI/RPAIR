@@ -7,7 +7,6 @@ import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/
 import AwardsList from "../../../components/Awards/awardsArduino";
 import { Helmet } from "react-helmet-async";
 const Arduino = () => {
-  const images = [img1];
 
   return (
     <>

@@ -7,7 +7,6 @@ import AwardsList from "../../../components/Awards/awards";
 import { Helmet } from "react-helmet-async";
 
 const Vex123About = () => {
-  const images = [img1];
 
   return (
     <>

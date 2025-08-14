@@ -20,7 +20,6 @@ const Teamwork = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [calculatorType, setCalculatorType] = useState(null);
-  const [showTimeSelector, setShowTimeSelector] = useState(true);
   const [searchParams] = useSearchParams();
   const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
@@ -28,10 +27,6 @@ const Teamwork = () => {
 
  
 
-  const handleTimeChange = (seconds) => {
-    console.log("Time limit updated to:", seconds, "seconds");
-     setShowTimeSelector(false);
-  };
   const { 
     score: serverScores, 
     loading: scoresLoading, 
@@ -44,7 +39,7 @@ const Teamwork = () => {
     loading: schedulesLoading, 
     error: schedulesError, 
     refetch: refetchSchedules 
-  } = useEventSchedules(event_id, "teamwork", "-id");
+  } = useEventSchedules(event_id, "teamwork", "id");
 
   const lastScheduleId = eventSchedules[0]?.id;
   const { 
@@ -186,12 +181,6 @@ const Teamwork = () => {
         </button>
       </div>
 
-       {showTimeSelector && (
-        <EditTimeIQ 
-          id={event_id} 
-          onTimeChange={handleTimeChange} 
-        />
-      )}
  
 
       {/* Matches Table */}
@@ -386,6 +375,7 @@ const Teamwork = () => {
           mode="manual"
           eventName={event_name}
           eventId={event_id}
+          activeTab="teamwork"
         />
       )}
 

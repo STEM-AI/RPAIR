@@ -225,7 +225,6 @@ const handleCalculateAndSubmit = async () => {
   }
 }, [remainingTime, playEnd]);
 
-// تشغيل playMiddle عند الوصول إلى 25 أو 35 ثانية
 useEffect(() => {
   if (gameActive && !gamePaused) {
     if (

@@ -70,7 +70,7 @@ const SkillsGO = () => {
     loading: codingLoading,
     error: codingError,
     refetch: refetchCoding 
-  } = useEventSchedules(event_id, "coding", "-id");
+  } = useEventSchedules(event_id, "coding", "id");
 
   // Combined refetch function
   const refetchSchedules = () => {

@@ -7,7 +7,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { FiPlusCircle, FiTrash2, FiUserX } from "react-icons/fi";
+import { FiPlusCircle, FiTrash2 } from "react-icons/fi";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { FiCalendar } from "react-icons/fi";
@@ -18,7 +18,6 @@ export default function ListJudges() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [responseMessage, setResponseMessage] = useState(null);
-    const [alertType, setAlertType] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedJudge, setSelectedJudge] = useState(null);
@@ -136,7 +135,11 @@ useEffect(() => {
         if (!token) {
             setError("Authentication Error");
             setResponseMessage("You are not authorized. Please log in.");
-            setAlertType("error");
+            Swal.fire({
+                icon: 'error',
+                title: 'Authentication Error',
+                text: 'You are not authorized. Please log in.',
+            })
             setLoading(false);
             return;
         }
@@ -182,7 +185,11 @@ useEffect(() => {
             } else {
                 setResponseMessage("An unexpected error occurred. Please try again.");
             }
-            setAlertType("error");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: err.message
+            })
         }
     };
 
@@ -205,7 +212,6 @@ useEffect(() => {
         event.preventDefault();
         setIsSubmitting(true);
         setResponseMessage(null);
-        setAlertType("");
 
         const eventData = {
             user: selectedJudge,
@@ -224,7 +230,6 @@ useEffect(() => {
                 }
             );
 
-            setAlertType("success");
             setResponseMessage("Event assigned successfully!");
             Swal.fire({
                 icon: "success",
@@ -238,10 +243,15 @@ useEffect(() => {
             setShowModal(false);
             fetchJudgeEvent(); // Refresh the list
         } catch (err) {
-            setAlertType("error");
             setResponseMessage(
                 err.response?.data?.detail || "Failed to assign the event. Please try again."
             );
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to assign the event. Please try again.",
+                
+            })
         } finally {
             setIsSubmitting(false);
         }
@@ -258,7 +268,11 @@ useEffect(() => {
         if (!token) {
             setError("Authentication Error");
             setResponseMessage("You are not authorized. Please log in.");
-            setAlertType("error");
+            Swal.fire({
+                icon: 'error',
+                title: 'Authentication Error',
+                text: 'You are not authorized. Please log in.',
+            })
             return;
         }
 
@@ -270,11 +284,19 @@ useEffect(() => {
             });
 
             setResponseMessage("Judge deleted successfully");
-            setAlertType("success");
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Judge deleted successfully',
+            })
             fetchJudgeEvent(); // Refresh the list
         } catch (err) {
             setResponseMessage("Failed to delete the judge");
-            setAlertType("error");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to delete the judge',
+            })
         }
     };
 
@@ -286,12 +308,10 @@ useEffect(() => {
         });
     };
 
-    // Handle event_name input change
     const handleEventNameChange = (e) => {
         setEventName(e.target.value);
     };
 
-    // Fetch judges and events on component mount or when eventName changes
     useEffect(() => {
         fetchJudgeEvent();
     }, [token]);

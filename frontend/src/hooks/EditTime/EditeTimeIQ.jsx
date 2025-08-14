@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { FaClock, FaCheck, FaTimes, FaChevronRight } from 'react-icons/fa';
+import { FaClock, FaCheck, FaTimes } from 'react-icons/fa';
 
 export default function EditTimeIQ({ id, onTimeChange }) {
   const [timeInSeconds, setTimeInSeconds] = useState(0);
@@ -51,11 +51,7 @@ export default function EditTimeIQ({ id, onTimeChange }) {
     }
   };
 
-  const getDisplayTime = (seconds) => {
-    return seconds === 60 
-      ? '1 minute (60 seconds)' 
-      : '1.5 minutes (90 seconds)';
-  };
+
 
   if (!isVisible) return null;
 

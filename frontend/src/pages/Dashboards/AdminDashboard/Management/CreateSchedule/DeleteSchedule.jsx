@@ -246,7 +246,7 @@ useEffect(() => {
         >
         {schedules.map((schedule) => (
             <option key={schedule.id} value={schedule.id}>
-            ID: {schedule.id} - {new Date(schedule.time).toLocaleString()}
+            ID: {schedule.id} - {schedule.time}
             </option>
         ))}
         </select>

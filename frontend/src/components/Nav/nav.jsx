@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import logo from "../../assets/Static/logoWrite-re.png";
 import logoBlack from "../../assets/Static/logo2.png";
 import { useLocation, NavLink, Link } from "react-router-dom";
@@ -93,7 +93,7 @@ export default function Navbar() {
        if (
     mobileMenuRef.current && 
     !mobileMenuRef.current.contains(event.target) &&
-    !event.target.closest('button[aria-label="Menu"]') // استبدل بآيدي الزر إن لزم
+    !event.target.closest('button[aria-label="Menu"]') 
   ) {
     setIsMenuOpen(false);
   }
@@ -114,7 +114,8 @@ export default function Navbar() {
 
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
-    ? userRole.is_superuser || !userRole.is_staff && !userRole.is_superuser && !userRole.organization
+    ? userRole.is_superuser || 
+    (!userRole.is_staff && !userRole.is_superuser && !userRole.organization)
       ? "/Dashboard/Competitions"
       : userRole.is_staff && !userRole.is_superuser
       ? "/Dashboard/JudgeEvent"
@@ -123,13 +124,15 @@ export default function Navbar() {
 
 
 
-  const handleLogout = () => {
-    clearTokens();
-    localStorage.removeItem("user_role");
-    sessionStorage.removeItem("hasRefreshed");
-    setIsLoggedIn(false);
-    navigate("/", { replace: true });
-  };
+ const handleLogout = useCallback(() => {
+  clearTokens();
+  localStorage.removeItem("user_role");
+  sessionStorage.removeItem("hasRefreshed");
+  setIsLoggedIn(false);
+  navigate("/", { replace: true });
+ }, [navigate]);
+  
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };

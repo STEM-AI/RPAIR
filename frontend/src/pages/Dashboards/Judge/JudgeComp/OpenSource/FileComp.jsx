@@ -1,46 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { MdAddBox } from "react-icons/md";
-import { FaTrophy, FaSearch, FaMedal } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useParams, useSearchParams } from "react-router-dom";
-import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaRegFileCode } from "react-icons/fa";
 import AddScore from "./AddScore";
 
-const theme = {
-  primary: {
-    light: "#06b6d4",
-    main: "#0891b2",
-    dark: "#0e7490"
-  },
-  secondary: {
-    light: "#f59e0b",
-    main: "#d97706",
-    dark: "#b45309"
-  },
-  text: {
-    primary: "#1e293b",
-    secondary: "#64748b"
-  },
-  background: {
-    light: "#f8fafc",
-    paper: "#ffffff"
-  }
-};
-
 export default function FileComp() {
   const { competition_name } = useParams();
   const [searchParams] = useSearchParams();
-  const [showRanking, setShowRanking] = useState(false);
   const [rankings, setRankings] = useState([]);
   const event_name = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
   const [searchQuery, setSearchQuery] = useState("");
-  const [tempScores, setTempScores] = useState({});
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,13 +36,6 @@ export default function FileComp() {
     return teamRanking ? teamRanking.score : null;
   };
 
-  const handleScore = (score) => {
-    setTempScores((prev) => ({
-      ...prev,
-      [selectedTeam]: score,
-    }));
-    setSelectedTeam(null);
-  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -129,7 +98,7 @@ export default function FileComp() {
     }
   };
 
-  const fetchCoopRankings = async () => {
+  const fetchRankings = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -150,89 +119,14 @@ export default function FileComp() {
     }
   };
 
-  const handleToggleRanking = () => {
-    setShowRanking(prev => {
-      const newState = !prev;
-      if (newState) {
-        fetchCoopRankings();
-      }
-      return newState;
-    });
-  };
 
-  const handleScoreChange = (e) => {
-    setScore(e.target.value);
-  };
 
   // Check if team can add score
   const canAddScore = (teamId) => {
     const existingScore = getTeamScore(teamId);
-    // Allow adding score if there is no existing score or if the existing score is 0
     return existingScore === null || existingScore === 0;
   };
 
-  const addScore = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setResponseMessage(null);
-    setAlertType("");
-
-    // Check if team already has a score
-    const existingScore = getTeamScore(selectedTeam);
-    if (existingScore !== null) {
-      setAlertType("error");
-      setResponseMessage("This team already has a score. You cannot add another score.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!score || !selectedTeam) {
-      setAlertType("error");
-      setResponseMessage("Please enter a valid score");
-      setIsSubmitting(false);
-      return;
-    }
-
-    const scoreData = {
-      team: selectedTeam,
-      score: parseInt(score)
-    };
-
-    try {
-      await axios.patch(
-        `${process.env.REACT_APP_API_URL}/${competition_name}/${event_id}/score/${selectedTeam}/`,
-        scoreData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setAlertType("success");
-      setResponseMessage("Score added successfully!");
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Score added successfully!",
-        showConfirmButton: false,
-        timer: 1500
-      });
-
-      setScore("");
-      setShowModal(false);
-      fetchTeams();
-      fetchCoopRankings(); // Refresh rankings after adding score
-    } catch (err) {
-      setAlertType("error");
-      setResponseMessage(
-        err.response?.data?.detail || "Failed to add score. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const openScoreModal = (teamId, teamName) => {
     setSelectedTeam(teamId);
@@ -242,7 +136,7 @@ export default function FileComp() {
 
   useEffect(() => {
     fetchTeams();
-    fetchCoopRankings(); // Fetch rankings on initial load
+    fetchRankings(); // Fetch rankings on initial load
   }, [token, event_id]);
 
   const filteredTeams = teams.filter(team => {
@@ -515,7 +409,6 @@ export default function FileComp() {
       {showModal && selectedTeam && (
         <AddScore
           onClose={() => setShowModal(false)}
-          onScore={handleScore}
           eventName={event_name}
           eventID={event_id}
           competition_name={competition_name}
@@ -523,7 +416,7 @@ export default function FileComp() {
           selectedTeamName={selectedTeamName}
           onScoreAdded={() => {
             fetchTeams();
-            fetchCoopRankings();
+            fetchRankings();
           }}
         />
       )}

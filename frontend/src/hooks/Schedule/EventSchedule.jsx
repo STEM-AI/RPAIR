@@ -1,25 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react'; 
 import axios from 'axios';
 
-const useEventSchedules = (event_id, stage , ordering ) => {
+const useEventSchedules = (event_id, stage, ordering) => {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("access_token");
 
-  // 1. نقل الدالة خارج الـ useEffect
-  const fetchSchedules = async () => {
+  const fetchSchedules = useCallback(async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/core/event/${event_id}/schedule/`,
         {
-          params: {
-            ordering,
-            stage
-          }, 
-          headers: { 
-            Authorization: `Bearer ${token}`,
-          },
+          params: { ordering, stage },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setSchedules(response.data);
@@ -28,16 +22,15 @@ const useEventSchedules = (event_id, stage , ordering ) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [event_id, ordering, stage, token]); 
 
   useEffect(() => {
     if (event_id) {
-      fetchSchedules(); // 2. استدعاء الدالة هنا
+      fetchSchedules();
     }
-  }, [event_id, ordering, stage]);
+  }, [event_id, fetchSchedules]); 
 
-  // 3. إرجاع الدالة كـ refetch
-return { schedules, loading, error, refetch: fetchSchedules };
+  return { schedules, loading, error, refetch: fetchSchedules };
 };
 
 export default useEventSchedules;

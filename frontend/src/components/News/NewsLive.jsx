@@ -22,7 +22,7 @@ const NewsTicker = () => {
 
       socket.onopen = () => {
         console.log("WebSocket connection established");
-        reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+        reconnectAttempts = 0; 
       };
 
       socket.onmessage = (event) => {

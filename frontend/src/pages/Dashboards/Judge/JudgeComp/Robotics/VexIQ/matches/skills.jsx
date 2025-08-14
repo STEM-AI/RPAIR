@@ -619,6 +619,7 @@ const Skills = () => {
           gameId={selectedTeam.id}
           eventName={event_name}
           eventId={event_id}
+          activeTab={activeTab}
         />
       )}
     </div>

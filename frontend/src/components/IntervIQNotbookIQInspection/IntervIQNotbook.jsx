@@ -1,11 +1,5 @@
-
-
-
 import React, { useState ,useEffect } from "react";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import axios from "axios";
-import { FaDownload } from "react-icons/fa";
 import { MdLabelImportant } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
@@ -34,8 +28,7 @@ const GenericRubric = ({
   const [teamData, setTeamData] = useState(null);
   const [judge, setJudge] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("");
-  const [specialNotes, setSpecialNotes] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [specialNotes] = useState("");
   const token = localStorage.getItem("access_token");
 
   useEffect(() => {
@@ -90,7 +83,9 @@ const handleScoreChange = (category, value) => {
      
         <h2 className="text-center mb-4 py-2 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-800 to-cyan-500 text-4xl md:text-5xl font-black">
            {rubricTitle}
-        </h2>
+      </h2>
+      <span className="text-center pb-5">
+          Event : {event_name}</span>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 max-w-full bg-white/70 p-6 rounded-xl shadow-md backdrop-blur-sm">
   {/* Team Select Field */}

@@ -37,8 +37,6 @@ const CreateTeam = () => {
     members: [{ name: "", email: "", phone_number: "" }],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [responseMessage, setResponseMessage] = useState(null);
-  const [alertType, setAlertType] = useState("");
 
    const handleOrgSelect = (e) => {
     const selectedOrgName = e.target.value;
@@ -102,7 +100,11 @@ const CreateTeam = () => {
 
    const fetchOrganizations = async () => {
           if (!token) {
-            setResponseMessage("You are not authorized. Please log in.");
+            Swal.fire({
+      icon: "error",
+      title: "Missing Information",
+      text: "You are not authorized. Please log in.",
+    });
             navigate(`/login`);
 
             
@@ -267,7 +269,6 @@ const handleSubmit = async (event) => {
   }
 
   setIsSubmitting(true);
-  setResponseMessage(null);
 
   try {
     const formDataToSend = new FormData();
@@ -314,8 +315,7 @@ const handleSubmit = async (event) => {
       }
     );
 
-      setAlertType("success");
-      setResponseMessage("Event created successfully!");
+    
       
         
            Swal.fire({
