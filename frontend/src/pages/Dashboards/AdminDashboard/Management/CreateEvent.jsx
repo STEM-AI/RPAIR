@@ -180,8 +180,9 @@ const CreateEvent = ({orgID}) => {
           >
             <option value="">Select Event</option>
             <option value="Python">Python</option>
-            <option value="C#">C#</option>
-            <option value="Tenkercate">Tenkercate</option>
+            <option value="flutter">Flutter</option>
+            <option value="arduino">arduino</option>
+            <option value="tinkercad">tinkercad</option>
           </select>
         );
       case 'arduino':
