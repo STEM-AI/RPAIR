@@ -31,7 +31,7 @@ const LiveProgramming = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [URL]); // URL is dependency as it uses eventName
+  }, [URL]); 
 
   // Setup interval and initial fetch
   useEffect(() => {
@@ -60,6 +60,21 @@ const LiveProgramming = () => {
     }
   }; 
 
+  const getGrade = (score) => {
+    if (score >= 97) return 'A+';
+    if (score >= 93) return 'A';
+    if (score >= 90) return 'A-';
+    if (score >= 87) return 'B+';
+    if (score >= 83) return 'B';
+    if (score >= 80) return 'B-';
+    if (score >= 77) return 'C+';
+    if (score >= 73) return 'C';
+    if (score >= 70) return 'C-';
+    if (score >= 67) return 'D+';
+    if (score >= 63) return 'D';
+    if (score >= 60) return 'D-';
+    return 'F';
+  };
 
   
 
@@ -76,7 +91,7 @@ const LiveProgramming = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
           <FaRobot className="w-12 h-12 text-blue-600" />
-          <h1 className="text-3xl md:text-4xl  py-4 font-bold text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
+          <h1 className="text-3xl md:text-4xl  capitalize py-4 font-bold text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
             {eventName} Live Challenge
           </h1>
         </div>
@@ -146,12 +161,12 @@ const LiveProgramming = () => {
                       <span className="text-sm text-gray-500">{team.team_name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100/80 text-blue-800 font-bold">
-                      <FaTrophy className="w-4 h-4 mr-2" />
-                      {team.score || 0} 
-                    </span>
-                  </td>
+                   <td className="px-6 py-4 text-center">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100/80 text-blue-800 font-bold">
+                        <FaTrophy className="w-4 h-4 mr-2" />
+                        {team.score ? getGrade(team.score) : 'N/A'}
+                      </span>
+                    </td>
                  
                 </tr>
               ))}
