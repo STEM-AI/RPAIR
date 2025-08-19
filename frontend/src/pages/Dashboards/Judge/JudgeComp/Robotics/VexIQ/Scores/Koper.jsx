@@ -441,7 +441,7 @@ const handleRemoveCirclePlay = (index) => {
               <div className="flex items-center space-x-2">
                 <button 
                   onClick={() => setCubeCount(prev => Math.max(0, prev - 1))}
-                  disabled={!gameActive || gamePaused}
+                  disabled={ gamePaused}
                   className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FaMinus size={14} />
@@ -449,7 +449,7 @@ const handleRemoveCirclePlay = (index) => {
                 <span className="font-bold w-8 text-center">{cubeCount}</span>
                 <button 
                   onClick={() => setCubeCount(prev => prev + 1)}
-                  disabled={!gameActive || gamePaused}
+                  disabled={ gamePaused}
                   className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FaPlus size={14} />
@@ -466,7 +466,7 @@ const handleRemoveCirclePlay = (index) => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setFirajCount(prev => prev === 0 ? 1 : 0)}
-                  disabled={!gameActive || gamePaused}
+                  disabled={ gamePaused}
                   className={`p-1 rounded-lg ${
                     firajCount === 1 
                       ? "bg-purple-500 text-white" 
@@ -491,7 +491,7 @@ const handleRemoveCirclePlay = (index) => {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={handleDoubleGroup}
-                    disabled={!gameActive || gamePaused }
+                    disabled={ gamePaused }
                     className={`p-1 rounded-lg ${
                       doubleGroupCount > 0 
                         ? "bg-blue-500 text-white" 
@@ -518,7 +518,7 @@ const handleRemoveCirclePlay = (index) => {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={handleTripleGroup}
-                    disabled={!gameActive || gamePaused }
+                    disabled={ gamePaused }
                     className={`p-1 rounded-lg ${
                       tripleGroupCount > 0 
                         ? "bg-red-500 text-white" 
@@ -571,7 +571,7 @@ const handleRemoveCirclePlay = (index) => {
             
             <button
               onClick={handleCirclePlay}
-              disabled={!gameActive || gamePaused || circlePlays.every(p => p !== null)}
+              disabled={ gamePaused || circlePlays.every(p => p !== null)}
               className={`w-full py-2 rounded-lg font-semibold ${
                 circlePlays.length < 6 
                   ? "bg-yellow-500 text-white hover:bg-yellow-600" 
