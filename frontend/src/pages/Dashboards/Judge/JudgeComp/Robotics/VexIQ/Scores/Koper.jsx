@@ -193,6 +193,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
   }, [eventName, gameId]);
 
   const startGame = () => {
+
     playStart();
     setGameActive(true);
     setGamePaused(false);
@@ -255,7 +256,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
           );
         }
         playStart();
-        setRemainingTime(60);
+        setRemainingTime();
         setCubeCount(0);
         setFirajCount(0);
         setDoubleGroupCount(0);
@@ -313,7 +314,7 @@ const handleRemoveCirclePlay = (index) => {
   }, [remainingTime, gameActive, gamePaused, playMiddle, activeTab]);
 
   useEffect(() => {
-    if (remainingTime === 0) {
+    if (remainingTime === 1) {
       playEnd();
     }
   }, [remainingTime, playEnd]);
@@ -434,29 +435,29 @@ const handleRemoveCirclePlay = (index) => {
           <div className="grid grid-cols-1 gap-3">
             {/* Cube Counter */}
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-              <div className="flex items-center">
-                <div className="w-6 h-6 bg-blue-500 rounded mr-2"></div>
-                <span className="font-medium">Cube (1 point each)</span>
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-blue-500 rounded mr-2"></div>
+                  <span className="font-medium">Cube (1 point each)</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => setCubeCount(prev => Math.max(0, prev - 1))}
+                    disabled={gamePaused}
+                    className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FaMinus size={14} />
+                  </button>
+                  <span className="font-bold w-8 text-center">{cubeCount}</span>
+                  <button 
+                    onClick={() => setCubeCount(prev => prev < 12 ? prev + 1 : prev)}  // Changed this line
+                    disabled={gamePaused || cubeCount >= 12}  // Added disabled condition
+                    className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FaPlus size={14} />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={() => setCubeCount(prev => Math.max(0, prev - 1))}
-                  disabled={ gamePaused}
-                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FaMinus size={14} />
-                </button>
-                <span className="font-bold w-8 text-center">{cubeCount}</span>
-                <button 
-                  onClick={() => setCubeCount(prev => prev + 1)}
-                  disabled={ gamePaused}
-                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FaPlus size={14} />
-                </button>
-              </div>
-            </div>
-            
+                          
             {/* Firaj Counter (unlocks 2 circles) */}
             <div className="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
               <div className="flex items-center">
