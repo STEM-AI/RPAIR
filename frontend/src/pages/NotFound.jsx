@@ -8,7 +8,7 @@ const NotFoundPage = () => {
 
   useEffect(() => {
     setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
-  }, []);
+  }, [ setIsLoading ]);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       <Helmet>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { FaDownload, FaCheckCircle } from "react-icons/fa";
@@ -20,14 +20,12 @@ export default function InterviewSheet() {
   const [judge, setJudge] = useState("");
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");
-  const [error, setError] = useState("");
   const token = localStorage.getItem("access_token");
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
       const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
   const eventId = searchParams.get('eventId');
   
 
@@ -40,32 +38,33 @@ export default function InterviewSheet() {
         );
         setJudge(`${res.data.first_name} ${res.data.last_name}`);
       } catch {
-        setError("Failed to load judge data");
+        Swal.fire("Error", "Failed to load judge data", "error");
       }
     };
 
     fetchJudge();
   }, [token]);
 
+  const fetchTeams = useCallback(async () => {
+    
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/team/list/`,
+        {
+          params: { competition_event__id: eventId },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setTeams(res.data);
+      
+    } catch (err) {
+      Swal.fire("Error", "Failed to fetch teams", "error");
+    }
+  } , [eventId, token]);
   useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/team/list/`,
-          {
-            params: { competition_event__id: eventId },
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setTeams(res.data);
-        
-      } catch (err) {
-        setError("Failed to fetch teams");
-      }
-    };
 
     fetchTeams();
-  }, [token]);
+  }, [token , fetchTeams]);
 
   const fetchTeamData = (teamId) => {
     const team = teams.find((t) => t.id === parseInt(teamId));
@@ -139,7 +138,7 @@ export default function InterviewSheet() {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-2xl">
       <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">🧩 VEX123 Interview</h2>
-
+      {loading && <p>Loading...</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block text-sm font-medium text-indigo-700">Team Name</label>

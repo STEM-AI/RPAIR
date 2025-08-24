@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FiClock, FiCalendar, FiAward, FiLoader } from "react-icons/fi";
 
@@ -36,13 +36,9 @@ const GameScheduleForm = () => {
 
   const stagesOptions = getStagesOptions();
 
-  useEffect(() => {
-    if (eventName) {
-      fetchEvents();
-    }
-  }, [eventName]);
+  
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     setIsLoading(true);
     setError("");
     try {
@@ -56,8 +52,14 @@ const GameScheduleForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
 
+  }, [eventName, token]);
+    
+useEffect(() => {
+    if (eventName) {
+      fetchEvents();
+    }
+  }, [eventName, fetchEvents]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");

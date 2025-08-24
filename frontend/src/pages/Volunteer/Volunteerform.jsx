@@ -23,7 +23,7 @@ export default function VolunteerForm() {
 
   useEffect(() => {
     setIsLoading(false);
-  }, []);
+  }, [ setIsLoading ]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

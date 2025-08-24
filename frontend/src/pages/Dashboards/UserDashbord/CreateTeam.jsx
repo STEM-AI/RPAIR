@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { IoAddCircle } from "react-icons/io5";
@@ -37,7 +37,39 @@ const CreateTeam = () => {
     members: [{ name: "", email: "", phone_number: "" }],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const token = localStorage.getItem("access_token");
 
+  
+  const fetchOrganizations = useCallback(async () => {
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Information",
+        text: "You are not authorized. Please log in.",
+      });
+      navigate(`/login`);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/organization/`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      setOrganizations(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [token, navigate]);
+
+  useEffect(() => {
+    if (formData.competition) {
+      fetchEvents(formData.competition);
+      fetchOrganizations();
+    }
+  }, [formData.competition, fetchOrganizations]);
    const handleOrgSelect = (e) => {
     const selectedOrgName = e.target.value;
     
@@ -86,48 +118,13 @@ const CreateTeam = () => {
     }
   };
 
-  useEffect(() => {
-    if (formData.competition) {
-      fetchEvents(formData.competition);
-      fetchOrganizations();
-    }
-  }, [formData.competition]);
-
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setFormData({ ...formData, image: file });
   };
-
-   const fetchOrganizations = async () => {
-          if (!token) {
-            Swal.fire({
-      icon: "error",
-      title: "Missing Information",
-      text: "You are not authorized. Please log in.",
-    });
-            navigate(`/login`);
-
-            
-              return;
-          }
-  
-          try {
-              const response = await axios.get(
-                  `${process.env.REACT_APP_API_URL}/organization/`,
-                  {
-                      headers: { Authorization: `Bearer ${token}` }
-                  }
-              );
-  
-              setOrganizations(response.data);
   
   
-          } catch (err) {
-              console.log(err);
-          }
-      };
-
-
   const fetchEvents = async (competition_name) => {
     try {
       const response = await axios.get(
@@ -247,7 +244,6 @@ const CreateTeam = () => {
     }
   };
 
-  const token = localStorage.getItem("access_token");
 
   if (!token) {
     return (

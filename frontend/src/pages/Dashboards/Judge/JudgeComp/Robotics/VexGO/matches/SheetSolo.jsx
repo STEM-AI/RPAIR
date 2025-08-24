@@ -95,7 +95,7 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
         socketRef.current.close();
       }
     };
-  }, [gameId, eventName]);
+  }, [gameId, eventName ,maxTime]);
 
   useEffect(() => {
     if (!currentMatch) {
@@ -103,15 +103,15 @@ export default function SheetSolo({ selectedMatch, onClose, eventName, challenge
     }
   }, [currentMatch, navigate, onClose]);
 
-  useEffect(() => {
-    let interval;
-    if (isRunning && timer < maxTime) {
-      interval = setInterval(() => setTimer(prev => prev + 1), 1000);
-    } else if (timer >= maxTime) {
-      setIsRunning(false);
-    }
-    return () => clearInterval(interval);
-  }, [isRunning, timer, maxTime]);
+useEffect(() => {
+  let interval;
+  if (isRunning && timer < maxTime) {
+    interval = setInterval(() => setTimer(prev => prev + 1), 1000);
+  } else if (timer >= maxTime) {
+    setIsRunning(false);
+  }
+  return () => clearInterval(interval);
+}, [isRunning, timer, maxTime]); 
 
   const sendSocketCommand = (action) => {
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
@@ -310,37 +310,20 @@ const handleSubmit = async () => {
     }
   }, [remainingTime, playEnd]);
 
-  useEffect(() => {
-    if (isRunning) {
-      const current = remainingTime;
-      const prev = prevRemainingTime.current;
+ useEffect(() => {
+  if (isRunning) {
+    const current = remainingTime;
+    const prev = prevRemainingTime.current;
 
-      // Play sound when reaching 25 or 35 seconds remaining
-      if (prev >= 60 && current === 60 && challengeType === 'Driving Challenge') {
-        playMiddle();
-      }
-
-      prevRemainingTime.current = current;
+    if (prev >= 60 && current === 60 && challengeType === 'Driving Challenge') {
+      playMiddle();
     }
-  }, [remainingTime, isRunning, playMiddle]);
-
-
-  // ###
-  const getSocketStatusColor = (status) => {
-  switch (status) {
-    case 'connected': return 'text-green-600';
-    case 'connecting': return 'text-yellow-600';
-    case 'error': return 'text-red-600';
-    default: return 'text-gray-600';
+    prevRemainingTime.current = current;
   }
-};
+}, [remainingTime, isRunning, playMiddle, challengeType]); // Added challengeType
 
-const getProgressBarColor = (remaining, max) => {
-  const percentage = (remaining / max) * 100;
-  if (percentage <= 25) return 'bg-red-500';
-  if (percentage <= 50) return 'bg-yellow-500';
-  return 'bg-teal-500';
-};
+
+  
 
 
   return (

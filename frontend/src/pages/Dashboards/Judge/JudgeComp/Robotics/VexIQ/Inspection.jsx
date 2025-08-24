@@ -4,7 +4,6 @@ import "jspdf-autotable";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { fetchJudgeData, fetchTeams, submitScore } from "../../../../../../components/IntervIQNotbookIQInspection/ApiService";
 import { inspectionChecklist } from "../../../../../../components/IntervIQNotbookIQInspection/InspectionCategories"
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useSearchParams } from "react-router-dom";
 export default function Inspection() {
@@ -17,7 +16,7 @@ export default function Inspection() {
   const [teams, setTeams] = useState([]);
     const [judge, setJudge] = useState("");
     const [selectedTeam, setSelectedTeam] = useState("");
-  const [teamData, setTeamData] = useState({ id: null });  // Initialize with id property
+  const [teamData, setTeamData] = useState({ id: null });  
 
  
   useEffect(() => {

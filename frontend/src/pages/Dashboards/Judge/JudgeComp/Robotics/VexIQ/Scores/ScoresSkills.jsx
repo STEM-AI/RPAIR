@@ -2,7 +2,6 @@
 import { useState, useEffect, useMemo ,useRef} from "react";
 import { FaRedo, FaBullseye, FaTimes, FaPlay, FaPause, FaSync } from "react-icons/fa";
 import { BsSkipStartFill } from "react-icons/bs";
-import { GiThreeBurningBalls } from "react-icons/gi";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
@@ -35,7 +34,7 @@ const CalculatorSkills = ({ onCalculate, onClose, mode,gameId ,eventName,eventId
 
   const score = useMemo(() => {
     return switchCount * (1) + getGoalPoints(switchCount, goalCount);
-  }, [switchCount, goalCount, mode]);
+  }, [switchCount, goalCount]);
 
   const handleCalculate = async () => {
   

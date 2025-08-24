@@ -83,14 +83,14 @@ const [remainingTime, setRemainingTime] = useState(null);
     } finally {
       setIsSaving(false);
     }
-   }, [savedAnswers, token]);
+   }, [savedAnswers, token , game_id]);
   
   
 useEffect(() => {
   if (infoQuestions && infoQuestions.time_limit && !remainingTime) {
     setRemainingTime(infoQuestions.time_limit);
   }
-}, [infoQuestions]);
+}, [infoQuestions , remainingTime]);
   
   
   const handleTimeUp = useCallback(async () => {
@@ -135,7 +135,7 @@ useEffect(() => {
           });
     }
     setRemainingTime(0); // تحديث الحالة بعد انتهاء الوقت
-  }, [navigate, competition, selectedOptions, savedAnswers, saveAnswer, game_id]);
+  },  [navigate, competition, competition_id, selectedOptions, savedAnswers, saveAnswer, submitGame]);
   
   useEffect(() => {
     let timer;
@@ -251,7 +251,6 @@ useEffect(() => {
   const handleNext = async () => {
     if (!allQuestions || allQuestions.length === 0 || isSaving) return;
     
-    const currentId = allQuestions[currentQuestionIndex].id;
     
     if (currentQuestionIndex < allQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);

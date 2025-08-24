@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { MdAddBox } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axios from "axios";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import { useParams, useSearchParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaRegFileCode } from "react-icons/fa";
 import AddScore from "./AddScore";
 
@@ -19,15 +17,9 @@ export default function FileComp() {
   const [searchQuery, setSearchQuery] = useState("");
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [responseMessage, setResponseMessage] = useState(null);
-  const [alertType, setAlertType] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [selectedTeamName, setSelectedTeamName] = useState("");
-  const [score, setScore] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("access_token");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
@@ -44,11 +36,13 @@ export default function FileComp() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const fetchTeams = async () => {
+   const fetchTeams = useCallback(async () => {
     if (!token) {
-      setError("Authentication Error");
-      setResponseMessage("You are not authorized. Please log in.");
-      setAlertType("error");
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not authorized. Please log in.'
+      });
       setLoading(false);
       return;
     }
@@ -56,8 +50,6 @@ export default function FileComp() {
     const myAPI = `${process.env.REACT_APP_API_URL}/${competition_name}/${event_id}/`;
     try {
       setLoading(true);
-      setError(null);
-      setResponseMessage(null);
 
       const response = await axios.get(myAPI, {
         headers: { Authorization: `Bearer ${token}` },
@@ -68,39 +60,39 @@ export default function FileComp() {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      setError(err.message);
 
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      
       if (err.code === "ECONNABORTED") {
-        setResponseMessage("Request timed out. Please check your connection and try again.");
+        errorMessage = "Request timed out. Please check your connection and try again.";
       } else if (axios.isAxiosError(err)) {
         switch (err.response?.status) {
           case 401:
-            setResponseMessage("Your session has expired. Please log in again.");
+            errorMessage = "Your session has expired. Please log in again.";
             break;
           case 403:
-            setResponseMessage("You don't have permission to access these teams.");
+            errorMessage = "You don't have permission to access these teams.";
             break;
           case 404:
-            setResponseMessage("The teams resource was not found. Please try again later.");
+            errorMessage = "The teams resource was not found. Please try again later.";
             break;
           case 500:
-            setResponseMessage("Server error. Please try again later.");
+            errorMessage = "Server error. Please try again later.";
             break;
           default:
-            setResponseMessage(
-              err.response?.data?.message || "Failed to fetch teams. Please try again."
-            );
+            errorMessage = err.response?.data?.message || "Failed to fetch teams. Please try again.";
         }
-      } else {
-        setResponseMessage("An unexpected error occurred. Please try again.");
       }
-      setAlertType("error");
-    }
-  };
 
-  const fetchRankings = async () => {
-    setIsLoading(true);
-    setError(null);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: errorMessage
+      });
+    }
+  }, [token, competition_name, event_id]);
+
+  const fetchRankings = useCallback(async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/${competition_name}/${event_id}/rank/`,
@@ -113,11 +105,13 @@ export default function FileComp() {
       setRankings(response.data);
     } catch (error) {
       console.error("Error fetching coop rankings:", error);
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to fetch rankings. Please try again.'
+      });
     }
-  };
+  }, [token, competition_name, event_id]);
 
 
 
@@ -134,10 +128,10 @@ export default function FileComp() {
     setShowModal(true);
   };
 
-  useEffect(() => {
+ useEffect(() => {
     fetchTeams();
     fetchRankings(); // Fetch rankings on initial load
-  }, [token, event_id]);
+  }, [fetchTeams, fetchRankings]);
 
   const filteredTeams = teams.filter(team => {
     const matchesName = team.team_name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -180,38 +174,10 @@ export default function FileComp() {
         </div>
       </div>
 
-      {/* Enhanced Status Messages */}
-      <AnimatePresence>
-        {responseMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mb-6 mx-auto max-w-4xl"
-          >
-            <Alert 
-              severity={alertType} 
-              className="rounded-xl shadow-lg border-l-4 border-cyan-500"
-              sx={{
-                '&.MuiAlert-filledSuccess': {
-                  backgroundColor: '#ecfdf5',
-                  color: '#065f46'
-                },
-                '&.MuiAlert-filledError': {
-                  backgroundColor: '#fef2f2',
-                  color: '#b91c1c'
-                }
-              }}
-            >
-              <AlertTitle className="capitalize font-medium">{alertType}</AlertTitle>
-              {responseMessage}
-            </Alert>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      
 
       {/* Enhanced Loading State */}
-      {loading && (
+       {loading && (
         <div className="flex flex-col items-center justify-center py-20">
           <motion.div
             animate={{ rotate: 360 }}

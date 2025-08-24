@@ -1,6 +1,6 @@
-import { useState , useEffect, useMemo} from "react";
+import { useState , useMemo} from "react";
 import { FaTrophy,FaSync, FaCheck, FaPlay, FaChartBar, FaUsers } from "react-icons/fa";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useMatchContext } from "./MatchContext";
 import Alert from "../../../../../../../components/Alert/Alert";
 import axios from "axios";
@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 
 
 const COOPMatch = () => {
-  const { matches, setCurrentMatch } = useMatchContext();
+  const { setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [scores, setScores] = useState({});
   const [completedMatches, setCompletedMatches] = useState({});
@@ -54,7 +54,7 @@ const [searchParams] = useSearchParams();
       refetch: refetchSchedules 
     } = useEventSchedules(event_id, "coop", "-id"); // Order by descending ID
   
-    const lastScheduleId = eventSchedules[0]?.id; // أول عنصر بعد الترتيب التنازلي
+    const lastScheduleId = eventSchedules[0]?.id; 
     const { 
       schedule: scheduleDetails, 
       loading: scheduleLoading, 
@@ -62,7 +62,6 @@ const [searchParams] = useSearchParams();
       refetch: refetchScheduleDetails 
     } = useSchedule(lastScheduleId);
   
-    // دالة جديدة لجلب الجدول الأخير
     const handleRefreshSchedule = async () => {
       try {
         await refetchSchedules();

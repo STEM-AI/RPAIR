@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaListAlt } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt,  FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const CompetitionEvents = () => {
@@ -23,7 +23,8 @@ const CompetitionEvents = () => {
     return 'Completed';
   };
 
-  const fetchJudgeEvent = async () => {
+  const fetchJudgeEvent = useCallback(async () => {
+    
     if (!token) {
       setError("You are not authorized. Please log in.");
       setLoading(false);
@@ -71,11 +72,12 @@ const CompetitionEvents = () => {
       }
       setError(errorMessage);
     }
-  };
+  
+  }, [token]);
 
   useEffect(() => {
     fetchJudgeEvent();
-  }, [token]);
+  }, [token ,fetchJudgeEvent]);
 
  const handleCompetitionClick = (competitionName, eventName) => {
   navigate(`/Dashboard/Competitions/${competitionName}/${eventName}`);

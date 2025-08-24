@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
@@ -131,7 +131,7 @@ useEffect(() => {
 };
 
     // Fetch judges and their events
-    const fetchJudgeEvent = async () => {
+     const fetchJudgeEvent = useCallback(async () => {
         if (!token) {
             setError("Authentication Error");
             setResponseMessage("You are not authorized. Please log in.");
@@ -157,7 +157,7 @@ useEffect(() => {
 
             setJudges(response.data);
             setLoading(false);
-        } catch (err) {
+         } catch (err) {
             setLoading(false);
             setError(err.message);
 
@@ -191,11 +191,12 @@ useEffect(() => {
                 text: err.message
             })
         }
-    };
+    }, [token]);
 
-    const fetchEvents = async () => {
-        if (!token || !eventName) return; 
-                  const apiUrl = `${process.env.REACT_APP_API_URL}/competition/${eventName}/event/`;
+   
+     const fetchEvents = useCallback(async () => {
+        if (!token || !eventName) return;
+        const apiUrl = `${process.env.REACT_APP_API_URL}/competition/${eventName}/event/`;
 
         try {
             const response = await axios.get(apiUrl, {
@@ -205,7 +206,7 @@ useEffect(() => {
         } catch (err) {
             setError("Failed to fetch events. Please try again.");
         }
-    };
+    }, [token, eventName]);
 
     // Handle event assignment to judge
     const addEventJudge = async (event) => {
@@ -314,13 +315,13 @@ useEffect(() => {
 
     useEffect(() => {
         fetchJudgeEvent();
-    }, [token]);
+    }, [fetchJudgeEvent]);
 
     useEffect(() => {
         if (eventName) {
             fetchEvents();
         }
-    }, [eventName, token]);
+    }, [eventName, fetchEvents]);
 
     const filteredJudges = judges.filter(judge => {
     const matchesName = judge.username.toLowerCase().includes(searchQuery);

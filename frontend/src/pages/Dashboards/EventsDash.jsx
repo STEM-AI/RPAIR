@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
@@ -101,7 +101,9 @@ export default function EventDash() {
     return `${days}d ${remainingHours}h`;
   };
 
-  const fetchEventDash = async () => {
+  const fetchEventDash = useCallback(async () => {
+    
+
     if (!token) {
       setError("Authentication Error");
       setResponseMessage("You are not authorized. Please log in.");
@@ -154,11 +156,11 @@ export default function EventDash() {
       }
       setAlertType("error");
     }
-  };
+  }, [token, competition_name]);
 
   useEffect(() => {
     fetchEventDash();
-  }, [competition_name]);
+  }, [competition_name ,fetchEventDash]);
 
   const handleRetry = () => {
     fetchEventDash();

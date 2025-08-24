@@ -1,13 +1,11 @@
-
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import logoBlack from "../../assets/Static/logo2.png";
-import { useLocation, NavLink, Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { BsFillPersonFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { RxDropdownMenu } from "react-icons/rx";
 import { getTokens, clearTokens, isTokenExpired, refreshAccessToken } from '../../pages/Auth/auth';
 import { NavHashLink } from "react-router-hash-link";
 import { BiSolidMessageAdd } from "react-icons/bi";
@@ -26,6 +24,14 @@ export default function NavbarProfile({isSidebarOpen}) {
   const notificationDropdownRef = useRef(null);
   const challengesDropdownRef = useRef(null);
   const resourcesDropdownRef = useRef(null);
+
+  const handleLogout = useCallback(() => {
+    clearTokens();
+    localStorage.removeItem("user_role");
+    sessionStorage.removeItem("hasRefreshed");
+    setIsLoggedIn(false);
+    navigate("/", { replace: true });
+  }, [navigate]);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -85,27 +91,16 @@ export default function NavbarProfile({isSidebarOpen}) {
       clearInterval(tokenCheckInterval);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleLogout]);
 
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
-    ? userRole.is_superuser || !userRole.is_staff && !userRole.is_superuser && !userRole.organization
+    ? (userRole.is_superuser || (!userRole.is_staff && !userRole.is_superuser && !userRole.organization))
       ? "/Dashboard/Competitions"
-      : userRole.is_staff && !userRole.is_superuser
+      : (userRole.is_staff && !userRole.is_superuser)
       ? "/Dashboard/JudgeEvent"
       : "/Dashboard/Competitions"
     : "/";
-
-
-
-  const handleLogout = () => {
-     clearTokens();
-     localStorage.removeItem("user_role");
-     sessionStorage.removeItem("hasRefreshed");
-     setIsLoggedIn(false);
-     navigate("/", { replace: true });
-   };
-  
 
   const handleDropdownToggle = (dropdown) => {
     setDropdowns((prevState) => ({
