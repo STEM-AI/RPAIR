@@ -1,6 +1,5 @@
 import React, { useState,  useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { HashLink } from 'react-router-hash-link';
 import { useLoading } from '../../../context/LoadingContext';
 import { useParams } from 'react-router-dom';
 
@@ -8,7 +7,6 @@ const RoboticsGallery = () => {
   const { VexType } = useParams();
   const { setIsLoading } = useLoading();
   const [expandedFolders, setExpandedFolders] = useState({});
-  const [activeFolder, setActiveFolder] = useState(null);
   const [selectedImage, setSelectedImage] = useState({
     src: null,
     index: null,
@@ -37,7 +35,7 @@ const RoboticsGallery = () => {
   }), []);
 
   // Image handling
-  const imageContext = useMemo(() => contextMap[VexType], [VexType]);
+  const imageContext = useMemo(() => contextMap[VexType], [contextMap, VexType]);
   const getEventImages = useCallback((folderName) => {
     setIsLoading(true);
     try {
@@ -100,27 +98,7 @@ const RoboticsGallery = () => {
   );
 
   // Enhanced Event Navigation
-  const EventNavigation = ({ subEvents }) => (
-    <div className="flex flex-wrap gap-3 mb-8">
-      {subEvents.map((subEvent) => (
-        <HashLink
-          key={subEvent.folder}
-          to={`#${subEvent.folder}`}
-          smooth
-          className={`px-6 py-3 rounded-full transition-all duration-300 ${
-            activeFolder === subEvent.folder 
-              ? 'bg-gradient-to-br from-blue-700 to-cyan-500 text-white shadow-lg scale-105'
-              : 'bg-white  border-2 border-gray-200  hover:border-cyan-300 hover:shadow-md hover:scale-[1.02]'
-          }`}
-          onClick={() => setActiveFolder(subEvent.folder)}
-        >
-          <span className="font-medium text-sm md:text-base ">
-            {subEvent.folder}
-          </span>
-        </HashLink>
-      ))}
-    </div>
-  );
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50   py-8 sm:py-12 lg:py-16">

@@ -12,7 +12,7 @@ import useGetScore from "../../../../../../../hooks/Schedule/GetScore";
 const SkillsGO = () => {
   const [playGround, setPlayGround] = useState(null);
 
-  const { matches, setCurrentMatch } = useMatchContext();
+  const {  setCurrentMatch } = useMatchContext();
   const [showRanking, setShowRanking] = useState(false);
   const [activeTab, setActiveTab] = useState('driver_go');
   const [completedRounds, setCompletedRounds] = useState({
@@ -49,6 +49,13 @@ const SkillsGO = () => {
       refetch: refetchScores 
     } = useGetScore(event_id, activeTab);
 
+  if (scoresError) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: scoresError
+    })
+  }
   const roundSchedules = useMemo(() => {
     return [
       schedulesByRound[activeTab]?.[1],
@@ -117,6 +124,7 @@ const SkillsGO = () => {
   useEffect(() => {
     setSchedulesLoading(driverLoading || codingLoading);
     setSchedulesError(driverError || codingError);
+    
   }, [driverLoading, codingLoading, driverError, codingError]);
 
 

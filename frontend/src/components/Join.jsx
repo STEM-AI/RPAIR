@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -12,7 +12,7 @@ const Join = ({ event_id, eventName, onClose }) => {
 
     const token = localStorage.getItem("access_token");
 
-    const fetchTeam = async () => {
+     const fetchTeam = useCallback(async () => {
         if (!token) return;
         const apiUrl = `${process.env.REACT_APP_API_URL}/team/user/`;
 
@@ -30,11 +30,11 @@ const Join = ({ event_id, eventName, onClose }) => {
                 text: err.response?.data?.error || "Failed to assign the event. Please try again."
             });
         }
-    };
+    }, [token]); 
 
     useEffect(() => {
         fetchTeam();
-    }, [token]);
+    }, [fetchTeam]); 
 
     const handleEventChange = (e) => {
         const { name, value } = e.target;

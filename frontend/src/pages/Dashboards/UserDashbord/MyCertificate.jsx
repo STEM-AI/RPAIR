@@ -108,7 +108,7 @@ export default function MyCertificate() {
     if (id && token) {
       fetchTeamDetails();
     }
-  }, [token, id]);
+  }, [token, id, eventId]);
 
   return (
     <div className="p-4">

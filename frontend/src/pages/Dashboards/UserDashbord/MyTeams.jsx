@@ -78,7 +78,7 @@ const MyTeams = () => {
     };
 
     fetchData();
-  }, [token, id]);
+  }, [token, id , navigate]);
 
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();

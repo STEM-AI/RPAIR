@@ -59,7 +59,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
     totalScore += tripleGroupCount * 15;
     totalScore += circlePlays.reduce((sum, points) => sum + points, 0);
     return totalScore;
-  }, [cubeCount, firajCount, doubleGroupCount, tripleGroupCount, circlePlays]);
+  }, [cubeCount, doubleGroupCount, tripleGroupCount, circlePlays ]);
 
 
    useEffect(() => {
@@ -500,7 +500,7 @@ const handleRemoveCirclePlay = (index) => {
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {activeTab === 'auto' 
-                      ?doubleGroupCount==2 ? "✓" : `${doubleGroupCount}/2` 
+                      ?doubleGroupCount === 2 ? "✓" : `${doubleGroupCount}/2` 
                       : doubleGroupCount > 0 ? "✓" : <FaBullseye size={16} />}
                   </button>
                 </div>

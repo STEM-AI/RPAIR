@@ -25,33 +25,28 @@ const questions = [
   "How can you help your group be successful when we're building together?",
 ];
 
-const gradeLevels = [
 
-  "1st Grade",
-  "2nd Grade",
-  "3rd Grade",
-  "4th Grade",
-  "5th Grade"
-];
 
 export default function InterviewSheet() {
   const [judge, setJudge] = useState("");
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");
-  const [error, setError] = useState("");
   const token = localStorage.getItem("access_token");
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState('');
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
      const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
   const event_id = searchParams.get('eventId');
   
 useEffect(() => {
   const fetchData = async () => {
     if (!token) {
-      setError("Authentication Error");
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'You are not authorized. Please log in.',
+      })
       return;
     }
 
@@ -62,7 +57,11 @@ useEffect(() => {
       );
       setJudge(`${userResponse.data.first_name} ${userResponse.data.last_name}`);
     } catch (error) {
-      setError("Failed to load data");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to load data',
+      })
     }
   };
 
@@ -72,7 +71,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchTeams = async () => {
     if (!token) {
-      setError("Authentication Error");
+      Swal.fire("Error", "You are not authorized. Please log in.", "error");
       return;
     }
 
@@ -88,12 +87,12 @@ useEffect(() => {
       
     } catch (error) {
       console.error('Error fetching teams:', error);
-      setError(error.response?.data?.message || 'Failed to fetch teams');
+      Swal.fire("Error", error.response?.data?.message || 'Failed to fetch teams', "error");
     }
   };
 
   fetchTeams();
-}, [token]); // Added token as dependency
+}, [token , event_id]); 
 
 // Fetch specific team data
 const fetchTeamData = async (teamName) => {
@@ -118,7 +117,7 @@ const fetchTeamData = async (teamName) => {
     
   } catch (error) {
     console.error('Error fetching team data:', error);
-    setError(error.message);
+    Swal.fire('Error', error.message, 'error');
   } finally {
     setLoading(false);
   }
@@ -153,14 +152,20 @@ const postScore = async () => {
         },
       }
     );
+    if (response.status === 200) {
+      setScores(Array(questions.length).fill(""));
+      setNotes("");
+      setSelectedTeam("");
+      setTeamData(null);
 
-    Swal.fire({
-      icon: "success",
-      title: "Success!",
-      text: "Scores submitted successfully!",
-      showConfirmButton: true,
-      confirmButtonColor: "#28a745"
-    });
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Scores submitted successfully!",
+        showConfirmButton: true,
+        confirmButtonColor: "#28a745"
+      });
+    }
   } catch (error) {
     console.error("Error submitting score:", error);
     Swal.fire({

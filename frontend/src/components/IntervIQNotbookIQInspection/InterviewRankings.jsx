@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { FaTrophy } from 'react-icons/fa';
 
 const InterviewRankings = ({ apiUrl }) => {
-  const [rankings, setRankings] = useState([]);
+  const [ setRankings] = useState([]);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("access_token");
 

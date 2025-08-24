@@ -1,4 +1,4 @@
-  import React, { useState, useEffect } from "react";
+  import React, { useState, useEffect, useCallback } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
@@ -26,7 +26,7 @@ export default function ActiveOrg() {
     const [isActiveFilter, setIsActiveFilter] = useState("");
     const token = localStorage.getItem("access_token");
 
-    const fetchOrganizations = async () => {
+    const fetchOrganizations = useCallback(async () => {
         if (!token) {
             setError("Authentication Error");
             setResponseMessage("You are not authorized. Please log in.");
@@ -59,7 +59,7 @@ export default function ActiveOrg() {
             setError(err.message);
             handleApiError(err);
         }
-    };
+    }, [searchQuery, isActiveFilter, token]); 
 
     const handleApiError = (err) => {
         if (err.code === "ECONNABORTED") {
@@ -103,7 +103,7 @@ export default function ActiveOrg() {
 
     useEffect(() => {
         fetchOrganizations();
-    }, [searchQuery, isActiveFilter]);
+    }, [searchQuery, isActiveFilter, fetchOrganizations]);
 
     const filteredOrgs = organizations.filter(org =>
         org.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -199,7 +199,7 @@ export default function ActiveOrg() {
                 </span>
                 <div className="mt-2 h-1 bg-gradient-to-r from-cyan-500 to-cyan-300 w-24 mx-auto rounded-full" />
             </motion.h2>
-
+            {alertType}
             {/* Search and Filters */}
             <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div className="w-full sm:max-w-xs relative">

@@ -35,6 +35,15 @@ export default function Navbar() {
   const challengesDropdownRef = useRef(null);
   const resourcesDropdownRef = useRef(null);
 
+     const handleLogout = useCallback(() => {
+    clearTokens();
+    localStorage.removeItem("user_role");
+    sessionStorage.removeItem("hasRefreshed");
+    setIsLoggedIn(false);
+    navigate("/", { replace: true });
+  }, [navigate]);
+  
+  
   useEffect(() => {
     const handleScroll = () => {
       const homeSection = document.getElementById("home-section");
@@ -56,11 +65,11 @@ export default function Navbar() {
         const newAccessToken = await refreshAccessToken();
         
         if (newAccessToken) {
-          setIsLoggedIn(true);
-        } else {
-          handleLogout();
-        }
+        setIsLoggedIn(true);
       } else {
+        handleLogout(); 
+      }
+    } else {
         setIsLoggedIn(true);
       }
     };
@@ -110,7 +119,7 @@ export default function Navbar() {
       clearInterval(tokenCheckInterval);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleLogout]);
 
   const userRole = JSON.parse(localStorage.getItem("user_role"));
   const Url = userRole
@@ -124,14 +133,7 @@ export default function Navbar() {
 
 
 
- const handleLogout = useCallback(() => {
-  clearTokens();
-  localStorage.removeItem("user_role");
-  sessionStorage.removeItem("hasRefreshed");
-  setIsLoggedIn(false);
-  navigate("/", { replace: true });
- }, [navigate]);
-  
+
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

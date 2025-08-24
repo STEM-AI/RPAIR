@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FiClock, FiCalendar, FiAward, FiLoader } from "react-icons/fi";
 
 export default function DeleteSchedule() {
  const [selectedStage, setSelectedStage] = useState("");
-  const [gameTime, setGameTime] = useState("");
   const [eventName, setEventName] = useState("");
   const [selectedEvent, setSelectedEvent] = useState("");
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [scheduleID, setScheduleID] = useState("");
     const [schedules, setSchedules] = useState([]);
-    const [selectedScheduleId, setSelectedScheduleId] = useState("");
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
   const token = localStorage.getItem("access_token");
 
@@ -35,16 +32,9 @@ export default function DeleteSchedule() {
     { value: "programming", label: "Programming" },
   ];
 
-  useEffect(() => {
-    if (eventName) {
-        fetchEvents();
-    }
-  }, [eventName]);
-    
-    
 
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     setIsLoading(true);
     setError("");
     try {
@@ -58,10 +48,17 @@ export default function DeleteSchedule() {
     } finally {
       setIsLoading(false);
     }
-    };
+     }, [ eventName, token])
 
+  useEffect(() => {
+    if (eventName) {
+        fetchEvents();
+    }
+  }, [eventName,fetchEvents]);
+    
+    
 
- const fetchSchedules = async () => {
+ const fetchSchedules =useCallback(async () => {
   setIsLoading(true);
   setError("");
   try {
@@ -81,12 +78,12 @@ export default function DeleteSchedule() {
   } finally {
     setIsLoading(false);
   }
-};
+}, [selectedEvent, selectedStage, token]);
 useEffect(() => {
   if (selectedEvent && selectedStage) {
     fetchSchedules();
   }
-}, [selectedEvent, selectedStage]);
+}, [selectedEvent, selectedStage , fetchSchedules]);
     
     const handleDelete = async (e) => {
     e.preventDefault();
