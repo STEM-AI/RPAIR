@@ -17,6 +17,6 @@ class CoopTeamRankSerializer(serializers.Serializer):
     team__name = serializers.CharField()
     team = serializers.IntegerField()
     avg_score = serializers.IntegerField()
-
+    team_number = serializers.CharField()
     class Meta:
-        fields = ['team','team_name','avg_score']
+        fields = ['team','team_name','avg_score','team_number']

@@ -3,7 +3,7 @@ from rapair_db.models import EventGame,TeamworkTeamScore
 from vex_go.serializers import GameCoopSerializer,CoopTeamRankSerializer
 from rapair_db.permissions import IsJudgeUser
 from rest_framework.permissions import AllowAny
-from django.db.models import Avg
+from django.db.models import Avg, F
 from rest_framework.response import Response
 from rapair_db.models import TeamCompetitionEvent
 import logging
@@ -34,8 +34,8 @@ class CoopRankView(ListAPIView):
             TeamworkTeamScore.objects
             .filter(game__event_id=event_id)  # Only scores from games in this event
             .select_related('team')  # Fetch the related Team model
-            .values('team', 'team__name')  # Include team name directly
-            .annotate(avg_score=Avg('score'))
+            .values('team', 'team__name', 'team__team_number')  # Include team name directly
+            .annotate(avg_score=Avg('score'), team_number=F('team__team_number'))
             .order_by('-avg_score')
             )
         logger.info(f"queryset {queryset}")

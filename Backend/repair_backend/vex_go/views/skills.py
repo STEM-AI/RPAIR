@@ -44,10 +44,11 @@ class SkillsRankView(ListAPIView):
         return (
             SkillsTeamScore.objects
             .filter(competition_event__id=event_id)  # Only scores from games in this event
-            .values('team', 'team__name')
+            .values('team', 'team__name', 'team__team_number')
             .annotate(
                 total_score=Max('autonomous_score') + Max('driver_score'),
                 team_name=F('team__name'),
+                team_number=F('team__team_number'),
                 total_time_taken=Subquery(total_time_subquery, output_field=FloatField())
             )
             .order_by('-total_score', 'total_time_taken')

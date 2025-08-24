@@ -6,9 +6,10 @@ logger = logging.getLogger(__name__)
 class TeamInterviewSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='team.id',read_only=True)
     name = serializers.CharField(source='team.name',read_only=True)
+    team_number = serializers.CharField(source='team.team_number',read_only=True)
     class Meta:
         model = TeamCompetitionEvent
-        fields = ['interview_score','id','name']
+        fields = ['interview_score','id','name','team_number']
 
         extra_kwargs = {
             'name': {'required': False},
@@ -21,4 +22,4 @@ class TeamInterviewSerializer(serializers.ModelSerializer):
         instance.interview_score = validated_data.get('interview_score', instance.interview_score)
         logger.info(f"Updating interview score for team {instance.team.name} to {instance.interview_score}")
         instance.save()
-        return instance
+        return instance 

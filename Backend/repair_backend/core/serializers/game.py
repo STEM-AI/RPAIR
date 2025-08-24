@@ -25,7 +25,9 @@ class GamesSerializer(serializers.ModelSerializer):
  
 class GameScheduleSerializer(serializers.ModelSerializer):
     team1_name = serializers.CharField(source='team1.name', read_only=True)
+    team1_number = serializers.CharField(source='team1.team_number', read_only=True)
     team2_name = serializers.CharField(source='team2.name', read_only=True)
+    team2_number = serializers.CharField(source='team2.team_number', read_only=True)
     event_name = serializers.CharField(source='event.name', read_only=True)
     game_time = serializers.CharField(required = True , write_only = True)
     stage = serializers.ChoiceField(choices=[
@@ -41,7 +43,7 @@ class GameScheduleSerializer(serializers.ModelSerializer):
     ])
     class Meta:
         model = EventGame
-        fields = ['id','team1','team1_name','team2','team2_name','stage','event_name','game_time','time','score']
+        fields = ['id','team1','team1_name','team1_number','team2','team2_name','team2_number','stage','event_name','game_time','time','score']
         extra_kwargs = {
             'stage': {'required': True},
             'team1':{'required': False},

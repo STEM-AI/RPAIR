@@ -1,13 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ...permissions import IsJudgeUser
 from core.utils import event_utils
-from ...models import EventGame , Team ,  TeamworkTeamScore , SkillsTeamScore , TeamCompetitionEvent
+from ...models import EventGame , TeamworkTeamScore , SkillsTeamScore , TeamCompetitionEvent
 from ...serializers import EventGameSerializer
 from rest_framework.permissions import AllowAny
 from django.db import IntegrityError
-from django.db.models import Avg,Max
+from django.db.models import Avg,Max,F
 from ...serializers import TeamScoreSerializer,TeamInterviewScoreSerializer,TeamEngNotebookScoreSerializer,SkillsRankSerializer
 from rest_framework.generics import ListAPIView 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -66,8 +65,8 @@ class TeamWorkRankView(ListAPIView):
                 TeamworkTeamScore.objects
                 .filter(game__event_id=event_id)  # Only scores from games in this event
                 .select_related('team')  # Fetch the related Team model
-                .values('team', 'team__name')  # Include team name directly
-                .annotate(avg_score=Avg('score'))
+                .values('team', 'team__name', 'team__team_number')  # Include team name directly
+                .annotate(avg_score=Avg('score'), team_number=F('team__team_number'))
                 .order_by('-avg_score')
                 )
     def list(self, request, *args, **kwargs):
@@ -135,9 +134,10 @@ class SkillsRankView(ListAPIView):
             SkillsTeamScore.objects
             .filter(competition_event__id=event_id)  # Only scores from games in this event
             .select_related('team')  # Fetch the related Team model
-            .values('team', 'team__name')  # Include team name directly
+            .values('team', 'team__name', 'team__team_number')  # Include team name directly
             .annotate(
-                total_score=Max('autonomous_score') + Max('driver_score')
+                total_score=Max('autonomous_score') + Max('driver_score'),
+                team_number=F('team__team_number')
             )
             .order_by('-total_score')
         )

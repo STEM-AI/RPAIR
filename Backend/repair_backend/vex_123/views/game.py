@@ -52,10 +52,11 @@ class Vex123RankView(ListAPIView):
         queryset = (
             SkillsTeamScore.objects
             .filter(competition_event__id=event_id)  # Only scores from games in this event
-            .values('team', 'team__name')
+            .values('team', 'team__name', 'team__team_number')
             .annotate(
                 total_score=Sum('driver_score'),
-                team_name=F('team__name')
+                team_name=F('team__name'),
+                team_number=F('team__team_number')
             )
         )
         # Subquery to get total time_taken per team (as team1) in the given event
