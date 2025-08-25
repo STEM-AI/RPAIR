@@ -16,7 +16,7 @@ function TeamSetting() {
     team_leader_phone_number: "",
     organization: {
       name: "",
-      type: ""
+      type: "",
     },
     sponsors: [],
     coach: [],
@@ -26,7 +26,7 @@ function TeamSetting() {
     competition_event: "",
     id: "",
     team_number: "",
-    image: ""
+    image: "",
   });
 
   const [originalData, setOriginalData] = useState(null);
@@ -46,7 +46,7 @@ function TeamSetting() {
       try {
         const { data } = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/user/${id}/`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
 
         const initialData = {
@@ -74,23 +74,23 @@ function TeamSetting() {
     const { name, value } = e.target;
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
-      setUserData(prev => ({
+      setUserData((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setUserData(prev => ({
+      setUserData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
 
   const handleArrayChange = (arrayName, index, field, value) => {
-    setUserData(prev => {
+    setUserData((prev) => {
       const newArray = [...prev[arrayName]];
       newArray[index] = { ...newArray[index], [field]: value };
       return { ...prev, [arrayName]: newArray };
@@ -98,16 +98,16 @@ function TeamSetting() {
   };
 
   const addArrayItem = (arrayName, template) => {
-    setUserData(prev => ({
+    setUserData((prev) => ({
       ...prev,
-      [arrayName]: [...prev[arrayName], template]
+      [arrayName]: [...prev[arrayName], template],
     }));
   };
 
   const removeArrayItem = (arrayName, index) => {
-    setUserData(prev => ({
+    setUserData((prev) => ({
       ...prev,
-      [arrayName]: prev[arrayName].filter((_, i) => i !== index)
+      [arrayName]: prev[arrayName].filter((_, i) => i !== index),
     }));
   };
 
@@ -115,19 +115,28 @@ function TeamSetting() {
     if (!originalData) return userData;
 
     const changes = {};
-    
-    Object.keys(userData).forEach(key => {
-      if (typeof userData[key] !== 'object' && userData[key] !== originalData[key]) {
+
+    Object.keys(userData).forEach((key) => {
+      if (
+        typeof userData[key] !== "object" &&
+        userData[key] !== originalData[key]
+      ) {
         changes[key] = userData[key];
       }
     });
 
-    if (JSON.stringify(userData.organization) !== JSON.stringify(originalData.organization)) {
+    if (
+      JSON.stringify(userData.organization) !==
+      JSON.stringify(originalData.organization)
+    ) {
       changes.organization = userData.organization;
     }
 
-    ['coach', 'members'].forEach(arrayName => {
-      if (JSON.stringify(userData[arrayName]) !== JSON.stringify(originalData[arrayName])) {
+    ["coach", "members"].forEach((arrayName) => {
+      if (
+        JSON.stringify(userData[arrayName]) !==
+        JSON.stringify(originalData[arrayName])
+      ) {
         changes[arrayName] = userData[arrayName];
       }
     });
@@ -137,7 +146,7 @@ function TeamSetting() {
 
   const validateEmails = () => {
     const emails = new Set();
-    
+
     if (userData.team_leader_email) {
       emails.add(userData.team_leader_email.toLowerCase());
     }
@@ -182,7 +191,7 @@ function TeamSetting() {
 
     try {
       const dataToSend = getChangedData();
-      
+
       await axios.patch(
         `${process.env.REACT_APP_API_URL}/team/user/${id}/`,
         dataToSend,
@@ -191,28 +200,28 @@ function TeamSetting() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setOriginalData(JSON.parse(JSON.stringify(userData)));
-      
+
       Swal.fire({
         icon: "success",
         title: "Success",
         text: "Profile updated successfully!",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
     } catch (error) {
       let errorMessage = "Failed to save changes";
       if (error.response) {
         if (error.response.data) {
           errorMessage = Object.values(error.response.data)
-            .flatMap(err => Array.isArray(err) ? err : [err])
+            .flatMap((err) => (Array.isArray(err) ? err : [err]))
             .join("\n");
         }
       }
-      
+
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -223,38 +232,55 @@ function TeamSetting() {
     }
   };
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-600"></div>
-    </div>
-  );
-  
-  if (error) return (
-    <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-red-200">
-      <div className="text-center text-red-600 p-4 rounded-lg bg-red-50">
-        {error}
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-600"></div>
       </div>
-    </div>
-  );
+    );
+
+  if (error)
+    return (
+      <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-red-200">
+        <div className="text-center text-red-600 p-4 rounded-lg bg-red-50">
+          {error}
+        </div>
+      </div>
+    );
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl mt-6 shadow-lg border border-gray-100">
       <Helmet>
         <title>Team Settings</title>
       </Helmet>
-      
+
       {/* Header Section */}
       <div className="mb-8 pb-4 border-b border-gray-200">
         <div className="flex items-start gap-4">
           <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
             </svg>
           </div>
-          
+
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">Team Settings</h1>
-            <p className="text-gray-600">Manage your team's information and members</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">
+              Team Settings
+            </h1>
+            <p className="text-gray-600">
+              Manage your team's information and members
+            </p>
             <div className="mt-2 flex items-center gap-2">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                 Team ID: {userData.team_number}
@@ -266,14 +292,18 @@ function TeamSetting() {
           </div>
         </div>
       </div>
-      
+
       <div className="space-y-10">
         {/* Basic Information */}
         <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-          <h3 className="text-xl font-semibold text-gray-800 mb-5 pb-2 border-b border-gray-200">Basic Information</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-5 pb-2 border-b border-gray-200">
+            Basic Information
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Team Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Team Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -284,7 +314,9 @@ function TeamSetting() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Robot Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Robot Name
+              </label>
               <input
                 type="text"
                 name="robot_name"
@@ -299,10 +331,14 @@ function TeamSetting() {
 
         {/* Team Leader */}
         <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-          <h3 className="text-xl font-semibold text-gray-800 mb-5 pb-2 border-b border-gray-200">Team Leader</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-5 pb-2 border-b border-gray-200">
+            Team Leader
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Name
+              </label>
               <input
                 type="text"
                 name="team_leader_name"
@@ -313,7 +349,9 @@ function TeamSetting() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
               <input
                 type="email"
                 name="team_leader_email"
@@ -324,7 +362,9 @@ function TeamSetting() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phone
+              </label>
               <input
                 type="tel"
                 name="team_leader_phone_number"
@@ -339,10 +379,14 @@ function TeamSetting() {
 
         {/* Organization */}
         <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-          <h3 className="text-xl font-semibold text-gray-800 mb-5 pb-2 border-b border-gray-200">Organization</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-5 pb-2 border-b border-gray-200">
+            Organization
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Organization Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Organization Name
+              </label>
               <input
                 type="text"
                 name="organization.name"
@@ -353,7 +397,9 @@ function TeamSetting() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Organization Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Organization Type
+              </label>
               <select
                 name="organization.type"
                 value={userData.organization.type}
@@ -375,65 +421,133 @@ function TeamSetting() {
           <div className="flex justify-between items-center mb-5 pb-2 border-b border-gray-200">
             <h3 className="text-xl font-semibold text-gray-800">Coaches</h3>
             <button
-              onClick={() => addArrayItem("coach", { name: "", email: "", phone_number: "", position: "" })}
+              onClick={() =>
+                addArrayItem("coach", {
+                  name: "",
+                  email: "",
+                  phone_number: "",
+                  position: "",
+                })
+              }
               className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-medium transition"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
               </svg>
               Add Coach
             </button>
           </div>
-          
+
           {userData.coach.length === 0 ? (
             <div className="text-center py-8 text-gray-500 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 mx-auto text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
               </svg>
               <p className="mt-3">No coaches added yet</p>
-              <p className="text-sm mt-1">Add your first coach to get started</p>
+              <p className="text-sm mt-1">
+                Add your first coach to get started
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
               {userData.coach.map((coach, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-12 gap-3 p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                >
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Name</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Name
+                    </label>
                     <input
                       type="text"
                       placeholder="Coach name"
                       value={coach.name}
-                      onChange={(e) => handleArrayChange("coach", index, "name", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "coach",
+                          index,
+                          "name",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       placeholder="Email address"
                       value={coach.email}
-                      onChange={(e) => handleArrayChange("coach", index, "email", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "coach",
+                          index,
+                          "email",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Phone</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Phone
+                    </label>
                     <input
                       type="tel"
                       placeholder="Phone number"
                       value={coach.phone_number}
-                      onChange={(e) => handleArrayChange("coach", index, "phone_number", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "coach",
+                          index,
+                          "phone_number",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Position</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Position
+                    </label>
                     <input
                       type="text"
                       placeholder="Position"
                       value={coach.position}
-                      onChange={(e) => handleArrayChange("coach", index, "position", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "coach",
+                          index,
+                          "position",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
@@ -442,8 +556,17 @@ function TeamSetting() {
                       onClick={() => removeArrayItem("coach", index)}
                       className="w-full py-2 px-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex justify-center"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -456,57 +579,117 @@ function TeamSetting() {
         {/* Members */}
         <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
           <div className="flex justify-between items-center mb-5 pb-2 border-b border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-800">Team Members</h3>
+            <h3 className="text-xl font-semibold text-gray-800">
+              Team Members
+            </h3>
             <button
-              onClick={() => addArrayItem("members", { name: "", email: "", phone_number: "" })}
+              onClick={() =>
+                addArrayItem("members", {
+                  name: "",
+                  email: "",
+                  phone_number: "",
+                })
+              }
               className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-medium transition"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
               </svg>
               Add Member
             </button>
           </div>
-          
+
           {userData.members.length === 0 ? (
             <div className="text-center py-8 text-gray-500 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 mx-auto text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
               </svg>
               <p className="mt-3">No members added yet</p>
-              <p className="text-sm mt-1">Add your team members to get started</p>
+              <p className="text-sm mt-1">
+                Add your team members to get started
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
               {userData.members.map((member, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-10 gap-3 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-10 gap-3 p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                >
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Name</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Name
+                    </label>
                     <input
                       type="text"
                       placeholder="Member name"
                       value={member.name}
-                      onChange={(e) => handleArrayChange("members", index, "name", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "members",
+                          index,
+                          "name",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       placeholder="Email address"
                       value={member.email}
-                      onChange={(e) => handleArrayChange("members", index, "email", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "members",
+                          index,
+                          "email",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Phone</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Phone
+                    </label>
                     <input
                       type="tel"
                       placeholder="Phone number"
                       value={member.phone_number}
-                      onChange={(e) => handleArrayChange("members", index, "phone_number", e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "members",
+                          index,
+                          "phone_number",
+                          e.target.value,
+                        )
+                      }
                       className="block w-full rounded-md border-gray-300 px-3 py-2 border text-sm focus:border-cyan-500 focus:ring-cyan-500"
                     />
                   </div>
@@ -515,8 +698,17 @@ function TeamSetting() {
                       onClick={() => removeArrayItem("members", index)}
                       className="w-full py-2 px-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex justify-center"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -525,7 +717,7 @@ function TeamSetting() {
             </div>
           )}
         </div>
-       
+
         {/* Save Button */}
         <div className="pt-4 flex justify-end gap-3">
           <button
@@ -541,16 +733,43 @@ function TeamSetting() {
           >
             {saving ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Saving...
               </>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Save Changes
               </>

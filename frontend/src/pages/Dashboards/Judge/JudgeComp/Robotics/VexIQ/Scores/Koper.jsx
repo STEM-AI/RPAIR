@@ -1,14 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useMemo } from "react";
-import {  FaBullseye, FaTimes, FaPlay, FaPause, FaSync, FaPlus, FaMinus } from "react-icons/fa";
+import {
+  FaBullseye,
+  FaTimes,
+  FaPlay,
+  FaPause,
+  FaSync,
+  FaPlus,
+  FaMinus,
+} from "react-icons/fa";
 import { BsSkipStartFill } from "react-icons/bs";
 import { GiThreeBurningBalls } from "react-icons/gi";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Alert from "../../../../../../../components/Alert/Alert";
-import useSound from 'use-sound';
+import useSound from "use-sound";
 
-const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) => {
+const Koper = ({
+  onCalculate,
+  onClose,
+  gameId,
+  eventName,
+  eventId,
+  activeTab,
+}) => {
   const [remainingTime, setRemainingTime] = useState();
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
@@ -24,9 +39,9 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
   const [tripleGroupCount, setTripleGroupCount] = useState(0);
   const [unlockedCircles, setUnlockedCircles] = useState(0);
 
-  const [playStart] = useSound('/sounds/Start.MP3', { volume: 1 });
-  const [playEnd] = useSound('/sounds/End.mp3', { volume: 1 });
-  const [playMiddle] = useSound('/sounds/Middle.MP3', { volume: 1 });
+  const [playStart] = useSound("/sounds/Start.MP3", { volume: 1 });
+  const [playEnd] = useSound("/sounds/End.mp3", { volume: 1 });
+  const [playMiddle] = useSound("/sounds/Middle.MP3", { volume: 1 });
 
   useEffect(() => {
     if (activeTab === "teamwork") {
@@ -43,14 +58,15 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
   }, [firajCount, doubleGroupCount, tripleGroupCount]);
 
   // Reset circle plays when unlocks drop below current count
- useEffect(() => {
-  const playedCirclesCount = circlePlays.filter(points => points !== null).length;
-  
-  if (playedCirclesCount > 0 && unlockedCircles < playedCirclesCount) {
-    setCirclePlays(Array(6).fill(null));
-  }
-}, [unlockedCircles, circlePlays]);
+  useEffect(() => {
+    const playedCirclesCount = circlePlays.filter(
+      (points) => points !== null,
+    ).length;
 
+    if (playedCirclesCount > 0 && unlockedCircles < playedCirclesCount) {
+      setCirclePlays(Array(6).fill(null));
+    }
+  }, [unlockedCircles, circlePlays]);
 
   const score = useMemo(() => {
     let totalScore = 0;
@@ -59,42 +75,39 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
     totalScore += tripleGroupCount * 15;
     totalScore += circlePlays.reduce((sum, points) => sum + points, 0);
     return totalScore;
-  }, [cubeCount, doubleGroupCount, tripleGroupCount, circlePlays ]);
+  }, [cubeCount, doubleGroupCount, tripleGroupCount, circlePlays]);
 
-
-   useEffect(() => {
+  useEffect(() => {
     let totalUnlocks = 0;
-    if (activeTab === 'auto') {
-      totalUnlocks = (firajCount * 2) + doubleGroupCount + tripleGroupCount;
+    if (activeTab === "auto") {
+      totalUnlocks = firajCount * 2 + doubleGroupCount + tripleGroupCount;
     } else {
       totalUnlocks = (firajCount + doubleGroupCount + tripleGroupCount) * 2;
     }
     setUnlockedCircles(Math.min(totalUnlocks, 6));
   }, [firajCount, doubleGroupCount, tripleGroupCount, activeTab]);
 
-
-  
   const handleCalculateAndSubmit = async () => {
     if (score === 0) {
       Alert.warning({
-        title: 'Score is Zero',
-        text: 'Are you sure you want to submit a score of zero?',
-        confirmText: 'Yes, Submit',
-        cancelText: 'Cancel',
+        title: "Score is Zero",
+        text: "Are you sure you want to submit a score of zero?",
+        confirmText: "Yes, Submit",
+        cancelText: "Cancel",
         onConfirm: () => submitScore(),
       });
       return;
     }
-    
+
     submitScore();
   };
-  
+
   const submitScore = async () => {
     Alert.confirm({
-      title: 'Submit Final Score?',
+      title: "Submit Final Score?",
       html: `<p>You're about to submit your final score of <strong>${score}</strong> points.</p>`,
-      confirmText: 'Confirm Submission',
-      cancelText: 'Cancel',
+      confirmText: "Confirm Submission",
+      cancelText: "Cancel",
       onConfirm: async () => {
         try {
           const response = await axios.post(
@@ -108,7 +121,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
 
           if (response.status === 200 || response.status === 201) {
@@ -117,7 +130,7 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
               title: "Success",
               text: "Score submitted successfully!",
               showConfirmButton: true,
-              confirmButtonColor: "#28a745" 
+              confirmButtonColor: "#28a745",
             });
             EndGame();
             onCalculate(score);
@@ -131,9 +144,9 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
         }
       },
       onCancel: () => {
-        Swal.fire('Cancelled', 'Submission was cancelled', 'info');
-      }
-    }); 
+        Swal.fire("Cancelled", "Submission was cancelled", "info");
+      },
+    });
   };
 
   // WebSocket connection
@@ -145,9 +158,9 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
       });
       return;
     }
-    
+
     socketRef.current = new WebSocket(
-      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`,
     );
 
     socketRef.current.onopen = () => {
@@ -180,11 +193,11 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
         }
       }
     };
-    
+
     socketRef.current.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-    
+
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
@@ -193,7 +206,6 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
   }, [eventName, gameId]);
 
   const startGame = () => {
-
     playStart();
     setGameActive(true);
     setGamePaused(false);
@@ -202,11 +214,15 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
 
     if (socketRef.current) {
       socketRef.current.send(
-        JSON.stringify({ action: "start_game", event_name: eventName, game_id: gameId })
+        JSON.stringify({
+          action: "start_game",
+          event_name: eventName,
+          game_id: gameId,
+        }),
       );
     }
   };
-  
+
   const EndGame = () => {
     setGameActive(false);
     setShowControls(false);
@@ -214,7 +230,11 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
 
     if (socketRef.current) {
       socketRef.current.send(
-        JSON.stringify({ action: "end_game", event_name: eventName, game_id: gameId })
+        JSON.stringify({
+          action: "end_game",
+          event_name: eventName,
+          game_id: gameId,
+        }),
       );
     }
   };
@@ -223,7 +243,11 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
     if (!gameActive || gamePaused) return;
     if (socketRef.current) {
       socketRef.current.send(
-        JSON.stringify({ action: "pause_game", event_name: eventName, game_id: gameId })
+        JSON.stringify({
+          action: "pause_game",
+          event_name: eventName,
+          game_id: gameId,
+        }),
       );
     }
     setGamePaused(true);
@@ -233,7 +257,11 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
     if (!gameActive || !gamePaused) return;
     if (socketRef.current) {
       socketRef.current.send(
-        JSON.stringify({ action: "resume_game", event_name: eventName, game_id: gameId })
+        JSON.stringify({
+          action: "resume_game",
+          event_name: eventName,
+          game_id: gameId,
+        }),
       );
     }
     setGamePaused(false);
@@ -241,18 +269,18 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
 
   const restartGame = () => {
     Alert.confirm({
-      title: 'Restart Game?',
-      html: 'This will reset all counters and the timer!',
-      confirmText: 'Confirm Restart',
-      cancelText: 'Cancel',
+      title: "Restart Game?",
+      html: "This will reset all counters and the timer!",
+      confirmText: "Confirm Restart",
+      cancelText: "Cancel",
       onConfirm: () => {
         if (socketRef.current) {
           socketRef.current.send(
-            JSON.stringify({ 
-              action: "restart_game", 
-              event_name: eventName, 
-              game_id: gameId 
-            })
+            JSON.stringify({
+              action: "restart_game",
+              event_name: eventName,
+              game_id: gameId,
+            }),
           );
         }
         playStart();
@@ -266,25 +294,25 @@ const Koper = ({ onCalculate, onClose, gameId, eventName, eventId, activeTab }) 
         setTimeUp(false);
       },
       onCancel: () => {
-        Swal.fire('Cancelled', 'Game restart was cancelled', 'info');
-      }
+        Swal.fire("Cancelled", "Game restart was cancelled", "info");
+      },
     });
   };
-const handleRemoveCirclePlay = (index) => {
-  if (!gameActive || gamePaused) return;
-  
-  const newCirclePlays = [...circlePlays];
-  newCirclePlays[index] = null;
-  setCirclePlays(newCirclePlays);
-};
+  const handleRemoveCirclePlay = (index) => {
+    if (!gameActive || gamePaused) return;
+
+    const newCirclePlays = [...circlePlays];
+    newCirclePlays[index] = null;
+    setCirclePlays(newCirclePlays);
+  };
   const handleCirclePlay = () => {
-      const emptyIndex = circlePlays.findIndex(points => points === null);
-      if (emptyIndex !== -1) {
-        const newCirclePlays = [...circlePlays];
-        newCirclePlays[emptyIndex] = getCirclePointValue();
-        setCirclePlays(newCirclePlays);
-      }
-    };
+    const emptyIndex = circlePlays.findIndex((points) => points === null);
+    if (emptyIndex !== -1) {
+      const newCirclePlays = [...circlePlays];
+      newCirclePlays[emptyIndex] = getCirclePointValue();
+      setCirclePlays(newCirclePlays);
+    }
+  };
 
   // Calculate current circle point value
   const getCirclePointValue = () => {
@@ -295,21 +323,20 @@ const handleRemoveCirclePlay = (index) => {
   };
 
   useEffect(() => {
-    
- if (activeTab === "teamwork") {
+    if (activeTab === "teamwork") {
       if (gameActive && !gamePaused) {
-      if (remainingTime === 35 || remainingTime === 25) {
-        playMiddle();
+        if (remainingTime === 35 || remainingTime === 25) {
+          playMiddle();
+        }
       }
-    }
     } else {
       if (gameActive && !gamePaused) {
-      if (remainingTime === 40 || remainingTime === 50) {
-        playMiddle();
+        if (remainingTime === 40 || remainingTime === 50) {
+          playMiddle();
+        }
       }
     }
-    }
-    
+
     prevTimeRef.current = remainingTime;
   }, [remainingTime, gameActive, gamePaused, playMiddle, activeTab]);
 
@@ -322,26 +349,23 @@ const handleRemoveCirclePlay = (index) => {
   // Calculate current points per circle play
   const currentCirclePoints = getCirclePointValue();
 
- const handleDoubleGroup = () => {
-    if (activeTab === 'auto') {
-      
+  const handleDoubleGroup = () => {
+    if (activeTab === "auto") {
       if (doubleGroupCount < 2) {
-        setDoubleGroupCount(prev => prev + 1);
+        setDoubleGroupCount((prev) => prev + 1);
       }
     } else {
-      setDoubleGroupCount(prev => prev === 0 ? 1 : 0);
+      setDoubleGroupCount((prev) => (prev === 0 ? 1 : 0));
     }
   };
 
-  
   const handleTripleGroup = () => {
-    if (activeTab === 'auto') {
-    
+    if (activeTab === "auto") {
       if (tripleGroupCount < 2) {
-        setTripleGroupCount(prev => prev + 1);
+        setTripleGroupCount((prev) => prev + 1);
       }
     } else {
-      setTripleGroupCount(prev => prev === 0 ? 1 : 0);
+      setTripleGroupCount((prev) => (prev === 0 ? 1 : 0));
     }
   };
 
@@ -360,7 +384,7 @@ const handleRemoveCirclePlay = (index) => {
         </div>
 
         {/* Score Display */}
-         <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow overflow-y-auto">
           <div className="p-4 bg-gray-50">
             <div className="text-center text-2xl font-bold text-gray-800 mb-2">
               Current Score: <span className="text-green-600">{score}</span>
@@ -370,7 +394,7 @@ const handleRemoveCirclePlay = (index) => {
             </div>
             <div className="flex justify-center mt-2">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div 
+                <div
                   key={i}
                   className={`w-4 h-4 rounded-full mx-1 ${
                     i < unlockedCircles ? "bg-green-500" : "bg-gray-300"
@@ -425,8 +449,8 @@ const handleRemoveCirclePlay = (index) => {
             {gamePaused
               ? "Game Paused"
               : timeUp
-              ? "Time's Up!"
-              : `Remaining Time: ${remainingTime} seconds`}
+                ? "Time's Up!"
+                : `Remaining Time: ${remainingTime} seconds`}
           </div>
         </div>
 
@@ -435,42 +459,47 @@ const handleRemoveCirclePlay = (index) => {
           <div className="grid grid-cols-1 gap-3">
             {/* Cube Counter */}
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-500 rounded mr-2"></div>
-                  <span className="font-medium">Cube (1 point each)</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button 
-                    onClick={() => setCubeCount(prev => Math.max(0, prev - 1))}
-                    disabled={gamePaused}
-                    className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <FaMinus size={14} />
-                  </button>
-                  <span className="font-bold w-8 text-center">{cubeCount}</span>
-                  <button 
-                    onClick={() => setCubeCount(prev => prev < 12 ? prev + 1 : prev)}  // Changed this line
-                    disabled={gamePaused || cubeCount >= 12}  // Added disabled condition
-                    className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <FaPlus size={14} />
-                  </button>
-                </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-blue-500 rounded mr-2"></div>
+                <span className="font-medium">Cube (1 point each)</span>
               </div>
-                          
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setCubeCount((prev) => Math.max(0, prev - 1))}
+                  disabled={gamePaused}
+                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaMinus size={14} />
+                </button>
+                <span className="font-bold w-8 text-center">{cubeCount}</span>
+                <button
+                  onClick={() =>
+                    setCubeCount((prev) => (prev < 12 ? prev + 1 : prev))
+                  } // Changed this line
+                  disabled={gamePaused || cubeCount >= 12} // Added disabled condition
+                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaPlus size={14} />
+                </button>
+              </div>
+            </div>
+
             {/* Firaj Counter (unlocks 2 circles) */}
             <div className="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
               <div className="flex items-center">
-                <GiThreeBurningBalls className="text-purple-500 mr-2" size={20} />
+                <GiThreeBurningBalls
+                  className="text-purple-500 mr-2"
+                  size={20}
+                />
                 <span className="font-medium">Firaj (unlocks 2 circles)</span>
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => setFirajCount(prev => prev === 0 ? 1 : 0)}
-                  disabled={ gamePaused}
+                  onClick={() => setFirajCount((prev) => (prev === 0 ? 1 : 0))}
+                  disabled={gamePaused}
                   className={`p-1 rounded-lg ${
-                    firajCount === 1 
-                      ? "bg-purple-500 text-white" 
+                    firajCount === 1
+                      ? "bg-purple-500 text-white"
                       : "bg-purple-200 text-purple-800"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
@@ -478,113 +507,126 @@ const handleRemoveCirclePlay = (index) => {
                 </button>
               </div>
             </div>
-            
+
             {/* Double Group Counter */}
-              <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
-                <div className="flex items-center">
-                  <FaBullseye className="text-blue-500 mr-2" size={18} />
-                  <span className="font-medium">
-                    {activeTab === 'auto' 
-                      ? "Double Group (10 points + unlocks 1 circle)" 
-                      : "Double Group (10 points + unlocks 2 circles)"}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={handleDoubleGroup}
-                    disabled={ gamePaused }
-                    className={`p-1 rounded-lg ${
-                      doubleGroupCount > 0 
-                        ? "bg-blue-500 text-white" 
-                        : "bg-blue-200 text-blue-800"
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
-                    {activeTab === 'auto' 
-                      ?doubleGroupCount === 2 ? "✓" : `${doubleGroupCount}/2` 
-                      : doubleGroupCount > 0 ? "✓" : <FaBullseye size={16} />}
-                  </button>
-                </div>
+            <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+              <div className="flex items-center">
+                <FaBullseye className="text-blue-500 mr-2" size={18} />
+                <span className="font-medium">
+                  {activeTab === "auto"
+                    ? "Double Group (10 points + unlocks 1 circle)"
+                    : "Double Group (10 points + unlocks 2 circles)"}
+                </span>
               </div>
-              
-              {/* Triple Group Counter */}
-              <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-                <div className="flex items-center">
-                  <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
-                  <span className="font-medium">
-                    {activeTab === 'auto' 
-                      ? "Triple Group (15 points + unlocks 1 circle)" 
-                      : "Triple Group (15 points + unlocks 2 circles)"}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={handleTripleGroup}
-                    disabled={ gamePaused }
-                    className={`p-1 rounded-lg ${
-                      tripleGroupCount > 0 
-                        ? "bg-red-500 text-white" 
-                        : "bg-red-200 text-red-800"
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
-                    {activeTab === 'auto' 
-                      ? `${tripleGroupCount}/2` 
-                      : tripleGroupCount > 0 ? "✓" : <GiThreeBurningBalls size={18} />}
-                  </button>
-                </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleDoubleGroup}
+                  disabled={gamePaused}
+                  className={`p-1 rounded-lg ${
+                    doubleGroupCount > 0
+                      ? "bg-blue-500 text-white"
+                      : "bg-blue-200 text-blue-800"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {activeTab === "auto" ? (
+                    doubleGroupCount === 2 ? (
+                      "✓"
+                    ) : (
+                      `${doubleGroupCount}/2`
+                    )
+                  ) : doubleGroupCount > 0 ? (
+                    "✓"
+                  ) : (
+                    <FaBullseye size={16} />
+                  )}
+                </button>
               </div>
+            </div>
+
+            {/* Triple Group Counter */}
+            <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
+              <div className="flex items-center">
+                <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
+                <span className="font-medium">
+                  {activeTab === "auto"
+                    ? "Triple Group (15 points + unlocks 1 circle)"
+                    : "Triple Group (15 points + unlocks 2 circles)"}
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleTripleGroup}
+                  disabled={gamePaused}
+                  className={`p-1 rounded-lg ${
+                    tripleGroupCount > 0
+                      ? "bg-red-500 text-white"
+                      : "bg-red-200 text-red-800"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {activeTab === "auto" ? (
+                    `${tripleGroupCount}/2`
+                  ) : tripleGroupCount > 0 ? (
+                    "✓"
+                  ) : (
+                    <GiThreeBurningBalls size={18} />
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
-          
+
           {/* Circle Play Section - Only when circles are unlocked */}
           {unlockedCircles > 0 && (
-          <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-            <h3 className="font-bold text-lg text-center text-yellow-800 mb-3">
-              Circle Plays ({currentCirclePoints} points for new plays)
-            </h3>
-            <div className="text-center mb-3">
-              <div className="flex justify-center mb-2">
-                {circlePlays.map((points, i) => (
-                  <button
-                    key={i}
-                    onClick={() => points !== null && handleRemoveCirclePlay(i)}
-                    className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${
-                      points !== null 
-                        ? "bg-yellow-500 hover:bg-yellow-600 cursor-pointer" 
-                        : "bg-gray-300"
-                    }`}
-                    disabled={points === null}
-                  >
-                    <span className="font-bold text-white">
-                      {i + 1}
-                    </span>
-                  </button>
-                ))}
+            <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <h3 className="font-bold text-lg text-center text-yellow-800 mb-3">
+                Circle Plays ({currentCirclePoints} points for new plays)
+              </h3>
+              <div className="text-center mb-3">
+                <div className="flex justify-center mb-2">
+                  {circlePlays.map((points, i) => (
+                    <button
+                      key={i}
+                      onClick={() =>
+                        points !== null && handleRemoveCirclePlay(i)
+                      }
+                      className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${
+                        points !== null
+                          ? "bg-yellow-500 hover:bg-yellow-600 cursor-pointer"
+                          : "bg-gray-300"
+                      }`}
+                      disabled={points === null}
+                    >
+                      <span className="font-bold text-white">{i + 1}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-sm text-yellow-700">
+                  Current point value: {getCirclePointValue()} per circle
+                  {firajCount > 0 && " (Firaj circles)"}
+                  {doubleGroupCount > 0 && " (Double circles)"}
+                  {tripleGroupCount > 0 && " (Triple circles)"}
+                </p>
+                <p className="text-sm text-yellow-700 mt-1">
+                  Total circle points:{" "}
+                  {circlePlays.reduce((sum, points) => sum + points, 0)}
+                </p>
               </div>
-              <p className="text-sm text-yellow-700">
-                Current point value: {getCirclePointValue()} per circle
-                {firajCount > 0 && " (Firaj circles)"}
-                {doubleGroupCount > 0 && " (Double circles)"}
-                {tripleGroupCount > 0 && " (Triple circles)"}
-              </p>
-              <p className="text-sm text-yellow-700 mt-1">
-                Total circle points: {circlePlays.reduce((sum, points) => sum + points, 0)}
-              </p>
+
+              <button
+                onClick={handleCirclePlay}
+                disabled={gamePaused || circlePlays.every((p) => p !== null)}
+                className={`w-full py-2 rounded-lg font-semibold ${
+                  circlePlays.length < 6
+                    ? "bg-yellow-500 text-white hover:bg-yellow-600"
+                    : "bg-green-500 text-white"
+                } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {circlePlays.some((p) => p === null)
+                  ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)`
+                  : "All Circle Plays Completed"}
+              </button>
             </div>
-            
-            <button
-              onClick={handleCirclePlay}
-              disabled={ gamePaused || circlePlays.every(p => p !== null)}
-              className={`w-full py-2 rounded-lg font-semibold ${
-                circlePlays.length < 6 
-                  ? "bg-yellow-500 text-white hover:bg-yellow-600" 
-                  : "bg-green-500 text-white"
-              } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-                {circlePlays.some(p => p === null)
-                ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)` 
-                : "All Circle Plays Completed"}
-            </button>
-          </div>
-        )}
+          )}
         </div>
 
         {/* Submit Button */}

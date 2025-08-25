@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
-import { MdEventNote } from "react-icons/md"; 
 
 const CreateStaff = () => {
   const [formData, setFormData] = useState({
@@ -19,13 +18,12 @@ const CreateStaff = () => {
     phone_number: "",
   });
 
- 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
 
   const token = localStorage.getItem("access_token");
-  
+
   if (!token) {
     return (
       <div className="text-red-600 text-center mt-8">
@@ -34,51 +32,57 @@ const CreateStaff = () => {
     );
   }
 
-const handleChange = (event) => {
-  const { name, value } = event.target;
-  
-  if (name === "phone_number") {
-    let phoneValue = value;
-    phoneValue = phoneValue.replace(/[^\d+]/g, '');
-    
-    if (!phoneValue.startsWith('+20')) {
-      phoneValue = '+20' + phoneValue.replace('+', '');
-    }
-    
-    if (phoneValue.length > 13) {
-      phoneValue = phoneValue.slice(0, 13);
-    }
-    
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: phoneValue,
-    }));
-  } else {
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }
-};
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-  
+    if (name === "phone_number") {
+      let phoneValue = value;
+      phoneValue = phoneValue.replace(/[^\d+]/g, "");
+
+      if (!phoneValue.startsWith("+20")) {
+        phoneValue = "+20" + phoneValue.replace("+", "");
+      }
+
+      if (phoneValue.length > 13) {
+        phoneValue = phoneValue.slice(0, 13);
+      }
+
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: phoneValue,
+      }));
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-      if (!formData.phone_number.startsWith('+20') || formData.phone_number.length !== 13) {
-    setAlertType("error");
-    setResponseMessage("Phone number must start with +20 followed by 10 digits.");
-    Swal.fire({
-      icon: "error",
-      title: "Invalid Phone Number",
-      text: "Phone number must start with +20 followed by 10 digits.",
-    });
-    return;
-  }
+    if (
+      !formData.phone_number.startsWith("+20") ||
+      formData.phone_number.length !== 13
+    ) {
+      setAlertType("error");
+      setResponseMessage(
+        "Phone number must start with +20 followed by 10 digits.",
+      );
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Phone Number",
+        text: "Phone number must start with +20 followed by 10 digits.",
+      });
+      return;
+    }
 
-  const updatedEmail = formData.email.replace("@gmail.com", "@rpair.judge.com");
-  const updatedFormData = { ...formData, email: updatedEmail };
-  
+    const updatedEmail = formData.email.replace(
+      "@gmail.com",
+      "@rpair.judge.com",
+    );
+    const updatedFormData = { ...formData, email: updatedEmail };
+
     setIsSubmitting(true);
     setResponseMessage(null);
     setAlertType("");
@@ -93,19 +97,18 @@ const handleChange = (event) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
-      
       setAlertType("success");
       setResponseMessage("Judge and event created successfully!");
       Swal.fire({
-                      icon: "success",
-                      title: "Success",
-                      text: "Registration successful!",
-                      showConfirmButton: false,
-                        });
-      
+        icon: "success",
+        title: "Success",
+        text: "Registration successful!",
+        showConfirmButton: false,
+      });
+
       // Reset both forms after successful submission
       setFormData({
         first_name: "",
@@ -118,17 +121,15 @@ const handleChange = (event) => {
         date_of_birth: "",
         phone_number: "",
       });
-      
-      
     } catch (err) {
       console.error("Error Response:", err.response);
-      
+
       let errorMessage = "Failed to create the judge. Please try again.";
-      
+
       if (err.response?.data) {
         // Handle field-specific errors
         const errors = err.response.data;
-        
+
         if (errors.detail) {
           // Handle non-field errors
           errorMessage = errors.detail;
@@ -142,13 +143,13 @@ const handleChange = (event) => {
               messages.push(errors[key]);
             }
           }
-          errorMessage = messages.join(' ');
+          errorMessage = messages.join(" ");
         }
       }
 
       setAlertType("error");
       setResponseMessage(errorMessage);
-      
+
       // Show error alert
       Swal.fire({
         icon: "error",
@@ -162,22 +163,21 @@ const handleChange = (event) => {
 
   return (
     <div className="container mx-auto px-4">
-   
-        <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl py-2 font-black">
-          Create Judge
-        </h2>
+      <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl py-2 font-black">
+        Create Judge
+      </h2>
       {responseMessage && (
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity={alertType}>
-            <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
+            <AlertTitle>
+              {alertType === "success" ? "Success" : "Error"}
+            </AlertTitle>
             {responseMessage}
           </Alert>
         </Stack>
       )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
-        
-
         <div className="p-2">
           <label htmlFor="first_name" className="block text-gray-700 font-bold">
             First Name:
@@ -293,7 +293,10 @@ const handleChange = (event) => {
         </div>
 
         <div className="p-2">
-          <label htmlFor="date_of_birth" className="block text-gray-700 font-bold">
+          <label
+            htmlFor="date_of_birth"
+            className="block text-gray-700 font-bold"
+          >
             Date of Birth:
           </label>
           <input
@@ -308,7 +311,10 @@ const handleChange = (event) => {
         </div>
 
         <div className="p-2">
-          <label htmlFor="phone_number" className="block text-gray-700 font-bold">
+          <label
+            htmlFor="phone_number"
+            className="block text-gray-700 font-bold"
+          >
             Phone Number:
           </label>
           <input
@@ -319,13 +325,10 @@ const handleChange = (event) => {
             pattern="^\+20\d{10}$"
             title="Phone number must start with +2 and contain 11 digits."
             value={formData.phone_number}
-            
             onChange={handleChange}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
             required
           />
-
-          
         </div>
 
         <div className="col-span-full mt-6 p-2">

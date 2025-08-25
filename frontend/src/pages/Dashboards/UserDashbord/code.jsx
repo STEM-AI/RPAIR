@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
 export default function code() {
   return (
-      <div>
-          {/* Member */}
+    <div>
+      {/* Member */}
       {/* <div>
   <label className="block font-medium text-gray-700">Team Members</label>
   {formData.members.map((member, index) => (
@@ -48,9 +48,8 @@ export default function code() {
     Add Member
   </button>
 </div> */}
-
     </div>
-  )
+  );
 }
 
 /*
@@ -262,4 +261,4 @@ const CreateTeam = () => {
 
 export default CreateTeam;
 
-*/ 
+*/

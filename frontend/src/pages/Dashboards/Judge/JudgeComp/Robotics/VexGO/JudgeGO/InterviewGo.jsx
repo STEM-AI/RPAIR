@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import InterviewRankings from "../../../../../../../components/IntervIQNotbookIQInspection/InterviewRankings";
 import { useSearchParams } from "react-router-dom";
 
-
 const questions = [
   "What is something that is interesting or exciting to you about STEM? What are you curious about?",
   "What are some things you've worked on or learned where you had to think creatively to solve a problem?",
@@ -25,159 +24,164 @@ const questions = [
   "How can you help your group be successful when we're building together?",
 ];
 
-
-
 export default function InterviewSheet() {
   const [judge, setJudge] = useState("");
   const [scores, setScores] = useState(Array(questions.length).fill(""));
   const [notes, setNotes] = useState("");
   const token = localStorage.getItem("access_token");
   const [teams, setTeams] = useState([]);
-  const [selectedTeam, setSelectedTeam] = useState('');
+  const [selectedTeam, setSelectedTeam] = useState("");
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
-     const [searchParams] = useSearchParams();
-  const event_id = searchParams.get('eventId');
-  
-useEffect(() => {
-  const fetchData = async () => {
-    if (!token) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Authentication Error',
-        text: 'You are not authorized. Please log in.',
-      })
-      return;
-    }
+  const [searchParams] = useSearchParams();
+  const event_id = searchParams.get("eventId");
 
-    try {
-      const userResponse = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/data/profile/`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setJudge(`${userResponse.data.first_name} ${userResponse.data.last_name}`);
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to load data',
-      })
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!token) {
+        Swal.fire({
+          icon: "error",
+          title: "Authentication Error",
+          text: "You are not authorized. Please log in.",
+        });
+        return;
+      }
 
-  fetchData();
-}, [token]);
-  
-useEffect(() => {
-  const fetchTeams = async () => {
-    if (!token) {
-      Swal.fire("Error", "You are not authorized. Please log in.", "error");
-      return;
-    }
+      try {
+        const userResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/data/profile/`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        setJudge(
+          `${userResponse.data.first_name} ${userResponse.data.last_name}`,
+        );
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to load data",
+        });
+      }
+    };
 
+    fetchData();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      if (!token) {
+        Swal.fire("Error", "You are not authorized. Please log in.", "error");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/team/list/`,
+          {
+            params: { competition_event__id: event_id },
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        setTeams(response.data);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        Swal.fire(
+          "Error",
+          error.response?.data?.message || "Failed to fetch teams",
+          "error",
+        );
+      }
+    };
+
+    fetchTeams();
+  }, [token, event_id]);
+
+  // Fetch specific team data
+  const fetchTeamData = async (teamName) => {
+    if (!teamName) return;
+
+    setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/team/list/`, 
+        `${process.env.REACT_APP_API_URL}/team/list/`,
         {
-          params: { competition_event__id: event_id },
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      setTeams(response.data);
-      
-    } catch (error) {
-      console.error('Error fetching teams:', error);
-      Swal.fire("Error", error.response?.data?.message || 'Failed to fetch teams', "error");
-    }
-  };
-
-  fetchTeams();
-}, [token , event_id]); 
-
-// Fetch specific team data
-const fetchTeamData = async (teamName) => {
-  if (!teamName) return;
-
-  setLoading(true);
-  try {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/team/list/`, {
-      params: {
-        competition_event__id: event_id, 
-        search: teamName
-      },
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (response.data.length === 0) {
-      throw new Error('Team not found');
-    }
-
-    const [team] = response.data;
-    setTeamData(team);
-    
-  } catch (error) {
-    console.error('Error fetching team data:', error);
-    Swal.fire('Error', error.message, 'error');
-  } finally {
-    setLoading(false);
-  }
-  };
-
-
-const postScore = async () => {
-  if (!teamData?.id) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Please select a team first!",
-    });
-    return;
-  }
-
-  const totalScore = scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0);
-  const scoreData = {
-    interview_score: totalScore,
-    
-  };
-
-  try {
-    setLoading(true);
-    const response = await axios.patch(
-      `${process.env.REACT_APP_API_URL}/vex-go/team/${teamData.id}/interview/${event_id}/`,
-      scoreData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, 
+          params: {
+            competition_event__id: event_id,
+            search: teamName,
+          },
+          headers: { Authorization: `Bearer ${token}` },
         },
+      );
+
+      if (response.data.length === 0) {
+        throw new Error("Team not found");
       }
-    );
-    if (response.status === 200) {
-      setScores(Array(questions.length).fill(""));
-      setNotes("");
-      setSelectedTeam("");
-      setTeamData(null);
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Scores submitted successfully!",
-        showConfirmButton: true,
-        confirmButtonColor: "#28a745"
-      });
+      const [team] = response.data;
+      setTeamData(team);
+    } catch (error) {
+      console.error("Error fetching team data:", error);
+      Swal.fire("Error", error.message, "error");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error submitting score:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Submission Failed",
-      text: error.response?.data?.message || 'Error submitting scores',
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
+  const postScore = async () => {
+    if (!teamData?.id) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please select a team first!",
+      });
+      return;
+    }
+
+    const totalScore = scores.reduce(
+      (sum, val) => sum + (parseInt(val) || 0),
+      0,
+    );
+    const scoreData = {
+      interview_score: totalScore,
+    };
+
+    try {
+      setLoading(true);
+      const response = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/vex-go/team/${teamData.id}/interview/${event_id}/`,
+        scoreData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200) {
+        setScores(Array(questions.length).fill(""));
+        setNotes("");
+        setSelectedTeam("");
+        setTeamData(null);
+
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Scores submitted successfully!",
+          showConfirmButton: true,
+          confirmButtonColor: "#28a745",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting score:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.response?.data?.message || "Error submitting scores",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
@@ -205,78 +209,79 @@ const postScore = async () => {
         fontSize: 10,
         cellPadding: 3,
         overflow: "linebreak",
-        lineWidth: 0.1
+        lineWidth: 0.1,
       },
       headStyles: {
         fillColor: [79, 70, 229],
         textColor: [255, 255, 255],
-        fontStyle: "bold"
+        fontStyle: "bold",
       },
       alternateRowStyles: {
-        fillColor: [240, 240, 255]
+        fillColor: [240, 240, 255],
       },
-      margin: { left: 10, right: 10 }
+      margin: { left: 10, right: 10 },
     });
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text(`Total Score: ${scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)}/75`, 20, doc.autoTable.previous.finalY + 10);
+    doc.text(
+      `Total Score: ${scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)}/75`,
+      20,
+      doc.autoTable.previous.finalY + 10,
+    );
     doc.setFont("helvetica", "normal");
     doc.text(`Notes: ${notes}`, 20, doc.autoTable.previous.finalY + 20);
     doc.save(`Team_${teamData.name}_Interview_Score.pdf`);
   };
 
-
-
-    
-  
-
   return (
     <div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-2xl border border-gray-200">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-indigo-600 mb-2">🧩 VEX GO Interview</h2>
-        <p className="text-lg text-gray-600">Score Sheet for Young Innovators</p>
+        <h2 className="text-3xl font-bold text-indigo-600 mb-2">
+          🧩 VEX GO Interview
+        </h2>
+        <p className="text-lg text-gray-600">
+          Score Sheet for Young Innovators
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-indigo-50 p-6 rounded-xl border border-indigo-100">
-  {/* Team Selector */}
-  <div className="space-y-2">
-    <label 
-      htmlFor="team-select"
-      className="block text-sm font-medium text-indigo-700"
-    >
-      Team Name
-    </label>
-    <select
-      id="team-select"
-      value={selectedTeam}
-      onChange={(e) => {
-        setSelectedTeam(e.target.value);
-        fetchTeamData(e.target.value);
-      }}
-      className="w-full p-3 border-2 border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 hover:border-indigo-300 transition-colors bg-white text-gray-900 placeholder-indigo-300"
-    >
-      <option value="">Select Team</option>
-      {teams.map((team) => (
-    <option key={team.id} value={team.name}> 
-          {team.name}
-        </option>
-      ))}
-    </select>
-  </div>
+        {/* Team Selector */}
+        <div className="space-y-2">
+          <label
+            htmlFor="team-select"
+            className="block text-sm font-medium text-indigo-700"
+          >
+            Team Name
+          </label>
+          <select
+            id="team-select"
+            value={selectedTeam}
+            onChange={(e) => {
+              setSelectedTeam(e.target.value);
+              fetchTeamData(e.target.value);
+            }}
+            className="w-full p-3 border-2 border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 hover:border-indigo-300 transition-colors bg-white text-gray-900 placeholder-indigo-300"
+          >
+            <option value="">Select Team</option>
+            {teams.map((team) => (
+              <option key={team.id} value={team.name}>
+                {team.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-  {/* Judge Display */}
-  <div className="space-y-2">
-    <label 
-      className="block text-sm font-medium text-indigo-700"
-    >
-      Judge Name
-    </label>
-    <div className="w-full p-3 border-2 border-indigo-100 rounded-lg bg-white text-gray-900">
-      {judge || <span className="text-indigo-300">Not assigned</span>}
-    </div>
-  </div>
-</div>
+        {/* Judge Display */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-indigo-700">
+            Judge Name
+          </label>
+          <div className="w-full p-3 border-2 border-indigo-100 rounded-lg bg-white text-gray-900">
+            {judge || <span className="text-indigo-300">Not assigned</span>}
+          </div>
+        </div>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse rounded-xl overflow-hidden shadow-md">
@@ -288,34 +293,38 @@ const postScore = async () => {
           </thead>
           <tbody>
             {questions.map((question, index) => (
-              <tr key={index} className={`border ${index % 2 === 0 ? 'bg-white' : 'bg-indigo-50'}`}>
+              <tr
+                key={index}
+                className={`border ${index % 2 === 0 ? "bg-white" : "bg-indigo-50"}`}
+              >
                 <td className="px-4 py-3 border text-gray-700">{question}</td>
                 <td className="px-4 py-3 border text-center">
-                 
-                  
                   <input
-                      type="number"
-                      min="0"
-                      max="5"
-                      step="1"
-                      value={scores[index] ?? ""}
-                      onChange={(e) => {
-                        // Parse and constrain input value
-                        let value = Math.min(5, Math.max(0, parseInt(e.target.value, 10) || 0));
-                        
-                        // Update state with cleaned value
-                        const newScores = [...scores];
-                        newScores[index] = Number.isNaN(value) ? 0 : value;
-                        setScores(newScores);
-                      }}
-                      className="w-16 px-2 py-1 border-2 border-indigo-100 rounded-md text-center 
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="1"
+                    value={scores[index] ?? ""}
+                    onChange={(e) => {
+                      // Parse and constrain input value
+                      let value = Math.min(
+                        5,
+                        Math.max(0, parseInt(e.target.value, 10) || 0),
+                      );
+
+                      // Update state with cleaned value
+                      const newScores = [...scores];
+                      newScores[index] = Number.isNaN(value) ? 0 : value;
+                      setScores(newScores);
+                    }}
+                    className="w-16 px-2 py-1 border-2 border-indigo-100 rounded-md text-center 
                                 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                 hover:border-indigo-300 transition-colors bg-white text-gray-900
-                                appearance-none"  // Remove number input spinner
-                      inputMode="numeric"
-                      pattern="[0-5]"
-                      aria-label={`Score for criteria ${index + 1}`}
-                                      />
+                                appearance-none" // Remove number input spinner
+                    inputMode="numeric"
+                    pattern="[0-5]"
+                    aria-label={`Score for criteria ${index + 1}`}
+                  />
                 </td>
               </tr>
             ))}
@@ -324,7 +333,9 @@ const postScore = async () => {
       </div>
 
       <div className="mt-8 bg-indigo-50 p-4 rounded-xl">
-        <label className="block text-lg font-semibold mb-2 text-indigo-700">Notes & Observations:</label>
+        <label className="block text-lg font-semibold mb-2 text-indigo-700">
+          Notes & Observations:
+        </label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -342,30 +353,32 @@ const postScore = async () => {
           <FaDownload className="mr-2" /> Download Score Sheet
         </button>
         <button
-            onClick={postScore}
-            disabled={loading}
-            className={`px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors shadow-md hover:shadow-lg ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            {loading ? (
-              <span className="animate-spin">🌀</span>
-            ) : (
-              <>
-                <FaCheckCircle className="mr-2" /> Submit Evaluation
-              </>
-            )}
-          </button>
+          onClick={postScore}
+          disabled={loading}
+          className={`px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors shadow-md hover:shadow-lg ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? (
+            <span className="animate-spin">🌀</span>
+          ) : (
+            <>
+              <FaCheckCircle className="mr-2" /> Submit Evaluation
+            </>
+          )}
+        </button>
       </div>
-      
+
       <div className="mt-6 text-center text-sm text-gray-500">
         <p>Total Possible Score: {questions.length * 5} points</p>
-        <p className="mt-2">Current Total: {scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)} points</p>
+        <p className="mt-2">
+          Current Total:{" "}
+          {scores.reduce((sum, val) => sum + (parseInt(val) || 0), 0)} points
+        </p>
       </div>
-      <InterviewRankings 
-  apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${event_id}/team/interview/rank/`} 
-/>
+      <InterviewRankings
+        apiUrl={`${process.env.REACT_APP_API_URL}/vex-go/${event_id}/team/interview/rank/`}
+      />
     </div>
   );
 }
-

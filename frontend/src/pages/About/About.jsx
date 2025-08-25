@@ -1,25 +1,23 @@
 import React from "react";
 import MissionVision from "../../components/AboutComp/Mission/Mission";
-import imageSrc2 from '../../assets/gallery/Robotics/VexIQ/NationalComp/12.JPG';
-import imageSrc1 from '../../assets/gallery/Robotics/VexIQ/NationalComp/1.JPG';
-import imageSrc3 from '../../assets/gallery/Robotics/VexIQ/NationalComp/11.JPG';
-import imageSrc4 from '../../assets/gallery/Robotics/VexIQ/NationalComp/2.JPG';
-import bgImage from '../../assets/Static/bgleft.png'; 
+import imageSrc2 from "../../assets/gallery/Robotics/VexIQ/NationalComp/12.JPG";
+import imageSrc1 from "../../assets/gallery/Robotics/VexIQ/NationalComp/1.JPG";
+import imageSrc3 from "../../assets/gallery/Robotics/VexIQ/NationalComp/11.JPG";
+import imageSrc4 from "../../assets/gallery/Robotics/VexIQ/NationalComp/2.JPG";
+import bgImage from "../../assets/Static/bgleft.png";
 import CardSlider from "../../components/CardSlider/cardSlider";
-
 
 function About() {
   return (
     <>
       <section id="about" className="relative bg-white">
-
         <div
           className="absolute inset-0 z-0"
           style={{
             backgroundImage: `url(${bgImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.2, 
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.2,
           }}
         ></div>
 
@@ -36,14 +34,16 @@ function About() {
             </h3>
             <p className="text-gray-600 font-normal text-sm md:text-base">
               The RPAIR Platform is dedicated to driving progress and preparing
-              individuals for the future through unique competitions and educational
-              initiatives in advanced technology fields. Our platform bridges the gap
-              between education and the demands of the digital age, empowering participants
-              with the skills and knowledge needed to excel in tomorrow’s workforce. We
-              believe in the power of collaboration, creativity, and practical learning
-              to inspire a new generation of digital pioneers. By offering a wide range
-              of exclusive competitions and hands-on training opportunities, we aim to
-              create a vibrant community of learners who are passionate about shaping the future.
+              individuals for the future through unique competitions and
+              educational initiatives in advanced technology fields. Our
+              platform bridges the gap between education and the demands of the
+              digital age, empowering participants with the skills and knowledge
+              needed to excel in tomorrow’s workforce. We believe in the power
+              of collaboration, creativity, and practical learning to inspire a
+              new generation of digital pioneers. By offering a wide range of
+              exclusive competitions and hands-on training opportunities, we aim
+              to create a vibrant community of learners who are passionate about
+              shaping the future.
             </p>
           </div>
 
@@ -91,9 +91,9 @@ function About() {
           </div>
         </div>
       </section>
-      <MissionVision/>
+      <MissionVision />
 
-      <CardSlider/>
+      <CardSlider />
     </>
   );
 }

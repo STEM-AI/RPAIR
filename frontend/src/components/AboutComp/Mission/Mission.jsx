@@ -1,9 +1,7 @@
-
-
 import React from "react";
 import { TbTargetArrow } from "react-icons/tb";
 import { PiBinocularsBold } from "react-icons/pi";
-import bgImage from "../../../assets/Static/bg.png"; 
+import bgImage from "../../../assets/Static/bg.png";
 
 const MissionVision = () => {
   return (
@@ -13,7 +11,6 @@ const MissionVision = () => {
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        
       }}
     >
       {/* Overlay to darken background for better readability */}
@@ -35,7 +32,8 @@ const MissionVision = () => {
           <div>
             <h2 className="text-2xl font-semibold text-cyan-900">Vision</h2>
             <p className="text-gray-700 mt-3">
-              Innovation in organizing competitions that prepare participants for future jobs.
+              Innovation in organizing competitions that prepare participants
+              for future jobs.
             </p>
           </div>
         </div>
@@ -45,7 +43,9 @@ const MissionVision = () => {
           <div>
             <h2 className="text-2xl font-semibold text-teal-900">Mission</h2>
             <p className="text-gray-700 mt-3">
-              Achieving innovation and leadership in establishing a national digital generation equipped with the latest sciences in Programming, Robotics, and Artificial Intelligence competitions.
+              Achieving innovation and leadership in establishing a national
+              digital generation equipped with the latest sciences in
+              Programming, Robotics, and Artificial Intelligence competitions.
             </p>
           </div>
           <div className="bg-teal-500 rounded-md w-20 h-20 flex items-center justify-center ml-6">

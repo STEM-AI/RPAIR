@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -31,9 +29,12 @@ function Setting() {
       }
 
       try {
-        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/user/data/profile/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/data/profile/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
         setUserData({
           first_name: data.first_name || "",
@@ -83,7 +84,7 @@ function Setting() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       Swal.fire({
@@ -109,18 +110,26 @@ function Setting() {
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-xl mt-10 border border-gray-200">
       <Helmet>
-          <title>Account Settings</title>
+        <title>Account Settings</title>
       </Helmet>
-      <h2 className="text-3xl font-bold text-cyan-600 mb-6 text-center">Account Settings</h2>
+      <h2 className="text-3xl font-bold text-cyan-600 mb-6 text-center">
+        Account Settings
+      </h2>
       <div className="grid grid-cols-2 gap-6">
         {Object.keys(userData).map((key) => (
           <div key={key} className="col-span-2 sm:col-span-1">
-            <label className="block text-sm font-semibold text-gray-700">{key.replace("_", " ").toUpperCase()}</label>
+            <label className="block text-sm font-semibold text-gray-700">
+              {key.replace("_", " ").toUpperCase()}
+            </label>
             <input
               type={key === "email" ? "email" : "text"}
               name={key}
               value={userData[key]}
-              onChange={key === "phone_number" || key === "date_of_birth" ? undefined : handleChange}
+              onChange={
+                key === "phone_number" || key === "date_of_birth"
+                  ? undefined
+                  : handleChange
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600"
               readOnly={key === "phone_number" || key === "date_of_birth"}
             />

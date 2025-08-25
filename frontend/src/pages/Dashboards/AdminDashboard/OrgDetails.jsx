@@ -1,7 +1,18 @@
 // OrgDetails.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FaTimes, FaEnvelope, FaPhone, FaLink, FaBuilding, FaCheck, FaTimesCircle, FaUser, FaCalendarAlt, FaUsers } from "react-icons/fa";
+import {
+  FaTimes,
+  FaEnvelope,
+  FaPhone,
+  FaLink,
+  FaBuilding,
+  FaCheck,
+  FaTimesCircle,
+  FaUser,
+  FaCalendarAlt,
+  FaUsers,
+} from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const OrgDetails = ({ orgID, onClose }) => {
@@ -26,9 +37,9 @@ const OrgDetails = ({ orgID, onClose }) => {
         setIsLoading(true);
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/organization/${orgID}/`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
-        
+
         // Transform API data to match component needs
         const transformedData = {
           ...response.data,
@@ -36,10 +47,11 @@ const OrgDetails = ({ orgID, onClose }) => {
           has_teams: response.data.teams?.length > 0,
           has_events: response.data.events?.length > 0,
           // Map contacts to expected structure
-          contacts: response.data.contacts?.map(contact => ({
-            phone: contact.phone_number || 'N/A',
-            email: response.data.email || 'N/A'
-          })) || []
+          contacts:
+            response.data.contacts?.map((contact) => ({
+              phone: contact.phone_number || "N/A",
+              email: response.data.email || "N/A",
+            })) || [],
         };
 
         setOrg(transformedData);
@@ -47,7 +59,9 @@ const OrgDetails = ({ orgID, onClose }) => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: err.response?.data?.detail || "Failed to fetch organization details",
+          text:
+            err.response?.data?.detail ||
+            "Failed to fetch organization details",
         });
         onClose();
       } finally {
@@ -70,7 +84,7 @@ const OrgDetails = ({ orgID, onClose }) => {
             <FaTimes size={24} />
           </button>
         </div>
-        
+
         <div className="p-6">
           {isLoading ? (
             <div className="flex justify-center py-8">
@@ -80,54 +94,66 @@ const OrgDetails = ({ orgID, onClose }) => {
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-4 border-b">
                 <h3 className="text-2xl font-bold text-gray-800">{org.name}</h3>
-                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                  org.is_active 
-                    ? "bg-green-100 text-green-800" 
-                    : "bg-red-100 text-red-800"
-                }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    org.is_active
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
                   {org.is_active ? "Active" : "Inactive"}
                 </span>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <DetailItem icon={<FaBuilding />} label="Address" value={org.address} />
-                  <DetailItem icon={<FaEnvelope />} label="Email" value={org.email} />
+                  <DetailItem
+                    icon={<FaBuilding />}
+                    label="Address"
+                    value={org.address}
+                  />
+                  <DetailItem
+                    icon={<FaEnvelope />}
+                    label="Email"
+                    value={org.email}
+                  />
                   <DetailItem icon={<FaLink />} label="Type" value={org.type} />
                 </div>
-                
+
                 <div className="space-y-4">
-                  <DetailItem 
-                    icon={<FaCheck className="text-green-500" />} 
-                    label="Teams" 
-                    value={org.has_teams ? "Yes" : "No"} 
+                  <DetailItem
+                    icon={<FaCheck className="text-green-500" />}
+                    label="Teams"
+                    value={org.has_teams ? "Yes" : "No"}
                   />
-                  <DetailItem 
-                    icon={<FaCheck className="text-green-500" />} 
-                    label="Events" 
-                    value={org.has_events ? "Yes" : "No"} 
+                  <DetailItem
+                    icon={<FaCheck className="text-green-500" />}
+                    label="Events"
+                    value={org.has_events ? "Yes" : "No"}
                   />
-                  <DetailItem 
-                    icon={<FaUser className="text-cyan-600" />} 
-                    label="Owner ID" 
-                    value={org.owner} 
+                  <DetailItem
+                    icon={<FaUser className="text-cyan-600" />}
+                    label="Owner ID"
+                    value={org.owner}
                   />
                 </div>
               </div>
-              
+
               {/* Contacts Section */}
               {org.contacts.length > 0 && (
                 <div className="mt-6 pt-4 border-t">
-                  <h4 className="text-lg font-semibold mb-3 text-gray-700">Contacts</h4>
+                  <h4 className="text-lg font-semibold mb-3 text-gray-700">
+                    Contacts
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {org.contacts.map((contact, index) => (
                       <div key={index} className="bg-gray-50 p-3 rounded-lg">
                         <p className="text-gray-600 flex items-center mt-1">
-                          <FaPhone className="mr-2 text-sm opacity-70" /> 
+                          <FaPhone className="mr-2 text-sm opacity-70" />
                           {contact.phone}
                         </p>
                         <p className="text-gray-600 flex items-center mt-1">
-                          <FaEnvelope className="mr-2 text-sm opacity-70" /> 
+                          <FaEnvelope className="mr-2 text-sm opacity-70" />
                           {contact.email}
                         </p>
                       </div>
@@ -135,11 +161,13 @@ const OrgDetails = ({ orgID, onClose }) => {
                   </div>
                 </div>
               )}
-              
+
               {/* Teams Section */}
               {org.teams && org.teams.length > 0 && (
                 <div className="mt-6 pt-4 border-t">
-                  <h4 className="text-lg font-semibold mb-3 text-gray-700">Teams ({org.teams.length})</h4>
+                  <h4 className="text-lg font-semibold mb-3 text-gray-700">
+                    Teams ({org.teams.length})
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {org.teams.map((team, index) => (
                       <div key={index} className="bg-gray-50 p-3 rounded-lg">
@@ -147,17 +175,21 @@ const OrgDetails = ({ orgID, onClose }) => {
                           <FaUsers className="mr-2 text-cyan-600" />
                           {team.name}
                         </p>
-                        <p className="text-sm text-gray-600 mt-1">ID: {team.id}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          ID: {team.id}
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              
+
               {/* Events Section */}
               {org.events && org.events.length > 0 && (
                 <div className="mt-6 pt-4 border-t">
-                  <h4 className="text-lg font-semibold mb-3 text-gray-700">Events ({org.events.length})</h4>
+                  <h4 className="text-lg font-semibold mb-3 text-gray-700">
+                    Events ({org.events.length})
+                  </h4>
                   <div className="space-y-3">
                     {org.events.map((event, index) => (
                       <div key={index} className="bg-gray-50 p-4 rounded-lg">
@@ -167,7 +199,7 @@ const OrgDetails = ({ orgID, onClose }) => {
                             ID: {event.id}
                           </span>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
                           <div className="flex items-center text-sm">
                             <FaCalendarAlt className="mr-2 text-gray-500" />
@@ -176,14 +208,16 @@ const OrgDetails = ({ orgID, onClose }) => {
                               {event.start_date} to {event.end_date}
                             </span>
                           </div>
-                          
+
                           <div className="text-sm">
-                            <span className="font-medium">Location:</span> {event.location}
+                            <span className="font-medium">Location:</span>{" "}
+                            {event.location}
                           </div>
-                          
+
                           {event.competition_name && (
                             <div className="text-sm md:col-span-2">
-                              <span className="font-medium">Competition:</span> {event.competition_name}
+                              <span className="font-medium">Competition:</span>{" "}
+                              {event.competition_name}
                             </div>
                           )}
                         </div>

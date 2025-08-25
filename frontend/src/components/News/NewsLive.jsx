@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -22,7 +20,7 @@ const NewsTicker = () => {
 
       socket.onopen = () => {
         console.log("WebSocket connection established");
-        reconnectAttempts = 0; 
+        reconnectAttempts = 0;
       };
 
       socket.onmessage = (event) => {
@@ -41,7 +39,9 @@ const NewsTicker = () => {
       socket.onclose = () => {
         if (reconnectAttempts < maxReconnectAttempts) {
           reconnectAttempts++;
-          console.log(`WebSocket connection closed, retrying... (attempt ${reconnectAttempts})`);
+          console.log(
+            `WebSocket connection closed, retrying... (attempt ${reconnectAttempts})`,
+          );
           setTimeout(connectWebSocket, reconnectInterval);
         } else {
           console.error("Max reconnection attempts reached");
@@ -57,7 +57,7 @@ const NewsTicker = () => {
         socket.close();
       }
     };
-  }, []); 
+  }, []);
 
   useEffect(() => {
     const fetchLatestNews = async () => {
@@ -73,13 +73,13 @@ const NewsTicker = () => {
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         const latestNews = data[0]?.content || "No news available.";
         setNews(latestNews);
@@ -90,32 +90,36 @@ const NewsTicker = () => {
     };
 
     fetchLatestNews();
-  }, []); 
+  }, []);
 
   return (
     news !== "No news available." &&
-    news !== "Failed to load news." &&
-     (
+    news !== "Failed to load news." && (
       <div className="w-full backdrop-blur-sm bg-black/40 text-white flex items-center z-50 fixed bottom-0 overflow-hidden">
-        <div className="px-4 py-2 font-bold text-black bg-cyan-500 z-30">News</div>
+        <div className="px-4 py-2 font-bold text-black bg-cyan-500 z-30">
+          News
+        </div>
 
         <div className="w-full flex overflow-hidden whitespace-nowrap group">
           <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
-            {[...Array(4)].map((_, index) => ( 
-      <Link key={index} to="/resources/event" className="flex-shrink-0">
-        <span className="mx-4">
-          🔥 Exciting News! A Rpair New competition is here!{" "}
-          <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
-          🏆 Test your skills, challenge yourself, and stand a chance to win amazing prizes.
-          Stay tuned for more details! 🚀{" "}
-          <span className="font-bold text-xl text-red-600 uppercase">#{news}</span>
-          #ChallengeYourself
-        </span>
-      </Link>
-    ))}
+            {[...Array(4)].map((_, index) => (
+              <Link key={index} to="/resources/event" className="flex-shrink-0">
+                <span className="mx-4">
+                  🔥 Exciting News! A Rpair New competition is here!{" "}
+                  <span className="font-bold text-xl text-red-600 uppercase">
+                    #{news}
+                  </span>
+                  🏆 Test your skills, challenge yourself, and stand a chance to
+                  win amazing prizes. Stay tuned for more details! 🚀{" "}
+                  <span className="font-bold text-xl text-red-600 uppercase">
+                    #{news}
+                  </span>
+                  #ChallengeYourself
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
-
       </div>
     )
   );

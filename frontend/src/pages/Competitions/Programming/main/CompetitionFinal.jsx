@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import logo from "../../../../assets/Static/logoWrite-re.png";
 
 const CompetitionFinal = () => {
@@ -13,10 +12,8 @@ const CompetitionFinal = () => {
     title: competition || "Programming Competition",
     description: `Thank you for participating in the ${competition} programming competition!`,
     resultsInfo: "The results will be announced at the end of the event.",
-    color: "from-cyan-500 to-cyan-700"
+    color: "from-cyan-500 to-cyan-700",
   };
-
- 
 
   return (
     <motion.div
@@ -47,7 +44,7 @@ const CompetitionFinal = () => {
               duration: Math.random() * 15 + 10,
               repeat: Infinity,
               repeatType: "reverse",
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
           />
         ))}
@@ -61,11 +58,11 @@ const CompetitionFinal = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <motion.div 
+          <motion.div
             className="flex items-center justify-center gap-3 mb-6"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
           >
             <motion.img
               src={logo}
@@ -83,7 +80,7 @@ const CompetitionFinal = () => {
               {Data.title} Competition
             </motion.h1>
           </motion.div>
-          
+
           <motion.div
             className="relative inline-block"
             initial={{ scale: 0.95, opacity: 0 }}
@@ -112,7 +109,6 @@ const CompetitionFinal = () => {
           </motion.div>
         </motion.div>
 
-       
         <motion.div
           className="flex flex-col sm:flex-row justify-center gap-4"
           initial={{ opacity: 0 }}
@@ -122,12 +118,16 @@ const CompetitionFinal = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(`/LiveProgramming?eventName=${encodeURIComponent(competition)}&eventId=${encodeURIComponent(id)}`)}
+            onClick={() =>
+              navigate(
+                `/LiveProgramming?eventName=${encodeURIComponent(competition)}&eventId=${encodeURIComponent(id)}`,
+              )
+            }
             className={`px-6 py-3 rounded-xl text-white font-bold text-lg bg-gradient-to-r ${Data.color} shadow-lg hover:shadow-xl transition-shadow`}
           >
             Show Live Rankings
           </motion.button>
-          
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -139,33 +139,32 @@ const CompetitionFinal = () => {
         </motion.div>
 
         {/* Decorative elements */}
-        <motion.div 
+        <motion.div
           className="absolute top-1/4 -right-20 w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl"
-          animate={{ 
+          animate={{
             scale: [1, 1.2, 1],
-            opacity: [0.1, 0.15, 0.1]
+            opacity: [0.1, 0.15, 0.1],
           }}
-          transition={{ 
+          transition={{
             duration: 6,
-            repeat: Infinity 
+            repeat: Infinity,
           }}
         />
-        <motion.div 
+        <motion.div
           className="absolute bottom-1/4 -left-20 w-64 h-64 rounded-full bg-cyan-400/10 blur-3xl"
-          animate={{ 
+          animate={{
             scale: [1, 1.3, 1],
-            opacity: [0.1, 0.2, 0.1]
+            opacity: [0.1, 0.2, 0.1],
           }}
-          transition={{ 
+          transition={{
             duration: 8,
             repeat: Infinity,
-            delay: 1
+            delay: 1,
           }}
         />
       </div>
     </motion.div>
   );
 };
-
 
 export default CompetitionFinal;

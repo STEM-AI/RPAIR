@@ -1,5 +1,4 @@
-
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 const ResultContext = createContext();
 
@@ -11,20 +10,20 @@ export const ResultProvider = ({ children }) => {
     passed: false,
     attempts: 1,
     answers: {},
-    questions: []
+    questions: [],
   });
 
   const updateResults = (newResults) => {
-    setResults(prev => ({
+    setResults((prev) => ({
       ...prev,
-      ...newResults
+      ...newResults,
     }));
   };
 
   const incrementAttempts = () => {
-    setResults(prev => ({
+    setResults((prev) => ({
       ...prev,
-      attempts: prev.attempts + 1
+      attempts: prev.attempts + 1,
     }));
   };
 
@@ -33,7 +32,7 @@ export const ResultProvider = ({ children }) => {
       value={{
         ...results,
         updateResults,
-        incrementAttempts
+        incrementAttempts,
       }}
     >
       {children}
@@ -44,7 +43,7 @@ export const ResultProvider = ({ children }) => {
 export const useResult = () => {
   const context = useContext(ResultContext);
   if (!context) {
-    throw new Error('useResult must be used within a ResultProvider');
+    throw new Error("useResult must be used within a ResultProvider");
   }
   return context;
 };

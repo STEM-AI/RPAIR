@@ -1,4 +1,3 @@
-
 import React from "react";
 import img1 from "../../../assets/cards/arduinoCO.webp";
 
@@ -7,10 +6,9 @@ import JoinTeams from "../../../components/CometitionsComponent/Rules/JoinTeams/
 import AwardsList from "../../../components/Awards/awardsArduino";
 import { Helmet } from "react-helmet-async";
 const Arduino = () => {
-
   return (
     <>
-       <Helmet>
+      <Helmet>
         <title>Arduino</title>
       </Helmet>
       <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">
@@ -23,9 +21,12 @@ const Arduino = () => {
             </h2>
 
             <p className="text-gray-800 text-lg mb-8 leading-relaxed">
-                          The Arduino competition is designed to inspire creativity and hands-on learning through Arduino-based electronics projects.
-                          Participants will work in teams using a standardized kit of components to build and present interactive projects.
-                          The competition is divided into two levels based on age group, with increasing complexity and logic requirements
+              The Arduino competition is designed to inspire creativity and
+              hands-on learning through Arduino-based electronics projects.
+              Participants will work in teams using a standardized kit of
+              components to build and present interactive projects. The
+              competition is divided into two levels based on age group, with
+              increasing complexity and logic requirements
             </p>
           </div>
 

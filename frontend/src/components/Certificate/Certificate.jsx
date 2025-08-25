@@ -10,7 +10,6 @@
 // import arduinoLogo from "../../assets/logoCert/arduino.png";
 // import flutterLogo from "../../assets/logoCert/flutter.png";
 
-
 // const Certificate = ({ selectedMember, certificateRef, teamName, competitionName, startDate }) => {
 
 //   const getLogo = (competitionName) => {
@@ -66,14 +65,14 @@
 //           <p className="text-xl mb-12 text-gray-600 font-medium tracking-wide">
 //             This certificate is proudly presented to
 //           </p>
-          
+
 //           <div className="mb-12 relative z-10 ">
 //             <p className="text-4xl md:text-5xl font-bold text-black pb-6 inline-block px-12 font-serif tracking-tight">
 //               {selectedMember}
 //             </p><br />
-           
+
 //           </div>
-          
+
 //           <div className="space-y-2 mb-16">
 //             <p className="text-2xl text-gray-700 italic font-medium">
 //               For his achievement in Robotics, Programming, and Artificial Intelligence
@@ -113,8 +112,6 @@
 // };
 
 // export default Certificate;
-
-
 
 // import React from "react";
 // import logo from "../../assets/Static/logo2.png";
@@ -183,13 +180,13 @@
 //           <p className="text-xl mb-12 text-gray-600 font-medium tracking-wide">
 //             This certificate is proudly presented to
 //           </p>
-          
+
 //           <div className="mb-12 relative z-10 ">
 //             <p className="text-4xl md:text-5xl font-bold text-black pb-6 inline-block px-12 font-serif tracking-tight">
 //               {selectedMember}
 //             </p><br />
 //           </div>
-          
+
 //           <div className="space-y-2 mb-16">
 //             <p className="text-2xl text-gray-700 italic font-medium">
 //               For his achievement in Robotics, Programming, and Artificial Intelligence
@@ -213,7 +210,7 @@
 //               </p>
 //             </div>
 //           </div>
-          
+
 //           {/* تم تعديل هذا القسم ليكون لوجو المسابقة في نفس مستوى التوقيع */}
 //           <div className="flex-1 flex items-center justify-center"> {/* تغيير هنا */}
 //             <img
@@ -236,7 +233,6 @@
 
 // export default Certificate;
 
-
 import React from "react";
 import logo from "../../assets/Static/logo2.png";
 import logoAlm from "../../assets/Static/egyptian-clipart-eagle-2.png";
@@ -250,19 +246,24 @@ import arduinoLogo from "../../assets/logoCert/arduino.png";
 import flutterLogo from "../../assets/logoCert/flutter.png";
 import pythonLogo from "../../assets/logoCert/python.webp";
 
-const Certificate = ({ selectedMember, certificateRef, teamName, competitionName, startDate }) => {
-
+const Certificate = ({
+  selectedMember,
+  certificateRef,
+  teamName,
+  competitionName,
+  startDate,
+}) => {
   const getLogo = (competitionName) => {
     switch (competitionName) {
-      case 'vex_123':
+      case "vex_123":
         return vex123Logo;
-      case 'vex_iq':
+      case "vex_iq":
         return vexIQLogo;
-      case 'vex_go':
+      case "vex_go":
         return vexGOLogo;
-      case 'arduino':
+      case "arduino":
         return arduinoLogo;
-      case 'flutter':
+      case "flutter":
         return flutterLogo;
       default:
         return pythonLogo;
@@ -271,25 +272,41 @@ const Certificate = ({ selectedMember, certificateRef, teamName, competitionName
 
   return (
     <div className="flex flex-col items-center bg-gray-100">
-      <div 
-        ref={certificateRef} 
-        className="bg-white shadow-2xl rounded-lg overflow-hidden relative" 
+      <div
+        ref={certificateRef}
+        className="bg-white shadow-2xl rounded-lg overflow-hidden relative"
         style={{ width: "1300px", height: "1000px" }}
       >
         <div className="absolute inset-0 opacity-40 z-0">
-          <img src={watermarkLeft} alt="Watermark" className="w-full h-full object-cover" />
+          <img
+            src={watermarkLeft}
+            alt="Watermark"
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="absolute inset-0 opacity-40 z-0">
-          <img src={watermarkRight} alt="Watermark" className="w-full h-full object-cover" />
+          <img
+            src={watermarkRight}
+            alt="Watermark"
+            className="w-full h-full object-cover"
+          />
         </div>
 
         <div className="text-white py-8 px-8 text-center relative">
           <div className="flex justify-between items-center mb-4 space-y-4 md:space-y-0">
             <div className="w-40 md:w-32">
-              <img src={logo} alt="Institution Logo" className="w-full h-auto max-h-32 object-contain" />
+              <img
+                src={logo}
+                alt="Institution Logo"
+                className="w-full h-auto max-h-32 object-contain"
+              />
             </div>
             <div className="w-40 md:w-32">
-              <img src={logoAlm} alt="National Symbol" className="w-full h-auto max-h-32 object-contain" />
+              <img
+                src={logoAlm}
+                alt="National Symbol"
+                className="w-full h-auto max-h-32 object-contain"
+              />
             </div>
           </div>
         </div>
@@ -299,25 +316,29 @@ const Certificate = ({ selectedMember, certificateRef, teamName, competitionName
             <h1 className="text-4xl md:text-5xl font-bold tracking-widest font-serif mb-2 text-black">
               CERTIFICATE
             </h1>
-            <p className="text-xl italic text-black font-medium">of Excellence</p>
+            <p className="text-xl italic text-black font-medium">
+              of Excellence
+            </p>
           </div>
 
           <p className="text-xl mb-12 text-gray-600 font-medium tracking-wide">
             This certificate is proudly presented to
           </p>
-          
+
           <div className="mb-12 relative z-10 ">
             <p className="text-4xl md:text-5xl font-bold text-black pb-6 inline-block px-12 font-serif tracking-tight">
               {selectedMember}
-            </p><br/>
+            </p>
+            <br />
           </div>
-          
+
           <div className="space-y-2 mb-16">
             <p className="text-2xl text-gray-700 italic font-medium">
-              For his achievement in Robotics, Programming, and Artificial Intelligence
+              For his achievement in Robotics, Programming, and Artificial
+              Intelligence
             </p>
             <p className="text-2xl text-gray-700 italic font-medium">
-              and proves that he is competent in his field  
+              and proves that he is competent in his field
             </p>
           </div>
         </div>
@@ -327,21 +348,22 @@ const Certificate = ({ selectedMember, certificateRef, teamName, competitionName
             <div className="border-t-2 border-black pt-4 mx-auto w-2/3  ">
               <p className="font-bold text-lg mb-1">Date of Issue</p>
               <p className="text-base font-medium">
-                {startDate ? new Date(startDate).toLocaleDateString('en-GB', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                }) : 'Not specified'}
+                {startDate
+                  ? new Date(startDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })
+                  : "Not specified"}
               </p>
             </div>
           </div>
-          
-          
-          <div className="flex-1 flex justify-center relative -top-28"> 
-            <img 
-              src={getLogo(competitionName)} 
-              alt="Competition Logo" 
-              className="w-auto h-60 object-contain" 
+
+          <div className="flex-1 flex justify-center relative -top-28">
+            <img
+              src={getLogo(competitionName)}
+              alt="Competition Logo"
+              className="w-auto h-60 object-contain"
             />
           </div>
 

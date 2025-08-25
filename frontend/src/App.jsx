@@ -1,8 +1,7 @@
-import React, {  useEffect } from "react";
-import {  Routes, Route  } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import { getTokens, handleLogout, isTokenExpired } from "./pages/Auth/auth";
-
 
 //                              components              //
 import { MatchProvider } from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/MatchContext";
@@ -17,10 +16,10 @@ import SelectMatch123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/S
 import Interview123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Interview123";
 import ProgWelcome from "./pages/Competitions/Programming/main/ProgWelcome";
 import ProgInfo from "./pages/Competitions/Programming/main/ProgInfo";
-import OpenWelcome from "./pages/Competitions/OpenSource/OpenWelcom"
+import OpenWelcome from "./pages/Competitions/OpenSource/OpenWelcom";
 import CompetitionQuestions from "./pages/Competitions/Programming/main/CompetitionQuestions";
 import Home from "./components/Home/Home";
-import {ResultProvider } from "../src/context/CompetitionContext" ; 
+import { ResultProvider } from "../src/context/CompetitionContext";
 import CompetitionFinal from "./pages/Competitions/Programming/main/CompetitionFinal";
 import Robotics from "./pages/Gallary/Robotics/Robotics";
 import EventDetails from "./pages/Dashboards/AdminDashboard/EventDetails";
@@ -32,14 +31,13 @@ import LiveVex123 from "./pages/LiveEvents/LiveMatches/LiveVex123";
 import LiveSkillsVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveSkillsIQ/LiveSkills";
 import LiveTeamVex from "./pages/LiveEvents/LiveMatches/LiveVexIQ/LiveTeamwork/LiveTeam";
 import ProgrammingComp from "./components/Competitions/Programming";
-import Certificate from "./components/Certificate/Certificate"
+import Certificate from "./components/Certificate/Certificate";
 import OurEvents from "./pages/EventsResources/OurEvents";
 import AllEventDetails from "./pages/EventsResources/AllEventDetails";
 import CompEvents from "./pages/EventsResources/CompEvents";
 
 import SkillsContainerGO from "./pages/LiveEvents/LiveMatches/LiveVexGO/skillsgo/SkillsContainerGo";
 import Sheet123 from "./pages/Dashboards/Judge/JudgeComp/Robotics/Vex123/Sheet123";
-
 
 //                          Judge (Normal Loading)                   //
 import JudgeEvent from "./pages/Dashboards/Judge/JudgeEvent";
@@ -61,7 +59,6 @@ import SheetCoop from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches
 import ScheduleManagement from "./pages/Dashboards/AdminDashboard/Management/CreateSchedule/ScheduleManagement";
 import MyCertificate from "./pages/Dashboards/UserDashbord/MyCertificate";
 import Rank from "./pages/EventsResources/Rank";
-
 
 //                              Sample pages & Forms               //
 //                          Common Pages                           //
@@ -130,9 +127,7 @@ import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
 import LiveCompFile from "./pages/LiveEvents/LiveMatches/LiveCompFile";
 import Layout from "./pages/Dashboards/LayoutDashboard/Layout";
 
-
 const App = () => {
-  
   const LayoutComing = ({ children, hideNavbar = false }) => (
     <>
       {!hideNavbar && <Navbar />}
@@ -144,9 +139,9 @@ const App = () => {
   useEffect(() => {
     const checkTokenExpiration = () => {
       if (access_token && isTokenExpired(access_token)) {
-        console.log('Access token expired, checking refresh token...');
+        console.log("Access token expired, checking refresh token...");
         if (!refresh_token || isTokenExpired(refresh_token)) {
-          console.log('Refresh token is expired or invalid, logging out...');
+          console.log("Refresh token is expired or invalid, logging out...");
           handleLogout();
         }
       }
@@ -161,46 +156,46 @@ const App = () => {
 
   return (
     <>
-        {/* <Router> */}
-         <LoadingProvider>
+      {/* <Router> */}
+      <LoadingProvider>
         <MatchProvider>
-        <ResultProvider>
-      <Routes>
-        {/* Public Routes */}
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Home />
-            </Layout>
-          }
-        />
-        <Route
-          path="/competitions/ComingSoon"
-          element={
-             <LayoutComing>
-              <ComingSoonPage />
-            </LayoutComing>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Layout hideNavbar>
-            <NotFoundPage/>  
-            </Layout>
-          }
-        />
-       
-        <Route
-          path="resources/volunteering"
-          element={
-            <Layout>
-              <VolunteerForm />
-            </Layout>
-          }
-        />
-        {/* <Route
+          <ResultProvider>
+            <Routes>
+              {/* Public Routes */}
+              <Route
+                path="/"
+                element={
+                  <Layout>
+                    <Home />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/competitions/ComingSoon"
+                element={
+                  <LayoutComing>
+                    <ComingSoonPage />
+                  </LayoutComing>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <Layout hideNavbar>
+                    <NotFoundPage />
+                  </Layout>
+                }
+              />
+
+              <Route
+                path="resources/volunteering"
+                element={
+                  <Layout>
+                    <VolunteerForm />
+                  </Layout>
+                }
+              />
+              {/* <Route
           path="/competitions"
           element={
             <Layout>
@@ -208,254 +203,240 @@ const App = () => {
             </Layout>
           }
         /> */}
-        <Route
-          path="/login"
-          element={
-            <Layout>
-              <Login />
-            </Layout>
-          }
-        />
-        <Route
-          path="/register/organization"
-          element={
-            <Layout>
-              <RegisterOrg />
-            </Layout>
-          }
-        />
-                <Route
-          path="/ProgrammingCompetitions"
-          element={
-            <Layout>
-              <ProgrammingComp />
-            </Layout>
-          }
-        />
+              <Route
+                path="/login"
+                element={
+                  <Layout>
+                    <Login />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/register/organization"
+                element={
+                  <Layout>
+                    <RegisterOrg />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/ProgrammingCompetitions"
+                element={
+                  <Layout>
+                    <ProgrammingComp />
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/reset-password"
-          element={
-            <Layout>
-              <ResetPassword />
-            </Layout>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <Layout>
-                <Register />
-              </Layout>
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/gallery"
-          element={
-            <Layout>
-              
-                <Gallery />
-              
-            </Layout>
-          }
-        />
-        <Route
-          path="/gallery/Robotics"
-          element={
-            <Layout>
-                <Robotics />
-            </Layout>
-          }
-        />
-        <Route
-          path="/gallery/Robotics/:VexType"
-          element={
-            <Layout>
-              
-                <RoboticsGallery />
-              
-            </Layout>
-          }
-        />
-        {/* EVENTS */}
-        <Route
-          path="/resources/event"
-          element={
-            <Layout>
-                <OurEvents/>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/:competition_name/:event_name/Rank"
-          element={
-            <Layout>
-                <Rank/>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/:competition_name"
-          element={
-            <Layout>
-                <CompEvents/>
-            </Layout>
-          }
-        />
+              <Route
+                path="/reset-password"
+                element={
+                  <Layout>
+                    <ResetPassword />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <Layout>
+                      <Register />
+                    </Layout>
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/gallery"
+                element={
+                  <Layout>
+                    <Gallery />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/gallery/Robotics"
+                element={
+                  <Layout>
+                    <Robotics />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/gallery/Robotics/:VexType"
+                element={
+                  <Layout>
+                    <RoboticsGallery />
+                  </Layout>
+                }
+              />
+              {/* EVENTS */}
+              <Route
+                path="/resources/event"
+                element={
+                  <Layout>
+                    <OurEvents />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/:competition_name/:event_name/Rank"
+                element={
+                  <Layout>
+                    <Rank />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/:competition_name"
+                element={
+                  <Layout>
+                    <CompEvents />
+                  </Layout>
+                }
+              />
 
-<Route
-          path="/Competitions/:competition_name/:event_name"
-          element={
-            <Layout>
-              <AllEventDetails/>
-            </Layout>
-          }
-                />
-     
+              <Route
+                path="/Competitions/:competition_name/:event_name"
+                element={
+                  <Layout>
+                    <AllEventDetails />
+                  </Layout>
+                }
+              />
 
-        {/* Start Competitions */}
-        <Route
-          path="/Robotics/Vex"
-          element={
-            <Layout>
-              
-                <RoboticsPage />
-                
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/Robotics/VexGo"
-          element={
-            <Layout>
-              
-              <VexGOAbout />
-              
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/Robotics/Vex123"
-          element={
-            <Layout>
-            
-                <Vex123About />
-              
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/Robotics/VexV5"
-          element={
-            <Layout>
-              <VexV5About />
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/Robotics/VexIQ"
-          element={
-            <Layout>
-              <VexIQAbout />
-            </Layout>
-          }
-        />
-       
+              {/* Start Competitions */}
+              <Route
+                path="/Robotics/Vex"
+                element={
+                  <Layout>
+                    <RoboticsPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/Robotics/VexGo"
+                element={
+                  <Layout>
+                    <VexGOAbout />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/Robotics/Vex123"
+                element={
+                  <Layout>
+                    <Vex123About />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/Robotics/VexV5"
+                element={
+                  <Layout>
+                    <VexV5About />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/Robotics/VexIQ"
+                element={
+                  <Layout>
+                    <VexIQAbout />
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/competitions/OpenSource"
-          element={
-            <Layout>
-              <OpenSourcePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/Competitions/OpenSource/Arduino"
-          element={
-            <Layout>
-              <Arduino />
-            </Layout>
-          }
-        />
-       
-        {/* end Competitions */}
-         <Route
-          path="/Dashboard/AccountSetting"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <AllSetting />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-         <Route
-          path="/Dashboard/TeamSetting/:id"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <TeamSetting />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/competitions/OpenSource"
+                element={
+                  <Layout>
+                    <OpenSourcePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competitions/OpenSource/Arduino"
+                element={
+                  <Layout>
+                    <Arduino />
+                  </Layout>
+                }
+              />
+
+              {/* end Competitions */}
+              <Route
+                path="/Dashboard/AccountSetting"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <AllSetting />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/TeamSetting/:id"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <TeamSetting />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
               {/* Organizer Dashboard Routes */}
-         <Route
-          path="/Dashboard/OrganizerEvent"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <OrganizerDash />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-              
+              <Route
+                path="/Dashboard/OrganizerEvent"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <OrganizerDash />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        {/* Admin Dashboard Routes */}
-        <Route
-          path="/Dashboard/Certificate"
-          element={
-            <Layout hideNavbar>
-                <Certificate />
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/Upload_QuestionsFile"
-          element={
-            
-             <Layout hideNavbar>
-             <LayoutDashboard>
-             <UploadFileMcq />
-             </LayoutDashboard>
-           </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/ActiveOrganization"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <ActiveOrg />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/AddNews"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <AddNews />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        {/* <Route
+              {/* Admin Dashboard Routes */}
+              <Route
+                path="/Dashboard/Certificate"
+                element={
+                  <Layout hideNavbar>
+                    <Certificate />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/Upload_QuestionsFile"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <UploadFileMcq />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/ActiveOrganization"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <ActiveOrg />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/AddNews"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <AddNews />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              {/* <Route
           path="/Dashboard/Admin"
           element={
             <Layout hideNavbar>
@@ -465,594 +446,571 @@ const App = () => {
             </Layout>
           }
         /> */}
-       
 
-        <Route
-          path="/Dashboard/Event/:competition_name/:event_name"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <SelectEvent />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Event/:competition_name"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <EventDash />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/Event/:competition_name/:event_name"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SelectEvent />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Event/:competition_name"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <EventDash />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/:role/Teams"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <ListTeams />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/:role/Teams"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <ListTeams />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/Teams/:id"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <TeamDetails />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/Teams/:id"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <TeamDetails />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/Competitions/:competition_name"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CompetitionEvents />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Competitions/:competition_name/:event_name"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-              <EventDetails/>
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Competitions/Robotics"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <VexPage />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/CreateEvent"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateEvent />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-       
-        <Route
-          path="/Dashboard/Admin/Schedule"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <ScheduleManagement />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Competitions/OpenSource"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <SourcePage />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/CreateStaff"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateStaff />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/CreateCompetition"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateCompetition />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/Competitions/:competition_name"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <CompetitionEvents />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Competitions/:competition_name/:event_name"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <EventDetails />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Competitions/Robotics"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <VexPage />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/CreateEvent"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <CreateEvent />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        {/* User Dashboard Routes */}
-        <Route
-          path="/Dashboard/User"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <UserDashbord />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/User/LiveEvent/:id"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <TeamEventLive />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/Admin/Schedule"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <ScheduleManagement />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Competitions/OpenSource"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SourcePage />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/CreateStaff"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <CreateStaff />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/CreateCompetition"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <CreateCompetition />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-       
-       
-        <Route
-          path="/Dashboard/User/Teams"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <MyTeams />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/teams/User/:id"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <MyTeamDetails />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              {/* User Dashboard Routes */}
+              <Route
+                path="/Dashboard/User"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <UserDashbord />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/User/LiveEvent/:id"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <TeamEventLive />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/User/CreateTeam"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateTeam />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/User/Certificate/:id"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <MyCertificate />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/User/Teams"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <MyTeams />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/teams/User/:id"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <MyTeamDetails />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/User/PaymentForm"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <PaymentForm />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/User/CreateTeam"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <CreateTeam />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/User/Certificate/:id"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <MyCertificate />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/Competitions"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <ListCompetitions />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/listJudges"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <ListJudges />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Admin/CreateOrganization"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <CreateOrganization />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/User/PaymentForm"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <PaymentForm />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        {/* JUDGE DASHBOARD */}
+              <Route
+                path="/Dashboard/Competitions"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <ListCompetitions />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/listJudges"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <ListJudges />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Admin/CreateOrganization"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <CreateOrganization />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-         <Route
-          path="/Dashboard/JudgeEvent/eventDetailsJudge"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <EventDetailsJudge />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-         <Route
-          path="/Dashboard/JudgeEvent/programming"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Python />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-       <Route
-  path="/Dashboard/JudgeEvent/:competition_name"
-  element={
-    <Layout hideNavbar>
-      <LayoutDashboard>
-        <FileComp />
-      </LayoutDashboard>
-    </Layout>
-  }
-/>
-        
-       
+              {/* JUDGE DASHBOARD */}
 
-        <Route
-          path="/Dashboard/JudgeEvent/vex_iq"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <StartMatchIQ />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/JudgeEvent"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <JudgeEvent />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
+              <Route
+                path="/Dashboard/JudgeEvent/eventDetailsJudge"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <EventDetailsJudge />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/JudgeEvent/programming"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Python />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/JudgeEvent/:competition_name"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <FileComp />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Dashboard/Judge/Matches"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <MatchRounds />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Judge/matches/teamwork"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Teamwork />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-                <Route
-          path="/Dashboard/JudgeEvent/vex_go"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <StartMatchGO />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-                        <Route
-          path="/Dashboard/Judge/matchesGO"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <SelectMatchGO />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-           <Route
-          path="/Dashboard/VexGO/COOPMatches"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <COOPMatch />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-          <Route
-          path="/Dashboard/VexGO/Skills"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                < SkillsGO/>
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
-        <Route
-          path="/SheetCoop"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <SheetCoop />
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
-        <Route
-          path="/SheetSolo"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <SheetSolo />
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
+              <Route
+                path="/Dashboard/JudgeEvent/vex_iq"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <StartMatchIQ />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/JudgeEvent"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <JudgeEvent />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
+              <Route
+                path="/Dashboard/Judge/Matches"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <MatchRounds />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Judge/matches/teamwork"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Teamwork />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/JudgeEvent/vex_go"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <StartMatchGO />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Judge/matchesGO"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SelectMatchGO />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/VexGO/COOPMatches"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <COOPMatch />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/VexGO/Skills"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SkillsGO />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/SheetCoop"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SheetCoop />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/SheetSolo"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SheetSolo />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
+              <Route
+                path="/Dashboard/JudgeEvent/vex_123"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <SelectMatch123 />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-         <Route
-          path="/Dashboard/JudgeEvent/vex_123"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <SelectMatch123 />
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
+              <Route
+                path="/Dashboard/Judge/interview123"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Interview123 />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Judge/matches123"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Sheet123 />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
+              {/* PROGRAMMING */}
 
-                         <Route
-          path="/Dashboard/Judge/interview123"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Interview123/>
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
-                 <Route
-          path="/Dashboard/Judge/matches123"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-              <Sheet123/>
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
+              <Route
+                path="/Programming/:competition_id"
+                element={
+                  <Layout hideNavbar>
+                    {/* <LayoutDashboard> */}
+                    <ProgWelcome />
+                    {/* </LayoutDashboard> */}
+                  </Layout>
+                }
+              />
+              <Route
+                path="/OpenSource"
+                element={
+                  <Layout hideNavbar>
+                    {/* <LayoutDashboard> */}
+                    <OpenWelcome />
+                    {/* </LayoutDashboard> */}
+                  </Layout>
+                }
+              />
 
+              <Route
+                path="/Competition-start/programming/:id"
+                element={
+                  <Layout hideNavbar>
+                    {/* <LayoutDashboard> */}
+                    <ProgInfo />
+                    {/* </LayoutDashboard> */}
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Competition-start/:competition/:id"
+                element={
+                  <Layout hideNavbar>
+                    {/* <LayoutDashboard> */}
+                    <CompOpen />
+                    {/* </LayoutDashboard> */}
+                  </Layout>
+                }
+              />
 
+              <Route
+                path="/competition/:competition/:game_id"
+                element={
+                  <Layout hideNavbar>
+                    <CompetitionQuestions />
+                  </Layout>
+                }
+              />
 
+              <Route
+                path="/competition/programming/:competition/:id"
+                element={
+                  <Layout hideNavbar>
+                    <CompetitionFinal />
+                  </Layout>
+                }
+              />
 
+              <Route
+                path="/Dashboard/Judge/InterviewGO"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <InterviewSheet />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        {/* PROGRAMMING */}
+              <Route
+                path="/Dashboard/Judge/eventDetailsJudge"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <eventDetailsJudge />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Judge/Matches/skills"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Skills />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Programming/:competition_id"
-          element={
-            <Layout hideNavbar>
-              {/* <LayoutDashboard> */}
-              <ProgWelcome/>
-              {/* </LayoutDashboard> */}
-            </Layout>
-          }
-          />
-        <Route
-          path="/OpenSource"
-          element={
-            <Layout hideNavbar>
-              {/* <LayoutDashboard> */}
-              <OpenWelcome/>
-              {/* </LayoutDashboard> */}
-            </Layout>
-          }
-          />
+              <Route
+                path="/Dashboard/Judge/Interview"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Interview />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Judge/inspection"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Inspection />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/Dashboard/Judge/Notebook"
+                element={
+                  <Layout hideNavbar>
+                    <LayoutDashboard>
+                      <Notebook />
+                    </LayoutDashboard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/live-events"
+                element={
+                  <Layout>
+                    <LiveEvents />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/LiveMatch/VexIq"
+                element={
+                  <Layout>
+                    <IntroVexIQ />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/LiveMatch/Vexgo"
+                element={
+                  <Layout>
+                    <IntroVexGO />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/LiveMatch/SkillsIQ"
+                element={
+                  <Layout>
+                    <LiveSkillsVex />
+                  </Layout>
+                }
+              />
 
-        <Route
-          path="/Competition-start/programming/:id"
-          element={
-            <Layout hideNavbar>
-              {/* <LayoutDashboard> */}
-              <ProgInfo/>
-              {/* </LayoutDashboard> */}
-            </Layout>
-          }
-          />
-        <Route
-          path="/Competition-start/:competition/:id"
-          element={
-            <Layout hideNavbar>
-              {/* <LayoutDashboard> */}
-              <CompOpen/>
-              {/* </LayoutDashboard> */}
-            </Layout>
-          }
-          />
-
-
-
-
-
-<Route
-          path="/competition/:competition/:game_id"
-          element={
-            <Layout hideNavbar>
-
-                <CompetitionQuestions />
-
-            </Layout>
-          }
-        /> 
-
-<Route
-          path="/competition/programming/:competition/:id"
-          element={
-            <Layout hideNavbar>
-
-                <CompetitionFinal/>
-
-            </Layout>
-          }
-        /> 
-                
-
-
-      <Route
-          path="/Dashboard/Judge/InterviewGO"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <InterviewSheet />
-              </LayoutDashboard>
-            </Layout>
-          }
-        /> 
-        
-        <Route
-          path="/Dashboard/Judge/eventDetailsJudge"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <eventDetailsJudge />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Judge/Matches/skills"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Skills />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-
-        <Route
-          path="/Dashboard/Judge/Interview"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Interview />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Judge/inspection"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Inspection />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/Dashboard/Judge/Notebook"
-          element={
-            <Layout hideNavbar>
-              <LayoutDashboard>
-                <Notebook />
-              </LayoutDashboard>
-            </Layout>
-          }
-        />
-        <Route
-          path="/live-events"
-          element={
-            <Layout>
-              <LiveEvents />
-            </Layout>
-          }
-        />
-                <Route
-          path="/LiveMatch/VexIq"
-          element={
-            <Layout>
-                <IntroVexIQ />
-            </Layout>
-          }
-        />
-          <Route
-          path="/LiveMatch/Vexgo"
-          element={
-            <Layout>
-                <IntroVexGO />
-            </Layout>
-          }
-        />
-                  <Route
-          path="/LiveMatch/SkillsIQ"
-          element={
-            <Layout>
-                <LiveSkillsVex/>
-            </Layout>
-          }
-        />
-        
-
-        <Route
-          path="/LiveMatch/SkillsGo"
-          element={
-            <Layout>
-                <SkillsContainerGO />
-            </Layout>
-          }
-        />
-                {/* <Route
+              <Route
+                path="/LiveMatch/SkillsGo"
+                element={
+                  <Layout>
+                    <SkillsContainerGO />
+                  </Layout>
+                }
+              />
+              {/* <Route
           path="/LiveMatch/Skills"
           element={
             <Layout>
@@ -1061,63 +1019,58 @@ const App = () => {
           }
         /> */}
 
-                  <Route
-          path="/LiveMatch/Teamwork"
-          element={
-            <Layout>
-                <LiveTeamVex />
-            </Layout>
-          }
-                />
+              <Route
+                path="/LiveMatch/Teamwork"
+                element={
+                  <Layout>
+                    <LiveTeamVex />
+                  </Layout>
+                }
+              />
 
-                  <Route
-          path="/LiveMatch/Coop"
-          element={
-            <Layout>
-                <LiveCoop />
-            </Layout>
-          }
-                />
-                
+              <Route
+                path="/LiveMatch/Coop"
+                element={
+                  <Layout>
+                    <LiveCoop />
+                  </Layout>
+                }
+              />
 
-          <Route
-          path="/LiveProgramming"
-          element={
-            <Layout >
-                <LiveProgramming/>
-            </Layout>
-            
-          }
-            />
-          <Route
-          path="/LiveFile"
-          element={
-            <Layout >
-                <LiveCompFile/>
-            </Layout>
-            
-          }
-            />
+              <Route
+                path="/LiveProgramming"
+                element={
+                  <Layout>
+                    <LiveProgramming />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/LiveFile"
+                element={
+                  <Layout>
+                    <LiveCompFile />
+                  </Layout>
+                }
+              />
 
-<Route
-          path="/LiveVex123"
-          element={
-            <Layout >
-                <LiveVex123 />
-            </Layout>
-            
-          }
-            />
+              <Route
+                path="/LiveVex123"
+                element={
+                  <Layout>
+                    <LiveVex123 />
+                  </Layout>
+                }
+              />
             </Routes>
-            </ResultProvider>
-            </MatchProvider>
+          </ResultProvider>
+        </MatchProvider>
         {/* <ContactUs /> */}
 
-          {/* </Router> */}
+        {/* </Router> */}
       </LoadingProvider>
-      </>
+    </>
   );
 };
-
 
 export default App;

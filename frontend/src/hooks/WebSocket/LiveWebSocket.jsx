@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 
 export const LiveWebSocket = (eventName) => {
@@ -23,20 +22,25 @@ export const LiveWebSocket = (eventName) => {
       const data = JSON.parse(event.data);
 
       if (data.game_id && data.score !== undefined) {
-        setMatches(prevMatches => {
-          const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
+        setMatches((prevMatches) => {
+          const matchIndex = prevMatches.findIndex(
+            (m) => m.code === data.game_id,
+          );
           if (matchIndex === -1) {
-            return [...prevMatches, {
-              code: data.game_id,
-              team1: data.team1_name || 'Team',
-              score: data.score.driver
-            }];
+            return [
+              ...prevMatches,
+              {
+                code: data.game_id,
+                team1: data.team1_name || "Team",
+                score: data.score.driver,
+              },
+            ];
           }
 
           const updatedMatches = [...prevMatches];
           updatedMatches[matchIndex] = {
             ...updatedMatches[matchIndex],
-            score: data.score.driver
+            score: data.score.driver,
           };
           return updatedMatches;
         });

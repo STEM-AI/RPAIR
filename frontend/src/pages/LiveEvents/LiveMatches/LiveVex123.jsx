@@ -1,21 +1,22 @@
-import React, { useEffect, useState, useRef ,useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { TiStopwatch } from "react-icons/ti";
-import { FaTrophy, FaMedal, FaSyncAlt, FaRobot, FaListOl } from "react-icons/fa";
+import {
+  FaTrophy,
+  FaMedal,
+  FaSyncAlt,
+  FaRobot,
+  FaListOl,
+} from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
-
 
 const LiveVex123 = () => {
   const [rankings, setRankings] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
-  const eventId = searchParams.get('eventId');
-
-
-   
+  const eventId = searchParams.get("eventId");
 
   const URL = `${process.env.REACT_APP_API_URL}/vex-123/${eventId}/rank/`;
   const intervalRef = useRef(null);
@@ -37,8 +38,8 @@ const LiveVex123 = () => {
   // Setup interval and initial fetch
   useEffect(() => {
     fetchRankings();
-    intervalRef.current = setInterval(fetchRankings, 60000); // 60 seconds
-    
+    intervalRef.current = setInterval(fetchRankings, 30000); // 60 seconds
+
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -48,10 +49,14 @@ const LiveVex123 = () => {
 
   const getMedalIcon = (rank) => {
     switch (rank) {
-      case 1: return <FaTrophy className="w-6 h-6 text-amber-400" />;
-      case 2: return <FaMedal className="w-6 h-6 text-gray-400" />;
-      case 3: return <FaMedal className="w-6 h-6 text-amber-600" />;
-      default: return <span className="text-gray-600 font-medium">{rank}</span>;
+      case 1:
+        return <FaTrophy className="w-6 h-6 text-amber-400" />;
+      case 2:
+        return <FaMedal className="w-6 h-6 text-gray-400" />;
+      case 3:
+        return <FaMedal className="w-6 h-6 text-amber-600" />;
+      default:
+        return <span className="text-gray-600 font-medium">{rank}</span>;
     }
   };
 
@@ -59,14 +64,8 @@ const LiveVex123 = () => {
     if (!isLoading) {
       fetchRankings();
     }
-  }; 
+  };
 
-
-  
-
- 
-
- 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <Helmet>
@@ -80,20 +79,20 @@ const LiveVex123 = () => {
           <h1 className="text-3xl md:text-4xl  py-4 font-bold text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
             VEX 123 Live Challenge
           </h1>
-          <span>{eventName}</span>
         </div>
-        
+
         <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
           <div className="flex items-center gap-3 text-sm text-gray-600">
-            <FaSyncAlt 
-              className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''} cursor-pointer`}
+            <FaSyncAlt
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""} cursor-pointer`}
               onClick={handleRefresh}
             />
             <span>
-              Last updated: {lastUpdate.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
+              Last updated:{" "}
+              {lastUpdate.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
               })}
             </span>
           </div>
@@ -112,10 +111,18 @@ const LiveVex123 = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">Rank</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">Team</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase">Score</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase">Time</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">
+                  Rank
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">
+                  Team
+                </th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase">
+                  Score
+                </th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase">
+                  Time
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -123,42 +130,58 @@ const LiveVex123 = () => {
                 <tr
                   key={team.team}
                   className={`${
-                    index === 0 ? 'bg-amber-50/50 hover:bg-amber-50' :
-                    index === 1 ? 'bg-gray-50/50 hover:bg-gray-50' :
-                    index === 2 ? 'bg-amber-100/50 hover:bg-amber-100' : 
-                    'hover:bg-gray-50'
+                    index === 0
+                      ? "bg-amber-50/50 hover:bg-amber-50"
+                      : index === 1
+                        ? "bg-gray-50/50 hover:bg-gray-50"
+                        : index === 2
+                          ? "bg-amber-100/50 hover:bg-amber-100"
+                          : "hover:bg-gray-50"
                   } transition-colors duration-150`}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       {getMedalIcon(index + 1)}
                       {index < 3 && (
-                        <span className={`text-xs font-semibold ${
-                          index === 0 ? 'text-amber-600' :
-                          index === 1 ? 'text-gray-600' :
-                          'text-amber-700'
-                        }`}>
-                          {index === 0 ? 'Champion' : index === 1 ? 'Runner-up' : '2nd Runner-up'}
+                        <span
+                          className={`text-xs font-semibold ${
+                            index === 0
+                              ? "text-amber-600"
+                              : index === 1
+                                ? "text-gray-600"
+                                : "text-amber-700"
+                          }`}
+                        >
+                          {index === 0
+                            ? "Champion"
+                            : index === 1
+                              ? "Runner-up"
+                              : "2nd Runner-up"}
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="font-semibold text-gray-900">#{team.team}</span>
-                      <span className="text-sm text-gray-500">{team.team_name}</span>
+                      <span className="font-semibold text-gray-900">
+                        {" "}
+                        {team.team_name}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        #{team.team_number}
+                      </span>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100/80 text-blue-800 font-bold">
                       <FaTrophy className="w-4 h-4 mr-2" />
-                      {team.total_score || 0} 
+                      {team.total_score || 0}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100/80 text-green-800 font-medium">
                       <TiStopwatch className="text-2xl mr-2" />
-                      {team.total_time_taken || 0}s 
+                      {team.total_time_taken || 0}s
                     </span>
                   </td>
                 </tr>
