@@ -1,7 +1,5 @@
-
-
-import React, { useState } from 'react';
-import pdfFile from '../../../assets/PDFS/vex-iq-rules.pdf'; 
+import React, { useState } from "react";
+import pdfFile from "../../../assets/PDFS/vex-iq-rules.pdf";
 
 const Rules = () => {
   const [showFullText, setShowFullText] = useState(false);
@@ -37,7 +35,7 @@ const Rules = () => {
               className="sm:w-fit w-full px-3.5 py-2 bg-cyan-600 hover:bg-cyan-800 transition-all duration-700 ease-in-out rounded-lg shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] justify-center items-center flex"
             >
               <span className="px-1.5 text-white text-sm font-medium leading-6">
-                {showFullText ? 'Read Less' : 'Read More'}
+                {showFullText ? "Read Less" : "Read More"}
               </span>
             </button>
           </div>
@@ -45,7 +43,9 @@ const Rules = () => {
           {/* PDF Section */}
           <div className="w-full flex-col justify-center lg:items-start items-center gap-10 inline-flex">
             <div className="bg-gray-100 p-4 rounded-lg shadow-md w-full">
-              <h4 className="text-gray-700 text-xl font-semibold mb-4">View and Download Competition Rules</h4>
+              <h4 className="text-gray-700 text-xl font-semibold mb-4">
+                View and Download Competition Rules
+              </h4>
               {/* Display PDF */}
               <iframe
                 src={pdfFile}
@@ -69,5 +69,3 @@ const Rules = () => {
 };
 
 export default Rules;
-
-

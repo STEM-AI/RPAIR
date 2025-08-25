@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 const MatchContext = createContext();
 
@@ -8,22 +8,24 @@ export function MatchProvider({ children }) {
 
   // دالة عامة لتحديث أي نوع مباراة
   const updateMatch = (matchId, data) => {
-    setMatches(prev => ({
+    setMatches((prev) => ({
       ...prev,
       [matchId]: {
         ...data,
-        type: data.type // 'solo' أو 'coop'
-      }
+        type: data.type, // 'solo' أو 'coop'
+      },
     }));
   };
 
   return (
-    <MatchContext.Provider value={{ 
-      matches,
-      currentMatch,
-      setCurrentMatch,
-      updateMatch
-    }}>
+    <MatchContext.Provider
+      value={{
+        matches,
+        currentMatch,
+        setCurrentMatch,
+        updateMatch,
+      }}
+    >
       {children}
     </MatchContext.Provider>
   );

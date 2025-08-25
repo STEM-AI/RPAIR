@@ -13,7 +13,6 @@
 // //             const params = {
 // //                 type: type,
 // //             };
-        
 
 // //             const response = await axios.get(`${process.env.REACT_APP_API_URL}/programming/questions/${id}/`,
 // //                       {
@@ -21,7 +20,7 @@
 // //                           params
 // //                       }
 // //             );
-        
+
 // //         setQuestions(response.data);
 // //       } catch (err) {
 // //         setError(err.response?.data?.message || err.message);
@@ -35,7 +34,6 @@
 
 // //   return { questions, loading, error };
 // // }
-
 
 // import { useState, useEffect } from 'react';
 // import axios from 'axios';
@@ -59,7 +57,7 @@
 //               params
 //           }
 //         );
-        
+
 //         setQuestion(response.data);
 //       } catch (err) {
 //         setError(err.response?.data?.message || err.message);
@@ -74,12 +72,10 @@
 //   return { question, loading, error };
 // }
 
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-export default function useQuestions(id, type = null ) {
+export default function useQuestions(id, type = null) {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -87,20 +83,20 @@ export default function useQuestions(id, type = null ) {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        if (!token) throw new Error('Missing authentication token');
-        
+        const token = localStorage.getItem("access_token");
+        if (!token) throw new Error("Missing authentication token");
+
         const params = {};
         if (type) params.type = type;
-        
+
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/programming/questions/${id}/`,
           {
             headers: { Authorization: `Bearer ${token}` },
-            params
-          }
+            params,
+          },
         );
-        
+
         setQuestions(response.data);
       } catch (err) {
         setError(err.response?.data?.message || err.message);
@@ -113,5 +109,5 @@ export default function useQuestions(id, type = null ) {
     else setLoading(false);
   }, [id, type]);
 
-  return { questions, loading, error ,type};
+  return { questions, loading, error, type };
 }

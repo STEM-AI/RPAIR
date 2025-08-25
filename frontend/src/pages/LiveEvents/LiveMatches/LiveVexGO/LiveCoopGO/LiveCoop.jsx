@@ -13,32 +13,20 @@ const LiveCoop = () => {
   const [isLoading, setIsLoading] = useState(false);
   const socketRef = useRef(null);
   const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
-  const eventId = searchParams.get('eventId');
-   const intervalRef = useRef(null);
+  const eventName = searchParams.get("eventName");
+  const eventId = searchParams.get("eventId");
 
   // Moved useGetScore to top-level
-  const { 
-    score: serverScores, 
-    refetch: refetchScores 
-  } = useGetScore(eventId, "coop");
+  const { score: serverScores, refetch: refetchScores } = useGetScore(
+    eventId,
+    "coop",
+  );
 
   // Initialize matches from serverScores
-    useEffect(() => {
+  useEffect(() => {
     if (eventId) {
-      // Initial fetch on mount
       refetchScores();
-      
-      intervalRef.current = setInterval(() => {
-        refetchScores();
-      }, 30000);
     }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
   }, [eventId, refetchScores]);
 
   useEffect(() => {
@@ -58,7 +46,7 @@ const LiveCoop = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/coop/rank/`
+        `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/coop/rank/`,
       );
       setRankings(response.data);
       setShowRankings(true);
@@ -74,7 +62,7 @@ const LiveCoop = () => {
     if (!eventName) return;
 
     socketRef.current = new WebSocket(
-      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coop/`
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coop/`,
     );
 
     socketRef.current.onopen = () => {
@@ -83,27 +71,30 @@ const LiveCoop = () => {
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log("Score Update:", data);
 
       if (data.game_id && data.score !== undefined) {
         setMatches((prevMatches) => {
-          const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
-          
+          const matchIndex = prevMatches.findIndex(
+            (m) => m.id === data.game_id,
+          );
+
           if (matchIndex === -1) {
             return [
               ...prevMatches,
               {
-                code: data.game_id ,
-                team1: data.team1_name || "Team 1",
-                team2: data.team2_name || "Team 2",
+                code: data.game_id,
+                team1_name: data.team1_name || "Team 1",
+                team1_number: data.team1_number || "Code1",
+                team2_name: data.team2_name || "Team 2",
+                team2_number: data.team2_number || "Code2",
                 score: data.score,
-              }
+              },
             ];
           }
-          
-          return prevMatches.map((match, index) => 
-            index === matchIndex 
-              ? { ...match, score: data.score } 
-              : match
+
+          return prevMatches.map((match, index) =>
+            index === matchIndex ? { ...match, score: data.score } : match,
           );
         });
         setLastUpdate(new Date());
@@ -137,7 +128,6 @@ const LiveCoop = () => {
         return <span className="text-gray-500 font-medium">{rank}</span>;
     }
   };
-
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -192,8 +182,22 @@ const LiveCoop = () => {
                   <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                     #{match.code || match.id}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{match.team1}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{match.team2}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col ">
+                      <span className="font-medium ">{match.team1_name}</span>
+                      <span className="text-xs  text-gray-500">
+                        #{match.team1_number}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col ">
+                      <span className="font-medium ">{match.team2_name}</span>
+                      <span className="text-xs  text-gray-500">
+                        #{match.team2_number}
+                      </span>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center font-bold bg-blue-50 text-blue-700 rounded-lg mx-2">
                     {match.score ?? 0}
                   </td>
@@ -216,8 +220,13 @@ const LiveCoop = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="text-center flex-1">
-                    <div className="font-medium text-gray-700">
-                      {match.team1}
+                    <div className="font-medium flex flex-col text-gray-700">
+                      <span className="font-medium text-center text-gray-800">
+                        {match.team1_name}
+                      </span>
+                      <span className="text-xs text-center text-gray-500">
+                        #{match.team1_number}
+                      </span>
                     </div>
                   </div>
                   <div className="mx-2 text-center">
@@ -227,8 +236,13 @@ const LiveCoop = () => {
                     <div className="text-xs text-gray-400">COOP Score</div>
                   </div>
                   <div className="text-center flex-1">
-                    <div className="font-medium text-gray-700">
-                      {match.team2}
+                    <div className="font-medium flex flex-col text-gray-700">
+                      <span className="font-medium text-center text-gray-800">
+                        {match.team2_name}
+                      </span>
+                      <span className="text-xs text-center text-gray-500">
+                        #{match.team2_number}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -290,10 +304,10 @@ const LiveCoop = () => {
                       index === 0
                         ? "bg-amber-50"
                         : index === 1
-                        ? "bg-gray-50"
-                        : index === 2
-                        ? "bg-amber-25"
-                        : "hover:bg-gray-50"
+                          ? "bg-gray-50"
+                          : index === 2
+                            ? "bg-amber-25"
+                            : "hover:bg-gray-50"
                     } transition-colors`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -303,6 +317,9 @@ const LiveCoop = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                       {team.team__name}
+                      <div className="text-xs text-gray-400">
+                        #{team.team_number}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700">
@@ -321,4 +338,3 @@ const LiveCoop = () => {
 };
 
 export default LiveCoop;
-

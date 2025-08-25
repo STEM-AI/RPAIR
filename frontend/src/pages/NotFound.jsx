@@ -1,6 +1,6 @@
-import React ,{ useEffect } from 'react';
-import { Link } from "react-router-dom"
-import IMG from "../assets/Static/404.png"
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import IMG from "../assets/Static/404.png";
 import { Helmet } from "react-helmet-async";
 import { useLoading } from "../context/LoadingContext";
 const NotFoundPage = () => {
@@ -8,21 +8,20 @@ const NotFoundPage = () => {
 
   useEffect(() => {
     setIsLoading(false); // إيقاف اللودينج عند الدخول للصفحة
-  }, [ setIsLoading ]);
+  }, [setIsLoading]);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       <Helmet>
-              <title>Not Found</title>
-            </Helmet>
+        <title>Not Found</title>
+      </Helmet>
       <div className="text-center animate-fadeIn">
         <img
-            src={IMG}
-            alt="404 Illustration"
-            className="mx-auto w-1/3 animate-float shadow-xl rounded-lg"
-            />
+          src={IMG}
+          alt="404 Illustration"
+          className="mx-auto w-1/3 animate-float shadow-xl rounded-lg"
+        />
 
-    <h1 className="mb-4 pt-4 pb-8 tracking-tight text-center text-cyan-500 text-5xl font-black">
-
+        <h1 className="mb-4 pt-4 pb-8 tracking-tight text-center text-cyan-500 text-5xl font-black">
           Looks Like You're Lost!
         </h1>
         <p className="text-xl text-gray-700 mt-2 ">

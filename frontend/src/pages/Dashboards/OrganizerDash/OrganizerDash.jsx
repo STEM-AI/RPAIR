@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import CreateEvent from '../AdminDashboard/Management/CreateEvent'
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import CreateEvent from "../AdminDashboard/Management/CreateEvent";
+import axios from "axios";
 
 export default function OrganizerDash() {
   const [userData, setUserData] = useState({});
   const [status, setStatus] = useState(null); // Use null for initial state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const token = localStorage.getItem("access_token");
 
   useEffect(() => {
@@ -22,11 +22,11 @@ export default function OrganizerDash() {
         setLoading(true);
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/user/data/profile/`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
 
         setUserData(response.data);
-        
+
         // Safely handle organization data
         if (response.data.organization?.length > 0) {
           setStatus(response.data.organization[0].is_active);
@@ -59,7 +59,9 @@ export default function OrganizerDash() {
         <div className="text-5xl mb-4">⚠️</div>
         <h2 className="text-3xl font-bold mb-2">Error Occurred</h2>
         <p className="text-xl mb-4">{error}</p>
-        <p className="text-sm">Please try refreshing the page or contact support</p>
+        <p className="text-sm">
+          Please try refreshing the page or contact support
+        </p>
       </div>
     );
   }
@@ -72,7 +74,11 @@ export default function OrganizerDash() {
           <div className="text-7xl mb-4">⏳</div>
           <h2 className="text-5xl font-bold mb-2">Pending Approval</h2>
           <p className="mb-4 text-xl">
-            Your organization <span className="font-semibold">{userData.organization?.[0]?.name || ''}</span> is currently under administrative review
+            Your organization{" "}
+            <span className="font-semibold">
+              {userData.organization?.[0]?.name || ""}
+            </span>{" "}
+            is currently under administrative review
           </p>
         </div>
       </div>
@@ -86,7 +92,7 @@ export default function OrganizerDash() {
         <h2 className="text-xl font-bold">Your account is active!</h2>
         <p>You can now create and manage events</p>
       </div>
-                <CreateEvent orgID={userData.organization?.[0]?.id}  />
+      <CreateEvent orgID={userData.organization?.[0]?.id} />
     </div>
   );
 }

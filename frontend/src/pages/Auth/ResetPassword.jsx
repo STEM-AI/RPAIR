@@ -45,7 +45,9 @@ const ResetPassword = () => {
       return false;
     }
     if (!/[!@#$%^&*]/.test(newPassword)) {
-      setError("Password must contain at least one special character (!@#$%^&*)");
+      setError(
+        "Password must contain at least one special character (!@#$%^&*)",
+      );
       return false;
     }
     if (newPassword !== confirmPassword) {
@@ -56,9 +58,9 @@ const ResetPassword = () => {
   };
 
   const togglePasswordVisibility = (field) => {
-    if (field === 'newPassword') {
+    if (field === "newPassword") {
       setNewPasswordVisible(!newPasswordVisible);
-    } else if (field === 'confirmPassword') {
+    } else if (field === "confirmPassword") {
       setConfirmPasswordVisible(!confirmPasswordVisible);
     }
   };
@@ -66,7 +68,9 @@ const ResetPassword = () => {
   const handleSendCode = async (e) => {
     e.preventDefault();
     if (!email) {
-      setError("Please include a valid email address so we can get back to you");
+      setError(
+        "Please include a valid email address so we can get back to you",
+      );
       return;
     }
 
@@ -77,15 +81,15 @@ const ResetPassword = () => {
 
       // First check if email exists
       const checkEmailResponse = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/password/forget-password/${email}/`
+        `${process.env.REACT_APP_API_URL}/user/password/forget-password/${email}/`,
       );
-      
+
       if (checkEmailResponse.status === 200) {
         try {
           // Send verification code using the email from response
           const verificationResponse = await axios.post(
             `${process.env.REACT_APP_API_URL}/user/password/send-verification-code/`,
-            { email: checkEmailResponse.data.email }
+            { email: checkEmailResponse.data.email },
           );
 
           if (verificationResponse.status === 200) {
@@ -123,13 +127,13 @@ const ResetPassword = () => {
       setLoading(true);
       setError("");
       setMessage("");
-      
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/user/password/verify-code/`,
         {
           email,
           code: verificationCode,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -159,13 +163,13 @@ const ResetPassword = () => {
       setLoading(true);
       setError("");
       setMessage("");
-      
+
       const response = await axios.patch(
         `${process.env.REACT_APP_API_URL}/user/password/reset-password/`,
         {
           email,
           new_password: newPassword,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -192,7 +196,10 @@ const ResetPassword = () => {
         return (
           <form className="grid gap-y-4" onSubmit={handleSendCode}>
             <div>
-              <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+              <label
+                htmlFor="email"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
                 Email address
               </label>
               <input
@@ -212,7 +219,11 @@ const ResetPassword = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-cyan-800 hover:bg-cyan-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm"
               disabled={loading}
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : "Send Code"}
+              {loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Send Code"
+              )}
             </button>
           </form>
         );
@@ -221,7 +232,10 @@ const ResetPassword = () => {
         return (
           <form className="grid gap-y-4" onSubmit={handleVerifyCode}>
             <div>
-              <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+              <label
+                htmlFor="email"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
                 Email address
               </label>
               <input
@@ -235,7 +249,10 @@ const ResetPassword = () => {
             </div>
 
             <div>
-              <label htmlFor="code" className="block text-gray-700 text-sm font-bold mb-2">
+              <label
+                htmlFor="code"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
                 Verification Code
               </label>
               <input
@@ -254,7 +271,11 @@ const ResetPassword = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-cyan-800 hover:bg-cyan-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm"
               disabled={loading}
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : "Verify Code"}
+              {loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Verify Code"
+              )}
             </button>
           </form>
         );
@@ -263,7 +284,10 @@ const ResetPassword = () => {
         return (
           <form className="grid gap-y-4" onSubmit={handleResetPassword}>
             <div>
-              <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+              <label
+                htmlFor="email"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
                 Email address
               </label>
               <input
@@ -277,12 +301,15 @@ const ResetPassword = () => {
             </div>
 
             <div>
-              <label htmlFor="newPassword" className="block text-gray-700 text-sm font-bold mb-2">
+              <label
+                htmlFor="newPassword"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
                 New Password
               </label>
               <div className="relative">
                 <input
-                  type={newPasswordVisible ? 'text' : 'password'}
+                  type={newPasswordVisible ? "text" : "password"}
                   id="newPassword"
                   name="newPassword"
                   placeholder="••••••••"
@@ -293,21 +320,28 @@ const ResetPassword = () => {
                 />
                 <button
                   type="button"
-                  onClick={() => togglePasswordVisibility('newPassword')}
+                  onClick={() => togglePasswordVisibility("newPassword")}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {newPasswordVisible ? <VscEyeClosed size={20} /> : <VscEye size={20} />}
+                  {newPasswordVisible ? (
+                    <VscEyeClosed size={20} />
+                  ) : (
+                    <VscEye size={20} />
+                  )}
                 </button>
               </div>
             </div>
-          
+
             <div>
-              <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
                 Confirm Password
               </label>
               <div className="relative">
                 <input
-                  type={confirmPasswordVisible ? 'text' : 'password'}
+                  type={confirmPasswordVisible ? "text" : "password"}
                   id="confirmPassword"
                   name="confirmPassword"
                   placeholder="••••••••"
@@ -318,10 +352,14 @@ const ResetPassword = () => {
                 />
                 <button
                   type="button"
-                  onClick={() => togglePasswordVisibility('confirmPassword')}
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {confirmPasswordVisible ? <VscEyeClosed size={20} /> : <VscEye size={20} />}
+                  {confirmPasswordVisible ? (
+                    <VscEyeClosed size={20} />
+                  ) : (
+                    <VscEye size={20} />
+                  )}
                 </button>
               </div>
             </div>
@@ -331,7 +369,11 @@ const ResetPassword = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-cyan-800 hover:bg-cyan-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm"
               disabled={loading}
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : "Reset Password"}
+              {loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Reset Password"
+              )}
             </button>
           </form>
         );
@@ -354,7 +396,10 @@ const ResetPassword = () => {
         <title>Reset Password</title>
       </Helmet>
       <div className="absolute bg-gray-50 inset-0 bg-opacity-50 z-0"></div>
-      <div id="loginForm" className="relative flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl border-2 border-cyan-600">
+      <div
+        id="loginForm"
+        className="relative flex bg-white rounded-2xl mb-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl border-2 border-cyan-600"
+      >
         <div className="hidden lg:block lg:w-1/3 bg-cover bg-gradient-to-br from-cyan-800 to-cyan-400">
           <div className="flex items-center py-16 flex-col">
             <img src={logo} alt="Logo" className="w-60" />
@@ -366,7 +411,7 @@ const ResetPassword = () => {
             </Link>
           </div>
         </div>
-        
+
         <div className="w-full p-8 lg:w-1/2 flex flex-col mx-auto">
           <div className="p-4 sm:p-7">
             <div className="text-center mb-8">
@@ -374,8 +419,11 @@ const ResetPassword = () => {
                 {activeStep === 0 ? "Forgot Password?" : "Reset Password"}
               </h1>
               <p className="mt-2 text-sm text-gray-600">
-                Remember your password? 
-                <Link className="text-blue-600 decoration-2 hover:underline font-medium ml-1" to="/login">
+                Remember your password?
+                <Link
+                  className="text-blue-600 decoration-2 hover:underline font-medium ml-1"
+                  to="/login"
+                >
                   Login here
                 </Link>
               </p>

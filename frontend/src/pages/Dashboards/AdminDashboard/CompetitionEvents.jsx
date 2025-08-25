@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -10,7 +8,9 @@ import Join from "../../../components/Join";
 
 const CompetitionEvents = () => {
   const { competition_name } = useParams() || {};
-  const formattedEventName = competition_name ? competition_name.replace(/_/g, " ").toUpperCase() : "UNKNOWN EVENT";
+  const formattedEventName = competition_name
+    ? competition_name.replace(/_/g, " ").toUpperCase()
+    : "UNKNOWN EVENT";
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -33,13 +33,13 @@ const CompetitionEvents = () => {
 
   const getEventStatus = (startDate, endDate) => {
     if (!startDate || !endDate) return "TBD";
-    
+
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     if (now < start) return "Upcoming";
-    if (now >= start && now <= end) return "Ongoing";
+    if (now >= start && now <= end) return "Live";
     if (now > end) return "Completed";
   };
 
@@ -69,7 +69,10 @@ const CompetitionEvents = () => {
 
   if (error) {
     return (
-      <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg text-center mt-8" role="alert">
+      <div
+        className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg text-center mt-8"
+        role="alert"
+      >
         {error}
       </div>
     );
@@ -91,7 +94,7 @@ const CompetitionEvents = () => {
             const status = getEventStatus(event.start_date, event.end_date);
             const statusColors = {
               Upcoming: "bg-cyan-100 text-cyan-800",
-              Ongoing: "bg-orange-100 text-orange-800",
+              Live: "bg-red-100 text-red-800",
               Completed: "bg-green-100 text-green-800",
               TBD: "bg-gray-100 text-gray-800",
             };

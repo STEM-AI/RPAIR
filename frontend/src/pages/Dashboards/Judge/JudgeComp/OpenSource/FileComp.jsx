@@ -12,8 +12,8 @@ export default function FileComp() {
   const { competition_name } = useParams();
   const [searchParams] = useSearchParams();
   const [rankings, setRankings] = useState([]);
-  const event_name = searchParams.get('eventName');
-  const event_id = searchParams.get('eventId');
+  const event_name = searchParams.get("eventName");
+  const event_id = searchParams.get("eventId");
   const [searchQuery, setSearchQuery] = useState("");
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,27 +21,18 @@ export default function FileComp() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [selectedTeamName, setSelectedTeamName] = useState("");
   const token = localStorage.getItem("access_token");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
 
   const getTeamScore = (teamId) => {
-    const teamRanking = rankings.find(team => team.team === teamId);
+    const teamRanking = rankings.find((team) => team.team === teamId);
     return teamRanking ? teamRanking.score : null;
   };
 
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-   const fetchTeams = useCallback(async () => {
+  const fetchTeams = useCallback(async () => {
     if (!token) {
       Swal.fire({
-        icon: 'error',
-        title: 'Authentication Error',
-        text: 'You are not authorized. Please log in.'
+        icon: "error",
+        title: "Authentication Error",
+        text: "You are not authorized. Please log in.",
       });
       setLoading(false);
       return;
@@ -53,7 +44,7 @@ export default function FileComp() {
 
       const response = await axios.get(myAPI, {
         headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000
+        timeout: 10000,
       });
 
       setTeams(response.data);
@@ -62,9 +53,10 @@ export default function FileComp() {
       setLoading(false);
 
       let errorMessage = "An unexpected error occurred. Please try again.";
-      
+
       if (err.code === "ECONNABORTED") {
-        errorMessage = "Request timed out. Please check your connection and try again.";
+        errorMessage =
+          "Request timed out. Please check your connection and try again.";
       } else if (axios.isAxiosError(err)) {
         switch (err.response?.status) {
           case 401:
@@ -74,20 +66,23 @@ export default function FileComp() {
             errorMessage = "You don't have permission to access these teams.";
             break;
           case 404:
-            errorMessage = "The teams resource was not found. Please try again later.";
+            errorMessage =
+              "The teams resource was not found. Please try again later.";
             break;
           case 500:
             errorMessage = "Server error. Please try again later.";
             break;
           default:
-            errorMessage = err.response?.data?.message || "Failed to fetch teams. Please try again.";
+            errorMessage =
+              err.response?.data?.message ||
+              "Failed to fetch teams. Please try again.";
         }
       }
 
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: errorMessage
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
       });
     }
   }, [token, competition_name, event_id]);
@@ -100,20 +95,18 @@ export default function FileComp() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setRankings(response.data);
     } catch (error) {
       console.error("Error fetching coop rankings:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to fetch rankings. Please try again.'
+        icon: "error",
+        title: "Error",
+        text: "Failed to fetch rankings. Please try again.",
       });
     }
   }, [token, competition_name, event_id]);
-
-
 
   // Check if team can add score
   const canAddScore = (teamId) => {
@@ -121,33 +114,34 @@ export default function FileComp() {
     return existingScore === null || existingScore === 0;
   };
 
-
   const openScoreModal = (teamId, teamName) => {
     setSelectedTeam(teamId);
     setSelectedTeamName(teamName);
     setShowModal(true);
   };
 
- useEffect(() => {
+  useEffect(() => {
     fetchTeams();
     fetchRankings(); // Fetch rankings on initial load
   }, [fetchTeams, fetchRankings]);
 
-  const filteredTeams = teams.filter(team => {
-    const matchesName = team.team_name.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredTeams = teams.filter((team) => {
+    const matchesName = team.team_name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     return matchesName;
   });
 
   return (
     <div className="container max-w-7xl mx-auto px-4 py-8">
       {/* Enhanced Header Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-10 text-center"
       >
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-600 to-teal-500 bg-clip-text text-transparent pb-2">
-          {event_name?.replace(/_/g, ' ')} Submissions
+          {event_name?.replace(/_/g, " ")} Submissions
         </h1>
         <div className="mt-4 h-1.5 bg-gradient-to-r from-cyan-400 to-teal-400 w-24 mx-auto rounded-full opacity-80" />
         <p className="mt-4 text-slate-500 max-w-2xl mx-auto">
@@ -174,17 +168,15 @@ export default function FileComp() {
         </div>
       </div>
 
-      
-
       {/* Enhanced Loading State */}
-       {loading && (
+      {loading && (
         <div className="flex flex-col items-center justify-center py-20">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 rounded-full border-4 border-cyan-500 border-t-transparent"
           />
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-6 text-slate-600 font-medium"
@@ -207,7 +199,9 @@ export default function FileComp() {
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-800">{team.team_name}</h3>
+                <h3 className="text-lg font-bold text-slate-800">
+                  {team.team_name}
+                </h3>
                 <div className="flex items-center mt-2 space-x-2">
                   <span className="bg-cyan-100 text-cyan-800 text-xs px-2.5 py-1 rounded-full font-medium">
                     ID: {team.team}
@@ -223,15 +217,15 @@ export default function FileComp() {
                 <MdAddBox size={20} />
               </motion.button>
             </div>
-            
+
             <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
               <div className="text-slate-500">Submission</div>
               <div className="font-medium">
                 {team.attachment ? (
-                  <a 
-                    href={team.attachment} 
+                  <a
+                    href={team.attachment}
                     className="text-cyan-600 hover:text-cyan-800 font-medium flex items-center"
-                    target="_blank" 
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <FaRegFileCode className="mr-2 text-slate-700" />
@@ -241,14 +235,16 @@ export default function FileComp() {
                   <span className="text-slate-400">Not submitted</span>
                 )}
               </div>
-              
+
               <div className="text-slate-500">Score</div>
               <div className="font-medium">
-                <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-                  getTeamScore(team.team)
-                    ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
-                    : "bg-slate-100 text-slate-600"
-                }`}>
+                <span
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                    getTeamScore(team.team)
+                      ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
                   {getTeamScore(team.team) || "Pending"}
                 </span>
               </div>
@@ -263,11 +259,21 @@ export default function FileComp() {
           <table className="w-full">
             <thead className="bg-gradient-to-r from-cyan-50 to-cyan-100">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Team</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Submission</th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">Score</th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-cyan-800 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">
+                  Team
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">
+                  Code
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">
+                  Submission
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-cyan-800 uppercase tracking-wider">
+                  Score
+                </th>
+                <th className="px-6 py-4 text-center text-sm font-bold text-cyan-800 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -287,13 +293,15 @@ export default function FileComp() {
                       {team.team_name}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-slate-600">{team.team}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-slate-600">
+                    {team.team_number}
+                  </td>
                   <td className="px-6 py-4">
                     {team.attachment ? (
-                      <a 
-                        href={team.attachment} 
+                      <a
+                        href={team.attachment}
                         className="text-cyan-600 hover:text-cyan-800 font-medium flex items-center"
-                        target="_blank" 
+                        target="_blank"
                         rel="noopener noreferrer"
                       >
                         <FaRegFileCode className="mr-2 text-slate-700" />
@@ -304,11 +312,13 @@ export default function FileComp() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-                      getTeamScore(team.team)
-                        ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md" 
-                        : "bg-slate-100 text-slate-600"
-                    }`}>
+                    <span
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold ${
+                        getTeamScore(team.team)
+                          ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md"
+                          : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
                       {getTeamScore(team.team) || "Pending"}
                     </span>
                   </td>
@@ -317,7 +327,9 @@ export default function FileComp() {
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => openScoreModal(team.team, team.team_name)}
+                        onClick={() =>
+                          openScoreModal(team.team, team.team_name)
+                        }
                         className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 transition-all"
                       >
                         <MdAddBox className="mr-2" size={16} />
@@ -355,8 +367,8 @@ export default function FileComp() {
             {searchQuery ? "No matches found" : "No submissions yet"}
           </h3>
           <p className="text-slate-500 max-w-md mx-auto mb-6">
-            {searchQuery 
-              ? "Try adjusting your search query" 
+            {searchQuery
+              ? "Try adjusting your search query"
               : "Teams haven't submitted their files for this event"}
           </p>
           {!searchQuery && (
@@ -369,8 +381,6 @@ export default function FileComp() {
           )}
         </motion.div>
       )}
-
-     
 
       {showModal && selectedTeam && (
         <AddScore

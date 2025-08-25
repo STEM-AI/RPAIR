@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ButtonLive({ team_id }) {
   const [liveEvent, setLiveEvent] = useState(null); // Store event data instead of boolean
@@ -8,7 +8,7 @@ export default function ButtonLive({ team_id }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (!token) {
       setIsLoading(false);
       return;
@@ -18,9 +18,9 @@ export default function ButtonLive({ team_id }) {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/user/${team_id}/live-competition-event/`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
-        
+
         // Store the first live event if available
         if (Array.isArray(response.data) && response.data.length > 0) {
           setLiveEvent(response.data[0]);
@@ -28,9 +28,9 @@ export default function ButtonLive({ team_id }) {
           setLiveEvent(null);
         }
       } catch (error) {
-        console.error('Error fetching live status:', error);
+        console.error("Error fetching live status:", error);
         if (error.response?.status === 401) {
-          localStorage.removeItem('access_token');
+          localStorage.removeItem("access_token");
         }
       } finally {
         setIsLoading(false);
@@ -49,7 +49,7 @@ export default function ButtonLive({ team_id }) {
 
   if (isLoading) {
     return (
-      <button 
+      <button
         disabled
         className="px-4 py-2 text-sm rounded-lg bg-gray-100 text-gray-500 inline-flex items-center cursor-not-allowed"
       >
@@ -66,9 +66,9 @@ export default function ButtonLive({ team_id }) {
       onClick={handleClick}
       disabled={!isLive} // Disable button if no live event
       className={`px-4 py-2 text-sm rounded-lg inline-flex items-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-        isLive 
-          ? 'bg-red-100 hover:bg-red-200 text-red-700 focus:ring-red-500 cursor-pointer' 
-          : 'bg-gray-100 text-gray-700 focus:ring-gray-500 cursor-not-allowed opacity-75'
+        isLive
+          ? "bg-red-100 hover:bg-red-200 text-red-700 focus:ring-red-500 cursor-pointer"
+          : "bg-gray-100 text-gray-700 focus:ring-gray-500 cursor-not-allowed opacity-75"
       }`}
     >
       {isLive ? (

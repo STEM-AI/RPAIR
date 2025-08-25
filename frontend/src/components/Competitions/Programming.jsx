@@ -8,10 +8,9 @@ import { Helmet } from "react-helmet-async";
 import ProgrammingAwardsList from "../../components/Awards/programmingAwards";
 
 const ProgrammingComp = () => {
-
   return (
     <>
-       <Helmet>
+      <Helmet>
         <title>Programming</title>
       </Helmet>
       <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">
@@ -24,9 +23,15 @@ const ProgrammingComp = () => {
             </h2>
 
             <p className="text-gray-800 text-lg mb-8 leading-relaxed">
-            This coding competition tests your programming skills under time pressure. You'll solve multiple technical problems within a fixed time limit, showing how well you can think logically and solve challenges quickly. The contest evaluates both your knowledge and your ability to work efficiently when time matters most.
-
-Each question checks different programming skills, from basic concepts to more advanced problem-solving. Since time is limited, you'll need to think carefully but also work fast - just like real-world coding situations where speed and accuracy are both important.
+              This coding competition tests your programming skills under time
+              pressure. You'll solve multiple technical problems within a fixed
+              time limit, showing how well you can think logically and solve
+              challenges quickly. The contest evaluates both your knowledge and
+              your ability to work efficiently when time matters most. Each
+              question checks different programming skills, from basic concepts
+              to more advanced problem-solving. Since time is limited, you'll
+              need to think carefully but also work fast - just like real-world
+              coding situations where speed and accuracy are both important.
             </p>
           </div>
 
@@ -42,7 +47,7 @@ Each question checks different programming skills, from basic concepts to more a
       </div>
       <Rules />
       <ProgrammingAwardsList />
-       <JoinTeams />
+      <JoinTeams />
     </>
   );
 };

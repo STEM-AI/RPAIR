@@ -206,7 +206,6 @@
 
 // export default CreateOrganization;
 
-
 import React, { useState } from "react";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
@@ -219,7 +218,7 @@ const CreateOrganization = () => {
     address: "",
     email: "",
     type: "",
-    contacts: [{ phone_number: "" }, { phone_number: "" }], 
+    contacts: [{ phone_number: "" }, { phone_number: "" }],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
@@ -260,7 +259,7 @@ const CreateOrganization = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setAlertType("success");
@@ -270,13 +269,14 @@ const CreateOrganization = () => {
         address: "",
         email: "",
         type: "",
-        contacts: [{ phone_number: "" }, { phone_number: "" }], 
+        contacts: [{ phone_number: "" }, { phone_number: "" }],
       });
     } catch (err) {
       console.error("Error Response:", err.response);
       setAlertType("error");
       setResponseMessage(
-        err.response?.data?.detail || "Failed to create the organization. Please try again."
+        err.response?.data?.detail ||
+          "Failed to create the organization. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -293,7 +293,9 @@ const CreateOrganization = () => {
       {responseMessage && (
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity={alertType}>
-            <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
+            <AlertTitle>
+              {alertType === "success" ? "Success" : "Error"}
+            </AlertTitle>
             {responseMessage}
           </Alert>
         </Stack>
@@ -325,7 +327,9 @@ const CreateOrganization = () => {
             name="address"
             placeholder="Enter address"
             value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, address: e.target.value })
+            }
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
           />
         </div>
@@ -340,7 +344,9 @@ const CreateOrganization = () => {
             name="email"
             placeholder="Enter email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
           />
         </div>
@@ -363,7 +369,10 @@ const CreateOrganization = () => {
         {/* Contact Numbers (Only 2 phone numbers) */}
         {formData.contacts.map((contact, index) => (
           <div key={index} className="p-2">
-            <label htmlFor={`contacts_${index}`} className="block text-gray-700 font-bold">
+            <label
+              htmlFor={`contacts_${index}`}
+              className="block text-gray-700 font-bold"
+            >
               Phone Number {index + 1}:
             </label>
             <input

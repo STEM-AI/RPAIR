@@ -16,53 +16,52 @@ const LiveSkillsVex = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [teamRounds, setTeamRounds] = useState({});
   const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
-  const eventId = searchParams.get('eventId');
+  const eventName = searchParams.get("eventName");
+  const eventId = searchParams.get("eventId");
   const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
 
+  const { score: scoresAuto } = useGetScore(eventId, "auto");
+  const { score: scoresDriver } = useGetScore(eventId, "driver_iq");
 
-  const { 
-      score: scoresAuto, 
-    } = useGetScore(eventId, "auto");
-  const { 
-      score: scoresDriver, 
-    } = useGetScore(eventId, "driver_iq");
-  
-     useEffect(() => {
-       if (scoresAuto || scoresDriver) {
-        setDriverIqMatches(scoresDriver);
-        setAutoIqMatches(scoresAuto);
-        }
-      }, [scoresAuto, scoresDriver]);
+  useEffect(() => {
+    if (scoresAuto || scoresDriver) {
+      setDriverIqMatches(scoresDriver);
+      setAutoIqMatches(scoresAuto);
+    }
+  }, [scoresAuto, scoresDriver]);
   // Update team rounds when matches change
   useEffect(() => {
     const updateTeamRounds = () => {
       const rounds = {};
-      
-      autoIqMatches.forEach(match => {
+
+      autoIqMatches.forEach((match) => {
         if (!rounds[match.team1]) rounds[match.team1] = 0;
         rounds[match.team1]++;
       });
-      
-      driverIqMatches.forEach(match => {
+
+      driverIqMatches.forEach((match) => {
         if (!rounds[match.team1]) rounds[match.team1] = 0;
         rounds[match.team1]++;
       });
-      
+
       setTeamRounds(rounds);
     };
-    
+
     updateTeamRounds();
   }, [autoIqMatches, driverIqMatches]);
 
   useEffect(() => {
-    autoSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/auto/`);
+    autoSocketRef.current = new WebSocket(
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/auto/`,
+    );
 
     autoSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log(data);
+
       if (data.game_id && data.score?.autonomous !== undefined) {
-        setAutoIqMatches(prev => updateMatches(prev, data));
+        setAutoIqMatches((prev) => updateMatches(prev, data));
         setLastUpdate(new Date());
       }
     };
@@ -75,12 +74,16 @@ const LiveSkillsVex = () => {
   }, [eventName]);
 
   useEffect(() => {
-    driverSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/driver_iq/`);
+    driverSocketRef.current = new WebSocket(
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/driver_iq/`,
+    );
 
     driverSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log(data);
+
       if (data.game_id && data.score?.driver !== undefined) {
-        setDriverIqMatches(prev => updateMatches(prev, data));
+        setDriverIqMatches((prev) => updateMatches(prev, data));
         setLastUpdate(new Date());
       }
     };
@@ -93,28 +96,29 @@ const LiveSkillsVex = () => {
   }, [eventName]);
 
   const updateMatches = (prevMatches, data) => {
-    const teamName = data.team1_name || "Team 1";
-    const teamMatches = prevMatches.filter(m => m.team1 === teamName);
+    const team1_name = data.team1_name || "Team 1";
+    const teamMatches = prevMatches.filter((m) => m.team1 === team1_name);
 
     if (teamMatches.length >= 3) {
       return prevMatches;
     }
 
-    const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
+    const matchIndex = prevMatches.findIndex((m) => m.id === data.game_id);
     if (matchIndex === -1) {
       // New match
       return [
         ...prevMatches,
         {
           code: data.game_id,
-          team1: teamName,
+          team1_name: team1_name,
+          team1_number: data.team1_number || "Code",
           score: data.score,
-        }
+        },
       ];
     } else {
       // Update existing match
       return prevMatches.map((m, i) =>
-        i === matchIndex ? { ...m, score: data.score } : m
+        i === matchIndex ? { ...m, score: data.score } : m,
       );
     }
   };
@@ -122,7 +126,9 @@ const LiveSkillsVex = () => {
   const fetchRankings = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/event/${eventId}/skills-rank`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/event/${eventId}/skills-rank`,
+      );
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {
@@ -147,14 +153,15 @@ const LiveSkillsVex = () => {
 
   const renderRankingTeamWithRounds = (teamName) => {
     const roundsCount = teamRounds[teamName] || 0;
-    if (roundsCount <= 1) return teamName;
 
     return (
       <div className="flex items-center gap-2">
         <span>{teamName}</span>
-        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-          Round {roundsCount}
-        </span>
+        {roundsCount > 1 && (
+          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+            Round {roundsCount}
+          </span>
+        )}
       </div>
     );
   };
@@ -188,10 +195,16 @@ const LiveSkillsVex = () => {
           onClick={fetchRankings}
           disabled={isLoading}
           className={`inline-flex items-center px-6 py-3 rounded-full font-medium text-white shadow-lg ${
-            isLoading ? 'bg-gray-400' : 'bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700'
+            isLoading
+              ? "bg-gray-400"
+              : "bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700"
           } transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2`}
         >
-          {isLoading ? <FaSyncAlt className="animate-spin mr-2" /> : <FaTrophy className="mr-2" />}
+          {isLoading ? (
+            <FaSyncAlt className="animate-spin mr-2" />
+          ) : (
+            <FaTrophy className="mr-2" />
+          )}
           {isLoading ? "Loading..." : "View Skills Rankings"}
         </button>
       </div>
@@ -208,9 +221,15 @@ const LiveSkillsVex = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Highest Score</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Rank
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Team
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Highest Score
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -218,9 +237,13 @@ const LiveSkillsVex = () => {
                   <tr
                     key={team.team}
                     className={`${
-                      index === 0 ? "bg-amber-50" :
-                      index === 1 ? "bg-gray-50" :
-                      index === 2 ? "bg-amber-25" : "hover:bg-gray-50"
+                      index === 0
+                        ? "bg-amber-50"
+                        : index === 1
+                          ? "bg-gray-50"
+                          : index === 2
+                            ? "bg-amber-25"
+                            : "hover:bg-gray-50"
                     } transition-colors`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -229,7 +252,15 @@ const LiveSkillsVex = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                      {renderRankingTeamWithRounds(team.team__name)}
+                      <div className="flex flex-col text-center">
+                        <span className="font-medium text-gray-800">
+                          {" "}
+                          {renderRankingTeamWithRounds(team.team__name)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          #{team.team_number}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800">

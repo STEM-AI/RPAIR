@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 function OpenSourcePage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-10">
-       <Helmet>
+      <Helmet>
         <title>Open Source</title>
       </Helmet>
       {/* العنوان الرئيسي */}
@@ -13,10 +13,13 @@ function OpenSourcePage() {
       </h2>
 
       {/* كارد Arduino */}
-      <Link to="/Competitions/OpenSource/Arduino" className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl w-[420px]">
+      <Link
+        to="/Competitions/OpenSource/Arduino"
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl w-[420px]"
+      >
         {/* صورة الكارد */}
-        <img 
-          src={require('../../assets/cards/arduino.jpg')} 
+        <img
+          src={require("../../assets/cards/arduino.jpg")}
           alt="Arduino"
           className="w-full h-64 object-cover"
         />
@@ -25,7 +28,8 @@ function OpenSourcePage() {
         <div className="p-6 text-center">
           <h2 className="text-2xl font-bold text-blue-700 mb-4">Arduino</h2>
           <p className="text-gray-700 text-base leading-relaxed">
-          Compete in Arduino challenges to showcase your electronics and programming skills by building innovative projects.
+            Compete in Arduino challenges to showcase your electronics and
+            programming skills by building innovative projects.
           </p>
         </div>
       </Link>
@@ -34,5 +38,3 @@ function OpenSourcePage() {
 }
 
 export default OpenSourcePage;
-
-

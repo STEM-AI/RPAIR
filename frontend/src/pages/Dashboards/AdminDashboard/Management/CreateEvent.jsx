@@ -5,7 +5,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 
-const CreateEvent = ({orgID}) => {
+const CreateEvent = ({ orgID }) => {
   const [competition_name, setCompetitionName] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -15,7 +15,6 @@ const CreateEvent = ({orgID}) => {
     category: "Mini",
     fees: 200,
     age: "00-00",
-    
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
@@ -28,14 +27,14 @@ const CreateEvent = ({orgID}) => {
       try {
         const token = localStorage.getItem("access_token");
         if (!token) return;
-        
+
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/competition/list/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setComp(response.data);
       } catch (error) {
@@ -58,7 +57,7 @@ const CreateEvent = ({orgID}) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-      const processedValue = value.replace(/\s+/g, '_');
+    const processedValue = value.replace(/\s+/g, "_");
 
     setFormData((prevState) => ({
       ...prevState,
@@ -82,8 +81,8 @@ const CreateEvent = ({orgID}) => {
     try {
       const requestData = {
         ...formData,
-        competition: competition_name,  // Add competition ID to request body
-        organization: orgID
+        competition: competition_name, // Add competition ID to request body
+        organization: orgID,
       };
 
       await axios.post(
@@ -94,7 +93,7 @@ const CreateEvent = ({orgID}) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setAlertType("success");
@@ -120,19 +119,21 @@ const CreateEvent = ({orgID}) => {
       console.error("Error :", err);
       setAlertType("error");
       setResponseMessage(
-        err.response?.data?.detail || "Failed to create the event. Please try again."
+        err.response?.data?.detail ||
+          "Failed to create the event. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
   const renderEventNameInput = () => {
     if (!competition_name) return null;
-    
-    const competition = comp.find(c => c.id.toString() === competition_name.toString());
-    
+
+    const competition = comp.find(
+      (c) => c.id.toString() === competition_name.toString(),
+    );
+
     if (!competition) {
       return (
         <input
@@ -147,13 +148,16 @@ const CreateEvent = ({orgID}) => {
         />
       );
     }
-  
+
     const compName = competition.name;
-  
-    const normalizedCompName = compName.toLowerCase().replace(/_/g, '').replace(/\s/g, '');
+
+    const normalizedCompName = compName
+      .toLowerCase()
+      .replace(/_/g, "")
+      .replace(/\s/g, "");
 
     switch (normalizedCompName) {
-      case 'vexgo': 
+      case "vexgo":
         return (
           <select
             id="name"
@@ -168,7 +172,7 @@ const CreateEvent = ({orgID}) => {
             <option value="Ocean">Ocean</option>
           </select>
         );
-      case 'programming':
+      case "programming":
         return (
           <select
             id="name"
@@ -185,7 +189,7 @@ const CreateEvent = ({orgID}) => {
             <option value="tinkercad">tinkercad</option>
           </select>
         );
-      case 'arduino':
+      case "arduino":
         formData.name = "arduino";
         return (
           <input
@@ -197,7 +201,7 @@ const CreateEvent = ({orgID}) => {
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2 bg-gray-100"
           />
         );
-      case 'flutter':
+      case "flutter":
         formData.name = "flutter";
         return (
           <input
@@ -225,12 +229,6 @@ const CreateEvent = ({orgID}) => {
     }
   };
 
-  
-
-
-
-
-
   return (
     <div className="container px-4">
       <h2 className="mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-5xl py-2 font-black">
@@ -240,7 +238,9 @@ const CreateEvent = ({orgID}) => {
       {responseMessage && (
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity={alertType}>
-            <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
+            <AlertTitle>
+              {alertType === "success" ? "Success" : "Error"}
+            </AlertTitle>
             {responseMessage}
           </Alert>
         </Stack>
@@ -248,21 +248,26 @@ const CreateEvent = ({orgID}) => {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
         <div className="p-2">
-          <label htmlFor="competition_name" className="block text-gray-700 font-bold">
+          <label
+            htmlFor="competition_name"
+            className="block text-gray-700 font-bold"
+          >
             Competition Name:
           </label>
           <select
             id="competition_name"
             name="competition_name"
             value={competition_name}
-            onChange={(e) => setCompetitionName(e.target.value) }
+            onChange={(e) => setCompetitionName(e.target.value)}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:ring-opacity-50 p-2"
             required
           >
             <option value="">Select Competition</option>
             {comp.map((option) => (
               <option key={option.id} value={option.id}>
-                {option.name.replace(option.name[0],option.name[0].toUpperCase()).replace('_',' ')}
+                {option.name
+                  .replace(option.name[0], option.name[0].toUpperCase())
+                  .replace("_", " ")}
               </option>
             ))}
           </select>
@@ -293,7 +298,10 @@ const CreateEvent = ({orgID}) => {
 
         <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="start_date" className="block text-gray-700 font-bold">
+            <label
+              htmlFor="start_date"
+              className="block text-gray-700 font-bold"
+            >
               Start Date:
             </label>
             <input
@@ -398,4 +406,3 @@ const CreateEvent = ({orgID}) => {
 };
 
 export default CreateEvent;
-

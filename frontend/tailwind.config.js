@@ -1,15 +1,12 @@
-
-
 /** @type {import('tailwindcss').Config} */
 export const content = ["./src/**/*.{js,jsx,ts,tsx}"];
 export const theme = {
   extend: {
-    
     spacing: {
-      'screen': '100vw',
+      screen: "100vw",
     },
     fontSize: {
-      dynamic: 'clamp(1rem, 4vw, 2.5rem)'
+      dynamic: "clamp(1rem, 4vw, 2.5rem)",
     },
     colors: {
       vexIq: "#0074BD",
@@ -17,11 +14,11 @@ export const theme = {
       vexGo: "#007378",
       vex123: "#6D4284",
       gold: {
-        300: '#D4AF37',
-        500: '#B8860B',
-      }
+        300: "#D4AF37",
+        500: "#B8860B",
+      },
     },
-   
+
     animation: {
       marquee: "marquee 60s linear infinite",
       marqueePaused: "marquee 60s linear infinite paused",
@@ -32,19 +29,18 @@ export const theme = {
       progressBar: "progressBar 1.5s ease-in-out forwards",
       revealFade: "revealFade 3s ease-in-out forwards",
       progress: "progress 2s ease-in-out forwards",
-      fadeInDown: 'fadeInDown 0.5s ease-out',
+      fadeInDown: "fadeInDown 0.5s ease-out",
     },
-   
-  
+
     keyframes: {
       marquee: {
         from: { transform: "translateX(0)" }, // Start from original position
         to: { transform: "translateX(-100%)" }, // Move completely to the left
       },
-       fadeInDown: {
-          '0%': { opacity: '0', transform: 'translateY(-20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
+      fadeInDown: {
+        "0%": { opacity: "0", transform: "translateY(-20px)" },
+        "100%": { opacity: "1", transform: "translateY(0)" },
+      },
       fadeInUp: {
         "0%": { opacity: "0", transform: "translateY(20px)" },
         "100%": { opacity: "1", transform: "translateY(0)" },
@@ -59,7 +55,7 @@ export const theme = {
       },
       progress: {
         "0%": { transform: "scaleX(0)" },
-        "100%": { transform: "scaleX(1)" }
+        "100%": { transform: "scaleX(1)" },
       },
       revealFade: {
         "0%": { clipPath: "inset(0 0 100% 0)", opacity: "0" },

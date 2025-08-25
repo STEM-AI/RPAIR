@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { Helmet } from "react-helmet-async";
 export default function MobileApp() {
   return (
@@ -6,7 +6,6 @@ export default function MobileApp() {
       <Helmet>
         <title>Mobile App</title>
       </Helmet>
-
     </div>
-  )
+  );
 }

@@ -2,7 +2,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaUsers, FaMicrophone } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-
 const cards = [
   {
     title: "Matches",
@@ -14,16 +13,15 @@ const cards = [
     title: "Interview",
     icon: <FaMicrophone size={50} />,
     route: "/Dashboard/Judge/interview123",
-    bg: "from-pink-400 to-yellow-600",  
+    bg: "from-pink-400 to-yellow-600",
   },
 ];
 
 export default function SelectMatch123() {
   const navigate = useNavigate();
-     const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
-  const event_id = searchParams.get('eventId');
-  
+  const [searchParams] = useSearchParams();
+  const eventName = searchParams.get("eventName");
+  const event_id = searchParams.get("eventId");
 
   return (
     <div className="mx-auto text-center flex flex-col items-center min-h-screen bg-gray-100">
@@ -34,14 +32,18 @@ export default function SelectMatch123() {
         {cards.map((card, index) => (
           <motion.div
             key={index}
-            onClick={() => navigate(`${card.route}?eventName=${encodeURIComponent(eventName)}&eventId=${encodeURIComponent(event_id)}`)}
+            onClick={() =>
+              navigate(
+                `${card.route}?eventName=${encodeURIComponent(eventName)}&eventId=${encodeURIComponent(event_id)}`,
+              )
+            }
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`relative min-w-64 h-80 cursor-pointer rounded-2xl shadow-lg transition-all duration-500 bg-gradient-to-br ${card.bg} text-white overflow-hidden flex flex-col items-center justify-center p-6`}
           >
             <div className="mb-4">{card.icon}</div>
             <div className="text-2xl font-bold">{card.title}</div>
-             <motion.button
+            <motion.button
               whileHover={{ scale: 1.1 }}
               className="mt-6 px-6 py-3 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-300 transition-all"
             >

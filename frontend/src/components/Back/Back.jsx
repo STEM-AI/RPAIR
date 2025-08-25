@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export default function Back() {
   const navigate = useNavigate();
 
   return (
-    <div >
+    <div>
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
@@ -28,12 +28,9 @@ export default function Back() {
           />
         </svg>
       </button>
-
     </div>
   );
-};
-
-
+}
 
 // import { useNavigate } from 'react-router-dom';
 
@@ -45,11 +42,11 @@ export default function Back() {
 //       <button
 //         onClick={() => navigate(-1)}
 //         aria-label="Go back"
-//         className="fixed bottom-6 left-36 md:bottom-8 md:left-8 z-50 
-//         flex h-14 w-14 items-center justify-center rounded-full 
-//         bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg 
-//         transition-all duration-300 hover:scale-105 hover:shadow-xl 
-//         hover:from-blue-600 hover:to-blue-700 focus:outline-none 
+//         className="fixed bottom-6 left-36 md:bottom-8 md:left-8 z-50
+//         flex h-14 w-14 items-center justify-center rounded-full
+//         bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg
+//         transition-all duration-300 hover:scale-105 hover:shadow-xl
+//         hover:from-blue-600 hover:to-blue-700 focus:outline-none
 //         focus:ring-2 focus:ring-blue-200 focus:ring-offset-2"
 //       >
 //         <svg
