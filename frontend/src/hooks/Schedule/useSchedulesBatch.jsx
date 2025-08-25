@@ -1,5 +1,5 @@
 // hooks/Schedule/useSchedulesBatch.js
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import axios from "axios";
 
 const useSchedulesBatch = (scheduleIds = []) => {
@@ -7,51 +7,64 @@ const useSchedulesBatch = (scheduleIds = []) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("access_token");
+  
+  // Update refs synchronously during render
   const scheduleIdsRef = useRef(scheduleIds);
   const tokenRef = useRef(token);
+  scheduleIdsRef.current = scheduleIds;
+  tokenRef.current = token;
 
-  // Update refs when props change
-  useEffect(() => {
-    scheduleIdsRef.current = scheduleIds;
-  }, [scheduleIds]);
-
-  useEffect(() => {
-    tokenRef.current = token;
-  }, [token]);
-
-  const fetchAll = useCallback(async () => {
-    const currentScheduleIds = scheduleIdsRef.current;
-    const currentToken = tokenRef.current;
-
-    if (!currentScheduleIds.length) {
+  const fetchAll = useCallback(async (ids = scheduleIdsRef.current) => {
+    if (!ids || !ids.length) {
       setData([]);
       setLoading(false);
-      setError(null);
-      return;
+      return [];
     }
 
     try {
       setLoading(true);
       setError(null);
-      const requests = currentScheduleIds.map((id) =>
+      const currentToken = tokenRef.current;
+      
+      const requests = ids.map((id) =>
         axios
           .get(`${process.env.REACT_APP_API_URL}/core/event/schedule/${id}/`, {
             headers: { Authorization: `Bearer ${currentToken}` },
           })
-          .then((res) => ({ id, schedule: res.data })),
+          .then((res) => ({ id, schedule: res.data }))
+          .catch(err => {
+            console.error(`Error fetching schedule ${id}:`, err);
+            return { id, schedule: null, error: err.message };
+          })
       );
+      
       const results = await Promise.all(requests);
       setData(results);
+      return results;
     } catch (err) {
+      console.error('Error in fetchAll:', err);
       setError(err.message || "Failed to fetch schedules");
+      return [];
     } finally {
       setLoading(false);
     }
-  }, []); // Removed dependencies since we're using refs
+  }, []); // Empty dependency array since refs are updated during render
 
+  // Memoize stringified scheduleIds to avoid complex dependency
+  const scheduleIdsJSON = useMemo(() => JSON.stringify(scheduleIds), [scheduleIds]);
+
+  // Fetch when scheduleIds change
   useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+    const fetchData = async () => {
+      if (scheduleIdsRef.current && scheduleIdsRef.current.length > 0) {
+        await fetchAll(scheduleIdsRef.current);
+      } else {
+        setData([]);
+      }
+    };
+    
+    fetchData();
+  }, [scheduleIdsJSON, fetchAll]); // Dependencies are now properly declared
 
   return { data, loading, error, refetch: fetchAll };
 };
