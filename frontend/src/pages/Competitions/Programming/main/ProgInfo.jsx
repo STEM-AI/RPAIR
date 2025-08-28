@@ -36,7 +36,7 @@ const ProgInfo = () => {
     const interval = setInterval(() => {
       setRefreshCount((prev) => prev + 1);
       refetchQuestions();
-    }, 60000); 
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [refetchQuestions]);

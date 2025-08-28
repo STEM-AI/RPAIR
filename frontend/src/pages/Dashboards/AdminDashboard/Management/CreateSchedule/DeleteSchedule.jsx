@@ -202,7 +202,14 @@ export default function DeleteSchedule() {
             </option>
             {events.map((event) => (
               <option key={event.id} value={event.id}>
-                {event.name}
+                {event.name} -{" "}
+                <span>
+                  {new Date(event.start_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
               </option>
             ))}
           </select>

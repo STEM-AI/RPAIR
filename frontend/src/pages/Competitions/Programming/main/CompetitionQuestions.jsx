@@ -17,7 +17,7 @@ import formatSingleLineCode from "../../../../hooks/Questions/FormatCode";
 const CompetitionQuestions = () => {
   const { competition } = useParams();
   const { game_id } = useParams();
-  const [answeredQuestions, setAnsweredQuestions] = useState({});
+  const [answeredQuestions] = useState({});
   const [searchParams] = useSearchParams();
   const competition_id = searchParams.get("id");
   const [formattedQuestion, setFormattedQuestion] = useState("");
@@ -214,56 +214,53 @@ const CompetitionQuestions = () => {
     });
   };
 
-  const answerDone = async () => {
-    const currentId = allQuestions[currentQuestionIndex].id;
-    const currentAnswer = selectedOptions[currentId];
+  const handleSubmitAll = async () => {
+    const unsavedQuestions = Object.entries(selectedOptions).filter(
+      ([id, answer]) =>
+        answer !== null &&
+        !savedAnswers[id] &&
+        (Array.isArray(answer) ? answer.length > 0 : true),
+    );
 
-    if (
-      !currentAnswer ||
-      (Array.isArray(currentAnswer) && currentAnswer.length === 0)
-    ) {
+    if (unsavedQuestions.length === 0) {
       Swal.fire({
         icon: "warning",
-        title: "No Answer Selected",
-        text: "Please select an answer before submitting.",
+        title: "No Answers Selected",
+        text: "Please select answers before submitting.",
       });
       return;
     }
 
     try {
-      await saveAnswer(currentId, currentAnswer);
+      setIsSaving(true);
+      // سيف كل الإجابات مرة واحدة
+      await Promise.all(
+        unsavedQuestions.map(([id, answer]) => saveAnswer(id, answer)),
+      );
 
-      setAnsweredQuestions((prev) => ({ ...prev, [currentId]: true }));
+      await submitGame(); // بعد ما كل الإجابات تتسيف
 
-      if (currentQuestionIndex < allQuestions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
-        Swal.fire({
-          title: "Are you sure?",
-          text: "You are about to submit your answers.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, submit it!",
-        }).then(async () => {
-          await submitGame();
-          Swal.fire({
-            title: "Done!",
-            text: `thank you have answerd submitted`,
-            icon: "success",
-          }).then(() => {
-            navigate(
-              `/competition/programming/${competition}/${competition_id}`,
-              { replace: true },
-            );
-          });
+      Swal.fire({
+        title: "Done!",
+        text: "All answers have been submitted successfully.",
+        icon: "success",
+      }).then(() => {
+        navigate(`/competition/programming/${competition}/${competition_id}`, {
+          replace: true,
         });
-      }
+      });
     } catch (error) {
-      console.log(error);
+      console.error("Failed to submit all answers:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Error",
+        text: "Some answers could not be submitted. Please try again.",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
+
   const handleNext = async () => {
     if (!allQuestions || allQuestions.length === 0 || isSaving) return;
 
@@ -557,24 +554,25 @@ const CompetitionQuestions = () => {
                   >
                     Previous
                   </button>
-                  <button
-                    onClick={answerDone}
-                    disabled={isSaving}
-                    className={`px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white rounded-lg ${
-                      isSaving ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    {isSaving ? (
-                      <span className="flex items-center">
-                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
-                        Saving...
-                      </span>
-                    ) : currentQuestionIndex < allQuestions.length - 1 ? (
-                      "Done"
-                    ) : (
-                      "Submit"
-                    )}
-                  </button>
+                  {currentQuestionIndex === allQuestions.length - 1 && (
+                    <button
+                      onClick={handleSubmitAll}
+                      disabled={isSaving}
+                      className={`px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white rounded-lg ${
+                        isSaving ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                    >
+                      {isSaving ? (
+                        <span className="flex ">
+                          <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                          Saving...
+                        </span>
+                      ) : (
+                        "Submit"
+                      )}
+                    </button>
+                  )}
+
                   <button
                     onClick={handleNext}
                     className={`px-4 py-2 md:px-6 md:py-2 bg-cyan-600 text-white rounded-lg ${
