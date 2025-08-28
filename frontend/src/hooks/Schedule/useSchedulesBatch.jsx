@@ -7,7 +7,7 @@ const useSchedulesBatch = (scheduleIds = []) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("access_token");
-  
+
   // Update refs synchronously during render
   const scheduleIdsRef = useRef(scheduleIds);
   const tokenRef = useRef(token);
@@ -25,24 +25,24 @@ const useSchedulesBatch = (scheduleIds = []) => {
       setLoading(true);
       setError(null);
       const currentToken = tokenRef.current;
-      
+
       const requests = ids.map((id) =>
         axios
           .get(`${process.env.REACT_APP_API_URL}/core/event/schedule/${id}/`, {
             headers: { Authorization: `Bearer ${currentToken}` },
           })
           .then((res) => ({ id, schedule: res.data }))
-          .catch(err => {
+          .catch((err) => {
             console.error(`Error fetching schedule ${id}:`, err);
             return { id, schedule: null, error: err.message };
-          })
+          }),
       );
-      
+
       const results = await Promise.all(requests);
       setData(results);
       return results;
     } catch (err) {
-      console.error('Error in fetchAll:', err);
+      console.error("Error in fetchAll:", err);
       setError(err.message || "Failed to fetch schedules");
       return [];
     } finally {
@@ -51,7 +51,10 @@ const useSchedulesBatch = (scheduleIds = []) => {
   }, []); // Empty dependency array since refs are updated during render
 
   // Memoize stringified scheduleIds to avoid complex dependency
-  const scheduleIdsJSON = useMemo(() => JSON.stringify(scheduleIds), [scheduleIds]);
+  const scheduleIdsJSON = useMemo(
+    () => JSON.stringify(scheduleIds),
+    [scheduleIds],
+  );
 
   // Fetch when scheduleIds change
   useEffect(() => {
@@ -62,7 +65,7 @@ const useSchedulesBatch = (scheduleIds = []) => {
         setData([]);
       }
     };
-    
+
     fetchData();
   }, [scheduleIdsJSON, fetchAll]); // Dependencies are now properly declared
 

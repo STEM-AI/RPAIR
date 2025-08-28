@@ -28,7 +28,5 @@ export default function useGameID(team_id, event_id, stage) {
     if (team_id) fetchGameID();
   }, [team_id, event_id, stage]);
 
-  
-
   return { GameID, loading, error };
 }

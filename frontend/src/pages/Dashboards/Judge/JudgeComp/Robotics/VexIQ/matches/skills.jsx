@@ -42,9 +42,9 @@ const Skills = () => {
   const tabs = [
     { id: "driver_iq", label: "Driving Challenge", icon: "🚗", color: "blue" },
     { id: "auto", label: "Autonomous Challenge", icon: "🤖", color: "blue" },
-  ].map(tab => ({
+  ].map((tab) => ({
     ...tab,
-    onClick: () => handleTabChange(tab.id)
+    onClick: () => handleTabChange(tab.id),
   }));
 
   const {
@@ -52,7 +52,7 @@ const Skills = () => {
     loading: scoresLoading,
     refetch: refetchScores,
   } = useGetScore(event_id, activeTab);
-  
+
   const handleTimeChange = (seconds) => {
     setShowTimeSelector(false);
   };
@@ -69,7 +69,6 @@ const Skills = () => {
     refetch: refetchAuto,
   } = useEventSchedules(event_id, "auto", "id");
 
-  
   const refetchSchedules = () => {
     refetchDriver();
     refetchAuto();
@@ -77,7 +76,9 @@ const Skills = () => {
   };
 
   const activeSchedules = useMemo(() => {
-    return activeTab === "driver_iq" ? driverSchedules || [] : autoSchedules || [];
+    return activeTab === "driver_iq"
+      ? driverSchedules || []
+      : autoSchedules || [];
   }, [activeTab, driverSchedules, autoSchedules]);
   const scheduleIds = activeSchedules.map((s) => s.id);
   const roundsCount = activeSchedules.length;
@@ -87,19 +88,19 @@ const Skills = () => {
     loading: detailsLoading,
     refetch: refetchDetails,
   } = useSchedulesBatch(scheduleIds);
-  
+
   const roundSchedules = useMemo(() => {
     return Array.isArray(roundDetails) ? roundDetails : [];
   }, [roundDetails]);
 
   const handleTabChange = async (tabId) => {
     if (tabId === activeTab) return; // Don't do anything if clicking the same tab
-    
+
     setActiveTab(tabId);
     setSelectedRound(1);
-    
+
     try {
-      if (tabId === 'driver_iq') {
+      if (tabId === "driver_iq") {
         await refetchDriver();
       } else {
         await refetchAuto();
@@ -107,11 +108,9 @@ const Skills = () => {
       await refetchScores();
       await refetchDetails();
     } catch (error) {
-      console.error('Error changing tabs:', error);
+      console.error("Error changing tabs:", error);
     }
   };
-
-
 
   // Calculate allowed rounds
   const currentChallengeCompleted = completedRounds[activeTab] || [];
@@ -129,7 +128,7 @@ const Skills = () => {
       return scoresMap[match.id]?.completed;
     });
   };
-  
+
   const scoresMap = useMemo(() => {
     return serverScores.reduce((acc, match) => {
       acc[match.id] = {
@@ -320,7 +319,6 @@ const Skills = () => {
               onClick={() => {
                 setActiveTab(tab.id);
                 setSelectedRound(1);
-                refetchSchedules();
               }}
               className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-300 ${
                 activeTab === tab.id
@@ -348,45 +346,48 @@ const Skills = () => {
             <FaChevronLeft className="text-xl" />
           </button>
 
-           <div className="flex gap-2">
-    {Array.from({ length: roundsCount }, (_, i) => i + 1).map((r) => (
-      <button
-        key={r}
-        onClick={() => setSelectedRound(r)}
-        disabled={r > nextAllowedRound}
-        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-          selectedRound === r
-            ? "bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-md"
-            : "bg-gray-100 hover:bg-gray-200"
-        } ${
-          completedRounds[activeTab].includes(r)
-            ? "!bg-gradient-to-br from-green-500 to-green-600"
-            : ""
-        } ${
-          r > nextAllowedRound
-            ? "opacity-50 cursor-not-allowed"
-            : "hover:shadow-sm"
-        }`}
-      >
-        {r}
-      </button>
-    ))}
-  </div>
+          <div className="flex gap-2">
+            {Array.from({ length: roundsCount }, (_, i) => i + 1).map((r) => (
+              <button
+                key={r}
+                onClick={() => setSelectedRound(r)}
+                disabled={r > nextAllowedRound}
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                  selectedRound === r
+                    ? "bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-md"
+                    : "bg-gray-100 hover:bg-gray-200"
+                } ${
+                  completedRounds[activeTab].includes(r)
+                    ? "!bg-gradient-to-br from-green-500 to-green-600"
+                    : ""
+                } ${
+                  r > nextAllowedRound
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:shadow-sm"
+                }`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
 
-  <button
-    onClick={() => setSelectedRound((r) => Math.min(roundsCount, r + 1))}
-    disabled={
-      selectedRound === roundsCount ||
-      selectedRound + 1 > nextAllowedRound
-    }
-    className={`p-2 rounded-full transition-all ${
-      selectedRound === roundsCount || selectedRound + 1 > nextAllowedRound
-        ? "text-gray-400 cursor-not-allowed"
-        : "text-blue-600 hover:bg-blue-100 hover:shadow-md"
-    }`}
-  >
-    <FaChevronRight className="text-xl" />
-  </button>
+          <button
+            onClick={() =>
+              setSelectedRound((r) => Math.min(roundsCount, r + 1))
+            }
+            disabled={
+              selectedRound === roundsCount ||
+              selectedRound + 1 > nextAllowedRound
+            }
+            className={`p-2 rounded-full transition-all ${
+              selectedRound === roundsCount ||
+              selectedRound + 1 > nextAllowedRound
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600 hover:bg-blue-100 hover:shadow-md"
+            }`}
+          >
+            <FaChevronRight className="text-xl" />
+          </button>
         </div>
       </div>
 

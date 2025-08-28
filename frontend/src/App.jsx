@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import { getTokens, handleLogout, isTokenExpired } from "./pages/Auth/auth";
-
+import { initializeTokenMonitoring } from "./pages/Auth/auth";
 //                              components              //
 import { MatchProvider } from "./pages/Dashboards/Judge/JudgeComp/Robotics/VexGO/matches/MatchContext";
 import Navbar from "./components/Nav/nav";
@@ -134,25 +133,12 @@ const App = () => {
       {children}
     </>
   );
-  const { access_token, refresh_token } = getTokens();
-
   useEffect(() => {
-    const checkTokenExpiration = () => {
-      if (access_token && isTokenExpired(access_token)) {
-        console.log("Access token expired, checking refresh token...");
-        if (!refresh_token || isTokenExpired(refresh_token)) {
-          console.log("Refresh token is expired or invalid, logging out...");
-          handleLogout();
-        }
-      }
+    const interval = initializeTokenMonitoring();
+    return () => {
+      if (interval) clearInterval(interval);
     };
-
-    checkTokenExpiration();
-
-    const interval = setInterval(checkTokenExpiration, 5000); // Check every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [access_token, refresh_token]);
+  }, []);
 
   return (
     <>
