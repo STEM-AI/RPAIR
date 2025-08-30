@@ -16,12 +16,14 @@ import {
 } from "../../pages/Auth/auth";
 import { NavHashLink } from "react-router-hash-link";
 import { BiSolidMessageAdd } from "react-icons/bi";
+import axios from "axios";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const mobileMenuRef = useRef(null); // أضف هذا مع الـ refs الأخرى
+  const [liveEvents, setLiveEvents] = useState([]);
   const [dropdowns, setDropdowns] = useState({
     challenges: false,
     resources: false,
@@ -158,6 +160,21 @@ export default function Navbar() {
     navigate(link);
   };
 
+      useEffect(() => {
+        const fetchEvents = async () => {
+          try {
+            const response = await axios.get(
+              `${process.env.REACT_APP_API_URL}/event/live-event-list/`
+            );
+            setLiveEvents(response.data);
+          } catch (error) {
+            console.error("Error fetching events:", error);
+          }
+        };
+
+        fetchEvents();
+      }, []);
+
   return (
     <nav
       className={` z-50 shadow-lg px-5  md:px-10 py-2 flex items-center justify-between 
@@ -287,12 +304,16 @@ export default function Navbar() {
           Gallery
         </NavLink>
 
-        <NavLink
-          to={"/live-events"}
-          className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300"
-        >
-          Live
-        </NavLink>
+        
+        {liveEvents.length > 0 && (
+          
+          <NavLink
+            to={"/live-events"}
+            className="block w-full text-cyan-500 font-bold text-lg md:text-xl text-center hover:text-cyan-950 transition-all duration-300"
+          >
+            Live
+          </NavLink>
+        )}
       </div>
 
       <div className="md:flex items-center flex-row space-x-4">
