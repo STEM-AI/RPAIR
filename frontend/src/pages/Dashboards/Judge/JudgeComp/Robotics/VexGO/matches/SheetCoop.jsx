@@ -27,7 +27,7 @@ export default function SheetCoop({ eventName, onClose, sheetType }) {
   const [turbines, setTurbines] = useState({});
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(60);
+  const [remainingTime, setRemainingTime] = useState(120);
   const [selectedChallenge] = useState("ocean");
   const [tasks, setTasks] = useState(oceanTasks);
   const [matchData, setMatchData] = useState({
@@ -230,7 +230,7 @@ export default function SheetCoop({ eventName, onClose, sheetType }) {
 
   const handleTurbineChange = (index, value) => {
     let parsedValue = parseInt(value, 10) || 0;
-    if (parsedValue > 2) parsedValue = 5;
+    if (parsedValue > 6) parsedValue = 6;
     if (parsedValue < 0) parsedValue = 0;
 
     setTurbines((prev) => ({ ...prev, [index]: parsedValue }));
@@ -501,7 +501,7 @@ export default function SheetCoop({ eventName, onClose, sheetType }) {
                   <input
                     type="number"
                     min="0"
-                    max="5"
+                    max="6"
                     value={turbines[index] || 0}
                     onChange={(e) => handleTurbineChange(index, e.target.value)}
                     className="w-16 px-2 py-1 border rounded text-center focus:ring-2 focus:ring-teal-400 text-sm"

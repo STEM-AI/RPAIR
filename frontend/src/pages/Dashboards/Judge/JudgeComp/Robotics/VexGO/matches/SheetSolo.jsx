@@ -212,7 +212,7 @@ export default function SheetSolo({
   const handleTurbineChange = (index, value) => {
     let parsedValue = parseInt(value, 10) || 0;
 
-    if (parsedValue > 5) parsedValue = 5;
+    if (parsedValue > 6) parsedValue = 6;
     if (parsedValue < 0) parsedValue = 0;
 
     setTurbines((prev) => ({ ...prev, [index]: parsedValue }));
