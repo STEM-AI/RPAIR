@@ -240,7 +240,7 @@ export default function Navbar() {
                 { name: "Open Source", link: "/competitions/OpenSource" },
                 {
                   name: "Mobile Application",
-                  link: "/competitions/ComingSoon",
+                  link: "/MobileApp",
                 },
                 { name: "Programming", link: "/ProgrammingCompetitions" },
                 {
