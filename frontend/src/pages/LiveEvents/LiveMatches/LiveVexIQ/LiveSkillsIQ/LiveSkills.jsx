@@ -26,8 +26,12 @@ const LiveSkillsVex = () => {
 
   useEffect(() => {
     if (scoresAuto || scoresDriver) {
-      setDriverIqMatches(scoresDriver);
-      setAutoIqMatches(scoresAuto);
+      // Filter only completed matches for initial display
+      const filteredAuto = scoresAuto.filter(match => match.completed === true);
+      const filteredDriver = scoresDriver.filter(match => match.completed === true);
+      
+      setDriverIqMatches(filteredDriver);
+      setAutoIqMatches(filteredAuto);
     }
   }, [scoresAuto, scoresDriver]);
   // Update team rounds when matches change
@@ -95,7 +99,7 @@ const LiveSkillsVex = () => {
     };
   }, [eventName]);
 
-  const updateMatches = (prevMatches, data) => {
+ const updateMatches = (prevMatches, data) => {
     const team1_name = data.team1_name || "Team 1";
     const teamMatches = prevMatches.filter((m) => m.team1 === team1_name);
 
@@ -105,7 +109,7 @@ const LiveSkillsVex = () => {
 
     const matchIndex = prevMatches.findIndex((m) => m.id === data.game_id);
     if (matchIndex === -1) {
-      // New match
+      // New match from WebSocket - add regardless of completed status
       return [
         ...prevMatches,
         {
@@ -113,12 +117,13 @@ const LiveSkillsVex = () => {
           team1_name: team1_name,
           team1_number: data.team1_number || "Code",
           score: data.score,
+          completed: data.completed || false,
         },
       ];
     } else {
       // Update existing match
       return prevMatches.map((m, i) =>
-        i === matchIndex ? { ...m, score: data.score } : m,
+        i === matchIndex ? { ...m, score: data.score, completed: data.completed } : m,
       );
     }
   };

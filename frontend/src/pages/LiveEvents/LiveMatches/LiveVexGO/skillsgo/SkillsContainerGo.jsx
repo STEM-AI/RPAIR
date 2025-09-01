@@ -27,11 +27,15 @@ const SkillsContainerGO = () => {
   const { score: scoresDriver } = useGetScore(eventId, "driver_go");
 
   useEffect(() => {
-    if (scoresCoding || scoresDriver) {
-      setDriverMatches(scoresDriver);
-      setAutoMatches(scoresCoding);
-    }
+  if (scoresCoding || scoresDriver) {
+    const filteredCoding = scoresCoding.filter(match => match.completed === true);
+    const filteredDriver = scoresDriver.filter(match => match.completed === true);
+    
+    setDriverMatches(filteredDriver);
+    setAutoMatches(filteredCoding);
+  }
   }, [scoresCoding, scoresDriver]);
+  
 
   useEffect(() => {
     autoSocketRef.current = new WebSocket(
@@ -98,31 +102,33 @@ const SkillsContainerGO = () => {
     }
   };
 
-  const updateMatches = (prevMatches, data, round) => {
-    const matchIndex = prevMatches.findIndex((m) => m.id === data.game_id);
+  const updateMatches = (prevMatches, data) => {
+  const matchIndex = prevMatches.findIndex((m) => m.id === data.game_id);
 
-    if (matchIndex === -1) {
-      const teamOccurrences = prevMatches.filter(
-        (m) => m.team1_name === (data.team1_name || "Team 1"),
-      ).length;
+  if (matchIndex === -1) {
+    const teamOccurrences = prevMatches.filter(
+      (m) => m.team1_name === (data.team1_name || "Team 1"),
+    ).length;
 
-      const roundNumber = teamOccurrences + 1;
+    const roundNumber = teamOccurrences + 1;
 
-      return [
-        ...prevMatches,
-        {
-          code: data.game_id,
-          team1_name: data.team1_name || "Team 1",
-          score: data.score,
-          round: roundNumber,
-        },
-      ];
-    }
+    return [
+      ...prevMatches,
+      {
+        id: data.game_id, 
+        code: data.game_id,
+        team1_name: data.team1_name || "Team 1",
+        score: data.score,
+        round: roundNumber,
+        completed: data.completed || false, 
+      },
+    ];
+  }
 
-    return prevMatches.map((m, i) =>
-      i === matchIndex ? { ...m, score: data.score } : m,
-    );
-  };
+  return prevMatches.map((m, i) =>
+    i === matchIndex ? { ...m, score: data.score } : m,
+  );
+};
 
   const getMedalIcon = (rank) => {
     switch (rank) {

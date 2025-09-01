@@ -24,37 +24,38 @@ const DriverRounds = ({ matches }) => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {matches.map((team) => (
-              <tr
-                key={`driver-${team.code}`}
-                className="hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                  {team.code || team.id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex flex-col text-center">
-                    <span className="font-medium text-gray-800">
-                      {team.team1_name}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      #{team.team1_number}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-center">
-                  {team.score?.driver || team.score > 0 ? (
-                    <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
-                      {team.score.driver || team.score}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400">-</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {matches.map((team, index) => (
+                <tr
+                  key={`driver-${team.id || team.code || index}`} 
+                  className={`hover:bg-gray-50 transition-colors `}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                    {team.code || team.id}
+                   
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col text-center">
+                      <span className="font-medium text-gray-800">
+                        {team.team1_name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        #{team.team1_number}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    {team.score?.driver || team.score > 0 ? (
+                      <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-medium">
+                        {team.score.driver || team.score}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
         </table>
       </div>
     </div>

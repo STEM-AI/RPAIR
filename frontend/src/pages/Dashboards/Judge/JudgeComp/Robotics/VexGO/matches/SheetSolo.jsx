@@ -504,7 +504,7 @@ export default function SheetSolo({
                     <input
                       type="number"
                       min="0"
-                      max="5"
+                      max="6"
                       value={turbines[index] || 0}
                       onChange={(e) =>
                         handleTurbineChange(index, e.target.value)

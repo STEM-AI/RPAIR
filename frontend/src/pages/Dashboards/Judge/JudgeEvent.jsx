@@ -284,9 +284,9 @@ export default function JudgeEvent() {
                     </div>
                   </div>
                 </div>
-                <Link
+                {/* <Link
                   to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`}
-                >
+                > */}
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
                     <button
                       onClick={() =>
@@ -305,7 +305,7 @@ export default function JudgeEvent() {
                       {eventStatus.message}
                     </button>
                   </div>
-                </Link>
+                {/* </Link> */}
               </div>
             );
           })}

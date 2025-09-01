@@ -20,7 +20,7 @@ const NotificationsPage = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(
-          `http://147.93.56.71:8001/api/user/notification/`,
+          `${process.env.REACT_APP_API_URL}/user/notification/`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
