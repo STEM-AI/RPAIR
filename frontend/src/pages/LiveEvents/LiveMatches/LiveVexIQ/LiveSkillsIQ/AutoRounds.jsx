@@ -25,13 +25,14 @@ const AutoRounds = ({ matches }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {matches.map((team) => (
+            {matches.map((team, index) => (
               <tr
-                key={`auto-${team.code}`}
-                className="hover:bg-gray-50 transition-colors"
+                key={`auto-${team.id || team.code || index}`} 
+                className={`hover:bg-gray-50 transition-colors `}
               >
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                   {team.code || team.id}
+                 
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex flex-col text-center">
