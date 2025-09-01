@@ -349,25 +349,29 @@ const Koper = ({
   // Calculate current points per circle play
   const currentCirclePoints = getCirclePointValue();
 
-  const handleDoubleGroup = () => {
-    if (activeTab === "auto") {
-      if (doubleGroupCount < 2) {
-        setDoubleGroupCount((prev) => prev + 1);
-      }
-    } else {
-      setDoubleGroupCount((prev) => (prev === 0 ? 1 : 0));
+ const handleDoubleGroup = () => {
+  if (activeTab === "auto") {
+    if (doubleGroupCount === 2) {
+      setDoubleGroupCount(0);
+    } else if (doubleGroupCount < 2) {
+      setDoubleGroupCount((prev) => prev + 1);
     }
-  };
+  } else {
+    setDoubleGroupCount((prev) => (prev === 0 ? 1 : 0));
+  }
+};
 
-  const handleTripleGroup = () => {
-    if (activeTab === "auto") {
-      if (tripleGroupCount < 2) {
-        setTripleGroupCount((prev) => prev + 1);
-      }
-    } else {
-      setTripleGroupCount((prev) => (prev === 0 ? 1 : 0));
+const handleTripleGroup = () => {
+  if (activeTab === "auto") {
+    if (tripleGroupCount === 2) {
+      setTripleGroupCount(0);
+    } else if (tripleGroupCount < 2) {
+      setTripleGroupCount((prev) => prev + 1);
     }
-  };
+  } else {
+    setTripleGroupCount((prev) => (prev === 0 ? 1 : 0));
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
@@ -508,7 +512,7 @@ const Koper = ({
               </div>
             </div>
 
-            {/* Double Group Counter */}
+           {/* Double Group Counter */}
             <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
               <div className="flex items-center">
                 <FaBullseye className="text-blue-500 mr-2" size={18} />
@@ -564,11 +568,15 @@ const Koper = ({
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {activeTab === "auto" ? (
-                    `${tripleGroupCount}/2`
+                    tripleGroupCount === 2 ? (
+                      "✓"
+                    ) : (
+                      `${tripleGroupCount}/2`
+                    )
                   ) : tripleGroupCount > 0 ? (
                     "✓"
                   ) : (
-                    <GiThreeBurningBalls size={18} />
+                    <FaBullseye size={16} />
                   )}
                 </button>
               </div>

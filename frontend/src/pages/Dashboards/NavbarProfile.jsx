@@ -192,7 +192,7 @@ export default function NavbarProfile({ isSidebarOpen }) {
                 { name: "Open Source", link: "/competitions/OpenSource" },
                 {
                   name: "Mobile Application",
-                  link: "/competitions/ComingSoon",
+                  link: "/MobileApp",
                 },
                 { name: "Programming", link: "/competitions/ComingSoon" },
                 {

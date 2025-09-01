@@ -125,6 +125,8 @@ import UserDashbord from "./pages/Dashboards/UserDashbord/UserDashbord";
 import TeamEventLive from "./pages/Dashboards/UserDashbord/TeamEventLive";
 import LiveCompFile from "./pages/LiveEvents/LiveMatches/LiveCompFile";
 import Layout from "./pages/Dashboards/LayoutDashboard/Layout";
+import MobileApp from "./components/Competitions/MobileApp";
+
 
 const App = () => {
   const LayoutComing = ({ children, hideNavbar = false }) => (
@@ -297,6 +299,14 @@ const App = () => {
                 element={
                   <Layout>
                     <RoboticsPage />
+                  </Layout>
+                }
+              />
+               <Route
+                path="/MobileApp"
+                element={
+                  <Layout>
+                    <MobileApp />
                   </Layout>
                 }
               />
