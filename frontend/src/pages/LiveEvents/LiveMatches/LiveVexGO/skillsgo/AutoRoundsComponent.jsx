@@ -32,7 +32,7 @@ const AutoRoundsComponent = ({ matches }) => {
                 className="hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                  #{team.team1_number || team.id}
+                  #{team.code || team.id}
                 </td>
                 <td className="px-6 py-4 flex flex-col whitespace-nowrap">
                   <span className="">{team.team1_name}</span>
