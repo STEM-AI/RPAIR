@@ -16,6 +16,8 @@ def broadcast_game_score(sender,created, instance, **kwargs):
         data = {
             "game_id" : instance.id,
             "team1_name": instance.team1.name,
+            "team1_number": instance.team1.team_number,
+            "team2_number": instance.team2.team_number,
             "team2_name": instance.team2.name,
             "score":instance.score
         }
@@ -34,6 +36,8 @@ def broadcast_game_score(sender,created, instance, **kwargs):
             data = {
                 "game_id" : instance.id,
                 "team1_name": instance.team1.name,
+                "team1_number": instance.team1.team_number,
+                "team2_number": instance.team2.team_number,
                 "score":{
                     "driver" : instance.driver_score,
                     "autonomous": getattr(instance, 'autonomous_score', None)
@@ -45,6 +49,8 @@ def broadcast_game_score(sender,created, instance, **kwargs):
             data = {
                 "game_id" : instance.id,
                 "team1_name": instance.team1.name,
+                "team1_number": instance.team1.team_number,
+                "team2_number": instance.team2.team_number,
                 "score":{
                     "driver" : getattr(instance, 'driver_score', None),
                     "autonomous": instance.autonomous_score

@@ -43,8 +43,8 @@ class QuestionListAPIView(ListAPIView):
         
         # Calculate questions per category
         session_count = int(num_questions * 0.25)  # 25% for session
-        compiler_count = int(num_questions * 0.25)  # 25% for compiler
-        problem_solving_count = num_questions - session_count - compiler_count  # Remaining 50% for problem solving
+        compiler_count = int(num_questions * 0.5)  # 50% for compiler
+        problem_solving_count = num_questions - session_count - compiler_count  # Remaining 25% for problem solving
         
         # Get base queryset with filters applied
         base_queryset = Question.objects.all()

@@ -1,7 +1,8 @@
 from django.db import models
 from core.models import Schedule
 from django.utils import timezone
-
+import logging
+logger = logging.getLogger(__name__)
 class Competition(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -89,25 +90,29 @@ class CompetitionEvent(models.Model):
 
     def save(self, *args, **kwargs):
         today = timezone.now().date()
+        logger.info(f"self.name: {self.name}")
+        logger.info(f"self.start_date: {self.start_date}")
+        logger.info(f"self.end_date: {self.end_date}")
+        logger.info(f"today: {today}")
         # if self.start_date > self.end_date:
         #     raise ValueError("Start date cannot be greater than end date")
-        # if self.start_date < today:
-        #     raise ValueError("Start date cannot be in the past")
-        # if self.end_date < today:
-        #     raise ValueError("End date cannot be in the past")
-        if self.start_date > self.end_date:
-            raise ValueError("Start date cannot be greater than end date")
-        if today > self.start_date and today < self.end_date:
+        if today >= self.start_date and today <= self.end_date:
+            logger.info("Event is live in save method")
             self.is_live = True
         else:
+            logger.info("Event is not live in save method")
             self.is_live = False
-        if today > self.end_date:
+        if today >= self.end_date:
+            logger.info("Event is completed in save method")
             self.is_completed = True
         else:
+            logger.info("Event is not completed in save method")
             self.is_completed = False
-        if today < self.start_date:
+        if today <= self.start_date:
+            logger.info("Event is active")
             self.is_active = True
         else:
+            logger.info("Event is not active in save method")
             self.is_active = False
         super().save(*args, **kwargs)
 
