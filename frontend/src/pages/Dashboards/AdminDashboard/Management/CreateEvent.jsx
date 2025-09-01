@@ -183,7 +183,7 @@ const CreateEvent = ({ orgID }) => {
             required
           >
             <option value="">Select Event</option>
-            <option value="Python">Python</option>
+            <option value="python">Python</option>
             <option value="flutter">Flutter</option>
             <option value="arduino">arduino</option>
             <option value="tinkercad">tinkercad</option>
