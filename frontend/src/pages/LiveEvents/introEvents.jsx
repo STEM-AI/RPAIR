@@ -132,7 +132,7 @@ function LiveEvents() {
   }
 
   return (
-    <div className="px-6 py-16 bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="px-6 py-16 min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 relative">
       <Helmet>
         <title>Live-Competitions</title>
       </Helmet>
@@ -168,21 +168,30 @@ function LiveEvents() {
             ></div>
 
             {/* Floating particles */}
-            <div className="absolute inset-0 opacity-20">
-              {[...Array(10)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`absolute rounded-full ${comp.accentColor}`}
-                  style={{
-                    width: `${Math.random() * 6 + 2}px`,
-                    height: `${Math.random() * 6 + 2}px`,
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    opacity: Math.random() * 0.5 + 0.3,
-                  }}
-                ></div>
-              ))}
-            </div>
+           <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-[-1]"> {/* أضفنا z-[-1] */}
+    {[...Array(8)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute rounded-full bg-blue-400 opacity-10"
+        style={{
+          width: `${Math.random() * 300 + 100}px`,
+          height: `${Math.random() * 300 + 100}px`,
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+        }}
+        animate={{
+          y: [0, Math.random() * 100 - 50],
+          x: [0, Math.random() * 100 - 50],
+        }}
+        transition={{
+          duration: Math.random() * 20 + 10,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut",
+        }}
+      />
+    ))}
+  </div>
 
             {/* Card content */}
             <div className="relative z-10 h-full flex flex-col p-6">

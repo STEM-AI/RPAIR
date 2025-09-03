@@ -38,7 +38,8 @@ const Koper = ({
   const [doubleGroupCount, setDoubleGroupCount] = useState(0);
   const [tripleGroupCount, setTripleGroupCount] = useState(0);
   const [unlockedCircles, setUnlockedCircles] = useState(0);
-
+  const [hasDoubleGroup, setHasDoubleGroup] = useState(false);
+const [hasTripleGroup, setHasTripleGroup] = useState(false);
   const [playStart] = useSound("/sounds/Start.MP3", { volume: 1 });
   const [playEnd] = useSound("/sounds/End.mp3", { volume: 1 });
   const [playMiddle] = useSound("/sounds/Middle.MP3", { volume: 1 });
@@ -77,16 +78,18 @@ const Koper = ({
     return totalScore;
   }, [cubeCount, doubleGroupCount, tripleGroupCount, circlePlays]);
 
-  useEffect(() => {
-    let totalUnlocks = 0;
-    if (activeTab === "auto") {
-      totalUnlocks = firajCount * 2 + doubleGroupCount + tripleGroupCount;
-    } else {
-      totalUnlocks = (firajCount + doubleGroupCount + tripleGroupCount) * 2;
-    }
-    setUnlockedCircles(Math.min(totalUnlocks, 6));
-  }, [firajCount, doubleGroupCount, tripleGroupCount, activeTab]);
-
+ useEffect(() => {
+  let totalUnlocks = 0;
+  
+  totalUnlocks += firajCount > 0 ? 2 : 0;
+  
+  totalUnlocks += hasDoubleGroup ? 2 : 0;
+  
+  totalUnlocks += hasTripleGroup ? 2 : 0;
+  
+  setUnlockedCircles(Math.min(totalUnlocks, 6));
+ }, [firajCount, hasDoubleGroup, hasTripleGroup]);
+  
   const handleCalculateAndSubmit = async () => {
     if (score === 0) {
       Alert.warning({
@@ -346,37 +349,25 @@ const Koper = ({
     }
   }, [remainingTime, playEnd]);
 
-  // Calculate current points per circle play
   const currentCirclePoints = getCirclePointValue();
 
- const handleDoubleGroup = () => {
-  if (activeTab === "auto") {
-    if (doubleGroupCount === 2) {
-      setDoubleGroupCount(0);
-    } else if (doubleGroupCount < 2) {
-      setDoubleGroupCount((prev) => prev + 1);
-    }
-  } else {
-    setDoubleGroupCount((prev) => (prev === 0 ? 1 : 0));
+const handleDoubleGroup = () => {
+  if (!hasDoubleGroup) {
+    setHasDoubleGroup(true);
   }
+  setDoubleGroupCount(prev => prev + 1);
 };
 
 const handleTripleGroup = () => {
-  if (activeTab === "auto") {
-    if (tripleGroupCount === 2) {
-      setTripleGroupCount(0);
-    } else if (tripleGroupCount < 2) {
-      setTripleGroupCount((prev) => prev + 1);
-    }
-  } else {
-    setTripleGroupCount((prev) => (prev === 0 ? 1 : 0));
+  if (!hasTripleGroup) {
+    setHasTripleGroup(true);
   }
+  setTripleGroupCount(prev => prev + 1);
 };
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-800">Koper Game Score</h2>
           <button
@@ -387,7 +378,6 @@ const handleTripleGroup = () => {
           </button>
         </div>
 
-        {/* Score Display */}
         <div className="flex-grow overflow-y-auto">
           <div className="p-4 bg-gray-50">
             <div className="text-center text-2xl font-bold text-gray-800 mb-2">
@@ -513,74 +503,78 @@ const handleTripleGroup = () => {
             </div>
 
            {/* Double Group Counter */}
-            <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
-              <div className="flex items-center">
-                <FaBullseye className="text-blue-500 mr-2" size={18} />
-                <span className="font-medium">
-                  {activeTab === "auto"
-                    ? "Double Group (10 points + unlocks 1 circle)"
-                    : "Double Group (10 points + unlocks 2 circles)"}
-                </span>
-              </div>
+          <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+            <div className="flex items-center">
+              <FaBullseye className="text-blue-500 mr-2" size={18} />
+              <span className="font-medium">
+                Double Group ({doubleGroupCount > 0 ? `${doubleGroupCount * 10} points` : "10 points"} {!hasDoubleGroup && "+ unlocks 2 circles"})
+              </span>
+            </div>
+            {!hasDoubleGroup ? (
+              <button
+                onClick={handleDoubleGroup}
+                disabled={gamePaused}
+                className="bg-blue-200 text-blue-800 p-1 rounded-lg hover:bg-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FaBullseye size={16} />
+              </button>
+            ) : (
               <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setDoubleGroupCount(prev => Math.max(0, prev - 1))}
+                  disabled={gamePaused || doubleGroupCount === 0}
+                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaMinus size={14} />
+                </button>
+                <span className="font-bold w-8 text-center">{doubleGroupCount}</span>
                 <button
                   onClick={handleDoubleGroup}
                   disabled={gamePaused}
-                  className={`p-1 rounded-lg ${
-                    doubleGroupCount > 0
-                      ? "bg-blue-500 text-white"
-                      : "bg-blue-200 text-blue-800"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="bg-blue-200 text-blue-800 p-1 rounded-lg hover:bg-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {activeTab === "auto" ? (
-                    doubleGroupCount === 2 ? (
-                      "✓"
-                    ) : (
-                      `${doubleGroupCount}/2`
-                    )
-                  ) : doubleGroupCount > 0 ? (
-                    "✓"
-                  ) : (
-                    <FaBullseye size={16} />
-                  )}
+                  <FaPlus size={14} />
                 </button>
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Triple Group Counter */}
-            <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-              <div className="flex items-center">
-                <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
-                <span className="font-medium">
-                  {activeTab === "auto"
-                    ? "Triple Group (15 points + unlocks 1 circle)"
-                    : "Triple Group (15 points + unlocks 2 circles)"}
-                </span>
-              </div>
+          {/* Triple Group Counter */}
+          <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
+            <div className="flex items-center">
+              <GiThreeBurningBalls className="text-red-500 mr-2" size={20} />
+              <span className="font-medium">
+                Triple Group ({tripleGroupCount > 0 ? `${tripleGroupCount * 15} points` : "15 points"} {!hasTripleGroup && "+ unlocks 2 circles"})
+              </span>
+            </div>
+            {!hasTripleGroup ? (
+              <button
+                onClick={handleTripleGroup}
+                disabled={gamePaused}
+                className="bg-red-200 text-red-800 p-1 rounded-lg hover:bg-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FaBullseye size={16} />
+              </button>
+            ) : (
               <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setTripleGroupCount(prev => Math.max(0, prev - 1))}
+                  disabled={gamePaused || tripleGroupCount === 0}
+                  className="bg-gray-200 text-gray-700 p-1 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaMinus size={14} />
+                </button>
+                <span className="font-bold w-8 text-center">{tripleGroupCount}</span>
                 <button
                   onClick={handleTripleGroup}
                   disabled={gamePaused}
-                  className={`p-1 rounded-lg ${
-                    tripleGroupCount > 0
-                      ? "bg-red-500 text-white"
-                      : "bg-red-200 text-red-800"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="bg-red-200 text-red-800 p-1 rounded-lg hover:bg-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {activeTab === "auto" ? (
-                    tripleGroupCount === 2 ? (
-                      "✓"
-                    ) : (
-                      `${tripleGroupCount}/2`
-                    )
-                  ) : tripleGroupCount > 0 ? (
-                    "✓"
-                  ) : (
-                    <FaBullseye size={16} />
-                  )}
+                  <FaPlus size={14} />
                 </button>
               </div>
-            </div>
+            )}
+          </div>
           </div>
 
           {/* Circle Play Section - Only when circles are unlocked */}
