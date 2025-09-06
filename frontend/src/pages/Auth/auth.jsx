@@ -6,15 +6,28 @@ const AUTH_TOKENS = {
 };
 
 // Save tokens to localStorage
+// Save tokens to localStorage (handle different API response formats)
 export const saveTokens = (tokens) => {
   try {
-    localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, tokens.access_token);
-    localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, tokens.refresh_token);
+    // دايمًا نخزن access_token باسم موحد
+    const access =
+      tokens.access_token || tokens.access || null;
+    const refresh =
+      tokens.refresh_token || tokens.refresh || null;
+
+    if (access) {
+      localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, access);
+    }
+    if (refresh) {
+      localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, refresh);
+    }
+
     console.log("Tokens saved successfully");
   } catch (error) {
     console.error("Error saving tokens to localStorage:", error);
   }
 };
+
 
 // Get tokens from localStorage
 export const getTokens = () => ({
@@ -70,7 +83,7 @@ export const isTokenExpired = (token, safetyMargin = 30000) => {
   return tokenInfo.isExpired || tokenInfo.willExpireSoon;
 };
 
-// Refresh access token using refresh token
+
 export const refreshAccessToken = async () => {
   try {
     const refresh_token = localStorage.getItem(AUTH_TOKENS.REFRESH_TOKEN);
@@ -102,14 +115,19 @@ export const refreshAccessToken = async () => {
       },
     );
 
-    if (response.data.access) {
+    if (response.data.access || response.data.access_token) {
+      const newAccess =
+        response.data.access || response.data.access_token;
+      const newRefresh =
+        response.data.refresh || response.data.refresh_token || refresh_token;
+
       saveTokens({
-        access_token: response.data.access,
-        refresh_token: response.data.refresh || refresh_token, // Keep old refresh if new one not provided
+        access_token: newAccess,
+        refresh_token: newRefresh,
       });
 
       console.log("Token refreshed successfully");
-      return response.data.access;
+      return newAccess;
     } else {
       console.error("Refresh token endpoint did not return new access token");
       handleLogout();
@@ -120,8 +138,7 @@ export const refreshAccessToken = async () => {
 
     if (error.code === "ECONNABORTED") {
       console.error("Token refresh request timed out");
-      // Don't logout for timeout, let the request continue with old token
-      return null;
+      return null; // Don't logout on timeout
     }
 
     if (error.response) {
@@ -130,21 +147,18 @@ export const refreshAccessToken = async () => {
         handleLogout();
       } else if (error.response.status >= 500) {
         console.error("Server error during token refresh");
-        // Don't logout for server errors
-        return null;
+        return null; // Don't logout for server errors
       }
     } else if (error.request) {
-      console.error(
-        "Network error during token refresh - no response received",
-      );
-      // Don't logout for network errors
-      return null;
+      console.error("Network error during token refresh - no response received");
+      return null; // Don't logout for network errors
     }
 
     handleLogout();
     return null;
   }
 };
+
 
 // Handle logout
 export const handleLogout = (
