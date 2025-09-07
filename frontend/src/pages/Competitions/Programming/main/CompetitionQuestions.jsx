@@ -104,58 +104,64 @@ const CompetitionQuestions = () => {
     }
   }, [infoQuestions, remainingTime]);
 
-  const handleTimeUp = useCallback(async () => {
-    const unsavedQuestions = Object.entries(selectedOptions).filter(
-      ([id, answer]) =>
-        answer !== null &&
-        !savedAnswers[id] &&
-        (Array.isArray(answer) ? answer.length > 0 : true),
+ const handleTimeUp = useCallback(async () => {
+  const unsavedQuestions = Object.entries(selectedOptions).filter(
+    ([id, answer]) =>
+      answer !== null &&
+      !savedAnswers[id] &&
+      (Array.isArray(answer) ? answer.length > 0 : true),
+  );
+
+  try {
+    Swal.fire({
+      icon: "error",
+      title: "Time's up!",
+      text: "The competition has ended.",
+      confirmButtonColor: "#32cd32",
+    });
+
+    setIsSaving(true);
+
+    // 1️⃣ Save all unsaved answers first
+    await Promise.all(
+      unsavedQuestions.map(([id, answer]) => saveAnswer(id, answer)),
     );
 
-    try {
-      Swal.fire({
-        icon: "error",
-        title: "Time's up!",
-        text: "The competition has ended.",
-        confirmButtonColor: "#32cd32",
+    // 2️⃣ Then submit game
+    await submitGame();
+  } catch (error) {
+    console.error("Failed to save answers:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Save Error",
+      text:
+        `Failed to save your answer, ${error.response?.data?.error}` ||
+        "Failed to save your answer. Please try again.",
+    });
+  } finally {
+    setIsSaving(false);
+    Swal.fire({
+      icon: "error",
+      title: "Time's up!",
+      text: "The competition has ended.",
+      confirmButtonColor: "#32cd32",
+    }).then(() => {
+      navigate(`/competition/programming/${competition}/${competition_id}`, {
+        replace: true,
       });
-      await submitGame();
-      setIsSaving(true);
-      await Promise.all(
-        unsavedQuestions.map(([id, answer]) => saveAnswer(id, answer)),
-      );
-    } catch (error) {
-      console.error("Failed to save answers:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Save Error",
-        text:
-          `Failed to save your answer, ${error.response.data.error}` ||
-          "Failed to save your answer. Please try again.",
-      });
-    } finally {
-      setIsSaving(false);
-      Swal.fire({
-        icon: "error",
-        title: "Time's up!",
-        text: "The competition has ended.",
-        confirmButtonColor: "#32cd32",
-      }).then(() => {
-        navigate(`/competition/programming/${competition}/${competition_id}`, {
-          replace: true,
-        });
-      });
-    }
-    setRemainingTime(0); // تحديث الحالة بعد انتهاء الوقت
-  }, [
-    navigate,
-    competition,
-    competition_id,
-    selectedOptions,
-    savedAnswers,
-    saveAnswer,
-    submitGame,
-  ]);
+    });
+  }
+  setRemainingTime(0);
+}, [
+  navigate,
+  competition,
+  competition_id,
+  selectedOptions,
+  savedAnswers,
+  saveAnswer,
+  submitGame,
+]);
+
 
   useEffect(() => {
     let timer;

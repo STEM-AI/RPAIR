@@ -127,7 +127,6 @@ import LiveCompFile from "./pages/LiveEvents/LiveMatches/LiveCompFile";
 import Layout from "./pages/Dashboards/LayoutDashboard/Layout";
 import MobileApp from "./components/Competitions/MobileApp";
 
-
 const App = () => {
   const LayoutComing = ({ children, hideNavbar = false }) => (
     <>
@@ -302,7 +301,7 @@ const App = () => {
                   </Layout>
                 }
               />
-               <Route
+              <Route
                 path="/MobileApp"
                 element={
                   <Layout>

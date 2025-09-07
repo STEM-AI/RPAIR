@@ -14,7 +14,7 @@ const ProgInfo = () => {
   const [refreshCount, setRefreshCount] = useState(0); // For forcing re-renders
 
   const event_id = id;
-    const type = searchParams.get("eventName")?.toLowerCase();
+  const type = searchParams.get("eventName")?.toLowerCase();
   const team_id = searchParams.get("teamId");
 
   const {
