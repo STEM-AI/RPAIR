@@ -128,7 +128,7 @@ export default function JudgeEvent() {
           default:
             setResponseMessage(
               err.response?.data?.message ||
-                "Failed to fetch events. Please try again.",
+              "Failed to fetch events. Please try again.",
             );
         }
       } else {
@@ -241,13 +241,12 @@ export default function JudgeEvent() {
                     <span
                       className={`
                       px-2 py-1 text-xs font-semibold rounded-full
-                      ${
-                        eventStatus.status === "upcoming"
+                      ${eventStatus.status === "upcoming"
                           ? "bg-yellow-100 text-yellow-800"
                           : eventStatus.status === "in_progress"
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-800"
-                      }
+                        }
                     `}
                     >
                       {eventStatus.status === "upcoming" &&
@@ -283,28 +282,32 @@ export default function JudgeEvent() {
                       </div>
                     </div>
                   </div>
+                  <div className="flex justify-end ms-auto items-center">
+
+                    <p className="text-xs font-medium  capitalize px-2 py-1 bg-cyan-100  text-cyan-800 rounded-full">{event.competition_event.competition_name.replaceAll("_", " ")}</p>
+                  </div>
                 </div>
                 {/* <Link
                   to={`/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`}
                 > */}
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`,
-                        )
-                      }
-                      className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/Dashboard/JudgeEvent/${event.competition_event.competition_name}?eventId=${encodeURIComponent(event.competition_event.id)}&eventName=${encodeURIComponent(event.competition_event.name)}`,
+                      )
+                    }
+                    className={`w-full py-2 px-4 ${eventStatus.color} text-white font-medium rounded-lg 
                         transition-colors duration-200 flex items-center justify-center`}
-                      disabled={
-                        eventStatus.status === "ended" ||
-                        eventStatus.status === "upcoming"
-                      }
-                    >
-                      <eventStatus.icon className="h-5 w-5 mr-2" />
-                      {eventStatus.message}
-                    </button>
-                  </div>
+                    disabled={
+                      eventStatus.status === "ended" ||
+                      eventStatus.status === "upcoming"
+                    }
+                  >
+                    <eventStatus.icon className="h-5 w-5 mr-2" />
+                    {eventStatus.message}
+                  </button>
+                </div>
                 {/* </Link> */}
               </div>
             );
