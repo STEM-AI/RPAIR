@@ -766,7 +766,7 @@ const CreateTeam = () => {
         </div>
 
         {/* Team Leader Info */}
-        {formData.competition === "programming" ? (
+        {formData.competition === "programming"  || formData.competition === "flutter"  || formData.competition === "arduino" ? (
           ""
         ) : (
           <div className="teamLeader">

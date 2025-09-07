@@ -170,6 +170,11 @@ const MyTeams = () => {
             const defaultEventId = completedEvents[0]?.id;
             const selectedEventId = selectedEvent[team.id] || defaultEventId;
 
+            const selectedEventObj = completedEvents.find(
+              (event) => event.id === selectedEventId
+            );
+            const selectedEventName = selectedEventObj ? selectedEventObj.name : "";
+
             return (
               <motion.div
                 key={team.id}
@@ -193,46 +198,45 @@ const MyTeams = () => {
                   </div>
 
                   {hasCompletedEvents(team) && (
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex items-center mb-2">
-                        <div className="bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full text-xs font-medium flex items-center">
-                          <Done className="text-xs mr-1" />
-                          {completedEvents.length} event
-                          {completedEvents.length > 1 ? "s" : ""} completed
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className="flex items-center mb-2">
+                          <div className="bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full text-xs font-medium flex items-center">
+                            <Done className="text-xs mr-1" />
+                            {completedEvents.length} event
+                            {completedEvents.length > 1 ? "s" : ""} completed
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="mb-3">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Certificate for:
-                        </label>
-                        <div className="flex gap-2">
-                          <select
-                            value={selectedEventId}
-                            onChange={(e) =>
-                              handleEventChange(
-                                team.id,
-                                parseInt(e.target.value),
-                              )
-                            }
-                            className="flex-grow appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
-                          >
-                            {completedEvents.map((event) => (
-                              <option key={event.id} value={event.id}>
-                                {event.name}
-                              </option>
-                            ))}
-                          </select>
-                          <Link
-                            to={`/Dashboard/User/Certificate/${team.id}?event=${encodeURIComponent(selectedEventId)}`}
-                            className="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white px-3 py-2 rounded-lg flex items-center whitespace-nowrap text-sm shadow-sm hover:shadow-md transition-all"
-                          >
-                            <Done className="mr-1 text-sm" /> Get
-                          </Link>
+                        <div className="mb-3">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Certificate for:
+                          </label>
+                          <div className="flex gap-2">
+                            <select
+                              value={selectedEventId}
+                              onChange={(e) =>
+                                handleEventChange(team.id, parseInt(e.target.value))
+                              }
+                              className="flex-grow appearance-none bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm"
+                            >
+                              {completedEvents.map((event) => (
+                                <option key={event.id} value={event.id}>
+                                  {event.name}
+                                </option>
+                              ))}
+                            </select>
+                            <Link
+                              to={`/Dashboard/User/Certificate/${team.id}?event=${encodeURIComponent(
+                                selectedEventId
+                              )}&eventName=${encodeURIComponent(selectedEventName)}`}
+                              className="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white px-3 py-2 rounded-lg flex items-center whitespace-nowrap text-sm shadow-sm hover:shadow-md transition-all"
+                            >
+                              <Done className="mr-1 text-sm" /> Get
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   <div className="mt-4 pt-4 border-t border-gray-100">
                     <Link

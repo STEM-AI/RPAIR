@@ -29,7 +29,7 @@ const CardSlider = () => {
       title: "Mobile Applications Competitions",
       description:
         "Develop cutting-edge mobile applications, enhance user experience, and solve real-world problems using the latest mobile technologies.",
-      link: "/competitions/ComingSoon",
+      link: "/MobileApp",
     },
     {
       image: require("../../assets/cards/web.jpeg"),

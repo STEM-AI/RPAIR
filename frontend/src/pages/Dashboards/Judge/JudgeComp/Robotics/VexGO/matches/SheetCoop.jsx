@@ -370,10 +370,9 @@ export default function SheetCoop({ eventName, onClose, sheetType }) {
     }
   }, [remainingTime, playEnd]);
 
-  // تشغيل playMiddle عند الوصول إلى 25 أو 35 ثانية
   useEffect(() => {
     if (gameActive && !gamePaused) {
-      if (prevTimeRef.current >= 30 && remainingTime === 30) {
+      if (prevTimeRef.current >= 60 && remainingTime === 60) {
         playMiddle();
       }
     }

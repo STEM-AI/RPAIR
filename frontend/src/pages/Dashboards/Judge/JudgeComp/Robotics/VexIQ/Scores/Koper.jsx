@@ -553,7 +553,7 @@ const handleTripleGroup = () => {
                 disabled={gamePaused}
                 className="bg-red-200 text-red-800 p-1 rounded-lg hover:bg-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <FaBullseye size={16} />
+                <GiThreeBurningBalls size={16} />
               </button>
             ) : (
               <div className="flex items-center space-x-2">

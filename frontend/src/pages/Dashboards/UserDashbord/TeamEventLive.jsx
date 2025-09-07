@@ -182,7 +182,7 @@ function TeamEventLive() {
         <span className="inline-block ml-2">⚡</span>
       </motion.h2>
 
-      <div className="max-w-2xl mx-auto  ">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 ">
         {competitions.map((comp, index) => (
           <motion.div
             key={comp.id}

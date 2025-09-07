@@ -10,6 +10,7 @@ export default function MyCertificate() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const eventId = searchParams.get("event");
+  const eventName = searchParams.get("eventName");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -152,6 +153,7 @@ export default function MyCertificate() {
                   teamName={selectedTeam?.name}
                   competitionName={selectedTeam?.competition_name}
                   startDate={selectedTeam?.start_date}
+                  eventName={eventName}
                 />
               </div>
             ))}
