@@ -122,12 +122,10 @@ const CompetitionQuestions = () => {
 
     setIsSaving(true);
 
-    // 1️⃣ Save all unsaved answers first
     await Promise.all(
       unsavedQuestions.map(([id, answer]) => saveAnswer(id, answer)),
     );
 
-    // 2️⃣ Then submit game
     await submitGame();
   } catch (error) {
     console.error("Failed to save answers:", error);
@@ -220,52 +218,68 @@ const CompetitionQuestions = () => {
     });
   };
 
-  const handleSubmitAll = async () => {
-    const unsavedQuestions = Object.entries(selectedOptions).filter(
-      ([id, answer]) =>
-        answer !== null &&
-        !savedAnswers[id] &&
-        (Array.isArray(answer) ? answer.length > 0 : true),
+ const handleSubmitAll = async () => {
+  const unsavedQuestions = Object.entries(selectedOptions).filter(
+    ([id, answer]) =>
+      answer !== null &&
+      !savedAnswers[id] &&
+      (Array.isArray(answer) ? answer.length > 0 : true),
+  );
+
+  if (unsavedQuestions.length === 0) {
+    Swal.fire({
+      icon: "warning",
+      title: "No Answers Selected",
+      text: "Please select answers before submitting.",
+    });
+    return;
+  }
+
+  // ✅ إضافة تأكيد قبل الإرسال
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Once you submit, you cannot change your answers!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#32cd32",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, submit",
+    cancelButtonText: "Cancel",
+  });
+
+  if (!result.isConfirmed) {
+    return; // المستخدم لغى العملية
+  }
+
+  try {
+    setIsSaving(true);
+    await Promise.all(
+      unsavedQuestions.map(([id, answer]) => saveAnswer(id, answer)),
     );
 
-    if (unsavedQuestions.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "No Answers Selected",
-        text: "Please select answers before submitting.",
-      });
-      return;
-    }
+    await submitGame();
 
-    try {
-      setIsSaving(true);
-      // سيف كل الإجابات مرة واحدة
-      await Promise.all(
-        unsavedQuestions.map(([id, answer]) => saveAnswer(id, answer)),
-      );
-
-      await submitGame(); // بعد ما كل الإجابات تتسيف
-
-      Swal.fire({
-        title: "Done!",
-        text: "All answers have been submitted successfully.",
-        icon: "success",
-      }).then(() => {
-        navigate(`/competition/programming/${competition}/${competition_id}`, {
-          replace: true,
-        });
+    Swal.fire({
+      title: "Done!",
+      text: "All answers have been submitted successfully.",
+      icon: "success",
+    }).then(() => {
+      navigate(`/competition/programming/${competition}/${competition_id}`, {
+        replace: true,
       });
-    } catch (error) {
-      console.error("Failed to submit all answers:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Submission Error",
-        text: "Some answers could not be submitted. Please try again.",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
+    });
+  } catch (error) {
+    console.error("Failed to submit all answers:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Submission Error",
+      text: "Some answers could not be submitted. Please try again.",
+    });
+  } finally {
+    setIsSaving(false);
+  }
+};
+
 
   const handleNext = async () => {
     if (!allQuestions || allQuestions.length === 0 || isSaving) return;
