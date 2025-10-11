@@ -32,7 +32,7 @@ const TeamDetails = () => {
 
   const handleDeleteTeam = async () => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/admin/${id}/`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/admin/team/${id}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

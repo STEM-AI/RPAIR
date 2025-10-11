@@ -309,7 +309,6 @@ const CalculatorSkills = ({
                 </button>
                 <button
                   onClick={restartGame}
-                  disabled={!gameActive}
                   className="bg-red-500 text-white p-3 rounded-full shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Restart Game"
                 >

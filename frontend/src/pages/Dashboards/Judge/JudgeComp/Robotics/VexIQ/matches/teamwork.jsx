@@ -51,6 +51,16 @@ const Teamwork = () => {
     return acc;
   }, {});
 
+   const formatTime12 = (timeString) => {
+  if (!timeString) return "";
+  const parts = timeString.split(":");
+  const hours = parseInt(parts[0], 10);
+  const minutes = parts[1] ? parts[1].padStart(2, "0") : "00";
+
+  const displayHour = hours % 12 || 12; 
+  return `${displayHour}:${minutes}`;
+   };
+  
   const handleRefreshSchedule = async () => {
     try {
       await refetchSchedules();
@@ -175,7 +185,7 @@ const Teamwork = () => {
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-blue-600">
             <tr>
-              {["Match", "Team 1", "Team 2", "Score", "Actions"].map(
+              {["Match", "Team 1", "Team 2", "Time", "Score", "Actions"].map(
                 (header) => (
                   <th
                     key={header}
@@ -217,6 +227,9 @@ const Teamwork = () => {
                       #{match.team2_number}
                     </span>
                   </div>
+                </td>
+                 <td className="px-4 py-3 text-center font-medium text-blue-600">
+                  {formatTime12(match.time)}
                 </td>
 
                 <td className="px-4 py-3 text-center">

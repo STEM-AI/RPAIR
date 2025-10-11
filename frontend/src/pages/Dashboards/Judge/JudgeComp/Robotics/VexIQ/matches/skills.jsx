@@ -93,6 +93,16 @@ const Skills = () => {
     return Array.isArray(roundDetails) ? roundDetails : [];
   }, [roundDetails]);
 
+  const formatTime12 = (timeString) => {
+  if (!timeString) return "";
+  const parts = timeString.split(":");
+  const hours = parseInt(parts[0], 10);
+  const minutes = parts[1] ? parts[1].padStart(2, "0") : "00";
+
+  const displayHour = hours % 12 || 12; 
+  return `${displayHour}:${minutes}`;
+};
+
   const handleTabChange = async (tabId) => {
     if (tabId === activeTab) return; // Don't do anything if clicking the same tab
 
@@ -410,7 +420,7 @@ const Skills = () => {
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500">
             <tr>
-              {["Match", "Team-code", "Team ", "Score", "Actions"].map(
+              {["Match", "Team-code", "Team ", "Time" ,"Score", "Actions"].map(
                 (header) => (
                   <th
                     key={header}
@@ -453,6 +463,11 @@ const Skills = () => {
                       <div className="font-medium text-gray-900">
                         {match.team1_name}
                       </div>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="inline-block bg-blue-50 rounded-lg px-3 py-1.5 text-blue-600 font-medium">
+                      {formatTime12(match.time)}
+                      </span>
                     </td>
 
                     <td className="px-4 py-4 text-center">

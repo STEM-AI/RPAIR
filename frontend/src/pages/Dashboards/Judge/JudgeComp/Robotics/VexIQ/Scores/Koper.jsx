@@ -302,7 +302,6 @@ const [hasTripleGroup, setHasTripleGroup] = useState(false);
     });
   };
   const handleRemoveCirclePlay = (index) => {
-    if (!gameActive || gamePaused) return;
 
     const newCirclePlays = [...circlePlays];
     newCirclePlays[index] = null;
@@ -430,7 +429,6 @@ const handleTripleGroup = () => {
                 </button>
                 <button
                   onClick={restartGame}
-                  disabled={!gameActive}
                   className="bg-red-500 text-white p-3 rounded-full shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FaSync size={18} />
@@ -615,18 +613,22 @@ const handleTripleGroup = () => {
               </div>
 
               <button
-                onClick={handleCirclePlay}
-                disabled={gamePaused || circlePlays.every((p) => p !== null)}
-                className={`w-full py-2 rounded-lg font-semibold ${
-                  circlePlays.length < 6
-                    ? "bg-yellow-500 text-white hover:bg-yellow-600"
-                    : "bg-green-500 text-white"
-                } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                {circlePlays.some((p) => p === null)
-                  ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)`
-                  : "All Circle Plays Completed"}
-              </button>
+                  onClick={handleCirclePlay}
+                  disabled={
+                    gamePaused || 
+                    circlePlays.filter((p) => p !== null).length >= unlockedCircles
+                  }
+                  className={`w-full py-2 rounded-lg font-semibold ${
+                    circlePlays.filter((p) => p !== null).length < unlockedCircles
+                      ? "bg-yellow-500 text-white hover:bg-yellow-600"
+                      : "bg-green-500 text-white"
+                  } transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {circlePlays.filter((p) => p !== null).length < unlockedCircles
+                    ? `Play with ${unlockedCircles} Circles (${currentCirclePoints} points)`
+                    : "All Unlocked Circle Plays Used"}
+                </button>
+
             </div>
           )}
         </div>

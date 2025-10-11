@@ -27,7 +27,7 @@ export default function SheetCoop({ eventName, onClose, sheetType }) {
   const [turbines, setTurbines] = useState({});
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(120);
+  const [remainingTime, setRemainingTime] = useState(60);
   const [selectedChallenge] = useState("ocean");
   const [tasks, setTasks] = useState(oceanTasks);
   const [matchData, setMatchData] = useState({
@@ -467,7 +467,6 @@ export default function SheetCoop({ eventName, onClose, sheetType }) {
               </button>
               <button
                 onClick={restartGame}
-                disabled={!gameActive}
                 className="flex-1 sm:flex-none px-3 py-1 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center text-sm sm:text-base"
               >
                 <FaRedo className="mr-1 sm:mr-2" /> Restart

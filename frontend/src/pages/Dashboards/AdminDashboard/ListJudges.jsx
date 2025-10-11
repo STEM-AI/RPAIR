@@ -70,12 +70,11 @@ export default function ListJudges() {
       return validEvents.map((event, index) => ({
         judge: index === 0 ? judge.username : "",
         event: event.competition_event.name,
-        dates: `${event.competition_event.start_date} - ${event.competition_event.end_date}`,
+        dates: `${event.competition_event.start_date} `,
         location: event.competition_event.location,
       }));
     });
 
-    // إنشاء الجدول
     doc.autoTable({
       startY: 45,
       head: [["Judge", "Event", "Dates", "Location"]],
@@ -86,9 +85,9 @@ export default function ListJudges() {
         row.location,
       ]),
       styles: {
-        fontSize: 12, // حجم خط أكبر
+        fontSize: 12,
         cellPadding: 4,
-        valign: "top", // محاذاة علوية للنص
+        valign: "top", 
         fillColor: accentColor,
         textColor: 40,
         lineColor: 200,

@@ -252,125 +252,129 @@ const CreateTeam = () => {
     );
   }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (hasGlobalNumber === null) {
-      Swal.fire({
-        icon: "error",
-        title: "Missing Information",
-        text: "Please specify if you have a global team number or not",
-      });
-      return;
+ const handleSubmit = async (event) => {
+  event.preventDefault();
+  if (hasGlobalNumber === null) {
+    Swal.fire({
+      icon: "error",
+      title: "Missing Information",
+      text: "Please specify if you have a global team number or not",
+    });
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const formDataToSend = new FormData();
+
+    // Append the image file (لو موجود)
+    if (formData.image) {
+      formDataToSend.append("image", formData.image);
     }
 
-    setIsSubmitting(true);
+    // Team number لو عنده global number
+    if (hasGlobalNumber === true && formData.team_number) {
+      formDataToSend.append("team_number", formData.team_number);
+    }
 
-    try {
-      const formDataToSend = new FormData();
+    // Organization info
+    if (isManualOrgEntry) {
+      formDataToSend.append(
+        "organization_info",
+        JSON.stringify(formData.organization_info)
+      );
+    } else if (formData.organization_info?.id) {
+      formDataToSend.append("organization_id", formData.organization_info.id);
+    }
 
-      // Append the image file
-      if (formData.image) {
-        formDataToSend.append("image", formData.image);
-      }
-      if (hasGlobalNumber === true && formData.team_number) {
-        formDataToSend.append("team_number", formData.team_number);
-      }
+    // Required fields
+    formDataToSend.append("event_id", formData.event_id);
+    formDataToSend.append("competition", formData.competition);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("type", formData.type);
 
-      // تحديد شكل بيانات المنظمة بناءً على نوع الإدخال
-      if (isManualOrgEntry) {
-        // إرسال كافة بيانات المنظمة الجديدة
-        formDataToSend.append(
-          "organization_info",
-          JSON.stringify(formData.organization_info),
-        );
-      } else {
-        // إرسال معرف المنظمة فقط للمنظمة الموجودة
-        formDataToSend.append("organization_id", formData.organization_info.id);
-      }
-
-      // Append other fields
-      formDataToSend.append("event_id", formData.event_id);
-      formDataToSend.append("competition", formData.competition);
-      formDataToSend.append("name", formData.name);
+    // Optional fields (لو مش فاضية بس)
+    if (formData.robot_name) {
       formDataToSend.append("robot_name", formData.robot_name);
-      formDataToSend.append("type", formData.type);
+    }
+    if (formData.team_leader_name) {
       formDataToSend.append("team_leader_name", formData.team_leader_name);
+    }
+    if (formData.team_leader_email) {
       formDataToSend.append("team_leader_email", formData.team_leader_email);
+    }
+    if (formData.team_leader_phone_number) {
       formDataToSend.append(
         "team_leader_phone_number",
-        formData.team_leader_phone_number,
+        formData.team_leader_phone_number
       );
+    }
 
-      // Stringify nested objects
+    // Coach + Members
+    if (formData.coach?.length > 0) {
       formDataToSend.append("coach", JSON.stringify(formData.coach));
+    }
+    if (formData.members?.length > 0) {
       formDataToSend.append("members", JSON.stringify(formData.members));
+    }
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/team/user/`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/team/user/`,
+      formDataToSend,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
-      );
+      }
+    );
 
-      Swal.fire({
-        icon: "success",
-        title: "Team Created!",
-        text: "Team registration completed successfully!",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+    Swal.fire({
+      icon: "success",
+      title: "Team Created!",
+      text: "Team registration completed successfully!",
+      showConfirmButton: false,
+      timer: 2000,
+    });
 
-      setFormData({
-        event_id: "",
-        competition: "",
-        organization_info: {
-          name: "",
-          address: "",
-          email: "",
-          type: "",
-          contacts: [{ phone_number: "" }],
-        },
+    // Reset form
+    setFormData({
+      event_id: "",
+      competition: "",
+      organization_info: {
         name: "",
-        robot_name: "",
+        address: "",
+        email: "",
         type: "",
-        team_number: "",
-        image: "",
-        team_leader_name: "",
-        team_leader_email: "",
-        team_leader_phone_number: "",
-        coach: [{ name: "", email: "", phone_number: "", position: "" }],
-        members: [{ name: "", email: "", phone_number: "" }],
-      });
-      return response.data;
-    } catch (err) {
-      console.error("Error Response:", err.response);
-      const errorData = err.response?.data || {};
+        contacts: [{ phone_number: "" }],
+      },
+      name: "",
+      robot_name: "",
+      type: "",
+      team_number: "",
+      image: "",
+      team_leader_name: "",
+      team_leader_email: "",
+      team_leader_phone_number: "",
+      coach: [],
+      members: [{ name: "", email: "", phone_number: "" }],
+    });
 
-      // Handle existing data errors
-      const errorMessages = [];
+    return response.data;
+  } catch (err) {
+    console.error("Error Response:", err.response);
+    const errorData = err.response?.data || {};
+    const errorMessages = [];
 
-      // Check for specific field conflicts
-      if (errorData.name) {
-        errorMessages.push("Team name is already registered");
-      }
-      if (errorData.robot_name) {
-        errorMessages.push("Robot name is already taken");
-      }
-      if (errorData.organization_info?.email) {
-        errorMessages.push("Organization email is already registered");
-      }
-      if (errorData.team_leader_email) {
-        errorMessages.push("Team leader email is already in use");
-      }
+    if (errorData.name) errorMessages.push("Team name is already registered");
+    if (errorData.robot_name) errorMessages.push("Robot name is already taken");
+    if (errorData.organization_info?.email)
+      errorMessages.push("Organization email is already registered");
+    if (errorData.team_leader_email)
+      errorMessages.push("Team leader email is already in use");
+    if (errorData.detail) errorMessages.push(errorData.detail);
 
-      // Handle generic errors
-      if (errorData.detail) {
-        errorMessages.push(errorData.detail);
-      }
 
       // If no specific messages, show default error
       if (errorMessages.length === 0) {
@@ -379,7 +383,7 @@ const CreateTeam = () => {
         );
       } else {
         errorMessages.push(
-          `Failed to create team. Please ${err.response?.data}`,
+          `Failed to create team. Please ${err.response.data}`,
         );
       }
 
