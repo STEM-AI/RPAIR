@@ -23,7 +23,7 @@ const ScheduleManagement = () => {
             <FiPlus className="transition-transform duration-300 group-hover:translate-x-1" />
             Create Schedule
           </button>
-          
+
           <button
             onClick={() => setActiveTab("delete")}
             className={`group flex-1 flex items-center justify-center gap-3 py-4 px-8 rounded-full font-semibold transition-all duration-300 transform

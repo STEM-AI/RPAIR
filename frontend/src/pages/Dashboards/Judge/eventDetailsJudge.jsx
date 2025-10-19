@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { FaCalendarAlt, FaMapMarkerAlt, FaClock, FaListAlt } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt, FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const CompetitionEvents = () => {
@@ -15,15 +15,15 @@ const CompetitionEvents = () => {
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
-    if (!startDate || !endDate) return 'TBD';
-    
-    if (now < start) return 'Upcoming';
-    if (now >= start && now <= end) return 'Ongoing';
-    return 'Completed';
+
+    if (!startDate || !endDate) return "TBD";
+
+    if (now < start) return "Upcoming";
+    if (now >= start && now <= end) return "Live";
+    return "Completed";
   };
 
-  const fetchJudgeEvent = async () => {
+  const fetchJudgeEvent = useCallback(async () => {
     if (!token) {
       setError("You are not authorized. Please log in.");
       setLoading(false);
@@ -31,18 +31,18 @@ const CompetitionEvents = () => {
     }
 
     const myURL = `${process.env.REACT_APP_API_URL}/event/judge-event-list/`;
-  
+
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await axios.get(myURL, {
-        headers: { 
-          Authorization: `Bearer ${token}` 
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        timeout: 10000
+        timeout: 10000,
       });
-      
+
       setEvents(response.data);
       setLoading(false);
     } catch (err) {
@@ -71,15 +71,15 @@ const CompetitionEvents = () => {
       }
       setError(errorMessage);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchJudgeEvent();
-  }, [token]);
+  }, [token, fetchJudgeEvent]);
 
- const handleCompetitionClick = (competitionName, eventName) => {
-  navigate(`/Dashboard/Competitions/${competitionName}/${eventName}`);
-};
+  const handleCompetitionClick = (competitionName, eventName) => {
+    navigate(`/Dashboard/Competitions/${competitionName}/${eventName}`);
+  };
 
   if (loading) {
     return (
@@ -91,89 +91,118 @@ const CompetitionEvents = () => {
 
   if (error) {
     return (
-      <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg text-center mt-8" role="alert">
+      <div
+        className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg text-center mt-8"
+        role="alert"
+      >
         {error}
       </div>
     );
   }
   return (
-   <div className="container mx-auto px-4 ">
+    <div className="container mx-auto px-4 ">
       <h2 className="py-4 mb-3 text-center text-4xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-800 bg-clip-text text-transparent">
         Judge EVENTS
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-       {events.length > 0 ? (
-  events.map((event, index) => { // Add index here
-    const status = getEventStatus(event.competition_event.start_date, event.competition_event.end_date);
-    const statusColors = {
-      Upcoming: 'bg-cyan-100 text-cyan-800',
-      Ongoing: 'bg-orange-100 text-orange-800',
-      Completed: 'bg-green-100 text-green-800',
-      TBD: 'bg-gray-100 text-gray-800'
-    };
+        {events.length > 0 ? (
+          events.map((event, index) => {
+            // Add index here
+            const status = getEventStatus(
+              event.competition_event.start_date,
+              event.competition_event.end_date,
+            );
+            const statusColors = {
+              Upcoming: "bg-cyan-100 text-cyan-800",
+              Live: "bg-red-100 text-red-800",
+              Completed: "bg-green-100 text-green-800",
+              TBD: "bg-gray-100 text-gray-800",
+            };
 
-    return (
-      <div key={event.id} className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group">
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-cyan-100 rounded-lg">
-                    <FaListAlt className="w-6 h-6 text-cyan-600" />
+            return (
+              <div
+                key={event.id}
+                className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group"
+              >
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-cyan-100 rounded-lg">
+                      <FaListAlt className="w-6 h-6 text-cyan-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-xl font-semibold text-gray-800">
+                        {event.competition_event.name || "N/A"}
+                      </h3>
+                      <span className="text-sm text-cyan-600 font-medium">
+                        Event #{index + 1}
+                      </span>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-800">{event.competition_event.name || "N/A"}</h3>
-                    <span className="text-sm text-cyan-600 font-medium">Event #{index + 1}</span>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <FaCalendarAlt className="w-5 h-5 text-gray-500 mr-2" />
+                      <span className="text-sm text-gray-600">
+                        {event.competition_event.start_date || "TBD"} -{" "}
+                        {event.competition_event.end_date || "TBD"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center">
+                      <FaMapMarkerAlt className="w-5 h-5 text-gray-500 mr-2" />
+                      <span className="text-sm text-gray-600">
+                        {event.competition_event.location ||
+                          "Location not specified"}
+                      </span>
+                    </div>
+
+                    {event.description && (
+                      <p className="text-sm text-gray-500 mt-3 line-clamp-3">
+                        {event.competition_event.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <FaCalendarAlt className="w-5 h-5 text-gray-500 mr-2" />
-                    <span className="text-sm text-gray-600">
-                      {event.competition_event.start_date || "TBD"} - {event.competition_event.end_date || "TBD"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <FaMapMarkerAlt className="w-5 h-5 text-gray-500 mr-2" />
-                    <span className="text-sm text-gray-600">{event.competition_event.location || "Location not specified"}</span>
-                  </div>
-
-                  {event.description && (
-                    <p className="text-sm text-gray-500 mt-3 line-clamp-3">{event.competition_event.description}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="px-6 py-3 bg-gray-50 rounded-b-xl border-t border-gray-100">
+                <div className="px-6 py-3 bg-gray-50 rounded-b-xl border-t border-gray-100">
                   <div className="flex items-center justify-between text-sm">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      statusColors[status] || 'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        statusColors[status] || "bg-gray-100 text-gray-800"
+                      }`}
+                    >
                       {status}
                     </span>
-                   <button 
-                  className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
-                  onClick={() => handleCompetitionClick(
-                    event.competition_event.competition_name,
-                    event.competition_event.id
-                  )}
-                >
-                  View Details
-                  <svg
-                    className="w-4 h-4 ml-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                    <button
+                      className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
+                      onClick={() =>
+                        handleCompetitionClick(
+                          event.competition_event.competition_name,
+                          event.competition_event.id,
+                        )
+                      }
+                    >
+                      View Details
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-         );
+            );
           })
         ) : (
           <div className="col-span-full text-center py-12">

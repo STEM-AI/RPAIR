@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'; 
-import axios from 'axios';
+// hooks/Schedule/EventSchedule.js
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 
 const useEventSchedules = (event_id, stage, ordering) => {
   const [schedules, setSchedules] = useState([]);
@@ -14,21 +15,21 @@ const useEventSchedules = (event_id, stage, ordering) => {
         {
           params: { ordering, stage },
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       setSchedules(response.data);
     } catch (err) {
-      setError(err.message || 'Failed to fetch schedules');
+      setError(err.message || "Failed to fetch schedules");
     } finally {
       setLoading(false);
     }
-  }, [event_id, ordering, stage, token]); 
+  }, [event_id, ordering, stage, token]);
 
   useEffect(() => {
     if (event_id) {
       fetchSchedules();
     }
-  }, [event_id, fetchSchedules]); 
+  }, [event_id, fetchSchedules]);
 
   return { schedules, loading, error, refetch: fetchSchedules };
 };

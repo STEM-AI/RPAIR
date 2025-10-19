@@ -9,8 +9,6 @@ import ScoreTeams from "../Scores/scoreTeams";
 import Koper from "../Scores/Koper";
 import Swal from "sweetalert2";
 import useGetScore from "../../../../../../../hooks/Schedule/GetScore";
-import EditTimeIQ from "../../../../../../../hooks/EditTime/EditeTimeIQ";
-
 
 const Teamwork = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -21,42 +19,48 @@ const Teamwork = () => {
   const [error, setError] = useState(null);
   const [calculatorType, setCalculatorType] = useState(null);
   const [searchParams] = useSearchParams();
-  const event_name = searchParams.get('eventName');
-  const event_id = searchParams.get('eventId');
+  const event_name = searchParams.get("eventName");
+  const event_id = searchParams.get("eventId");
 
-
- 
-
-  const { 
-    score: serverScores, 
-    loading: scoresLoading, 
-    error: scoresError, 
-    refetch: refetchScores 
+  const {
+    score: serverScores,
+    loading: scoresLoading,
+    error: scoresError,
+    refetch: refetchScores,
   } = useGetScore(event_id, "teamwork");
 
-  const { 
-    schedules: eventSchedules, 
-    loading: schedulesLoading, 
-    error: schedulesError, 
-    refetch: refetchSchedules 
+  const {
+    schedules: eventSchedules,
+    loading: schedulesLoading,
+    error: schedulesError,
+    refetch: refetchSchedules,
   } = useEventSchedules(event_id, "teamwork", "id");
 
   const lastScheduleId = eventSchedules[0]?.id;
-  const { 
-    schedule: scheduleDetails, 
-    loading: scheduleLoading, 
-    error: scheduleError,
-    refetch: refetchScheduleDetails 
+  const {
+    schedule: scheduleDetails,
+    loading: scheduleLoading,
+    refetch: refetchScheduleDetails,
   } = useSchedule(lastScheduleId);
 
- const scoresMap = serverScores.reduce((acc, match) => {
-  acc[match.id] = {
-    score: match.score,
-    completed: match.completed
-  };
-  return acc;
-}, {});
+  const scoresMap = serverScores.reduce((acc, match) => {
+    acc[match.id] = {
+      score: match.score,
+      completed: match.completed,
+    };
+    return acc;
+  }, {});
 
+   const formatTime12 = (timeString) => {
+  if (!timeString) return "";
+  const parts = timeString.split(":");
+  const hours = parseInt(parts[0], 10);
+  const minutes = parts[1] ? parts[1].padStart(2, "0") : "00";
+
+  const displayHour = hours % 12 || 12; 
+  return `${displayHour}:${minutes}`;
+   };
+  
   const handleRefreshSchedule = async () => {
     try {
       await refetchSchedules();
@@ -77,7 +81,7 @@ const Teamwork = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setRankings(response.data);
     } catch (error) {
@@ -89,7 +93,7 @@ const Teamwork = () => {
   };
 
   const handleToggleRanking = () => {
-    setShowRanking(prev => {
+    setShowRanking((prev) => {
       const newState = !prev;
       if (newState) {
         fetchRankings();
@@ -100,7 +104,7 @@ const Teamwork = () => {
 
   const handleOpenCalculator = (matchCode) => {
     Swal.fire({
-      title: '<strong>Select Calculator Type</strong>',
+      title: "<strong>Select Calculator Type</strong>",
       html: `
         <div class="flex flex-col gap-4 mt-4">
           <button id="teams-btn" class="calculator-option">
@@ -121,25 +125,30 @@ const Teamwork = () => {
         </div>
       `,
       showCancelButton: true,
-      cancelButtonText: 'Cancel',
+      cancelButtonText: "Cancel",
       showConfirmButton: false,
       customClass: {
-        popup: 'rounded-xl',
-        htmlContainer: 'pt-0 pb-4',
-        cancelButton: 'mt-4 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-colors'
+        popup: "rounded-xl",
+        htmlContainer: "pt-0 pb-4",
+        cancelButton:
+          "mt-4 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-colors",
       },
       didOpen: () => {
-        document.getElementById('teams-btn').addEventListener('click', () => Swal.close({ isConfirmed: true }))
-        document.getElementById('koper-btn').addEventListener('click', () => Swal.close({ isDenied: true }))
-      }
+        document
+          .getElementById("teams-btn")
+          .addEventListener("click", () => Swal.close({ isConfirmed: true }));
+        document
+          .getElementById("koper-btn")
+          .addEventListener("click", () => Swal.close({ isDenied: true }));
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         setSelectedMatch(matchCode);
-        setCalculatorType('teams');
+        setCalculatorType("teams");
       } else if (result.isDenied) {
         setSelectedMatch(matchCode);
-        setCalculatorType('koper');
-              }
+        setCalculatorType("koper");
+      }
     });
   };
 
@@ -148,18 +157,6 @@ const Teamwork = () => {
     refetchScores();
     setSelectedMatch(null);
   };
-
-  const Th = ({ children, className }) => (
-    <th className={`px-2.5 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider text-center ${className}`}>
-      {children}
-    </th>
-  );
-
-  const Td = ({ children, className }) => (
-    <td className={`px-2.5 py-2 sm:px-4 sm:py-3 text-sm text-gray-900 text-center ${className}`}>
-      {children}
-    </td>
-  );
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -170,7 +167,9 @@ const Teamwork = () => {
             <FaUsers className="w-8 h-8" />
             Teamwork Matches
           </h1>
-          <p className="mt-2 text-gray-600">Managing matches for {event_name}</p>
+          <p className="mt-2 text-gray-600">
+            Managing matches for {event_name}
+          </p>
         </div>
         <button
           onClick={handleRefreshSchedule}
@@ -181,82 +180,101 @@ const Teamwork = () => {
         </button>
       </div>
 
- 
-
       {/* Matches Table */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-blue-600">
             <tr>
-              {['Match', 'Team 1', 'Team 2', 'Score', 'Actions'].map((header) => (
-                <th
-                  key={header}
-                  className="px-4 py-3 text-sm font-semibold text-white text-center uppercase tracking-wider"
-                >
-                  {header}
-                </th>
-              ))}
+              {["Match", "Team 1", "Team 2", "Time", "Score", "Actions"].map(
+                (header) => (
+                  <th
+                    key={header}
+                    className="px-4 py-3 text-sm font-semibold text-white text-center uppercase tracking-wider"
+                  >
+                    {header}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {(scheduleDetails?.games || []).map((match) => (
-              <tr key={match.id} className={`hover:bg-gray-50 transition-colors ${scoresMap[match.id]?.completed ? 'bg-green-50' : ''}`}>
-                
-                <td className="px-4 py-3 text-center font-medium text-blue-600">#{match.id}</td>
-                
+              <tr
+                key={match.id}
+                className={`hover:bg-gray-50 transition-colors ${scoresMap[match.id]?.completed ? "bg-green-50" : ""}`}
+              >
+                <td className="px-4 py-3 text-center font-medium text-blue-600">
+                  #{match.id}
+                </td>
+
                 <td className="px-4 py-3">
-                  <div className="flex flex-col space-y-1">
-                    <span className="font-medium text-gray-800">{match.team1_name}</span>
-                    <span className="text-xs text-gray-500">#{match.team1}</span>
+                  <div className="flex flex-col ">
+                    <span className="font-medium text-center text-gray-800">
+                      {match.team1_name}
+                    </span>
+                    <span className="text-xs text-center text-gray-500">
+                      #{match.team1_number}
+                    </span>
                   </div>
                 </td>
-                
+
                 <td className="px-4 py-3">
-                  <div className="flex flex-col space-y-1">
-                    <span className="font-medium text-gray-800">{match.team2_name}</span>
-                    <span className="text-xs text-gray-500">#{match.team2}</span>
+                  <div className="flex flex-col ">
+                    <span className="font-medium text-center text-gray-800">
+                      {match.team2_name}
+                    </span>
+                    <span className="text-xs text-center text-gray-500">
+                      #{match.team2_number}
+                    </span>
                   </div>
                 </td>
-                
-                <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    scoresMap[match.id]?.completed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {scoresMap[match.id]?.score ?? 'N/A'}
-                  </span>
+                 <td className="px-4 py-3 text-center font-medium text-blue-600">
+                  {formatTime12(match.time)}
                 </td>
-              
-                
-              
 
                 <td className="px-4 py-3 text-center">
-              {scoresMap[match.id]?.completed  ? (
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
-                  <FaCheck className="h-4 w-4" />
-                </span>
-              ) : (
-                <button
-                onClick={() => handleOpenCalculator(match.id)}
-                className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
-                >
-                  <AiOutlineCalculator className="h-4 w-4" />
-                </button>
-              )}
-            </td>
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                      scoresMap[match.id]?.completed
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {scoresMap[match.id]?.score ?? "N/A"}
+                  </span>
+                </td>
+
+                <td className="px-4 py-3 text-center">
+                  {scoresMap[match.id]?.completed ? (
+                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
+                      <FaCheck className="h-4 w-4" />
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleOpenCalculator(match.id)}
+                      className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+                    >
+                      <AiOutlineCalculator className="h-4 w-4" />
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        
+
         {/* Loading State */}
         {(schedulesLoading || scheduleLoading || scoresLoading) && (
           <div className="p-6 space-y-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg" />
+              <div
+                key={i}
+                className="h-12 bg-gray-100 animate-pulse rounded-lg"
+              />
             ))}
           </div>
         )}
-        
+
         {/* Error State */}
         {(schedulesError || scoresError) && (
           <div className="p-6 text-center bg-red-50 border-t-4 border-red-300">
@@ -279,7 +297,7 @@ const Teamwork = () => {
             className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
           >
             <FaChartBar className="w-4 h-4" />
-            {showRanking ? 'Hide' : 'Show'} Rankings
+            {showRanking ? "Hide" : "Show"} Rankings
           </button>
         </div>
 
@@ -288,7 +306,10 @@ const Teamwork = () => {
             {isLoading ? (
               <div className="space-y-4">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="h-12 bg-gray-100 animate-pulse rounded-lg" />
+                  <div
+                    key={i}
+                    className="h-12 bg-gray-100 animate-pulse rounded-lg"
+                  />
                 ))}
               </div>
             ) : error ? (
@@ -307,15 +328,15 @@ const Teamwork = () => {
                     <div
                       key={team.team}
                       className={`flex items-center justify-between p-4 rounded-lg ${
-                        rank <= 3 ? 'border-2' : 'border hover:border-blue-200'
+                        rank <= 3 ? "border-2" : "border hover:border-blue-200"
                       } ${
                         rank === 1
-                          ? 'border-yellow-300 bg-yellow-50'
+                          ? "border-yellow-300 bg-yellow-50"
                           : rank === 2
-                          ? 'border-gray-300 bg-gray-50'
-                          : rank === 3
-                          ? 'border-amber-400 bg-amber-50'
-                          : 'border-gray-200 bg-white'
+                            ? "border-gray-300 bg-gray-50"
+                            : rank === 3
+                              ? "border-amber-400 bg-amber-50"
+                              : "border-gray-200 bg-white"
                       }`}
                     >
                       <div className="flex items-center gap-4">
@@ -323,34 +344,46 @@ const Teamwork = () => {
                           className={`w-8 h-8 flex items-center justify-center rounded-full ${
                             rank <= 3
                               ? rank === 1
-                                ? 'bg-yellow-400 text-white'
+                                ? "bg-yellow-400 text-white"
                                 : rank === 2
-                                ? 'bg-gray-400 text-white'
-                                : 'bg-amber-500 text-white'
-                              : 'bg-blue-100 text-blue-600'
+                                  ? "bg-gray-400 text-white"
+                                  : "bg-amber-500 text-white"
+                              : "bg-blue-100 text-blue-600"
                           }`}
                         >
                           {rank}
                         </span>
                         <div className="flex flex-col">
-                          <span className="font-medium text-gray-800">{team.team__name}</span>
-                          <span className="text-xs text-gray-500">Team #{team.team}</span>
+                          <span className="font-medium text-gray-800">
+                            {team.team__name}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            Team #{team.team}
+                          </span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-4">
                         <span className="text-lg font-bold text-blue-600">
-                          {typeof team.avg_score === 'number' 
+                          {typeof team.avg_score === "number"
                             ? team.avg_score.toFixed(2)
-                            : 'N/A'}
+                            : "N/A"}
                         </span>
                         {rank <= 3 && (
-                          <span className={`text-sm px-2 py-1 rounded-full ${
-                            rank === 1 ? 'bg-yellow-100 text-yellow-800' :
-                            rank === 2 ? 'bg-gray-100 text-gray-800' :
-                            'bg-amber-100 text-amber-800'
-                          }`}>
-                            {rank === 1 ? 'Gold' : rank === 2 ? 'Silver' : 'Bronze'}
+                          <span
+                            className={`text-sm px-2 py-1 rounded-full ${
+                              rank === 1
+                                ? "bg-yellow-100 text-yellow-800"
+                                : rank === 2
+                                  ? "bg-gray-100 text-gray-800"
+                                  : "bg-amber-100 text-amber-800"
+                            }`}
+                          >
+                            {rank === 1
+                              ? "Gold"
+                              : rank === 2
+                                ? "Silver"
+                                : "Bronze"}
                           </span>
                         )}
                       </div>
@@ -363,8 +396,7 @@ const Teamwork = () => {
         )}
       </div>
 
-     
-      {selectedMatch && calculatorType === 'koper' && (
+      {selectedMatch && calculatorType === "koper" && (
         <Koper
           onCalculate={handleCalculate}
           onClose={() => {
@@ -379,7 +411,7 @@ const Teamwork = () => {
         />
       )}
 
-      {selectedMatch && calculatorType === 'teams' && (
+      {selectedMatch && calculatorType === "teams" && (
         <ScoreTeams
           onCalculate={handleCalculate}
           onClose={() => {

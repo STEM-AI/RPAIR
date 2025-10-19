@@ -10,35 +10,37 @@ import useGetScore from "../../../../../hooks/Schedule/GetScore";
 const SkillsContainerGO = () => {
   const [rankings, setRankings] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(new Date());
-  
+
   const [searchParams] = useSearchParams();
-  const eventName = searchParams.get('eventName');
-  const eventId = searchParams.get('eventId');
+  const eventName = searchParams.get("eventName");
+  const eventId = searchParams.get("eventId");
   const [showRankings, setShowRankings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const autoSocketRef = useRef(null);
   const driverSocketRef = useRef(null);
 
   const [autoMatches, setAutoMatches] = useState([]);
   const [driverMatches, setDriverMatches] = useState([]);
-  
-const { 
-    score: scoresCoding, 
-  } = useGetScore(eventId, "coding");
-const { 
-    score: scoresDriver, 
-  } = useGetScore(eventId, "driver_go");
 
-   useEffect(() => {
-     if (scoresCoding || scoresDriver) {
-        setDriverMatches(scoresDriver);
-        setAutoMatches(scoresCoding);
-      }
-    }, [scoresCoding, scoresDriver]);
+  const { score: scoresCoding } = useGetScore(eventId, "coding");
+  const { score: scoresDriver } = useGetScore(eventId, "driver_go");
 
   useEffect(() => {
-    autoSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coding/`);
+  if (scoresCoding || scoresDriver) {
+    const filteredCoding = scoresCoding.filter(match => match.completed === true);
+    const filteredDriver = scoresDriver.filter(match => match.completed === true);
+    
+    setDriverMatches(filteredDriver);
+    setAutoMatches(filteredCoding);
+  }
+  }, [scoresCoding, scoresDriver]);
+  
+
+  useEffect(() => {
+    autoSocketRef.current = new WebSocket(
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/coding/`,
+    );
 
     autoSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -58,7 +60,9 @@ const {
   }, [eventName]);
 
   useEffect(() => {
-    driverSocketRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/driver_go/`);
+    driverSocketRef.current = new WebSocket(
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/driver_go/`,
+    );
 
     driverSocketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -86,7 +90,9 @@ const {
     }
 
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/vex-go/${eventId}/skills/rank/`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/vex-go/${eventId}/skills/rank/`,
+      );
       setRankings(response.data);
       setShowRankings(true);
     } catch (error) {
@@ -96,20 +102,33 @@ const {
     }
   };
 
-  const updateMatches = (prevMatches, data, round) => {
-    const matchIndex = prevMatches.findIndex(m => m.code === data.game_id);
-    if (matchIndex === -1) {
-      return [...prevMatches, {
-        code: data.game_id ,
-        team1_name: data.team1_name || 'Team 1',
+  const updateMatches = (prevMatches, data) => {
+  const matchIndex = prevMatches.findIndex((m) => m.id === data.game_id);
+
+  if (matchIndex === -1) {
+    const teamOccurrences = prevMatches.filter(
+      (m) => m.team1_name === (data.team1_name || "Team 1"),
+    ).length;
+
+    const roundNumber = teamOccurrences + 1;
+
+    return [
+      ...prevMatches,
+      {
+        id: data.game_id, 
+        code: data.game_id,
+        team1_name: data.team1_name || "Team 1",
         score: data.score,
-        round: round
-      }];
-    }
-    return prevMatches.map((m, i) => 
-      i === matchIndex ? { ...m, score: data.score } : m
-    );
-  };
+        round: roundNumber,
+        completed: data.completed || false, 
+      },
+    ];
+  }
+
+  return prevMatches.map((m, i) =>
+    i === matchIndex ? { ...m, score: data.score } : m,
+  );
+};
 
   const getMedalIcon = (rank) => {
     switch (rank) {
@@ -143,7 +162,7 @@ const {
 
       {/* Rounds */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        <DriverRoundsComponent matches={driverMatches}/>
+        <DriverRoundsComponent matches={driverMatches} />
         <AutoRoundsComponent matches={autoMatches} />
       </div>
 
@@ -154,8 +173,8 @@ const {
           disabled={isLoading}
           className={`inline-flex items-center px-6 py-3 rounded-full font-medium text-white shadow-lg ${
             isLoading
-              ? 'bg-gray-400'
-              : 'bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700'
+              ? "bg-gray-400"
+              : "bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700"
           } transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2`}
         >
           {isLoading ? (
@@ -163,7 +182,7 @@ const {
           ) : (
             <FaTrophy className="mr-2" />
           )}
-          {isLoading ? 'Loading...' : 'View Skills Rankings'}
+          {isLoading ? "Loading..." : "View Skills Rankings"}
         </button>
       </div>
 
@@ -176,14 +195,20 @@ const {
               Skills Challenge Rankings
             </h2>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Highest Score</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Rank
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Team
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Highest Score
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -194,10 +219,10 @@ const {
                       index === 0
                         ? "bg-amber-50"
                         : index === 1
-                        ? "bg-gray-50"
-                        : index === 2
-                        ? "bg-amber-25"
-                        : "hover:bg-gray-50"
+                          ? "bg-gray-50"
+                          : index === 2
+                            ? "bg-amber-25"
+                            : "hover:bg-gray-50"
                     } transition-colors`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -205,7 +230,17 @@ const {
                         {getMedalIcon(index + 1)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{team.team_name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                      <div className="flex flex-col text-center">
+                        <span className="font-medium text-gray-800">
+                          {" "}
+                          {team.team_name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          #{team.team_number}
+                        </span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center font-bold">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800">
                         {(team.total_score ?? 0).toFixed(2)}

@@ -7,11 +7,9 @@ import AwardsList from "../../../components/Awards/awards";
 import { Helmet } from "react-helmet-async";
 
 const VexGOAbout = () => {
-  
-
   return (
     <>
-       <Helmet>
+      <Helmet>
         <title>VEX GO</title>
       </Helmet>
       <div className="flex flex-col items-center justify-center bg-gray-50  py-12  px-4">

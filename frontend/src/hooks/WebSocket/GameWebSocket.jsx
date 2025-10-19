@@ -12,12 +12,12 @@ export const useGameWebSocket = (eventName, gameId, initialTime) => {
 
   const handleMessage = (data) => {
     switch (data.action) {
-      case 'restart':
+      case "restart":
         setRemainingTime(data.initial_time);
         setGameActive(false);
         setTimeUp(false);
         break;
-      case 'status_update':
+      case "status_update":
         setGameActive(data.status === "started");
         setGamePaused(data.status === "paused");
         if (data.remaining_time !== undefined) {
@@ -34,7 +34,7 @@ export const useGameWebSocket = (eventName, gameId, initialTime) => {
     if (!eventName || !gameId) return;
 
     socketRef.current = new WebSocket(
-      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`
+      `${process.env.REACT_APP_WS_URL}/ws/competition_event/${eventName}/game/${gameId}/`,
     );
 
     socketRef.current.onmessage = (event) => {
@@ -57,7 +57,7 @@ export const useGameWebSocket = (eventName, gameId, initialTime) => {
 
   useEffect(() => {
     setupWebSocket();
-    
+
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
@@ -75,8 +75,8 @@ export const useGameWebSocket = (eventName, gameId, initialTime) => {
           action,
           ...data,
           event_name: eventName,
-          game_id: gameId
-        })
+          game_id: gameId,
+        }),
       );
     }
   };
@@ -86,6 +86,6 @@ export const useGameWebSocket = (eventName, gameId, initialTime) => {
     gameActive,
     gamePaused,
     timeUp,
-    sendWebSocketMessage
+    sendWebSocketMessage,
   };
 };

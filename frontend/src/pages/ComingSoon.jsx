@@ -1,9 +1,7 @@
-import React  from 'react';
-import comingSo from '../assets/Static/comingsoon.webp';
-import { Helmet } from "react-helmet-async"; 
+import React from "react";
+import comingSo from "../assets/Static/comingsoon.webp";
+import { Helmet } from "react-helmet-async";
 const ComingSoonPage = () => {
-
-
   return (
     <div
       className="relative h-screen w-full flex items-center justify-center bg-cover bg-center text-center px-5"
@@ -33,7 +31,7 @@ const ComingSoonPage = () => {
           <div className="shadow w-full bg-white/20 mt-2 max-w-2xl mx-auto rounded-full overflow-hidden">
             <div
               className="rounded-full bg-cyan-600 text-xs leading-none text-center text-white py-1 animate-progressBar"
-              style={{ width: '75%' }}
+              style={{ width: "75%" }}
             >
               75%
             </div>

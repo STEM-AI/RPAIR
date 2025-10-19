@@ -1,5 +1,3 @@
-
-
 // import { useState, useEffect } from "react";
 
 // const useTimer = (durationInSeconds, onEnd) => {
@@ -29,12 +27,11 @@
 
 // export default useTimer;
 
-
 import { useState, useEffect, useRef } from "react";
 
 const useTimer = (durationInSeconds, onEnd) => {
   const [seconds, setSeconds] = useState(durationInSeconds);
-  const hasEnded = useRef(false); 
+  const hasEnded = useRef(false);
   const intervalRef = useRef();
 
   useEffect(() => {
@@ -43,17 +40,18 @@ const useTimer = (durationInSeconds, onEnd) => {
       onEnd();
       return;
     }
-  
+
     intervalRef.current = setInterval(() => {
-      setSeconds(prev => {
-        if (prev <= 1) { // عند الوصول إلى 1، أوقف العد
+      setSeconds((prev) => {
+        if (prev <= 1) {
+          // عند الوصول إلى 1، أوقف العد
           clearInterval(intervalRef.current);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-  
+
     return () => clearInterval(intervalRef.current);
   }, [seconds, onEnd]);
 

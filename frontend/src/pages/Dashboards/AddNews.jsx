@@ -1,17 +1,14 @@
-
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet-async";
 
 const AddNews = () => {
   const [newsData, setNewsData] = useState({
-    content: ""
+    content: "",
   });
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem("access_token");
-
- 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,14 +19,17 @@ const AddNews = () => {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/news/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/admin/news/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newsData),
         },
-        body: JSON.stringify(newsData)
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -37,14 +37,14 @@ const AddNews = () => {
       }
 
       Swal.fire({
-                      icon: "success",
-                      title: "Success",
-                      text: "Registration successful!",
-                      showConfirmButton: false,
-                        });
+        icon: "success",
+        title: "Success",
+        text: "Registration successful!",
+        showConfirmButton: false,
+      });
 
       setNewsData({ ...newsData, content: "" });
-      setError(null); 
+      setError(null);
     } catch (error) {
       setError(error.message || "Error updating news");
       console.error("Error updating news:", error);
@@ -57,10 +57,10 @@ const AddNews = () => {
 
   return (
     <div className="max-h-screen bg-gray-100 py-20">
-       <Helmet>
-              <title>Add News</title>
-            </Helmet>
-                      
+      <Helmet>
+        <title>Add News</title>
+      </Helmet>
+
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="mb-6 pt-4 pb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-950 to-cyan-500 text-3xl sm:text-4xl md:text-5xl font-black">
           New News

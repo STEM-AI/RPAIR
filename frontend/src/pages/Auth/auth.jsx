@@ -1,123 +1,337 @@
-import axios from 'axios';
+import axios from "axios";
 
 const AUTH_TOKENS = {
-    ACCESS_TOKEN: 'access_token',
-    REFRESH_TOKEN: 'refresh_token',
+  ACCESS_TOKEN: "access_token",
+  REFRESH_TOKEN: "refresh_token",
 };
 
 // Save tokens to localStorage
+// Save tokens to localStorage (handle different API response formats)
 export const saveTokens = (tokens) => {
-    localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, tokens.access_token);
-    localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, tokens.refresh_token);
+  try {
+    // دايمًا نخزن access_token باسم موحد
+    const access =
+      tokens.access_token || tokens.access || null;
+    const refresh =
+      tokens.refresh_token || tokens.refresh || null;
+
+    if (access) {
+      localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, access);
+    }
+    if (refresh) {
+      localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, refresh);
+    }
+
+    console.log("Tokens saved successfully");
+  } catch (error) {
+    console.error("Error saving tokens to localStorage:", error);
+  }
 };
+
 
 // Get tokens from localStorage
 export const getTokens = () => ({
-    access_token: localStorage.getItem(AUTH_TOKENS.ACCESS_TOKEN),
-    refresh_token: localStorage.getItem(AUTH_TOKENS.REFRESH_TOKEN),
+  access_token: localStorage.getItem(AUTH_TOKENS.ACCESS_TOKEN),
+  refresh_token: localStorage.getItem(AUTH_TOKENS.REFRESH_TOKEN),
 });
 
 // Clear tokens from localStorage
 export const clearTokens = () => {
+  try {
     localStorage.removeItem(AUTH_TOKENS.ACCESS_TOKEN);
     localStorage.removeItem(AUTH_TOKENS.REFRESH_TOKEN);
+    localStorage.removeItem("user_role");
+    console.log("Tokens cleared successfully");
+  } catch (error) {
+    console.error("Error clearing tokens from localStorage:", error);
+  }
 };
 
-// Check if access token is expired
-export const isTokenExpired = (token) => {
-    if (!token) return true;
-    
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const expirationTime = payload.exp * 1000; // Convert to milliseconds
-        return Date.now() >= expirationTime;
-    } catch (error) {
-        return true;
-    }
+// Extract token information including expiration time
+export const getTokenInfo = (token) => {
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const currentTime = Date.now();
+    const expirationTime = payload.exp * 1000;
+
+    return {
+      payload,
+      expirationTime,
+      issuedAt: payload.iat * 1000,
+      expiresIn: expirationTime - currentTime,
+      userId: payload.user_id,
+      username: payload.username,
+      isStaff: payload.is_staff,
+      isSuperuser: payload.is_superuser,
+      organization: payload.organization,
+      isExpired: currentTime >= expirationTime,
+      willExpireSoon: expirationTime - currentTime < 300000, // 5 minutes
+    };
+  } catch (error) {
+    console.error("Error parsing token:", error);
+    return null;
+  }
 };
 
-// Refresh access token using refresh token
+// Check if token is expired with safety margin
+export const isTokenExpired = (token, safetyMargin = 30000) => {
+  const tokenInfo = getTokenInfo(token);
+  if (!tokenInfo) return true;
+
+  return tokenInfo.isExpired || tokenInfo.willExpireSoon;
+};
+
+
 export const refreshAccessToken = async () => {
-    try {
-        const refresh_token = localStorage.getItem(AUTH_TOKENS.REFRESH_TOKEN);
-        
-        if (!refresh_token) {
-            console.error('No refresh token found');
-            handleLogout();
-            return null;
-        }
+  try {
+    const refresh_token = localStorage.getItem(AUTH_TOKENS.REFRESH_TOKEN);
 
-        if (isTokenExpired(refresh_token)) {
-            console.error('Refresh token has expired');
-            handleLogout();
-            return null;
-        }
-
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/token/refresh/`, {
-            refresh: refresh_token
-        });
-
-        if (response.data.access) {
-            localStorage.setItem(AUTH_TOKENS.ACCESS_TOKEN, response.data.access);
-            localStorage.setItem(AUTH_TOKENS.REFRESH_TOKEN, response.data.refresh);
-            return response.data.access;
-        } else {
-            console.error('Refresh token endpoint did not return new tokens');
-            handleLogout();
-            return null;
-        }
-        
-    } catch (error) {
-        console.error('Error refreshing token:', error);
-        if (error.response && error.response.status === 401) {
-            console.error('Invalid refresh token');
-        }
-        handleLogout();
-        return null;
+    if (!refresh_token) {
+      console.error("No refresh token found");
+      handleLogout();
+      return null;
     }
-};
 
-// Handle logout
-export const handleLogout = () => {
-    console.log('Performing logout due to token expiration or invalid refresh token');
-    clearTokens();
-    // Redirect to login page
-    window.location.href = '/login';
-};
+    // Check if refresh token is expired
+    const refreshTokenInfo = getTokenInfo(refresh_token);
+    if (!refreshTokenInfo || refreshTokenInfo.isExpired) {
+      console.error("Refresh token has expired or is invalid");
+      handleLogout();
+      return null;
+    }
 
-// Create axios instance with interceptor
-export const createAuthenticatedInstance = () => {
-    const instance = axios.create();
-
-    instance.interceptors.request.use(
-        async (config) => {
-            const access_token = localStorage.getItem(AUTH_TOKENS.ACCESS_TOKEN);
-
-            if (!access_token) {
-                console.log('No access token found');
-                return config;
-            }
-
-            if (isTokenExpired(access_token)) {
-                console.log('Access token expired, attempting to refresh');
-                const newToken = await refreshAccessToken();
-                if (newToken) {
-                    config.headers.Authorization = `Bearer ${newToken}`;
-                }
-            } else {
-                config.headers.Authorization = `Bearer ${access_token}`;
-            }
-
-            return config;
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/token/refresh/`,
+      {
+        refresh: refresh_token,
+      },
+      {
+        timeout: 10000,
+        headers: {
+          "Content-Type": "application/json",
         },
-        (error) => {
-            console.error('Request error:', error);
-            return Promise.reject(error);
-        }
+      },
     );
 
-    return instance;
+    if (response.data.access || response.data.access_token) {
+      const newAccess =
+        response.data.access || response.data.access_token;
+      const newRefresh =
+        response.data.refresh || response.data.refresh_token || refresh_token;
+
+      saveTokens({
+        access_token: newAccess,
+        refresh_token: newRefresh,
+      });
+
+      console.log("Token refreshed successfully");
+      return newAccess;
+    } else {
+      console.error("Refresh token endpoint did not return new access token");
+      handleLogout();
+      return null;
+    }
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+
+    if (error.code === "ECONNABORTED") {
+      console.error("Token refresh request timed out");
+      return null; // Don't logout on timeout
+    }
+
+    if (error.response) {
+      if (error.response.status === 401) {
+        console.error("Invalid refresh token - unauthorized");
+        handleLogout();
+      } else if (error.response.status >= 500) {
+        console.error("Server error during token refresh");
+        return null; // Don't logout for server errors
+      }
+    } else if (error.request) {
+      console.error("Network error during token refresh - no response received");
+      return null; // Don't logout for network errors
+    }
+
+    handleLogout();
+    return null;
+  }
+};
+
+
+// Handle logout
+export const handleLogout = (
+  message = "Performing logout due to token expiration or invalid refresh token",
+) => {
+  console.log(message);
+  clearTokens();
+  // Redirect to login page
+  window.location.href = "/login";
+};
+
+// Periodic token check function
+export const startTokenMonitor = (checkInterval = 60000) => {
+  let monitorInterval = null;
+
+  const checkTokens = () => {
+    const { access_token, refresh_token } = getTokens();
+
+    if (!access_token || !refresh_token) {
+      console.log("No tokens found, stopping monitor");
+      if (monitorInterval) clearInterval(monitorInterval);
+      return;
+    }
+
+    const accessTokenInfo = getTokenInfo(access_token);
+    const refreshTokenInfo = getTokenInfo(refresh_token);
+
+    if (!refreshTokenInfo || refreshTokenInfo.isExpired) {
+      console.log("Refresh token expired, logging out");
+      handleLogout("Refresh token expired");
+      return;
+    }
+
+    if (accessTokenInfo && accessTokenInfo.willExpireSoon) {
+      console.log("Access token will expire soon, refreshing...");
+      refreshAccessToken().catch((error) => {
+        console.error("Background token refresh failed:", error);
+      });
+    }
+  };
+
+  // Run immediately and then set interval
+  checkTokens();
+  monitorInterval = setInterval(checkTokens, checkInterval);
+
+  return monitorInterval;
+};
+
+// Initialize token monitoring
+export const initializeTokenMonitoring = () => {
+  const { access_token, refresh_token } = getTokens();
+
+  if (access_token && refresh_token) {
+    console.log("Starting token monitoring");
+    return startTokenMonitor(30000); // Check every 30 seconds
+  }
+
+  console.log("No valid tokens found for monitoring");
+  return null;
+};
+
+// Create axios instance with improved interceptor
+export const createAuthenticatedInstance = () => {
+  const instance = axios.create();
+  let isRefreshing = false;
+  let refreshSubscribers = [];
+
+  const onRefreshed = (token) => {
+    refreshSubscribers.forEach((callback) => callback(token));
+    refreshSubscribers = [];
+  };
+
+  const addRefreshSubscriber = (callback) => {
+    refreshSubscribers.push(callback);
+  };
+
+  instance.interceptors.request.use(
+    async (config) => {
+      const access_token = localStorage.getItem(AUTH_TOKENS.ACCESS_TOKEN);
+
+      if (!access_token) {
+        console.log("No access token found for request");
+        return config;
+      }
+
+      const tokenInfo = getTokenInfo(access_token);
+
+      // If token will expire in less than 30 seconds, refresh it
+      if (tokenInfo && tokenInfo.willExpireSoon) {
+        console.log("Access token will expire soon, attempting to refresh");
+
+        if (!isRefreshing) {
+          isRefreshing = true;
+          try {
+            const newToken = await refreshAccessToken();
+            isRefreshing = false;
+
+            if (newToken) {
+              config.headers.Authorization = `Bearer ${newToken}`;
+              onRefreshed(newToken);
+            } else {
+              // If refresh fails but we have a token, continue with it
+              config.headers.Authorization = `Bearer ${access_token}`;
+            }
+          } catch (error) {
+            isRefreshing = false;
+            console.error("Error in refresh process:", error);
+            config.headers.Authorization = `Bearer ${access_token}`;
+          }
+        } else {
+          // If refresh is already in progress, wait for it to complete
+          return new Promise((resolve) => {
+            addRefreshSubscriber((newToken) => {
+              config.headers.Authorization = `Bearer ${newToken}`;
+              resolve(config);
+            });
+          });
+        }
+      } else {
+        config.headers.Authorization = `Bearer ${access_token}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      console.error("Request interceptor error:", error);
+      return Promise.reject(error);
+    },
+  );
+
+  // Add response interceptor to handle auth errors
+  instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        console.log("Unauthorized access - redirecting to login");
+        handleLogout("Unauthorized access detected");
+      }
+      return Promise.reject(error);
+    },
+  );
+
+  return instance;
 };
 
 // Export authenticated axios instance
 export const authAxios = createAuthenticatedInstance();
+
+// Utility function to check authentication status
+export const isAuthenticated = () => {
+  const { access_token, refresh_token } = getTokens();
+
+  if (!access_token || !refresh_token) return false;
+
+  const accessInfo = getTokenInfo(access_token);
+  const refreshInfo = getTokenInfo(refresh_token);
+
+  return !!(accessInfo && refreshInfo && !refreshInfo.isExpired);
+};
+
+// Utility function to get user info from token
+export const getUserInfo = () => {
+  const { access_token } = getTokens();
+  if (!access_token) return null;
+
+  const tokenInfo = getTokenInfo(access_token);
+  if (!tokenInfo) return null;
+
+  return {
+    userId: tokenInfo.userId,
+    username: tokenInfo.username,
+    isStaff: tokenInfo.isStaff,
+    isSuperuser: tokenInfo.isSuperuser,
+    organization: tokenInfo.organization,
+  };
+};

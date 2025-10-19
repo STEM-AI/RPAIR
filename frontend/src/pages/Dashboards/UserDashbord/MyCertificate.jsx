@@ -1,4 +1,3 @@
-
 import html2canvas from "html2canvas";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -10,15 +9,16 @@ import Certificate from "../../../components/Certificate/Certificate";
 export default function MyCertificate() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const eventId = searchParams.get('event');
+  const eventId = searchParams.get("event");
+  const eventName = searchParams.get("eventName");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   const [responseMessage, setResponseMessage] = useState(null);
@@ -40,19 +40,19 @@ export default function MyCertificate() {
   // دالة لتنزيل جميع الشهادات
   const handleDownloadAll = async () => {
     setIsRendering(true);
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
     try {
       for (const member of teamMembers) {
         if (certificateRefs.current[member.name]?.current) {
-          await new Promise(resolve => {
+          await new Promise((resolve) => {
             html2canvas(certificateRefs.current[member.name].current, {
               useCORS: true,
-              scale: 2
-            }).then(canvas => {
-              const link = document.createElement('a');
+              scale: 2,
+            }).then((canvas) => {
+              const link = document.createElement("a");
               link.download = `${member.name}-certificate.png`;
-              link.href = canvas.toDataURL('image/png');
+              link.href = canvas.toDataURL("image/png");
               link.click();
               resolve();
             });
@@ -79,25 +79,26 @@ export default function MyCertificate() {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/team/${id}/${eventId}/certification/`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         const teamData = response.data;
         setSelectedTeam(teamData);
-        
+
         const membersWithLeader = [
-          { 
-            name: response.data.team_leader_name, 
-            isLeader: true 
+          {
+            name: response.data.team_leader_name,
+            isLeader: true,
           },
-          ...(response.data.members || []).map(member => ({
+          ...(response.data.members || []).map((member) => ({
             ...member,
-            isLeader: false
-          }))
+            isLeader: false,
+          })),
         ];
-        
+
         setTeamMembers(membersWithLeader);
       } catch (error) {
-        const errorMessage = error.response?.data?.message ||
+        const errorMessage =
+          error.response?.data?.message ||
           error.message ||
           "Failed to fetch data. Please try again later.";
         setAlertType("error");
@@ -108,7 +109,7 @@ export default function MyCertificate() {
     if (id && token) {
       fetchTeamDetails();
     }
-  }, [token, id]);
+  }, [token, id, eventId]);
 
   return (
     <div className="p-4">
@@ -118,37 +119,41 @@ export default function MyCertificate() {
           {responseMessage}
         </Alert>
       )}
-      
+
       {windowWidth < 1500 ? (
         <div className="p-4 text-center">
           <Alert severity="warning" className="mb-4">
             <AlertTitle>Screen Size Warning</AlertTitle>
-            It looks like your screen is a bit too small to display the certificate properly.  
-            For the best experience, please use a larger screen like a desktop or laptop.
+            It looks like your screen is a bit too small to display the
+            certificate properly. For the best experience, please use a larger
+            screen like a desktop or laptop.
           </Alert>
-          
+
           {/* زر تنزيل الكل فقط */}
           <button
             onClick={handleDownloadAll}
             disabled={isRendering}
             className={`mt-4 px-6 py-3 rounded-lg shadow-lg transition-colors ${
-              isRendering 
-                ? "bg-gray-400 cursor-not-allowed" 
+              isRendering
+                ? "bg-gray-400 cursor-not-allowed"
                 : "bg-green-600 hover:bg-green-700 text-white"
             }`}
           >
-            {isRendering ? "Generating Certificates..." : "Download All Certificates"}
+            {isRendering
+              ? "Generating Certificates..."
+              : "Download All Certificates"}
           </button>
 
-          <div style={{ position: 'absolute', left: '-9999px' }}>
+          <div style={{ position: "absolute", left: "-9999px" }}>
             {teamMembers.map((member, index) => (
               <div key={index} className="w-full">
-                <Certificate 
+                <Certificate
                   selectedMember={member.name}
                   certificateRef={certificateRefs.current[member.name]}
                   teamName={selectedTeam?.name}
                   competitionName={selectedTeam?.competition_name}
                   startDate={selectedTeam?.start_date}
+                  eventName={eventName}
                 />
               </div>
             ))}
@@ -156,18 +161,20 @@ export default function MyCertificate() {
         </div>
       ) : (
         teamMembers.length > 0 && (
-            <div className="grid text-center">
-               <button
-            onClick={handleDownloadAll}
-            disabled={isRendering}
-            className={`my-5 px-6 py-3 rounded-lg shadow-lg transition-colors ${
-              isRendering 
-                ? "bg-gray-400 cursor-not-allowed" 
-                : "bg-green-600 hover:bg-green-700 text-white"
-            }`}
-          >
-            {isRendering ? "Generating Certificates..." : "Download All Certificates"}
-          </button>
+          <div className="grid text-center">
+            <button
+              onClick={handleDownloadAll}
+              disabled={isRendering}
+              className={`my-5 px-6 py-3 rounded-lg shadow-lg transition-colors ${
+                isRendering
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
+            >
+              {isRendering
+                ? "Generating Certificates..."
+                : "Download All Certificates"}
+            </button>
             {teamMembers.map((member, index) => (
               <div key={index} className="w-full mb-8">
                 <Certificate
@@ -177,14 +184,11 @@ export default function MyCertificate() {
                   competitionName={selectedTeam.competition_name}
                   startDate={selectedTeam.start_date}
                 />
-                
               </div>
             ))}
-             
           </div>
         )
       )}
     </div>
   );
-
-};
+}

@@ -1,7 +1,7 @@
-import useSound from 'use-sound';
+import useSound from "use-sound";
 
 const EndGameSound = () => {
-  const [playEnd] = useSound('/sounds/end.mp3', { volume: 0.5 });
+  const [playEnd] = useSound("/sounds/end.mp3", { volume: 0.5 });
 
   const handleEnd = () => {
     playEnd();

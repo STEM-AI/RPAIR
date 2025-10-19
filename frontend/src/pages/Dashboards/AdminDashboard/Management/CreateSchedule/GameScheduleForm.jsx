@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FiClock, FiCalendar, FiAward, FiLoader } from "react-icons/fi";
 
@@ -36,19 +36,13 @@ const GameScheduleForm = () => {
 
   const stagesOptions = getStagesOptions();
 
-  useEffect(() => {
-    if (eventName) {
-      fetchEvents();
-    }
-  }, [eventName]);
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     setIsLoading(true);
     setError("");
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/competition/${eventName}/event/`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setEvents(response.data);
     } catch (err) {
@@ -56,8 +50,13 @@ const GameScheduleForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [eventName, token]);
 
+  useEffect(() => {
+    if (eventName) {
+      fetchEvents();
+    }
+  }, [eventName, fetchEvents]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -82,9 +81,9 @@ const GameScheduleForm = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      
+
       setSuccessMessage("Game schedule created successfully!");
       setGameTime("");
       setSelectedStage("");
@@ -96,10 +95,7 @@ const GameScheduleForm = () => {
 
   const today = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
 
-  const upcomingCompetitions = events.filter(
-    (comp) => comp.end_date >= today
-  );
-
+  const upcomingCompetitions = events.filter((comp) => comp.end_date >= today);
 
   return (
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-8 duration-200">
@@ -156,14 +152,19 @@ const GameScheduleForm = () => {
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all appearance-none"
             disabled={!eventName || isLoading}
           >
-            <option value="">{isLoading ? 'Loading events...' : 'Select Event'}</option>
+            <option value="">
+              {isLoading ? "Loading events..." : "Select Event"}
+            </option>
             {upcomingCompetitions.map((event) => (
               <option key={event.id} value={event.id}>
-                {event.name} - <span>{new Date(event.start_date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}</span>
+                {event.name} -{" "}
+                <span>
+                  {new Date(event.start_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
               </option>
             ))}
           </select>
@@ -188,7 +189,9 @@ const GameScheduleForm = () => {
           <option value="">Select Stage</option>
           {stagesOptions.map((stage) => (
             <option key={stage} value={stage}>
-              {stage.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+              {stage
+                .replace(/_/g, " ")
+                .replace(/\b\w/g, (c) => c.toUpperCase())}
             </option>
           ))}
         </select>
